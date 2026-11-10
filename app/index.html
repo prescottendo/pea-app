@@ -11,7 +11,7 @@
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://accounts.google.com/gsi/client https://cdnjs.cloudflare.com/ajax/libs/html2canvas/; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://accounts.google.com/gsi/style; font-src https://fonts.gstatic.com; img-src 'self' data: blob: https://*.googleusercontent.com https://*.gstatic.com; connect-src 'self' https://script.google.com https://script.googleusercontent.com https://accounts.google.com/gsi/; frame-src https://accounts.google.com/gsi/; worker-src 'self'; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'none'">
 <title>Huddle</title>
 <meta name="robots" content="noindex">
-<meta name="theme-color" content="#0A345A">
+<meta name="theme-color" content="#EBE6D9">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -19,7 +19,7 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" type="image/png" href="icon-192.png">
-<script>window.HUDDLE_WEB={"api":"https://script.google.com/macros/s/AKfycbzM8K_-XRMDdOJYJ3THn_FhyZkRreMddHIBAOFCFVoq5S_Y7MnsfFLsl7ac_fyDPrch/exec","clientId":"473377418367-cqmmnfum4kshq16973m4sj2jqqfa55p0.apps.googleusercontent.com","build":"414b99e"};document.documentElement.classList.add('web');</script>
+<script>window.HUDDLE_WEB={"api":"https://script.google.com/macros/s/AKfycbzM8K_-XRMDdOJYJ3THn_FhyZkRreMddHIBAOFCFVoq5S_Y7MnsfFLsl7ac_fyDPrch/exec","clientId":"473377418367-cqmmnfum4kshq16973m4sj2jqqfa55p0.apps.googleusercontent.com","build":"c4eefca"};document.documentElement.classList.add('web');</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <!-- The fonts load without holding up the first paint; the page shows in the phone's own font for a moment if needed. -->
@@ -912,6 +912,8 @@
   .sheet-wrap.opening .sheet { animation:sheetIn .42s cubic-bezier(.32,.72,0,1) both; }
   .sheet-wrap.opening .backdrop { animation:bdIn .3s ease both; }
   .sheet-wrap.leave .sheet { animation:sheetOut .28s cubic-bezier(.4,0,1,1) both; }
+  /* Let go after dragging a panel down: it keeps going from where the finger left it (no jump back up first). */
+  .sheet-wrap.leave.dragged .sheet { animation:none; transform:translateY(105%); opacity:1; transition:transform .26s cubic-bezier(.4,0,1,1); }
   .sheet-wrap.leave .backdrop { animation:bdOut .28s ease both; }
   @media (min-width:700px) { .sheet-wrap.opening .sheet { animation:popIn .3s cubic-bezier(.2,.8,.2,1) both; } .sheet-wrap.leave .sheet { animation:popOut .22s ease both; } }
   .sheet-wrap.dialog.opening .sheet { animation:dlgIn .26s cubic-bezier(.2,.8,.2,1) both; }
@@ -1122,9 +1124,11 @@
   .toast button { color:var(--primary-ink); text-decoration:underline; text-underline-offset:3px; }
 
   /* ---------- Huddle's own web address (html.web) ---------- */
-  /* The page reaches under the iPhone clock there (black-translucent status bar), so a navy strip always sits behind the
-     clock, on every screen, and the white clock stays readable. The phone header already starts with the same navy. */
-  html.web body::before { content:""; position:fixed; left:0; right:0; top:0; height:env(safe-area-inset-top, 0px); background:var(--header); z-index:90; pointer-events:none; }
+  /* The page reaches under the iPhone clock there (black-translucent status bar). Nov 10: no navy strip; the area under the
+     clock is the page's own color, and webTint() sets theme-color to it, so the phone's top fade matches the page.
+     On a home-screen app, 100vh leaves out the clock area; a page shorter than the screen then lifted the tab bar and left
+     a beige gap under it. The page is always at least the full screen tall. */
+  html.web body { min-height:calc(100vh + env(safe-area-inset-top, 0px)); }
   /* The sign-in screen (webSignIn): navy, Huddle's name, Google's button. */
   .signin { position:fixed; inset:0; z-index:80; background:var(--header); color:var(--header-ink); display:grid; place-items:center; overflow-y:auto;
     padding:calc(24px + env(safe-area-inset-top, 0px)) max(24px, env(safe-area-inset-right, 0px)) calc(24px + env(safe-area-inset-bottom, 0px)) max(24px, env(safe-area-inset-left, 0px)); }
@@ -1673,6 +1677,7 @@ function render(){
   [...document.body.classList].forEach(c=>{ if (c.indexOf('v-')===0) document.body.classList.remove(c); });
   document.body.classList.add('v-'+S.view);
   setNavH();
+  if (window.HUDDLE_WEB) webTint();
   if (S.view!=='live') renderLiveCtl();
   syncWakeLock();
   updateAlfredFab();
@@ -2087,7 +2092,7 @@ function newTask(owner){
 // Panels slide up from the bottom and back down (or fade and scale on a computer).
 function showSheet(){
   const w=document.getElementById('sheetWrap'), sh=document.getElementById('sheet');
-  clearTimeout(S.closeT); w.classList.remove('leave'); sh.style.transform=''; sh.style.transition='';
+  clearTimeout(S.closeT); w.classList.remove('leave','dragged'); sh.style.transform=''; sh.style.transition='';
   const opening=w.hidden || w.classList.contains('leave');
   w.hidden=false; document.body.style.overflow='hidden'; document.body.classList.add('sheet-on'); renderSheet();
   if (opening) {
@@ -2105,10 +2110,11 @@ function closeSheet(silent){
   document.body.style.overflow=''; document.body.classList.remove('sheet-on');
   const w=document.getElementById('sheetWrap'), sh=document.getElementById('sheet');
   if (!w.hidden) {
+    const dragged=/translateY\((?!0px\))/.test(sh.style.transform||'');
     sh.style.transition=''; sh.style.transform='';
-    w.classList.remove('enter','opening'); w.classList.add('leave');
+    w.classList.remove('enter','opening'); w.classList.add('leave'); w.classList.toggle('dragged', dragged);
     clearTimeout(S.closeT);
-    S.closeT=setTimeout(()=>{ w.hidden=true; w.classList.remove('leave','dialog'); }, 290);
+    S.closeT=setTimeout(()=>{ w.hidden=true; w.classList.remove('leave','dialog','dragged'); }, 290);
   }
   if (!silent) render();
 }
@@ -3351,7 +3357,7 @@ async function liveAddItem(el){
 /* ---------- Alfred chat bubble ---------- */
 // The conversation lives only in this page (S.alf) and is gone after a reload. Every message carries the screen
 // context below, and the screenshot taken when the bubble was tapped, so nobody has to describe where they were.
-const APP_VERSION = '2026.11.10-web-move';
+const APP_VERSION = '2026.11.10-web-polish';
 const H2C_URL = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
 const DIAG = { errors:[], actions:[] };   // last 10 of each, for bug reports
 function pushDiag(list, item){ list.push(item); if (list.length>10) list.shift(); }
@@ -3371,6 +3377,8 @@ function updateAlfredFab(){
   const fab=document.getElementById('alfFab'); if (!fab) return;
   fab.hidden=!alfredEnabled();
   placeAlfred(false);
+  // Nov 10: place it again once the new screen has laid out (the tab bar and + can move a moment after a render).
+  cancelAnimationFrame(updateAlfredFab.raf); updateAlfredFab.raf=requestAnimationFrame(()=>requestAnimationFrame(()=>placeAlfred(false)));
 }
 // Where the bubble may sit: below the header, above the tab bar, and (on the right side) above the + button.
 function alfBounds(side){
@@ -3428,6 +3436,8 @@ function placeAlfred(save, p){
   document.addEventListener('pointerup', end);
   document.addEventListener('pointercancel', end);
   window.addEventListener('resize', ()=>{ setNavH(); placeAlfred(false); });
+  ['load','pageshow','orientationchange'].forEach(ev=>window.addEventListener(ev, ()=>setTimeout(()=>{ setNavH(); placeAlfred(false); }, 60)));
+  if (window.visualViewport) window.visualViewport.addEventListener('resize', ()=>placeAlfred(false));
 })();
 
 function deviceKind(){ const w=window.innerWidth, touch=('ontouchstart' in window) || navigator.maxTouchPoints>0; return w<700 ? (touch?'phone':'narrow window') : touch && w<1100 ? 'tablet' : 'computer'; }
@@ -4157,6 +4167,11 @@ function webSignedOut(msg){
   webSignIn(msg || (S.data ? 'You were signed out. Sign in again to keep going.' : ''), !!S.data);
 }
 // The branded sign-in screen: navy, the Huddle name and Google's own Sign in with Google button.
+// Nov 10: the phone tints the area under the clock with theme-color; keep it the page's own color (light or dark).
+function webTint(){
+  const m=document.querySelector('meta[name="theme-color"]'); if (!m) return;
+  const c=document.getElementById('signin') ? '#0A345A' : getComputedStyle(document.body).backgroundColor; if (c && m.content!==c) m.content=c;
+}
 function webSignIn(msg, reloadAfter){
   let el=document.getElementById('signin');
   if (el) {   // already showing (several calls can end at once): just update the message
@@ -4172,7 +4187,7 @@ function webSignIn(msg, reloadAfter){
     +'<p class="si-err" id="siErr" role="alert"></p></div>';
   document.body.appendChild(el);
   el.dataset.reload = reloadAfter ? '1' : '';
-  document.body.classList.add('signing-in');
+  document.body.classList.add('signing-in'); webTint();
   document.getElementById('siErr').textContent = msg || '';
   webRenderButton();
 }
