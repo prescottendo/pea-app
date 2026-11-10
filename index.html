@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Add P.E.A. to Your iPhone</title>
+<meta name="theme-color" content="#0A345A">
+<meta name="robots" content="noindex">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" type="image/png" href="icon-192.png">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=STIX+Two+Text:wght@600&family=Inter:wght@400;600;700&display=swap">
+<style>
+  /* One screen for installing the Leadership Team app on an iPhone. Practice colors: navy, gold, beige. */
+  :root { --navy:#0A345A; --gold:#C6A85C; --beige:#EBE6D9; --ink:#333333; --muted:#6B6B6B; --card:#FFFFFF; --line:#DDD6C6;
+    --serif:"STIX Two Text", Georgia, serif; --sans:Inter, -apple-system, "Segoe UI", Roboto, Arial, sans-serif; }
+  html, body { margin:0; }
+  body { background:var(--beige); color:var(--ink); font-family:var(--sans); font-size:16px; line-height:1.5; -webkit-font-smoothing:antialiased; }
+  .band { background:var(--navy); color:#fff; text-align:center; padding:calc(env(safe-area-inset-top, 0px) + 32px) 20px 28px; }
+  .band img { width:88px; height:88px; border-radius:20px; box-shadow:0 0 0 2px rgba(198,168,92,.7), 0 6px 18px rgba(0,0,0,.3); }
+  .band h1 { font-family:var(--serif); font-weight:600; font-size:26px; margin:16px 0 4px; }
+  .band p { margin:0; color:#C4C8CC; font-size:14px; }
+  main { max-width:520px; margin:0 auto; padding:24px max(18px, env(safe-area-inset-right, 0px)) calc(env(safe-area-inset-bottom, 0px) + 40px) max(18px, env(safe-area-inset-left, 0px)); display:grid; gap:18px; }
+  .btn { display:block; text-align:center; background:var(--navy); color:#fff; text-decoration:none; font-weight:700; font-size:18px; padding:16px 20px; border-radius:14px; }
+  .btn:active { opacity:.85; }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:14px; padding:16px 18px; }
+  .card h2 { font-family:var(--serif); font-weight:600; font-size:19px; color:var(--navy); margin:0 0 10px; }
+  ol { margin:0; padding-left:1.3em; display:grid; gap:8px; }
+  li::marker { color:var(--gold); font-weight:700; }
+  b { color:var(--navy); }
+  .note { font-size:14px; color:var(--muted); }
+  .note b { color:var(--ink); }
+  a.link { color:var(--navy); font-weight:600; text-decoration:none; border-bottom:1px solid var(--gold); }
+</style>
+</head>
+<body>
+<div class="band">
+  <img src="apple-touch-icon.png" alt="P.E.A. app icon">
+  <h1>Leadership Team App</h1>
+  <p>Prescott &amp; Prescott Valley Endodontic Associates</p>
+</div>
+<main>
+  <a class="btn" href="PEA.mobileconfig">Add P.E.A. to My iPhone</a>
+
+  <div class="card">
+    <h2>Then, in about a minute</h2>
+    <ol>
+      <li>Tap <b>Allow</b> if your iPhone asks to download a configuration profile, then <b>Close</b>.</li>
+      <li>Open the <b>Settings</b> app and tap <b>Profile Downloaded</b> near the top.</li>
+      <li>Tap <b>Install</b> (top right), enter your iPhone passcode, then tap <b>Install</b> again and <b>Done</b>.</li>
+      <li>Go to your Home Screen. The <b>P.E.A.</b> icon is there. Tap it and sign in with your @prescottendo.com Google account.</li>
+    </ol>
+  </div>
+
+  <p class="note">Your iPhone will label it <b>"Unsigned."</b> That's expected: it only adds the P.E.A. icon to your Home Screen and changes nothing else. To remove it later, go to Settings → General → VPN &amp; Device Management.</p>
+
+  <p class="note">Don't see "Profile Downloaded" in Settings? Make sure you opened this page in <b>Safari</b>, then tap the button again.</p>
+
+  <p class="note">Already set up? <a class="link" href="https://script.google.com/a/macros/prescottendo.com/s/AKfycbzM8K_-XRMDdOJYJ3THn_FhyZkRreMddHIBAOFCFVoq5S_Y7MnsfFLsl7ac_fyDPrch/exec">Open the app</a></p>
+</main>
+</body>
+</html>
