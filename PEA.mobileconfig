@@ -672,11 +672,11 @@ AAAASUVORK5CYII=
 			<key>IsRemovable</key>
 			<true/>
 			<key>Label</key>
-			<string>P.E.A.</string>
+			<string>Huddle</string>
 			<key>PayloadDescription</key>
 			<string>Adds the P.E.A. Leadership Team app to your Home Screen.</string>
 			<key>PayloadDisplayName</key>
-			<string>P.E.A. Leadership Team App</string>
+			<string>Huddle (Leadership Team App)</string>
 			<key>PayloadIdentifier</key>
 			<string>com.prescottendo.pea.webclip</string>
 			<key>PayloadType</key>
@@ -694,7 +694,7 @@ AAAASUVORK5CYII=
 	<key>PayloadDescription</key>
 	<string>Adds the P.E.A. Leadership Team app to your Home Screen. It does nothing else, and you can remove it anytime in Settings, General, VPN &amp; Device Management.</string>
 	<key>PayloadDisplayName</key>
-	<string>P.E.A. Leadership Team App</string>
+	<string>Huddle (Leadership Team App)</string>
 	<key>PayloadIdentifier</key>
 	<string>com.prescottendo.pea</string>
 	<key>PayloadOrganization</key>
