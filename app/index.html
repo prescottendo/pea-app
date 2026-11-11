@@ -19,7 +19,7 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" type="image/png" href="icon-192.png">
-<script>window.HUDDLE_WEB={"api":"https://script.google.com/macros/s/AKfycbzM8K_-XRMDdOJYJ3THn_FhyZkRreMddHIBAOFCFVoq5S_Y7MnsfFLsl7ac_fyDPrch/exec","clientId":"473377418367-cqmmnfum4kshq16973m4sj2jqqfa55p0.apps.googleusercontent.com","build":"021c706"};document.documentElement.classList.add('web');</script>
+<script>window.HUDDLE_WEB={"api":"https://script.google.com/macros/s/AKfycbzM8K_-XRMDdOJYJ3THn_FhyZkRreMddHIBAOFCFVoq5S_Y7MnsfFLsl7ac_fyDPrch/exec","clientId":"473377418367-cqmmnfum4kshq16973m4sj2jqqfa55p0.apps.googleusercontent.com","build":"943157e"};document.documentElement.classList.add('web');</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <!-- The fonts load without holding up the first paint; the page shows in the phone's own font for a moment if needed. -->
@@ -196,6 +196,7 @@
   .seg { display:inline-flex; background:var(--line-soft); border-radius:12px; padding:4px; flex:none; }
   .seg button { border:none; background:none; padding:8px 12px; border-radius:8px; font-size:var(--fs-sub); color:var(--muted); font-weight:600; }
   .seg button.on { background:var(--card); color:var(--heading); box-shadow:0 1px 2px var(--shadow); }
+  .alf-link { display:inline; }
   .linkbtn, .report-link, .sum-links a, .meeting .links a, .alf-msg a, .alf-link, .src a { border:none; background:none; padding:0; color:var(--link); font-weight:600; font-size:inherit;
     text-decoration:underline; text-decoration-color:var(--gold); text-decoration-thickness:1px; text-underline-offset:3px; text-align:left; }
   .linkbtn { font-size:var(--fs-sub); padding:4px 0; }
@@ -630,7 +631,7 @@
   .alf-tools .chipbtn { padding:4px 12px; font-size:var(--fs-sub); }
   .alf-tools .note { font-size:var(--fs-cap); color:var(--muted); min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; flex:1; }
   .alf-input { display:flex; align-items:flex-end; gap:8px; }
-  .alf-input textarea { flex:1; min-width:0; resize:none; max-height:140px; border:1px solid var(--line); border-radius:12px; padding:8px 12px; background:var(--field); font-size:var(--fs-body); line-height:1.35; }
+  .alf-input textarea { flex:1; min-width:0; resize:none; max-height:140px; overflow-y:hidden; border:1px solid var(--line); border-radius:12px; padding:8px 12px; background:var(--field); font-size:var(--fs-body); line-height:1.35; }
   .alf-input .btn { flex:none; border-radius:12px; }
   .alf-draft { align-self:stretch; background:var(--card); border:1px solid var(--gold); border-radius:12px; padding:12px; display:grid; gap:8px; min-width:0; }
   .alf-draft .row { display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
@@ -789,6 +790,8 @@
   /* BUG-7: iPhones zoom into any field smaller than 16px, so fields never go below 16px, whatever the text size. */
   input, select, textarea { font-size:max(16px, 1em) !important; }
   @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation:none !important; transition:none !important; } }
+  /* Reduce Motion still allows gentle fades (nothing moves): toasts, panels' dimmed background (MO-B19). */
+  @media (prefers-reduced-motion: reduce) { .toast, .backdrop { transition:opacity .2s ease !important; } }
   /* ---------- Batch 4: review by exception, decisions, topics, one-on-ones, Alfred's confirm cards ---------- */
   .rv.unsure { border-color:var(--gold); }
   .rv-why { font-size:var(--fs-sub); line-height:1.35; color:var(--gold-ink); }
@@ -1481,11 +1484,7 @@ function startParam(){
 // Opened from the Home Screen, the iPhone fades Google's white page (behind the clock) into the top of the app. The app can't
 // color Google's page, so on phones in that mode the very top of the header is the same light gray: the fade lands on a
 // matching color and the navy starts cleanly below it. (Moving Huddle to its own web address removes this for good.)
-function markStandalone(){
-  const full = isPhone() && screen.height - window.innerHeight < 72;
-  document.documentElement.classList.toggle('sb-strip', full);
-}
-markStandalone(); window.addEventListener('resize', markStandalone);
+// (markStandalone, the old Google-frame strip, was removed on Nov 10.)
 function maybeWelcome(){ if (pref('lt-tour','')==='3' || S.view==='live' || S.sheet) return; setPref('lt-tour','3'); setPref('lt-welcomed','1'); startCoach(); }
 const BOX={ todo:'<i class="tbox"></i>', prog:'<i class="tbox prog"></i>', blk:'<i class="tbox blk"></i>', done:'<i class="tbox on">'+'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></i>' };
 const COACH=[
@@ -1588,12 +1587,22 @@ function queueStatus(t){
 }
 // Offline, every change waits on this phone and sends in order once the connection is back: status changes, task edits,
 // new tasks (shown right away with a temporary id) and comments.
+// DI-2: a one-time id made when the person taps Add or Post; the server ignores a second copy with the same id.
+// BUG-3: on tactical day "Next Week" is the same date as "Next Tactical"; show that date once (and any repeated date once).
+function docUrl(u){ u=String(u||''); return /^https:\/\/(docs|drive)\.google\.com\//.test(u) || /^https:\/\/otter\.ai\//.test(u) ? u : ''; }
+function quickDates(list){ const seen={}; return list.filter(([l,v])=>{ if (v==='' ) return true; if (seen[v]) return false; seen[v]=1; return true; }); }
+function newCid(){ return 'c'+Date.now().toString(36)+Math.random().toString(36).slice(2,10); }
+// DI-1: the fields of a task panel that changed since it opened (or since the last save), plus the id.
+const TASK_FIELDS=['title','details','owners','status','priority','due','private'];
+function taskChanges(base, now){ const c={ id:now.id }; TASK_FIELDS.forEach(f=>{ if (String(now[f]==null?'':now[f])!==String(base[f]==null?'':base[f])) c[f]=now[f]; }); return c; }
 function isTmp(id){ return String(id||'').indexOf('tmp-')===0; }
 function queueEdit(t){
   const copy=Object.assign({}, t);
   const nu=S.outbox.find(x=>x.kind==='new' && x.tmp===copy.id);
   if (nu) nu.task=Object.assign(nu.task, copy);
-  else S.outbox=S.outbox.filter(x=>!(x.kind==='edit' && x.id===copy.id)).concat([{ kind:'edit', id:copy.id, title:copy.title, task:copy }]);
+  else { const prev=S.outbox.find(x=>x.kind==='edit' && x.id===copy.id);
+    if (prev) { prev.task=Object.assign(prev.task, copy); if (copy.title) prev.title=copy.title; }
+    else S.outbox.push({ kind:'edit', id:copy.id, title:copy.title||(find(copy.id)||{}).title||'', task:copy }); }
   saveOutbox(); updateOffline();
 }
 function queueNew(t){
@@ -1601,7 +1610,7 @@ function queueNew(t){
   S.data.tasks.push(local); S.outbox.push({ kind:'new', tmp:tmp, title:t.title, task:Object.assign({}, t) }); saveOutbox(); updateOffline();
   return local;
 }
-function queueComment(id, text, title){ S.outbox.push({ kind:'comment', id:id, title:title||'', text:text }); saveOutbox(); updateOffline(); }
+function queueComment(id, text, title, cid){ S.outbox.push({ kind:'comment', id:id, title:title||'', text:text, cid:cid||newCid() }); saveOutbox(); updateOffline(); }
 async function flushOutbox(){
   if (!S.data || !navigator.onLine || S.flushing || !S.outbox.length) return;
   S.flushing=true; let sent=0;
@@ -1613,8 +1622,8 @@ async function flushOutbox(){
         S.outbox.forEach(y=>{ if (y.id===x.tmp) y.id=saved.id; });   // later changes to it now point at the real task
         if (S.edit && S.edit.task.id===x.tmp) S.edit.task.id=saved.id;
       } else if (x.kind==='edit') replaceTask(await call('apiSaveTask', Object.assign({}, x.task, { id:x.id })));
-      else if (x.kind==='comment') await call('apiAddComment', x.id, x.text);
-      else { const cur=find(x.id); replaceTask(await call('apiSaveTask', { id:x.id, title:(cur||x).title, status:x.status })); }
+      else if (x.kind==='comment') await call('apiAddComment', x.id, x.text, x.cid);
+      else replaceTask(await call('apiSaveTask', { id:x.id, status:x.status }));
       sent++; S.outbox=S.outbox.filter(y=>y!==x); saveOutbox();
     } catch(e) {
       if (isNetErr(e)) break;   // still no connection: keep it for later
@@ -1695,7 +1704,9 @@ function goBack(){
 
 // Nov 10: after an on/off switch is flipped, redraws wait about 300ms so the switch's own slide plays out (holdRedraw).
 let REDRAW_HOLD=0, REDRAW_T=0, REDRAW_SHEET=false, REDRAW_PAGE=false;
-function holdRedraw(){ REDRAW_HOLD=performance.now()+300; }
+function holdRedraw(){ if (!REDUCED) REDRAW_HOLD=performance.now()+300; }
+// Any other tap or a screen change ends the hold at once (MO-B17): the held redraw happens now, then the tap goes ahead.
+function releaseRedraw(){ if (!REDRAW_HOLD) return; clearTimeout(REDRAW_T); REDRAW_HOLD=0; const p=REDRAW_PAGE, sh=REDRAW_SHEET; REDRAW_PAGE=REDRAW_SHEET=false; if (p) render(); if (sh && S.sheet) renderSheet(); }
 function heldRedraw(kind){
   if (!REDRAW_HOLD || performance.now()>=REDRAW_HOLD) return false;
   if (kind==='sheet') REDRAW_SHEET=true; else REDRAW_PAGE=true;
@@ -1923,7 +1934,7 @@ function sourceLink(t){
   if (isPriv(t) || !t.source || t.source==='manual') return '';
   const mt = t.meeting_id && S.data.meetings && S.data.meetings[t.meeting_id];
   const text = mt ? (mt.title||mt.type)+' · '+short(mt.date) : sourceText(t.source);
-  return '<div class="small muted">From '+(mt && mt.summary_url ? '<a class="doc linkbtn" href="'+esc(mt.summary_url)+'" target="_blank">'+esc(text)+'</a>' : esc(text))+'</div>';
+  return '<div class="small muted">From '+(mt && docUrl(mt.summary_url) ? '<a class="doc linkbtn" href="'+esc(docUrl(mt.summary_url))+'" target="_blank">'+esc(text)+'</a>' : esc(text))+'</div>';
 }
 // The title is the row's button for VoiceOver and the keyboard (the whole row still opens on a tap).
 function cardTitle(t){ return '<div class="title" role="button" tabindex="0">'+(isPriv(t)?LOCK:'')+esc(t.title)+'</div>'; }
@@ -2017,7 +2028,7 @@ function setStatus(id, status, opts){
   const msg = status==='Done' ? 'Marked Done ✓' : 'Marked '+label(status);
   if (!navigator.onLine || S.outbox.length) { queueStatus(t); toast(msg+'. It will send when you\'re back online.', undo); return; }
   S.pending++;
-  call('apiSaveTask', Object.assign({}, t)).then(replaceTask)
+  call('apiSaveTask', { id:t.id, status:t.status }).then(replaceTask)
     .catch(e=>{
       if (isNetErr(e)) { queueStatus(t); toast('No connection. This change will send when you\'re back online.'); return; }
       t.status=prev; render(); toast('Couldn\'t save. '+errText(e));
@@ -2096,7 +2107,7 @@ async function undoReview(ids, ok){
 /* ---------- task sheet (slides up, saves automatically) ---------- */
 function openTask(id){
   const t=find(id); if (!t) return;
-  S.edit={ task:Object.assign({}, t), detail:null, isNew:false }; S.sheet='task'; showSheet();
+  S.edit={ task:Object.assign({}, t), base:Object.assign({}, t), detail:null, isNew:false }; S.sheet='task'; showSheet();
   loadDetail(id);
 }
 function loadDetail(id){
@@ -2163,6 +2174,7 @@ function renderSheet(){
   const el=document.getElementById('sheet'), h=el.querySelector('h3');
   el.setAttribute('aria-label', h ? h.textContent : S.sheet==='more' ? 'More' : 'Panel');
   placeSegs();   // the pill highlight goes straight to its spot before anything measures the panel
+  ['f-title','lv-title'].forEach(i=>{ const b=document.getElementById(i); if (b) autoGrow(b, 240); });   // BUG-2: long titles show in full
   if (S.afterSheet) { const f=S.afterSheet; S.afterSheet=null; f(); }
 }
 // Nov 10: a section that appears or disappears in a panel opens or closes smoothly (Only Me hides and shows Owners).
@@ -2270,10 +2282,10 @@ function renderSheetBody(){
       +'</div>':'')
     +(S.edit.live?'<p class="small muted live-link">This will be an action item from the '+esc(S.live?S.live.title:'meeting')+'.</p>':'')
     +(isPriv(t)?'':'<div class="owners-box"><label>Owners</label><div class="chips">'+S.data.people.map(p=>'<button type="button" class="'+(sel.indexOf(p.email)>=0?'on':'')+'" data-act="owner" data-email="'+esc(p.email)+'">'+esc(firstName(p.email))+'</button>').join('')+'</div></div>')
-    +(isNew?'':'<label>Status</label>'+seg('status',(t.status==='Needs Review'?['Needs Review']:[]).concat(['Not Done','In Progress','Blocked','Done'])))
+    +(isNew?'':'<label>Status</label>'+(t.status==='Needs Review' ? '<p class="small muted">Waiting in Review. '+(S.data.isApprover?'Approve it on the Review screen to start it.':'An approver will look at it soon.')+'</p>' : seg('status',['Not Done','In Progress','Blocked','Done'])))
     +'<label>Priority</label>'+seg('priority',['High','Medium','Low'])
     +'<label for="f-due">Due Date</label><input type="date" id="f-due" data-change="due" value="'+esc(t.due)+'">'
-    +'<div class="quick-dates">'+[['Today',S.data.today],['Tomorrow',addDays(S.data.today,1)],['Next Tactical',S.data.defaultDue],['Next Week',addDays(S.data.today,7)],['No Date','']]
+    +'<div class="quick-dates">'+quickDates([['Today',S.data.today],['Tomorrow',addDays(S.data.today,1)],['Next Tactical',S.data.defaultDue],['Next Week',addDays(S.data.today,7)],['No Date','']])
       .map(([l,v])=>'<button type="button" class="'+(t.due===v?'on':'')+'" data-act="due-quick" data-val="'+v+'">'+l+(l==='Next Tactical'?' · '+esc(short(v)):'')+'</button>').join('')+'</div>'
     +(t.id?'<div class="mt-m">'+sourceLink(t)+'</div>':'')
     +(t.id?'<div class="danger-row"><button type="button" class="linkbtn danger" data-act="task-delete">'+(S.confirmDel?'Tap again to delete':'Delete Task')+'</button></div>':'')
@@ -2579,7 +2591,7 @@ function meetingSheet(){
   if (!blocks.length) body+='<p class="small muted">'+(x.summary_url?'The summary document is empty.':'There is no summary document for this meeting.')+'</p>';
   if (!placed) body+=taskBlock;
   if (!tellPlaced) body+=tellBlock;
-  const links=(x.summary_url?'<a class="doc" href="'+esc(x.summary_url)+'" target="_blank">Open in Google Docs</a>':'')+(x.transcript_url?'<a class="doc" href="'+esc(x.transcript_url)+'" target="_blank">Transcript</a>':'');
+  const links=(docUrl(x.summary_url)?'<a class="doc" href="'+esc(docUrl(x.summary_url))+'" target="_blank" rel="noopener">Open in Google Docs</a>':'')+(docUrl(x.transcript_url)?'<a class="doc" href="'+esc(docUrl(x.transcript_url))+'" target="_blank" rel="noopener">Transcript</a>':'');
   return h+'<div class="form summary">'+body+reviewSection(g.data.review)+'</div>'+(links?'<div class="sum-links">'+links+'</div>':'')+meetingEditHtml(x);
 }
 // Edit a meeting from the app: add context (Alfred can rewrite the summary with it), fix its details, or delete it.
@@ -2690,20 +2702,28 @@ function flushSave(){
   const t=Object.assign({}, S.edit.task);
   if (!t.title.trim()) { setSaveState('Add a title to save'); return; }
   if (!owners(t).length) { setSaveState('Pick an owner to save'); return; }
-  saveTaskEdit(t);
+  const base=S.edit.base||{}, ch=taskChanges(base, t);
+  if (Object.keys(ch).length===1) { S.edit.unsaved=false; setSaveState('Saved'); return; }
+  Object.assign(base, ch); S.edit.base=base;   // the next save only sends what changes after this one
+  saveTaskEdit(ch);
 }
 function saveTaskEdit(t){
+  const title=t.title || (find(t.id)||{}).title || '';
   if (isTmp(t.id) || !navigator.onLine || S.outbox.length) { queueEdit(t); if (S.edit && S.edit.task.id===t.id) { S.edit.unsaved=false; setSaveState('Saved on this phone'); } replaceTask(Object.assign({}, find(t.id)||{}, t)); return; }
   S.pending++;
   call('apiSaveTask', t).then(saved=>{
     replaceTask(saved);
-    if (S.edit && S.edit.task.id===saved.id) { S.edit.unsaved=false; setSaveState('Saved'); }
+    if (S.edit && S.edit.task.id===saved.id) {
+      S.edit.unsaved=false; setSaveState('Saved');
+      // Fields this person hasn't touched pick up what a teammate changed meanwhile.
+      const b=S.edit.base||{}; TASK_FIELDS.forEach(f=>{ if (String(S.edit.task[f]==null?'':S.edit.task[f])===String(b[f]==null?'':b[f]) && saved[f]!==undefined) { S.edit.task[f]=saved[f]; b[f]=saved[f]; } });
+    }
     if (S.view==='mine'||S.view==='team') renderResults(); else if (!S.sheet) render();
   }).catch(e=>{
     const open=S.sheet==='task' && S.edit && S.edit.task.id===t.id;
     if (isNetErr(e)) { queueEdit(t); if (open) { S.edit.unsaved=false; setSaveState('Saved on this phone'); } return; }
     if (open) { S.edit.unsaved=true; setSaveState('Not saved. '+errText(e)); }   // tried again when the panel closes
-    else toast('Your change to "'+t.title.slice(0,32)+(t.title.length>32?'…':'')+'" wasn\'t saved', ()=>saveTaskEdit(t), { label:'Retry' });
+    else toast('Your change to "'+title.slice(0,32)+(title.length>32?'…':'')+'" wasn\'t saved', ()=>saveTaskEdit(t), { label:'Retry' });
   }).finally(()=>{ S.pending--; });
 }
 // Only a task you add yourself can be private (meeting tasks always stay visible to the team).
@@ -2725,7 +2745,7 @@ async function addTask(el){
   const edit=S.edit, t=edit.task, err=document.getElementById('f-err');
   if (!t.title.trim()) { err.textContent='Give the task a short title first.'; return; }
   if (!owners(t).length) { err.textContent='Pick at least one owner.'; return; }
-  err.textContent='';
+  err.textContent=''; t.cid=t.cid||newCid();
   if (!navigator.onLine || S.outbox.length) { queueNew(t); if (S.edit===edit) closeSheet(); toast('Task added. It will send when you\'re back online.'); return; }
   let netDown=false;
   const saved=await saving(el, 'Adding…', ()=>call('apiSaveTask', t).catch(e=>{ if (isNetErr(e)) { netDown=true; return null; } throw e; }));
@@ -2738,10 +2758,11 @@ async function addTask(el){
 }
 async function postComment(el){
   const box=document.getElementById('f-comment'), id=S.edit && S.edit.task.id; if (!box || !box.value.trim()) return;
-  const offlineNote=()=>{ queueComment(id, box.value, S.edit && S.edit.task.title); box.value=''; toast('Comment saved on this phone. It will post when you\'re back online.'); };
+  const cid=newCid();
+  const offlineNote=()=>{ queueComment(id, box.value, S.edit && S.edit.task.title, cid); box.value=''; toast('Comment saved on this phone. It will post when you\'re back online.'); };
   if (!navigator.onLine || isTmp(id) || S.outbox.length) { offlineNote(); return; }
   let netDown=false;
-  const c=await saving(el, 'Posting…', ()=>call('apiAddComment', id, box.value).catch(e=>{ if (isNetErr(e)) { netDown=true; return null; } throw e; }));
+  const c=await saving(el, 'Posting…', ()=>call('apiAddComment', id, box.value, cid).catch(e=>{ if (isNetErr(e)) { netDown=true; return null; } throw e; }));
   if (netDown) { offlineNote(); return; }
   if (!c) return;
   if (S.edit && S.edit.task.id===id) { if (S.edit.detail) S.edit.detail.comments.push(c); renderSheet(); }
@@ -2786,7 +2807,7 @@ function reviewCard(t, e, can, person){
   if (v.status!=='Done') {
     const need=needsDate(t, e), next=S.data.defaultDue, week=addDays(today,7);
     h+='<div class="rv-due'+(need?' need':'')+'"><div class="rv-due-h">'+(need?'Pick a new date':'New date: '+esc(fmtDate(v.due)))+'</div>'
-      +'<div class="quick-dates">'+[['Next Tactical · '+short(next),next],['Next Week · '+short(week),week]].map(([l,d])=>
+      +'<div class="quick-dates">'+quickDates([['Next Tactical · '+short(next),next],['Next Week · '+short(week),week]]).map(([l,d])=>
         '<button type="button" class="'+(v.due===d?'on':'')+'" data-act="rv-due" data-id="'+t.id+'" data-val="'+d+'"'+dis+' aria-pressed="'+(v.due===d)+'">'+esc(l)+'</button>').join('')+'</div>'
       +'<input type="date" data-change="rv-date" data-id="'+t.id+'" min="'+addDays(today,1)+'" value="'+esc(need?'':v.due||'')+'" aria-label="Pick a new due date"'+dis+'></div>';
   }
@@ -2805,7 +2826,7 @@ function reviewSet(id, ch){
   if (ch.note!=null) e.note=String(ch.note).trim().slice(0,200);
   if (ch.status) { e.status_after=ch.status; if (ch.status!==t.status) setStatus(id, ch.status, { undo:false }); }
   let due=v.due;
-  if (ch.due!=null) { due=ch.due; if (ch.due!==t.due) { t.due=ch.due; saveTaskEdit(Object.assign({}, t)); } }
+  if (ch.due!=null) { due=ch.due; if (ch.due!==t.due) { t.due=ch.due; saveTaskEdit({ id:t.id, due:ch.due }); } }
   e.new_due = due && due!==e.due_before ? due : '';
   st.review[id]=e;
   liveMark('review', id, e);
@@ -3104,13 +3125,15 @@ function chime(){
   });
 }
 function liveTick(){
-  const st=S.live; if (S.view!=='live' || !st || st.phase!=='running') return;
+  const st=S.live; if (!st || st.phase!=='running') return;
   S.fired=S.fired||{};
   // warn: the step and topic timers turn gold in the last minute (no sound). Person timers are too short for that.
-  const set=(id,secs,key,warn)=>{ const el=document.getElementById(id); if (!el) return;
+  // Nov 10 (MT-1): the time-up chime runs on any screen (the host may be on My Tasks); the numbers update only when shown.
+  const set=(id,secs,key,warn)=>{
+    if (secs<=0 && key && !S.fired[key]) { S.fired[key]=1; chime(); if (isHost() && !S.tv) buzz([40,80,40]); }
+    const el=S.view==='live' && document.getElementById(id); if (!el) return;
     const txt=el.dataset.line ? fmtClock(secs).replace('+','')+(secs<0?' over':' left') : fmtClock(secs);
-    if (el.textContent!==txt) el.textContent=txt; el.classList.toggle('over', secs<0); el.classList.toggle('warn', !!warn && secs>=0 && secs<=60);
-    if (secs<=0 && key && !S.fired[key]) { S.fired[key]=1; chime(); if (isHost() && !S.tv) buzz([40,80,40]); } };
+    if (el.textContent!==txt) el.textContent=txt; el.classList.toggle('over', secs<0); el.classList.toggle('warn', !!warn && secs>=0 && secs<=60); };
   set('lvStep', stepLeft(st), st.id+':s'+st.i+':'+(st.extra||0), true);
   if (st.topic) {
     set('lvTopic', topicLeft(st), st.id+':t'+st.topics.length+':'+(st.topic.extra||0), true);
@@ -3248,7 +3271,7 @@ function renderLive(m){
     const over=st.log.filter(l=>l&&l.secs>l.planned).length, skipped=st.steps.filter((x,k)=>!st.log[k] || st.log[k].secs<SKIPPED_SECS).length;
     const timing=[over?over+' step'+(over===1?'':'s')+' ran over':'', skipped?skipped+' step'+(skipped===1?' was':'s were')+' skipped':''].filter(Boolean).join(' and ');
     m.innerHTML=leaveLink()+'<div class="live-top"><div><h2>'+esc(st.title)+' Wrap-Up</h2>'+hostLine+'</div>'+takeOver+'</div><div class="stack">'
-      +'<div class="stats three"><div class="stat"><b>'+fmtClock((st.endedAt-st.startedAt-(st.pausedTotal||0))/1000).replace('+','')+'</b><span>Total of '+Math.round(plannedTotal(st)/60)+' min</span></div>'
+      +'<div class="stats three"><div class="stat"><b>'+fmtClock((st.endedAt-st.startedAt-(st.pausedTotal||0))/1000).replace('+','')+'</b><span>of '+Math.round(plannedTotal(st)/60)+' Min Planned</span></div>'
       +'<div class="stat"><b>'+topicsN+'</b><span>Topics Discussed</span></div><div class="stat"><b>'+st.items.length+'</b><span>Action Items</span></div></div>'
       +'<p class="small muted">'+(timing?timing.charAt(0).toUpperCase()+timing.slice(1)+'. Times are below.':'Every step finished on time.')+'</p>'
       +ratingCard(st)
@@ -3406,7 +3429,7 @@ function cascadeCard(){
 
 // Nov 10: anyone can step out of the meeting screen (it keeps running; the gold bar on every tab brings them back), and the
 // host can cancel it: it ends for everyone without being saved (no timer log, ratings or review comments; task changes made
-// during it stay). The host gets Undo for 10 seconds (apiLiveUndoCancel).
+// during it stay). The host's toast offers Undo while it shows (8 seconds; the server allows it for 60 seconds).
 function leaveLink(){ return '<button type="button" class="back" data-act="lv-leave">‹ Leave</button>'; }
 function cancelCard(host){
   return host ? '<div class="set-card mt-l"><button type="button" class="set-row del-row" data-act="lv-cancel-ask"><span>Cancel Meeting<small>Ends it for everyone without saving it. Action items and task updates made during it stay.</small></span></button></div>' : '';
@@ -3450,7 +3473,7 @@ function liveItemSheet(){
   return '<div class="grab"></div><div class="sheet-head"><button type="button" class="btn ghost sm" data-act="close-sheet">Cancel</button><h3>New Action Item</h3><button type="button" class="btn primary sm" data-act="lv-add">Add</button></div>'
     +'<div class="err" id="lv-err" role="alert"></div><div class="form"><label for="lv-title">What needs to be done?</label><textarea id="lv-title" rows="2" placeholder="Call the lab about the new scanner">'+esc(S.lvTitle||'')+'</textarea>'
     +'<label>Who</label><div class="chips">'+S.data.people.map(p=>'<button type="button" class="'+(sel.indexOf(p.email)>=0?'on':'')+'" data-act="lv-owner" data-email="'+esc(p.email)+'" aria-pressed="'+(sel.indexOf(p.email)>=0)+'">'+esc(firstName(p.email))+'</button>').join('')+'</div>'
-    +'<label>When</label><div class="quick-dates">'+[['Today',S.data.today],['Tomorrow',addDays(S.data.today,1)],['Next Tactical',S.data.defaultDue],['Next Week',addDays(S.data.today,7)]]
+    +'<label>When</label><div class="quick-dates">'+quickDates([['Today',S.data.today],['Tomorrow',addDays(S.data.today,1)],['Next Tactical',S.data.defaultDue],['Next Week',addDays(S.data.today,7)]])
       .map(([l,v])=>'<button type="button" class="'+(due===v?'on':'')+'" data-act="lv-due" data-val="'+v+'" aria-pressed="'+(due===v)+'">'+l+'</button>').join('')+'</div>'
     +'<p class="small muted live-link">Linked to the '+esc(S.live?S.live.title:'meeting')+'. Alfred won\'t add it again from the recording.</p></div>';
 }
@@ -3461,9 +3484,10 @@ async function liveAddItem(el){
   if (!owners.length) { err.textContent='Pick who will do it.'; return; }
   if (!S.live) { err.textContent='The meeting has ended.'; return; }
   err.textContent='';
-  const t={ title:title, details:'Added live during '+S.live.title+'.', owners:owners.join(', '), status:'Not Done', priority:'Medium', due:S.lvDue||S.data.defaultDue, liveMeeting:S.live.title };
+  S.lvCid=S.lvCid||newCid();
+  const t={ title:title, details:'Added live during '+S.live.title+'.', owners:owners.join(', '), status:'Not Done', priority:'Medium', due:S.lvDue||S.data.defaultDue, liveMeeting:S.live.title, cid:S.lvCid };
   const saved=await saving(el, 'Adding…', ()=>call('apiSaveTask', t)); if (!saved) return;
-  replaceTask(saved); S.lvOwners=[]; S.lvDue=null; S.lvTitle='';
+  replaceTask(saved); S.lvOwners=[]; S.lvDue=null; S.lvTitle=''; S.lvCid=null;
   if (S.live) { S.live.items=(S.live.items||[]).concat([saved.id]); liveMark('items', saved.id, true); }
   if (S.sheet==='liveitem') closeSheet();
   toast('Action Item Added');
@@ -3790,15 +3814,16 @@ async function applyProposal(p){
     const prev=Object.assign({}, t);
     p.state='saving'; renderAlfred();
     try {
-      const saved=await call('apiSaveTask', Object.assign({}, t, p.changes)); replaceTask(saved); render();
+      const saved=await call('apiSaveTask', Object.assign({ id:t.id }, p.changes)); replaceTask(saved); render();
       p.state='done'; renderAlfred();
-      toast('Saved', async()=>{ try { replaceTask(await call('apiSaveTask', prev)); p.state='undone'; render(); renderAlfred(); toast('Changed back'); } catch(e){ toast('Couldn\'t undo. '+errText(e)); } });
+      toast('Saved', async()=>{ try { replaceTask(await call('apiSaveTask', Object.keys(p.changes).reduce((o,k)=>{ o[k]=prev[k]; return o; }, { id:prev.id }))); p.state='undone'; render(); renderAlfred(); toast('Changed back'); } catch(e){ toast('Couldn\'t undo. '+errText(e)); } });
     } catch(e){ p.state='ready'; p.error='Not saved: '+errText(e); renderAlfred(); }
     return;
   }
   p.state='saving'; renderAlfred();
   try {
-    const saved=await call('apiSaveTask', Object.assign({}, p.task)); replaceTask(saved); render();
+    p.cid=p.cid||newCid();
+    const saved=await call('apiSaveTask', Object.assign({}, p.task, { cid:p.cid })); replaceTask(saved); render();
     p.state='done'; p.id=saved.id; renderAlfred();
     toast('Task Added', async()=>{ try { await call('apiDeleteTask', saved.id); const i=S.data.tasks.findIndex(x=>x.id===saved.id); if (i>=0) S.data.tasks.splice(i,1); S.deleted=null; p.state='undone'; render(); renderAlfred(); toast('Removed'); } catch(e){ toast('Couldn\'t undo. '+errText(e)); } });
   } catch(e){ p.state='ready'; p.error='Not added: '+errText(e); renderAlfred(); }
@@ -3867,9 +3892,10 @@ function alfredClick(a, el){
   else if (a==='alf-p-no') { const p=proposalAt(el); if (p && p.state==='ready') { p.state='cancelled'; renderAlfred(); } }
   return true;
 }
-function autoGrow(b){ b.style.height='auto'; b.style.height=Math.min(b.scrollHeight, 140)+'px'; }
+function autoGrow(b, max){ b.style.height='auto'; const bw=(b.offsetHeight-b.clientHeight)||0, h=b.scrollHeight+bw, cap=max||140; b.style.height=Math.min(h, cap)+'px'; b.style.overflowY=h>cap?'auto':'hidden'; }
 document.addEventListener('input', e=>{
   if (e.target.id==='alfInput') { autoGrow(e.target); return; }
+  if (e.target.id==='f-title' || e.target.id==='lv-title') { autoGrow(e.target, 240); }
   const f=e.target.dataset && e.target.dataset.alfField; if (!f) return;
   const d=draftAt(e.target); if (d) d[f]=e.target.value;
 });
@@ -3944,6 +3970,7 @@ document.addEventListener('click', e=>{
   // MP-4 / BUG-16: ignore a tap that lands in a panel in the moment it opens (a quick double tap on +).
   if (S.sheetAt && Date.now()-S.sheetAt<350 && e.target.closest('#sheet')) return;
   const el=e.target.closest('[data-act]'); if (!el) return;
+  releaseRedraw();
   if (el.closest('.seg, .chips, nav.bottom, .quick-dates, .people, .mtab') && el.dataset.act!=='circle') haptic();
   // Changes that redraw the screen in place cross-fade (and the tab highlight slides) instead of snapping.
   // A tap that comes while a cross-fade is still starting waits for it, so taps always apply in order.
@@ -3952,8 +3979,9 @@ document.addEventListener('click', e=>{
     // Nov 10: a tap inside an open panel, or on a switch pill, animates in place (softAct) instead of cross-fading the whole page.
     // The page cross-fade drew the tab bar over the open panel for a moment and fought the pill's slide.
     const pageNav=el.dataset.act==='go' || el.dataset.act==='back';
-    const inSheet=!pageNav && el.closest('#sheet'), inSeg=!pageNav && !inSheet && el.closest('.seg');
-    if (inSheet || inSeg) { softAct(()=>actClick(e, el), inSheet ? document.getElementById('sheet') : document.getElementById('main'), !!inSeg); return; }
+    const whole=el.dataset.act==='theme-set' || el.dataset.act==='text-size';   // these restyle everything: cross-fade the page
+    const inSheet=!pageNav && !whole && el.closest('#sheet'), inSeg=!pageNav && !whole && !inSheet && el.closest('.seg');
+    if (inSheet || inSeg) { softAct(()=>actClick(e, el), inSheet ? document.getElementById('sheet') : document.getElementById('main'), !!inSeg, el); return; }
     if (canMorph()) { morph(()=>actClick(e, el), pageNav); return; }
   }
   actClick(e, el);
@@ -3961,15 +3989,21 @@ document.addEventListener('click', e=>{
 // In-place animation for taps in panels and on switch pills (Nov 10). Chips and buttons that change color fade from their old
 // colors to the new ones and give a small pop; the pill's highlight slides (placeSegs); a pill that swaps the content below it
 // fades that content in. Uses the Web Animations API, so it works without View Transitions.
-function softAct(fn, box, fadeContent){
+function softAct(fn, box, fadeContent, tapped){
   const keyOf=b=>[b.dataset.act, b.dataset.email||b.dataset.val||b.dataset.field||b.dataset.id||'', b.textContent.trim().slice(0,40)].join('|');
+  // Only the tapped control's own group (its chips, pill or card) is compared and animated (MO-B16, MO-B18).
+  const GROUP='.chips, .seg, .quick-dates, .mm-seg, .set-card, .people';
+  const grp=tapped && tapped.closest(GROUP), act=tapped && tapped.dataset.act;
+  const pick=root=>{ if (!root) return []; if (!grp) return [...root.querySelectorAll('button[data-act]')].filter(b=>b.dataset.act===act);
+    const all=[...root.querySelectorAll(GROUP)].filter(g=>g.className===grp.className && g.querySelector('[data-act="'+act+'"]'));
+    return all.reduce((a,g)=>a.concat([...g.querySelectorAll('button[data-act]')]), []); };
   const before=new Map();
-  if (box) box.querySelectorAll('button[data-act]').forEach(b=>{ const cs=getComputedStyle(b); before.set(keyOf(b), [cs.backgroundColor, cs.color, cs.borderColor]); });
+  pick(box).forEach(b=>{ const cs=getComputedStyle(b); before.set(keyOf(b), [cs.backgroundColor, cs.color, cs.borderColor]); });
   fn();
   const now=document.getElementById(box && box.id) || box;
   if (!now || !now.animate) return;
   const ease='cubic-bezier(.2,.8,.2,1)';
-  now.querySelectorAll('button[data-act]').forEach(b=>{
+  pick(now).forEach(b=>{
     const old=before.get(keyOf(b)); if (!old) return;
     const cs=getComputedStyle(b); if (old[0]===cs.backgroundColor && old[1]===cs.color && old[2]===cs.borderColor) return;
     if (b.closest('.seg')) return;   // the pill's own highlight slides instead
@@ -4007,7 +4041,7 @@ function actClick(e, el){
   else if (a==='more') { S.sheet='more'; showSheet(); }
   else if (a==='new') newTask();
   else if (a==='task') openTask(id);
-  else if (a==='close-sheet') closeSheet();
+  else if (a==='close-sheet') { if (S.sheet==='liveitem') { S.lvOwners=[]; S.lvDue=null; S.lvCid=null; } closeSheet(); }
   else if (a==='quick') { S.quick = S.quick===v ? '' : v; render(); }
   else if (a==='person') { S.person = S.person===el.dataset.email ? '' : el.dataset.email; render(); }
   else if (a==='layout') { S.layout=v; setPref('lt-layout', v); render(); }   // LB-4: computers remember the last choice
@@ -4091,7 +4125,7 @@ function actClick(e, el){
   else if (a==='ask-cancel') { const c=S.ask && S.ask.cancel; S.ask=null; closeSheet(true); render(); if (c) c(); }
   else if (a==='ask-ok') { const f=S.ask && S.ask.fn; S.ask=null; closeSheet(true); if (f) f(); else render(); }
   else if (a==='lv-park') { const i=document.getElementById('lv-park'), text=i && i.value.trim(), why='Parked during '+S.live.title+'.';
-    if (text) saving(el, 'Parking…', ()=>call('apiAddTopic', text, why)).then(r=>{ if (!r) return; S.topics=null; const b=document.getElementById('lv-park'); if (b) b.value=''; toast('Parked in the Parking Lot'); }); }
+    const cid=newCid(); if (text) saving(el, 'Parking…', ()=>call('apiAddTopic', text, why, cid)).then(r=>{ if (!r) return; S.topics=null; const b=document.getElementById('lv-park'); if (b) b.value=''; toast('Parked in the Parking Lot'); }); }
   else if (a==='due-quick') { S.edit.task.due=v; renderSheet(); queueSave(0); }
   else if (a==='remind-days') { const old=S.data.reminderDays; S.data.reminderDays=Number(v); render(); toast('Reminders look '+v+' day'+(v==='1'?'':'s')+' ahead');
     call('apiSetMyReminderDays', Number(v)).catch(()=>{ S.data.reminderDays=old; render(); toast('Could not save. Try again.'); }); }
@@ -4102,7 +4136,7 @@ function actClick(e, el){
   else if (a==='theme-set') { setTheme(el.dataset.val); render(); }
   else if (a==='mm-status') setStatus(id, v);
   else if (a==='topic-add') { const i=document.getElementById('tp-new'), d=document.getElementById('tp-desc'), text=i.value.trim();
-    if (text) saving(el, 'Adding…', ()=>call('apiAddTopic', text, d?d.value.trim():'')).then(r=>{ if (!r) return; S.topics=null; toast('Topic Added'); render(); }); }
+    const cid=newCid(); if (text) saving(el, 'Adding…', ()=>call('apiAddTopic', text, d?d.value.trim():'', cid)).then(r=>{ if (!r) return; S.topics=null; toast('Topic Added'); render(); }); }
 }
 document.addEventListener('keydown', e=>{
   if (e.key==='Escape' && S.alf.picking) { endPick(); showAlfred(); return; }
@@ -4170,7 +4204,7 @@ document.addEventListener('touchend', ()=>{
   if (!ptr) return;
   const p=ptr; ptr=null; if (!p.on) return;
   const el=document.getElementById('ptr'); el.classList.add('settle');
-  if (p.h>=20 && searchable()) { S.searchOpen=true; renderTasks(document.getElementById('main')); }
+  if (p.h>=20 && p.h<PTR_AT && searchable()) { S.searchOpen=true; renderTasks(document.getElementById('main')); }
   if (p.h<PTR_AT) { el.style.height='0px'; return; }
   el.style.height='44px'; el.innerHTML='<i class="spin"></i><span>Refreshing…</span>';
   fullRefresh().finally(()=>{ el.style.height='0px'; setTimeout(()=>{ el.innerHTML='<span>Pull to refresh</span>'; }, 260); });
@@ -4423,8 +4457,11 @@ function webServiceWorker(){
   const ready=w=>{
     if (!navigator.serviceWorker.controller) return;   // the very first install: this page is already the newest
     if (!tapped && Date.now()-opened<4000 && !S.sheet) { apply(w); return; }
-    toast('Update Ready', ()=>apply(w), { label:'Reload' });
+    S.updateWaiting=w;   // applies when the app goes to the background (WEB-3); the toast is for long sessions
+    const offer=()=>{ if (S.updateWaiting!==w) return; if (S.undo || S.sheet) { setTimeout(offer, 3000); return; } toast('Update Ready', ()=>apply(w), { label:'Reload' }); };
+    setTimeout(offer, 1500);
   };
+  document.addEventListener('visibilitychange', ()=>{ if (document.hidden && S.updateWaiting && !S.outbox.length && !S.pending) apply(S.updateWaiting); });
   navigator.serviceWorker.addEventListener('controllerchange', ()=>{ if (applying) location.reload(); });
   navigator.serviceWorker.register('sw.js').then(reg=>{
     if (reg.waiting) ready(reg.waiting);
