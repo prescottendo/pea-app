@@ -19,7 +19,7 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" type="image/png" href="icon-192.png">
-<script>window.HUDDLE_WEB={"api":"https://script.google.com/macros/s/AKfycbzM8K_-XRMDdOJYJ3THn_FhyZkRreMddHIBAOFCFVoq5S_Y7MnsfFLsl7ac_fyDPrch/exec","clientId":"473377418367-cqmmnfum4kshq16973m4sj2jqqfa55p0.apps.googleusercontent.com","build":"d27fc3e"};document.documentElement.classList.add('web');</script>
+<script>window.HUDDLE_WEB={"api":"https://script.google.com/macros/s/AKfycbzM8K_-XRMDdOJYJ3THn_FhyZkRreMddHIBAOFCFVoq5S_Y7MnsfFLsl7ac_fyDPrch/exec","clientId":"473377418367-cqmmnfum4kshq16973m4sj2jqqfa55p0.apps.googleusercontent.com","build":"7726ee2"};document.documentElement.classList.add('web');</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <!-- The fonts load without holding up the first paint; the page shows in the phone's own font for a moment if needed. -->
@@ -1146,6 +1146,11 @@
      On a home-screen app, 100vh leaves out the clock area; a page shorter than the screen then lifted the tab bar and left
      a beige gap under it. The page is always at least the full screen tall. */
   html.web body { min-height:calc(100vh + env(safe-area-inset-top, 0px)); }
+  /* Nov 10: a solid strip under the clock, the color of what's at the top (navy header on My Tasks, the page elsewhere), so
+     content scrolls cleanly under it and the iPhone's blur under the clock has nothing to smudge (like Google Docs). */
+  html.web body::before { content:""; position:fixed; left:0; right:0; top:0; height:env(safe-area-inset-top, 0px); background:var(--page); z-index:30; pointer-events:none; }
+  html.web body.v-mine::before { background:var(--header); }
+  html.web body.tv::before, html.web body.signing-in::before { display:none; }
   /* The sign-in screen (webSignIn): navy, Huddle's name, Google's button. */
   .signin { position:fixed; inset:0; z-index:80; background:var(--header); color:var(--header-ink); display:grid; place-items:center; overflow-y:auto;
     padding:calc(24px + env(safe-area-inset-top, 0px)) max(24px, env(safe-area-inset-right, 0px)) calc(24px + env(safe-area-inset-bottom, 0px)) max(24px, env(safe-area-inset-left, 0px)); }
@@ -1494,7 +1499,7 @@ const COACH=[
   { view:'team', sel:'.people', h:'Team Tasks', b:'<p>Everyone\'s tasks in one place, with each task\'s owners as initials on the right. The bubble on each person is how many open tasks they have; <b>red</b> means some are overdue. Tap a person to see just their tasks.</p><p>The <b>Action Items | One-on-Ones</b> switch at the top flips to each leader\'s one-on-ones this month, plus how they\'re doing on meeting action items: on time, blocked and slipping (moved twice or more).</p><p>Changing the status of someone else\'s task asks you to confirm first.</p>' },
   { view:'team', sel:'.print-btn', h:'Print the Accountability Report', b:'<p>The printer opens the Accountability Report right inside Huddle: everyone\'s open and overdue tasks, ready for the tactical. Tap <b>Print</b> at the top, or <b>Close</b> to come back.</p>' },
   { view:'team', sel:'nav.bottom [data-view="meetings"], nav.top [data-view="meetings"]', h:'Switch to Meetings', b:'<p>Tap <b>Meetings</b> to run the weekly tactical and read every meeting\'s summary.</p>' },
-  { view:'meetings', sel:'.start-card, #fab', h:'Run a Meeting', b:'<p>On Meetings, <b>+</b> starts a meeting (on tactical day there\'s a Start Weekly Tactical card too). It walks the agenda step by step, with a timer on everyone\'s phone.</p><p>On the <b>Accountability</b> step, each person\'s meeting action items that are due get a quick update: Done, In Progress, Not Started or Blocked. Anything not done needs a <b>new date</b> before the host can move on.</p>' },
+  { view:'meetings', sel:'.start-card, #fab', h:'Run a Meeting', b:'<p>On Meetings, <b>+</b> starts a meeting (on tactical day there\'s a Start Weekly Tactical card too). It walks the agenda step by step, with a timer on everyone\'s phone.</p><p>On the <b>Accountability</b> step, each person\'s meeting action items that are due get a quick update: Done, In Progress, Not Started or Blocked. Anything not done needs a <b>new date</b> before the host can move on.</p><p><b>‹ Leave</b> at the top steps out (the gold bar brings you back). The host can <b>Cancel Meeting</b> at the bottom to end it without saving.</p>' },
   { view:'meetings', sel:'.mtab', h:'Meetings, Decisions and Strat. Topics', b:'<p><b>Meetings</b> lists every meeting, newest first. Search finds words inside summaries and transcripts. Filter by Tactical, Strategic or Offsite, and by date (the date filter works on all three tabs).</p><p><b>Decisions</b> lists every decision. <b>Strat. Topics</b> holds the strategy topics; in one, <b>Link a Decision</b> records how it was settled.</p>' },
   { view:'meetings', sel:'.card.meeting', h:'Read and Edit a Meeting', b:'<p>Tap a meeting to read its summary and check off its action items. Meetings run with the timer also show the <b>Accountability Review</b>: what was done, moved and blocked. At the bottom you can <b>add context</b> (Alfred updates the summary), <b>edit the details</b> or <b>delete</b> it (its timer log goes with it). Meetings still waiting for a summary can be opened and deleted too.</p>' },
   { view:'meetings', sel:'.alf-fab', h:'Ask Alfred', b:'<p>The hat is Alfred. Ask about meetings, decisions or tasks. He can mark a task done, move a date or add a task once you tap Confirm, and he can <b>request a feature or report a bug</b> for you. Drag him anywhere.</p>' },
@@ -2190,7 +2195,7 @@ function renderSheetBody(){
   if (S.sheet==='ask') {
     const q=S.ask;
     el.innerHTML='<div class="otter-pop"><h3>'+esc(q.title)+'</h3><p>'+q.body+'</p>'
-      +'<div class="step-actions"><button type="button" class="btn primary" data-act="ask-ok">'+esc(q.ok)+'</button>'+(q.single?'':'<button type="button" class="btn ghost" data-act="ask-cancel">Cancel</button>')+'</div></div>';
+      +'<div class="step-actions"><button type="button" class="btn '+(q.danger?'danger-btn':'primary')+'" data-act="ask-ok">'+esc(q.ok)+'</button>'+(q.single?'':'<button type="button" class="btn ghost" data-act="ask-cancel">'+esc(q.no||'Cancel')+'</button>')+'</div></div>';
     return;
   }
   if (S.sheet==='liveitem') { el.innerHTML=liveItemSheet(); return; }
@@ -2999,7 +3004,8 @@ function applyLive(res){
   S.offset = res.now - Date.now();
   const st = res.state && res.state.id===S.endedId ? null : res.state;   // ignore the meeting we just ended
   if (!st) {
-    if (S.live) { S.live=null; if (S.view==='live') { S.view='meetings'; toast('The meeting has ended'); render(); } else renderLivebar(); }
+    const why = res.canceled && S.live && res.canceled.id===S.live.id ? res.canceled.by+' canceled the meeting' : 'The meeting has ended';
+    if (S.live) { S.live=null; if (S.view==='live') { S.view='meetings'; toast(why); render(); } else { renderLivebar(); if (res.canceled) toast(why); } }
     return;
   }
   if (S.liveDirty && !res.fromWrite) return;                         // our own change is still on its way to the server
@@ -3200,7 +3206,7 @@ function tacticalCard(){
 // A small yes/no dialog for Wrap Up, End Meeting and Take Over.
 // body is HTML (names inside it are escaped by the caller); fn runs on the first button.
 // opts.single: one button only (a notice, like "New Dates Needed").
-function askLive(title, body, ok, fn, cancel, opts){ S.ask={ title, body, ok, fn, cancel, single:!!(opts && opts.single) }; S.sheet='ask'; showSheet(); }
+function askLive(title, body, ok, fn, cancel, opts){ S.ask={ title, body, ok, fn, cancel, single:!!(opts && opts.single), no:(opts && opts.no)||'Cancel', danger:!!(opts && opts.danger) }; S.sheet='ask'; showSheet(); }
 // Changing the status of someone else's task asks first ("This Isn't Your Task"). Your own tasks, tasks with no owner, and
 // the host updating people during a guided meeting go straight through. If the task panel was open, it reopens afterward.
 function mineOrConfirm(t, status, fn, onCancel){
@@ -3232,13 +3238,13 @@ function renderLive(m){
     const topicsN=st.topics.length+(st.topic?1:0);
     const over=st.log.filter(l=>l&&l.secs>l.planned).length, skipped=st.steps.filter((x,k)=>!st.log[k] || st.log[k].secs<SKIPPED_SECS).length;
     const timing=[over?over+' step'+(over===1?'':'s')+' ran over':'', skipped?skipped+' step'+(skipped===1?' was':'s were')+' skipped':''].filter(Boolean).join(' and ');
-    m.innerHTML='<div class="live-top"><div><h2>'+esc(st.title)+' Wrap-Up</h2>'+hostLine+'</div>'+takeOver+'</div><div class="stack">'
+    m.innerHTML=leaveLink()+'<div class="live-top"><div><h2>'+esc(st.title)+' Wrap-Up</h2>'+hostLine+'</div>'+takeOver+'</div><div class="stack">'
       +'<div class="stats three"><div class="stat"><b>'+fmtClock((st.endedAt-st.startedAt-(st.pausedTotal||0))/1000).replace('+','')+'</b><span>Total of '+Math.round(plannedTotal(st)/60)+' min</span></div>'
       +'<div class="stat"><b>'+topicsN+'</b><span>Topics Discussed</span></div><div class="stat"><b>'+st.items.length+'</b><span>Action Items</span></div></div>'
       +'<p class="small muted">'+(timing?timing.charAt(0).toUpperCase()+timing.slice(1)+'. Times are below.':'Every step finished on time.')+'</p>'
       +ratingCard(st)
       +outline
-      +'<p class="small muted">'+(host?'Back returns to '+esc(step.title)+'. End Meeting saves it for everyone. Stop the Otter recording first.':'Rate the meeting above. '+esc(hostName)+' ends the meeting for everyone.')+'</p></div>';
+      +'<p class="small muted">'+(host?'Back returns to '+esc(step.title)+'. End Meeting saves it for everyone. Stop the Otter recording first.':'Rate the meeting above. '+esc(hostName)+' ends the meeting for everyone.')+'</p>'+cancelCard(host)+'</div>';
     return;
   }
   const next=st.steps[st.i+1];
@@ -3246,7 +3252,7 @@ function renderLive(m){
   // LB-14: on per-person and Discuss steps the person or topic timer is the big one, and the step timer is one line.
   const compact=perPerson(st) || step.kind==='discuss';
   const plus=host && !st.topic?'<button type="button" class="btn ghost sm" data-act="lv-plus">+5 Min</button>':'';   // one +5 Min at a time
-  let html='<div class="live-top"><div><div class="sec">'+esc(st.title)+' · Step '+(st.i+1)+' of '+st.steps.length+'</div><div class="small muted" id="lvTotal"></div>'+hostLine+'</div>'
+  let html=leaveLink()+'<div class="live-top"><div><div class="sec">'+esc(st.title)+' · Step '+(st.i+1)+' of '+st.steps.length+'</div><div class="small muted" id="lvTotal"></div>'+hostLine+'</div>'
     +'<button type="button" class="btn ghost sm tv-btn" data-act="lv-tv">TV</button>'
     +(host?'<button type="button" class="iconbtn" data-act="lv-pause" aria-label="'+(st.pausedAt?'Resume':'Pause')+' meeting">'+(st.pausedAt?ICON.play:ICON.pause)+'</button>'
       +'<button type="button" class="btn ghost sm" data-act="lv-wrap-ask">Wrap Up</button>':takeOver)+'</div>'
@@ -3254,7 +3260,7 @@ function renderLive(m){
     +(compact?'<div class="step-line"><span>Step: <span id="lvStep" data-line="1">'+fmtClock(stepLeft(st)).replace('+','')+'</span></span>'+plus+'</div>'
       :'<div class="timer-row"><div class="bigtimer" id="lvStep">'+fmtClock(stepLeft(st))+'</div>'+plus+'</div>')
     +(next && !compact?'<div class="small muted up-next">Up next: '+esc(next.title)+' · '+next.mins+' min</div>':'')+'</div>';   // compact: the pinned Next says what's next
-  html += '<div class="step-body">'+liveBody(st, step)+'</div>';
+  html += '<div class="step-body">'+liveBody(st, step)+'</div>'+cancelCard(host);
   html += '<h3 class="sec-h">Agenda</h3>'+outline;
   m.innerHTML=html; liveTick();
 }
@@ -3389,6 +3395,22 @@ function cascadeCard(){
     +'Say each message out loud with who and when. Alfred turns each one into a <b>Tell your team</b> task for that leader, due in 48 hours.</p></div>';
 }
 
+// Nov 10: anyone can step out of the meeting screen (it keeps running; the gold bar on every tab brings them back), and the
+// host can cancel it: it ends for everyone without being saved (no timer log, ratings or review comments; task changes made
+// during it stay). The host gets Undo for 10 seconds (apiLiveUndoCancel).
+function leaveLink(){ return '<button type="button" class="back" data-act="lv-leave">‹ Leave</button>'; }
+function cancelCard(host){
+  return host ? '<div class="set-card mt-l"><button type="button" class="set-row del-row" data-act="lv-cancel-ask"><span>Cancel Meeting<small>Ends it for everyone without saving it. Action items and task updates made during it stay.</small></span></button></div>' : '';
+}
+function cancelLive(){
+  const st=S.live; if (!st) return;
+  S.endedId=st.id; S.live=null; S.tv=false; document.body.classList.remove('tv');
+  S.view='meetings'; render(); window.scrollTo(0,0);
+  call('apiLiveCancel').then(()=>{
+    toast('Meeting canceled', ()=>call('apiLiveUndoCancel', st.id).then(res=>{ S.endedId=null; applyLive(res); if (S.live) { S.view='live'; render(); toast('Meeting back on'); } })
+      .catch(e=>toast('Couldn\'t undo. '+errText(e))), { label:'Undo' });
+  }).catch(e=>{ S.endedId=null; toast('Couldn\'t cancel the meeting. '+errText(e)); S.liveChecked=0; livePoll(); });
+}
 // Ending is instant on this phone: the meeting card appears right away and the server catches up in the background.
 function endLive(){
   const st=S.live; if (!st) return;
@@ -3441,7 +3463,7 @@ async function liveAddItem(el){
 /* ---------- Alfred chat bubble ---------- */
 // The conversation lives only in this page (S.alf) and is gone after a reload. Every message carries the screen
 // context below, and the screenshot taken when the bubble was tapped, so nobody has to describe where they were.
-const APP_VERSION = '2026.11.10-fast-lists';
+const APP_VERSION = '2026.11.10-meeting-cancel';
 const H2C_URL = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
 const DIAG = { errors:[], actions:[] };   // last 10 of each, for bug reports
 function pushDiag(list, item){ list.push(item); if (list.length>10) list.shift(); }
@@ -4033,6 +4055,8 @@ function actClick(e, el){
   else if (a==='rv-due') reviewSet(id, { due:v });
   else if (a==='lv-prev') liveAct(st=>liveStep(st, -1));
   else if (a==='lv-back') liveAct(liveResume);
+  else if (a==='lv-leave') { go('meetings'); toast('You left the meeting. Tap the gold bar to rejoin.'); }
+  else if (a==='lv-cancel-ask') askLive('Cancel This Meeting?', 'It ends for everyone and isn\'t saved. Action items and task updates made during it stay.', 'Cancel Meeting', ()=>cancelLive(), null, { no:'Keep Going', danger:true });
   else if (a==='lv-wrap-ask') askLive('Skip to the Wrap-Up?', 'You\'re on <b>'+esc(S.live.steps[S.live.i].title)+'</b>. Back on the wrap-up brings you right back here.', 'Wrap Up', ()=>liveAct(liveWrap));
   else if (a==='lv-end-ask') { const n=Object.keys(S.live.ratings||{}).length, of=S.data.people.length;
     askLive('End the Meeting for Everyone?', '<b>Stop the Otter recording first.</b><br>'+(n>=of?'Everyone has rated.':n+' of '+of+(n===1?' has':' have')+' rated.')+' Ending saves the meeting and closes it on every phone.', 'End Meeting', endLive); }
@@ -4308,7 +4332,8 @@ function webSignedOut(msg){
 // Nov 10: the phone tints the area under the clock with theme-color; keep it the page's own color (light or dark).
 function webTint(){
   const m=document.querySelector('meta[name="theme-color"]'); if (!m) return;
-  const c=document.getElementById('signin') ? '#0A345A' : getComputedStyle(document.body).backgroundColor; if (c && m.content!==c) m.content=c;
+  const c=document.getElementById('signin') ? '#0A345A' : document.body.classList.contains('v-mine') ? getComputedStyle(document.documentElement).getPropertyValue('--header').trim() : getComputedStyle(document.body).backgroundColor;
+  if (c && m.content!==c) m.content=c;
 }
 function webSignIn(msg, reloadAfter){
   let el=document.getElementById('signin');
