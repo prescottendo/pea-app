@@ -19,7 +19,7 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" type="image/png" href="icon-192.png">
-<script>window.HUDDLE_WEB={"api":"https://script.google.com/macros/s/AKfycbzM8K_-XRMDdOJYJ3THn_FhyZkRreMddHIBAOFCFVoq5S_Y7MnsfFLsl7ac_fyDPrch/exec","clientId":"473377418367-cqmmnfum4kshq16973m4sj2jqqfa55p0.apps.googleusercontent.com","build":"7726ee2"};document.documentElement.classList.add('web');</script>
+<script>window.HUDDLE_WEB={"api":"https://script.google.com/macros/s/AKfycbzM8K_-XRMDdOJYJ3THn_FhyZkRreMddHIBAOFCFVoq5S_Y7MnsfFLsl7ac_fyDPrch/exec","clientId":"473377418367-cqmmnfum4kshq16973m4sj2jqqfa55p0.apps.googleusercontent.com","build":"021c706"};document.documentElement.classList.add('web');</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <!-- The fonts load without holding up the first paint; the page shows in the phone's own font for a moment if needed. -->
@@ -1407,7 +1407,7 @@ async function prefetchLists(){
   const got=(apply, here)=>r=>{ apply(r); saveLists(); if (here() && quiet()) render(); };
   const onMeetings=()=>S.view==='meetings' && (S.mtab||'meetings')==='meetings', onOnes=()=>S.view==='team' && S.ttab==='ones';
   await Promise.all([
-    Promise.all([call('apiMeetings'), call('apiLiveLogs')]).then(got(r=>{ S.meetings=r[0]; S.liveLogs=r[1]; }, onMeetings)),
+    Promise.all([call('apiMeetings'), call('apiLiveLogs')]).then(got(r=>setMeetingLists(r), onMeetings)),
     call('apiDecisions').then(got(r=>{ S.decisions=r; }, ()=>shows('decisions'))),
     call('apiTopics').then(got(r=>{ S.topics=r; }, onTopics)),
     call('apiOneOnOnes').then(got(r=>{ S.ones=r; }, onOnes)),
@@ -1500,7 +1500,7 @@ const COACH=[
   { view:'team', sel:'.print-btn', h:'Print the Accountability Report', b:'<p>The printer opens the Accountability Report right inside Huddle: everyone\'s open and overdue tasks, ready for the tactical. Tap <b>Print</b> at the top, or <b>Close</b> to come back.</p>' },
   { view:'team', sel:'nav.bottom [data-view="meetings"], nav.top [data-view="meetings"]', h:'Switch to Meetings', b:'<p>Tap <b>Meetings</b> to run the weekly tactical and read every meeting\'s summary.</p>' },
   { view:'meetings', sel:'.start-card, #fab', h:'Run a Meeting', b:'<p>On Meetings, <b>+</b> starts a meeting (on tactical day there\'s a Start Weekly Tactical card too). It walks the agenda step by step, with a timer on everyone\'s phone.</p><p>On the <b>Accountability</b> step, each person\'s meeting action items that are due get a quick update: Done, In Progress, Not Started or Blocked. Anything not done needs a <b>new date</b> before the host can move on.</p><p><b>‹ Leave</b> at the top steps out (the gold bar brings you back). The host can <b>Cancel Meeting</b> at the bottom to end it without saving.</p>' },
-  { view:'meetings', sel:'.mtab', h:'Meetings, Decisions and Strat. Topics', b:'<p><b>Meetings</b> lists every meeting, newest first. Search finds words inside summaries and transcripts. Filter by Tactical, Strategic or Offsite, and by date (the date filter works on all three tabs).</p><p><b>Decisions</b> lists every decision. <b>Strat. Topics</b> holds the strategy topics; in one, <b>Link a Decision</b> records how it was settled.</p>' },
+  { view:'meetings', sel:'.mtab', h:'Meetings, Decisions and Parking Lot', b:'<p><b>Meetings</b> lists every meeting, newest first. Search finds words inside summaries and transcripts. Filter by Tactical, Strategic or Offsite, and by date (the date filter works on all three tabs).</p><p><b>Decisions</b> lists every decision. <b>Parking Lot</b> holds the Parking Lot topics; in one, <b>Link a Decision</b> records how it was settled.</p>' },
   { view:'meetings', sel:'.card.meeting', h:'Read and Edit a Meeting', b:'<p>Tap a meeting to read its summary and check off its action items. Meetings run with the timer also show the <b>Accountability Review</b>: what was done, moved and blocked. At the bottom you can <b>add context</b> (Alfred updates the summary), <b>edit the details</b> or <b>delete</b> it (its timer log goes with it). Meetings still waiting for a summary can be opened and deleted too.</p>' },
   { view:'meetings', sel:'.alf-fab', h:'Ask Alfred', b:'<p>The hat is Alfred. Ask about meetings, decisions or tasks. He can mark a task done, move a date or add a task once you tap Confirm, and he can <b>request a feature or report a bug</b> for you. Drag him anywhere.</p>' },
   { view:'meetings', sel:'nav.bottom [data-view="more"], nav.top .morebtn', h:'More and Settings', b:'<p><b>More</b> holds Change Requests, Recently Deleted, <b>Settings</b> (your emails, text size, light or dark mode) and <b>Account</b>, where you can sign out.</p>' },
@@ -1682,6 +1682,7 @@ function go(v, back){
   // Each visit to a screen starts with no filters, so a person or priority picked on Team Tasks doesn't follow you around (BUG-12).
   if (v!==S.view) { S.q=''; S.status='open'; S.priority=''; S.meeting=''; S.sort='due'; S.person=''; S.searchOpen=false; }
   const t0=performance.now();
+  if (v==='live' && S.view!=='live') S.liveAt=Date.now();
   S.view=v; S.back=back||null; S.quick=''; closeSheet(true); render(); window.scrollTo(0,0);
   requestAnimationFrame(()=>{ S.lastNav={ view:v, ms:Math.round(performance.now()-t0) }; });
 }
@@ -2215,7 +2216,7 @@ function renderSheetBody(){
   }
   if (S.sheet==='topic') {
     const t=S.topicEdit;
-    el.innerHTML='<div class="grab" data-act="close-sheet"></div><div class="sheet-head"><h3>Strategy Topic</h3><span class="saved" id="saveState" role="status"></span><button type="button" class="btn ghost sm" data-act="close-sheet">Done</button></div>'
+    el.innerHTML='<div class="grab" data-act="close-sheet"></div><div class="sheet-head"><h3>Parking Lot Topic</h3><span class="saved" id="saveState" role="status"></span><button type="button" class="btn ghost sm" data-act="close-sheet">Done</button></div>'
       +'<div class="form"><label for="tp-title">Topic</label><textarea id="tp-title" data-input="tp-title" rows="2">'+esc(t.topic)+'</textarea>'
       +'<label for="tp-ctx">Description</label><textarea id="tp-ctx" data-input="tp-ctx" rows="4" placeholder="Why it matters, what we need to decide">'+esc(t.context)+'</textarea>'
       +'<label>Owner</label><div class="chips" role="group" aria-label="Owner">'+S.data.people.map(p=>'<button type="button" class="'+(t.owner===p.email?'on':'')+'" data-act="tp-owner" data-email="'+esc(p.email)+'">'+esc(firstName(p.email))+'</button>').join('')+'</div>'
@@ -2247,7 +2248,7 @@ function renderSheetBody(){
       +(phone && S.data.isApprover ? item('review',ICON.review,'Review','Meeting tasks waiting for approval', rc?'<span class="count">'+rc+'</span>':'') : '')
 
       +item('requests',ICON.requests,'Change Requests','Feature requests and bug reports sent from the Alfred chat')
-      +item('deleted',ICON.deleted,'Recently Deleted','Restore deleted tasks and strategy topics')
+      +item('deleted',ICON.deleted,'Recently Deleted','Restore deleted tasks, meetings and Parking Lot topics')
       +item('settings',GEAR,'Settings','Notifications, text size, light or dark mode')
       +item('account',avatar(S.data.me,30),'Account',esc(S.data.me))+'</div>';
     return;
@@ -2518,7 +2519,7 @@ async function renderDeleted(m){
   const none=(b,t)=>'<p class="none">'+t+'</p>';
   m.innerHTML=lead
     +'<h3 class="set-sec">Tasks</h3><div class="list">'+(d.tasks.length?d.tasks.map(t=>row(t.title,(t.rejected?'Rejected in Review ':'Deleted ')+esc(fmtDate(t.deleted_at))+(t.deleted_by?' by '+esc(who(t.deleted_by)):'')+' · '+esc(owners(t).map(firstName).join(', ')),'restore-task',t.id)).join(''):none('No Deleted Tasks','Deleted tasks will show up here.'))+'</div>'
-    +'<h3 class="set-sec">Strategy Topics</h3><div class="list">'+(d.topics.length?d.topics.map(t=>row(t.topic,'Deleted '+esc(fmtDate(t.deleted_at))+(t.deleted_by?' by '+esc(who(t.deleted_by)):''),'restore-topic',t.id)).join(''):none('No Deleted Topics','Deleted strategy topics will show up here.'))+'</div>'
+    +'<h3 class="set-sec">Parking Lot</h3><div class="list">'+(d.topics.length?d.topics.map(t=>row(t.topic,'Deleted '+esc(fmtDate(t.deleted_at))+(t.deleted_by?' by '+esc(who(t.deleted_by)):''),'restore-topic',t.id)).join(''):none('No Deleted Topics','Deleted Parking Lot topics will show up here.'))+'</div>'
     +'<h3 class="set-sec">Meetings</h3><div class="list">'+((d.meetings||[]).length?d.meetings.map(x=>row(x.title||x.type, esc(fmtDate(x.date))+(x.live?' · Guided meeting':'')+' · Deleted '+esc(fmtDate(x.deleted_at))+(x.deleted_by?' by '+esc(who(x.deleted_by)):''),x.live?'restore-log':'restore-meeting',x.id)).join(''):none('','Deleted meetings will show up here.'))+'</div>';
 }
 
@@ -2617,12 +2618,14 @@ function liveLogSheet(){
 async function deleteLiveLog(el){
   const g=S.lvlog; if (!g) return; const id=g.id, local=(S.localLogs||[]).some(x=>x.id===id) && !(S.liveLogs||[]).some(x=>x.id===id);
   askLive('Delete This Meeting?', 'It moves to Recently Deleted, where you can restore it. Action items added during it stay.', 'Delete', async ()=>{
-    if (!local) { try { await call('apiDeleteLiveLog', id); } catch(e){ toast('Couldn\'t delete. '+errText(e)); return; } }
+    GONE[id]=1;
+    if (!local) { try { await call('apiDeleteLiveLog', id); } catch(e){ delete GONE[id]; toast('Couldn\'t delete. '+errText(e)); return; } }
     S.liveLogs=(S.liveLogs||[]).filter(x=>x.id!==id); S.localLogs=(S.localLogs||[]).filter(x=>x.id!==id); S.deleted=null; saveLists();
     vanish(cardFor('log-open', id), ()=>render()); toast('Moved to Recently Deleted', local?null:()=>restoreLiveLog(id, null));
   }, ()=>{ S.lvlog=g; S.sheet='livelog'; showSheet(); });
 }
 async function restoreLiveLog(id, el){
+  delete GONE[id];
   const r=await saving(el, 'Restoring…', ()=>call('apiRestoreLiveLog', id), ()=>restoreLiveLog(id, null));
   if (!r) return;
   S.liveLogs=null; S.meetings=null; S.deleted=null; render(); toast('Meeting restored');
@@ -2651,7 +2654,8 @@ async function deleteMeeting(el){
   // Delete asks first in a small box with Delete and Cancel; Cancel goes back to the meeting.
   const g=S.mtg; if (!g) return; const id=g.id;
   askLive('Delete This Meeting?', 'It moves to Recently Deleted, where you can restore it. Its tasks and decisions stay.', 'Delete', async ()=>{
-    try { await call('apiDeleteMeeting', id); } catch(e){ toast('Couldn\'t delete. '+errText(e)); return; }
+    GONE[id]=1;
+    try { await call('apiDeleteMeeting', id); } catch(e){ delete GONE[id]; toast('Couldn\'t delete. '+errText(e)); return; }
     // Nov 10: the timer log for the same meeting goes too (the server hides it), and the saved lists forget both.
     const gone=(S.meetings||[]).find(m=>m.id===id);
     S.meetings=(S.meetings||[]).filter(m=>m.id!==id); if (S.data.meetings) delete S.data.meetings[id]; S.deleted=null; S.decisions=null;
@@ -2661,6 +2665,7 @@ async function deleteMeeting(el){
   }, ()=>{ S.mtg=g; S.sheet='meeting'; showSheet(); });
 }
 async function restoreMeeting(id, el){
+  delete GONE[id];
   const r=await saving(el, 'Restoring…', ()=>call('apiRestoreMeeting', id), ()=>restoreMeeting(id, null));
   if (!r) return;
   if (S.data.meetings) S.data.meetings[id]={ title:r.title, type:r.type, date:r.date, summary_url:r.summary_url };
@@ -2825,15 +2830,15 @@ function topicsHead(){ return tacticalCard()+'<div class="head-row"><h2>Meetings
 async function renderTopics(m){
   if (!S.topics) {
     m.innerHTML=topicsHead()+'<div class="list"><div class="skel" style="height:80px"></div><div class="skel" style="height:80px"></div></div>';
-    try { S.topics=await call('apiTopics'); saveLists(); } catch(e){ if (onTopics()) m.innerHTML=topicsHead()+loadFail('Strategy Topics'); return; }
+    try { S.topics=await call('apiTopics'); saveLists(); } catch(e){ if (onTopics()) m.innerHTML=topicsHead()+loadFail('the Parking Lot'); return; }
     if (!onTopics()) return;
   }
   const order={Open:0,Scheduled:1,Discussed:2,Dropped:3};
   const since=sinceDate();
   const topics=S.topics.filter(t=>!since || String(t.date||'')>=since).sort((a,b)=>order[a.status]-order[b.status]||(b.date||'').localeCompare(a.date||''));
   const tag=st=>'<span class="tag'+(st==='Scheduled'?' gold':st==='Discussed'?' done':'')+'">'+esc(st)+'</span>';
-  m.innerHTML=topicsHead()+'<p class="lead">Strategy topics: issues too big for a tactical. Alfred adds them from meetings, and anyone can add one.</p>'
-    +'<div class="card add-card"><div class="addrow"><input type="text" id="tp-new" data-input="tp" placeholder="Add a strategy topic" aria-label="New strategy topic"><button type="button" class="btn primary sm" data-act="topic-add">Add</button></div>'
+  m.innerHTML=topicsHead()+'<p class="lead">The Parking Lot: issues too big for a tactical. Alfred adds them from meetings, and anyone can add one.</p>'
+    +'<div class="card add-card"><div class="addrow"><input type="text" id="tp-new" data-input="tp" placeholder="Add to the Parking Lot" aria-label="New Parking Lot topic"><button type="button" class="btn primary sm" data-act="topic-add">Add</button></div>'
     +'<textarea class="box mt-s" id="tp-desc" rows="2" placeholder="Description: why it matters, what to decide (optional)" hidden></textarea></div>'
     +'<div class="mfilters one mt-m">'+dateFilter()+'</div><div class="list mt-m">'
     +(topics.length?topics.map(t=>{ const age=t.status==='Open' && t.date ? Math.round((new Date(S.data.today+'T12:00:00')-new Date(t.date+'T12:00:00'))/864e5) : 0;
@@ -2842,11 +2847,11 @@ async function renderTopics(m){
       +(t.context?'<div class="sub">'+esc(t.context)+'</div>':'')
       +(t.outcome?'<div class="sub"><b>Outcome:</b> '+esc(t.outcome)+'</div>':'')
       +'<div class="tags mt-s">'+tag(t.status)+(t.scheduled_for?'<span class="tag">For '+esc(fmtDate(t.scheduled_for))+'</span>':'')+(age>30?'<span class="tag late">Open '+age+' Days</span>':'')+'</div></button>'; }).join('')
-      :'<div class="empty"><b>No Strategy Topics Yet</b>They\'ll appear here after meetings.</div>')+'</div>';
+      :'<div class="empty"><b>The Parking Lot Is Empty</b>They\'ll appear here after meetings.</div>')+'</div>';
 }
 // NF-2: Meetings | Decisions. Decisions are every decision Alfred recorded, newest first, with search.
 function meetingsSeg(){ const tab=S.mtab||'meetings';
-  return '<div class="seg mtab" role="group" aria-label="Show">'+[['meetings','Meetings'],['decisions','Decisions'],['topics','Strat. Topics']].map(([k,l])=>'<button type="button" class="'+(tab===k?'on':'')+'" data-act="mtab" data-val="'+k+'" aria-pressed="'+(tab===k)+'">'+l+'</button>').join('')+'</div>'; }
+  return '<div class="seg mtab" role="group" aria-label="Show">'+[['meetings','Meetings'],['decisions','Decisions'],['topics','Parking Lot']].map(([k,l])=>'<button type="button" class="'+(tab===k?'on':'')+'" data-act="mtab" data-val="'+k+'" aria-pressed="'+(tab===k)+'">'+l+'</button>').join('')+'</div>'; }
 async function renderDecisions(m){
   const head=tacticalCard()+'<div class="head-row"><h2>Meetings</h2></div>'+meetingsSeg();
   if (!S.decisions) {
@@ -2872,12 +2877,16 @@ function renderDecisionResults(){
     +'<div class="meta">'+esc([d.meeting_title, fmtDate(d.date), d.raised_by?'Raised by '+d.raised_by:''].filter(Boolean).join(' · '))+'</div>'
     +(d.topic?'<div class="tags"><span class="tag gold">'+esc(d.topic)+'</span></div>':'')+'</button>').join('')+'</div>';
 }
+// Nov 10: a meeting or timer log deleted on this phone stays off the list even if a list download that started before the
+// delete arrives afterward (ending a meeting refetches the list, so a quick delete used to come back). Restore clears it.
+const GONE={};
+function setMeetingLists(r){ S.meetings=(r[0]||[]).filter(x=>!GONE[x.id]); S.liveLogs=(r[1]||[]).filter(x=>!GONE[x.id]); }
 async function renderMeetings(m){
   if (S.mtab==='decisions') return renderDecisions(m);
   if (S.mtab==='topics') return renderTopics(m);
   if (!S.meetings) { m.innerHTML='<div class="head-row"><h2>Meetings</h2></div>'+meetingsSeg()+'<div class="list"><div class="skel" style="height:90px"></div><div class="skel" style="height:90px"></div></div>';
     let r; try { r=await Promise.all([call('apiMeetings'), call('apiLiveLogs')]); } catch(e){ if (S.view==='meetings') m.innerHTML='<div class="head-row"><h2>Meetings</h2></div>'+loadFail('Meetings'); return; }
-    S.meetings=r[0]; S.liveLogs=r[1]; saveLists(); if (S.view!=='meetings') return; }
+    setMeetingLists(r); saveLists(); if (S.view!=='meetings') return; }
   m.innerHTML=tacticalCard()+'<div class="head-row"><h2>Meetings</h2></div>'+meetingsSeg()
     +(S.live?'<button type="button" class="card live-card" data-act="go" data-view="live"><div class="sec">● Live Now</div><div class="t">'+esc(S.live.title)+'</div><div class="small muted">Tap to join</div></button>':'')
     +'<div class="mtools"><label class="search">'+ICON.search+'<input type="search" id="mq" data-input="mq" placeholder="Search summaries and transcripts" value="'+esc(S.mq||'')+'" aria-label="Search meetings"></label>'
@@ -3071,7 +3080,7 @@ function startLive(type, begin){
   const st={ id:'L'+Date.now(), type:type, title:t.title, draft:!!t.draft, motiveSet:S.data.motiveNext||'A', ratings:{}, steps:clone(t.steps), i:0, phase:'ready', startedAt:null, stepStart:null,
              pausedAt:null, pausedTotal:0, extra:0, topic:null, topics:[], person:0, personStart:null, items:[], log:[], startedBy:S.data.me, host:S.data.me };
   if (begin) liveBegin(st);
-  S.live=st; S.view='live'; closeSheet(true); render(); window.scrollTo(0,0);
+  S.live=st; S.view='live'; S.liveAt=Date.now(); closeSheet(true); render(); window.scrollTo(0,0);
   // If someone else started a meeting a moment ago, the server keeps theirs and this phone joins it.
   call('apiLiveSet', st).then(res=>{ if (res && res.conflict && res.state) toast('A meeting was already running, so you joined it.'); applyLive(res && res.conflict ? { state:res.state, now:res.now } : res); })
     .catch(e=>toast('Could not start the meeting for everyone: '+errText(e)));
@@ -3364,7 +3373,7 @@ function liveBody(st, step){
       h+='<div class="card reading"><p>Waiting for '+esc(firstName(liveHost(st)))+' to start Topic '+n+'.</p></div>';
     }
     if (st.topics.length) h+='<div class="card reading"><h3>Topics Discussed</h3>'+st.topics.map((t,n)=>'<div class="rd"><b>Topic '+(n+1)+'</b><span class="'+(t.secs>t.mins*60?'over-t':'ok-t')+'">'+fmtClock(t.secs).replace('+','')+' of '+t.mins+' min</span></div>').join('')+'</div>';
-    h+='<div class="card reading"><h3>Too Big for Today?</h3><div class="addrow"><input type="text" id="lv-park" placeholder="Park it as a strategy topic" aria-label="Park it as a strategy topic"><button type="button" class="btn ghost sm" data-act="lv-park">Park</button></div></div>';
+    h+='<div class="card reading"><h3>Too Big for Today?</h3><div class="addrow"><input type="text" id="lv-park" placeholder="Park it in the Parking Lot" aria-label="Park it in the Parking Lot"><button type="button" class="btn ghost sm" data-act="lv-park">Park</button></div></div>';
     return h;
   }
   if (k==='closure') {
@@ -3376,12 +3385,12 @@ function liveBody(st, step){
   }
   if (k==='topics') {
     if (!S.topics) {
-      if (S.topicsFailed) return '<div class="card reading">'+loadFail('Strategy Topics')+'</div>';
+      if (S.topicsFailed) return '<div class="card reading">'+loadFail('the Parking Lot')+'</div>';
       call('apiTopics').then(t=>{ S.topics=t; if (S.view==='live') render(); }).catch(()=>{ S.topicsFailed=true; if (S.view==='live') render(); });
       return '<div class="skel" style="height:80px"></div>';
     }
     const list=S.topics.filter(t=>t.status==='Open'||t.status==='Scheduled');
-    return '<div class="card reading"><h3>Open Strategy Topics</h3><p class="small muted">Pick the one or two that matter most today.</p>'
+    return '<div class="card reading"><h3>Parking Lot</h3><p class="small muted">Pick the one or two that matter most today.</p>'
       +(list.length?list.map(t=>'<div class="rd"><b>'+esc(t.topic)+'</b><span>'+esc(t.context||'')+(t.status==='Scheduled'?' · Scheduled':'')+'</span></div>').join(''):'<p class="none">No open topics.</p>')+'</div>';
   }
   if (k==='cascade') return '<div class="card reading"><h3>What Do We Tell Our Teams?</h3><ul><li>What did we decide today?</li><li>Who tells which team, and by when?</li><li>What should stay in this room?</li></ul></div>'+cascadeCard();
@@ -3407,7 +3416,7 @@ function cancelLive(){
   S.endedId=st.id; S.live=null; S.tv=false; document.body.classList.remove('tv');
   S.view='meetings'; render(); window.scrollTo(0,0);
   call('apiLiveCancel').then(()=>{
-    toast('Meeting canceled', ()=>call('apiLiveUndoCancel', st.id).then(res=>{ S.endedId=null; applyLive(res); if (S.live) { S.view='live'; render(); toast('Meeting back on'); } })
+    toast('Meeting canceled', ()=>call('apiLiveUndoCancel', st.id).then(res=>{ S.endedId=null; applyLive(res); if (S.live) { S.view='live'; S.liveAt=Date.now(); render(); toast('Meeting back on'); } })
       .catch(e=>toast('Couldn\'t undo. '+errText(e))), { label:'Undo' });
   }).catch(e=>{ S.endedId=null; toast('Couldn\'t cancel the meeting. '+errText(e)); S.liveChecked=0; livePoll(); });
 }
@@ -3463,7 +3472,7 @@ async function liveAddItem(el){
 /* ---------- Alfred chat bubble ---------- */
 // The conversation lives only in this page (S.alf) and is gone after a reload. Every message carries the screen
 // context below, and the screenshot taken when the bubble was tapped, so nobody has to describe where they were.
-const APP_VERSION = '2026.11.10-meeting-cancel';
+const APP_VERSION = '2026.11.10-parking-lot';
 const H2C_URL = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
 const DIAG = { errors:[], actions:[] };   // last 10 of each, for bug reports
 function pushDiag(list, item){ list.push(item); if (list.length>10) list.shift(); }
@@ -4046,7 +4055,7 @@ function actClick(e, el){
   else if (a==='tp-unlink') linkTopicDecision('', el);
   else if (a==='tour-open') startCoach();
   else if (a==='mtab') { S.mtab=v; render(); }
-  else if (a==='lv-new') { if (S.live) { S.view='live'; render(); } else { S.sheet='newmeeting'; showSheet(); } }
+  else if (a==='lv-new') { if (S.live) { S.view='live'; S.liveAt=Date.now(); render(); } else { S.sheet='newmeeting'; showSheet(); } }
   else if (a==='lv-start') { S.pendingType=v; S.sheet='otter'; showSheet(); }
   else if (a==='lv-confirm') startLive(S.pendingType, true);
   else if (a==='lv-pause') liveAct(livePause);
@@ -4055,7 +4064,8 @@ function actClick(e, el){
   else if (a==='rv-due') reviewSet(id, { due:v });
   else if (a==='lv-prev') liveAct(st=>liveStep(st, -1));
   else if (a==='lv-back') liveAct(liveResume);
-  else if (a==='lv-leave') { go('meetings'); toast('You left the meeting. Tap the gold bar to rejoin.'); }
+  else if (a==='lv-leave') { if (Date.now()-(S.liveAt||0)<1000) return;   // a stray tap as the meeting screen appears isn't a Leave
+    go('meetings'); toast('You left the meeting. Tap the gold bar to rejoin.'); }
   else if (a==='lv-cancel-ask') askLive('Cancel This Meeting?', 'It ends for everyone and isn\'t saved. Action items and task updates made during it stay.', 'Cancel Meeting', ()=>cancelLive(), null, { no:'Keep Going', danger:true });
   else if (a==='lv-wrap-ask') askLive('Skip to the Wrap-Up?', 'You\'re on <b>'+esc(S.live.steps[S.live.i].title)+'</b>. Back on the wrap-up brings you right back here.', 'Wrap Up', ()=>liveAct(liveWrap));
   else if (a==='lv-end-ask') { const n=Object.keys(S.live.ratings||{}).length, of=S.data.people.length;
@@ -4081,7 +4091,7 @@ function actClick(e, el){
   else if (a==='ask-cancel') { const c=S.ask && S.ask.cancel; S.ask=null; closeSheet(true); render(); if (c) c(); }
   else if (a==='ask-ok') { const f=S.ask && S.ask.fn; S.ask=null; closeSheet(true); if (f) f(); else render(); }
   else if (a==='lv-park') { const i=document.getElementById('lv-park'), text=i && i.value.trim(), why='Parked during '+S.live.title+'.';
-    if (text) saving(el, 'Parking…', ()=>call('apiAddTopic', text, why)).then(r=>{ if (!r) return; S.topics=null; const b=document.getElementById('lv-park'); if (b) b.value=''; toast('Parked as a Strategy Topic'); }); }
+    if (text) saving(el, 'Parking…', ()=>call('apiAddTopic', text, why)).then(r=>{ if (!r) return; S.topics=null; const b=document.getElementById('lv-park'); if (b) b.value=''; toast('Parked in the Parking Lot'); }); }
   else if (a==='due-quick') { S.edit.task.due=v; renderSheet(); queueSave(0); }
   else if (a==='remind-days') { const old=S.data.reminderDays; S.data.reminderDays=Number(v); render(); toast('Reminders look '+v+' day'+(v==='1'?'':'s')+' ahead');
     call('apiSetMyReminderDays', Number(v)).catch(()=>{ S.data.reminderDays=old; render(); toast('Could not save. Try again.'); }); }
