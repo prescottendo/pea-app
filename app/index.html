@@ -19,7 +19,7 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" type="image/png" href="icon-192.png">
-<script>window.HUDDLE_WEB={"api":"https://script.google.com/macros/s/AKfycbzM8K_-XRMDdOJYJ3THn_FhyZkRreMddHIBAOFCFVoq5S_Y7MnsfFLsl7ac_fyDPrch/exec","clientId":"473377418367-cqmmnfum4kshq16973m4sj2jqqfa55p0.apps.googleusercontent.com","build":"ccaaf94"};document.documentElement.classList.add('web');</script>
+<script>window.HUDDLE_WEB={"api":"https://script.google.com/macros/s/AKfycbzM8K_-XRMDdOJYJ3THn_FhyZkRreMddHIBAOFCFVoq5S_Y7MnsfFLsl7ac_fyDPrch/exec","clientId":"473377418367-cqmmnfum4kshq16973m4sj2jqqfa55p0.apps.googleusercontent.com","build":"d27fc3e"};document.documentElement.classList.add('web');</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <!-- The fonts load without holding up the first paint; the page shows in the phone's own font for a moment if needed. -->
@@ -1384,7 +1384,7 @@ const THEME_NAME = { auto:'Automatic', light:'Light', dark:'Dark' };
 const BOOT_V=1;
 // Speed: the Meetings, Decisions, Strategy Topics and One-on-Ones lists are also kept on the phone, so every tab shows at once
 // (even right after reopening the app), and they are fetched in the background soon after the app opens.
-const LISTS=['meetings','liveLogs','decisions','topics','ones'];
+const LISTS=['meetings','liveLogs','decisions','topics','ones','acct'];
 function saveLists(){ if (MOCK) return; try { const o={ v:1, at:Date.now() }; LISTS.forEach(k=>{ if (S[k]) o[k]=S[k]; }); localStorage.setItem('lt-lists', JSON.stringify(o)); } catch(e){} }
 function restoreLists(){
   if (MOCK) return;
@@ -1397,13 +1397,17 @@ async function prefetchLists(){
   S.prefetching=true; S.listsAt=Date.now();
   const quiet=()=>!S.sheet && !(document.activeElement && document.activeElement.matches && document.activeElement.matches('input, textarea, select'));
   const shows=v=>S.view===v || (S.view==='meetings' && S.mtab===v);
-  try {
-    const r=await Promise.all([call('apiMeetings'), call('apiLiveLogs')]); S.meetings=r[0]; S.liveLogs=r[1]; saveLists();
-    if (S.view==='meetings' && (S.mtab||'meetings')==='meetings' && quiet()) render();
-    S.decisions=await call('apiDecisions'); saveLists(); if (shows('decisions') && quiet()) render();
-    S.topics=await call('apiTopics'); saveLists(); if (onTopics() && quiet()) render();
-    S.ones=await call('apiOneOnOnes'); saveLists(); if (S.view==='team' && S.ttab==='ones' && quiet()) render();
-  } catch(e){}
+  // Nov 10: every list is fetched at the same time (they used to wait for each other, so One-on-Ones and Strat. Topics
+  // arrived several seconds after opening). Each one is saved and shown as soon as it arrives.
+  const got=(apply, here)=>r=>{ apply(r); saveLists(); if (here() && quiet()) render(); };
+  const onMeetings=()=>S.view==='meetings' && (S.mtab||'meetings')==='meetings', onOnes=()=>S.view==='team' && S.ttab==='ones';
+  await Promise.all([
+    Promise.all([call('apiMeetings'), call('apiLiveLogs')]).then(got(r=>{ S.meetings=r[0]; S.liveLogs=r[1]; }, onMeetings)),
+    call('apiDecisions').then(got(r=>{ S.decisions=r; }, ()=>shows('decisions'))),
+    call('apiTopics').then(got(r=>{ S.topics=r; }, onTopics)),
+    call('apiOneOnOnes').then(got(r=>{ S.ones=r; }, onOnes)),
+    call('apiAccountability').then(got(r=>{ S.acct=r; }, onOnes))
+  ].map(p=>p.catch(()=>{})));
   S.prefetching=false;
 }
 function saveBoot(){ if (MOCK || !S.data) return; try { localStorage.setItem('lt-boot', JSON.stringify({ v:BOOT_V, at:Date.now(), data:S.data })); } catch(e){} }
@@ -2514,10 +2518,32 @@ async function renderDeleted(m){
 }
 
 /* ---------- in-app meeting summary ---------- */
+// Nov 10: summaries opened before are kept on the phone (the last 12, lt-mtg), so they open at once and refresh quietly.
+// A summary that has to load glides in (fade and rise) instead of popping over the placeholders.
+const MTG_MEM={};
+function mtgCache(id, d){
+  let c={}; try { c=JSON.parse(localStorage.getItem('lt-mtg')||'{}')||{}; } catch(e){}
+  if (d===undefined) return MTG_MEM[id] || (c[id] ? c[id].d : null);
+  MTG_MEM[id]=d;
+  c[id]={ d:d, at:Date.now() };
+  const keys=Object.keys(c).sort((a,b)=>c[b].at-c[a].at); keys.slice(12).forEach(k=>delete c[k]);
+  if (!MOCK) try { localStorage.setItem('lt-mtg', JSON.stringify(c)); } catch(e){ try { localStorage.removeItem('lt-mtg'); } catch(err){} }
+}
+function glideIn(skip){
+  const sh=document.getElementById('sheet'); if (!sh || REDUCED || !sh.animate) return;
+  [...sh.children].slice(skip||0, (skip||0)+10).forEach((c,i)=>c.animate([{ opacity:0, transform:'translateY(10px)' }, { opacity:1, transform:'none' }],
+    { duration:320, delay:i*25, easing:'cubic-bezier(.2,.8,.2,1)', fill:'backwards' }));
+}
 function openMeeting(id){
-  S.mtg={ id:id, data:null, err:'' }; S.sheet='meeting'; showSheet();
-  call('apiMeetingSummary', id).then(d=>{ if (S.mtg && S.mtg.id===id) { S.mtg.data=d; renderSheet(); } })
-    .catch(e=>{ if (S.mtg) { S.mtg.err=errText(e); renderSheet(); } });
+  const cached=mtgCache(id);
+  S.mtg={ id:id, data:cached, err:'' }; S.sheet='meeting'; showSheet();
+  call('apiMeetingSummary', id).then(d=>{
+    mtgCache(id, d);
+    if (!S.mtg || S.mtg.id!==id || S.sheet!=='meeting') return;
+    const fresh=!S.mtg.data; S.mtg.data=d;
+    if (fresh) { S.afterSheet=()=>glideIn(3); renderSheet(); }
+    else if (JSON.stringify(cached)!==JSON.stringify(d) && !S.mtg.mode) renderSheet();
+  }).catch(e=>{ if (S.mtg && !S.mtg.data) { S.mtg.err=errText(e); renderSheet(); } });
 }
 function meetingSheet(){
   const g=S.mtg, x=(S.meetings||[]).find(m=>m.id===g.id)||(g.data&&g.data.meeting)||(S.data.meetings||{})[g.id]||{};
@@ -3415,7 +3441,7 @@ async function liveAddItem(el){
 /* ---------- Alfred chat bubble ---------- */
 // The conversation lives only in this page (S.alf) and is gone after a reload. Every message carries the screen
 // context below, and the screenshot taken when the bubble was tapped, so nobody has to describe where they were.
-const APP_VERSION = '2026.11.10-ptr-fix';
+const APP_VERSION = '2026.11.10-fast-lists';
 const H2C_URL = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
 const DIAG = { errors:[], actions:[] };   // last 10 of each, for bug reports
 function pushDiag(list, item){ list.push(item); if (list.length>10) list.shift(); }
@@ -4121,9 +4147,10 @@ async function fullRefresh(){
   try {
     const tasks=await call('apiTasks');
     S.data.tasks=tasks; S.lastSync=Date.now();
-    S.meetings=null; S.liveLogs=null; S.topics=null; S.deleted=null; S.requests=null; S.acct=null;
+    // Lists stay on screen while fresh copies load in the background (they used to be cleared, so every tab waited again).
+    S.deleted=null; S.requests=null;
     S.liveChecked=0; livePoll();
-    render();
+    render(); S.prefetching=false; prefetchLists();
   } catch(e) { toast('Couldn\'t refresh. '+errText(e)); }
   S.refreshing=false;
 }
