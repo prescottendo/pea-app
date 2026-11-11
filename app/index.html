@@ -19,7 +19,7 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" type="image/png" href="icon-192.png">
-<script>window.HUDDLE_WEB={"api":"https://script.google.com/macros/s/AKfycbzM8K_-XRMDdOJYJ3THn_FhyZkRreMddHIBAOFCFVoq5S_Y7MnsfFLsl7ac_fyDPrch/exec","clientId":"473377418367-cqmmnfum4kshq16973m4sj2jqqfa55p0.apps.googleusercontent.com","build":"c4eefca"};document.documentElement.classList.add('web');</script>
+<script>window.HUDDLE_WEB={"api":"https://script.google.com/macros/s/AKfycbzM8K_-XRMDdOJYJ3THn_FhyZkRreMddHIBAOFCFVoq5S_Y7MnsfFLsl7ac_fyDPrch/exec","clientId":"473377418367-cqmmnfum4kshq16973m4sj2jqqfa55p0.apps.googleusercontent.com","build":"16925f6"};document.documentElement.classList.add('web');</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <!-- The fonts load without holding up the first paint; the page shows in the phone's own font for a moment if needed. -->
@@ -117,7 +117,11 @@
   .bar h1 { margin:0; font-family:var(--serif); font-weight:600; font-size:20px; line-height:1; white-space:nowrap; transform:translateY(calc(42px * .048)); }
   /* LB-17: on phones the logo bar shows only at the top of My Tasks and scrolls away; elsewhere the page title is enough. */
   @media (max-width:699px) { .bar h1, .bar .divider { display:none; } header { position:relative; } body:not(.v-mine) header { display:none; }
-    body:not(.v-mine) main { padding-top:calc(24px + env(safe-area-inset-top, 0px)); } }
+    body:not(.v-mine) main { padding-top:calc(24px + env(safe-area-inset-top, 0px)); }
+    /* Nov 10: the live meeting bar shows on every tab. Without the logo bar it used to sit under the clock, out of sight;
+       now it starts below the clock and stays pinned to the top while you scroll, so anyone can join from anywhere. */
+    body:not(.v-mine) #livebar { position:sticky; top:0; z-index:22; padding-top:calc(8px + env(safe-area-inset-top, 0px)); }
+    body:not(.v-mine) #livebar:not([hidden]) ~ main { padding-top:24px; } }
   @media (max-width:420px) { .logo { height:30px; } .divider { height:24px; } .bar { gap:8px; } }
 
   .avatar { display:block; flex:none; overflow:visible; }
@@ -3357,7 +3361,7 @@ async function liveAddItem(el){
 /* ---------- Alfred chat bubble ---------- */
 // The conversation lives only in this page (S.alf) and is gone after a reload. Every message carries the screen
 // context below, and the screenshot taken when the bubble was tapped, so nobody has to describe where they were.
-const APP_VERSION = '2026.11.10-web-polish';
+const APP_VERSION = '2026.11.10-fabs-speed';
 const H2C_URL = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
 const DIAG = { errors:[], actions:[] };   // last 10 of each, for bug reports
 function pushDiag(list, item){ list.push(item); if (list.length>10) list.shift(); }
@@ -4119,11 +4123,18 @@ function placeSegs(){
   });
 }
 window.addEventListener('resize', ()=>{ queueDots(); placeSegs(); });
-// The + and Alfred buttons tuck away while you scroll down (so they never sit on top of what you're reading) and come back when you scroll up.
-let lastY=0;
+// The + and Alfred buttons tuck away while you scroll down quickly (so they never sit on top of what you're reading) and come
+// back as soon as the scroll slows to a crawl, when you scroll up, near the top, or 150ms after it stops (Nov 10). The speed is
+// smoothed (px per ms) so one jumpy event doesn't flip them; hide above 0.35 px/ms (350 px/s) down, show again below 0.15.
+let lastY=0, lastT=0, scrollV=0, fabsT=0;
 window.addEventListener('scroll', ()=>{
-  const y=window.scrollY; if (Math.abs(y-lastY)<8) return;
-  document.body.classList.toggle('fabs-away', y>lastY && y>80 && !REDUCED); lastY=y;
+  const y=window.scrollY, now=performance.now(), dt=Math.max(1, now-(lastT||now-16));
+  scrollV = (lastT && now-lastT<200) ? scrollV*0.6 + ((y-lastY)/dt)*0.4 : 0;
+  lastY=y; lastT=now;
+  const away=document.body.classList.contains('fabs-away');
+  const want = REDUCED || y<=80 ? false : scrollV>0.35 ? true : scrollV<0.15 ? false : away;
+  if (want!==away) document.body.classList.toggle('fabs-away', want);
+  clearTimeout(fabsT); fabsT=setTimeout(()=>{ scrollV=0; document.body.classList.remove('fabs-away'); }, 150);
 }, { passive:true });
 new MutationObserver(()=>{
   queueDots(); placeSegs();
