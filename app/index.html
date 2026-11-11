@@ -19,7 +19,7 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" type="image/png" href="icon-192.png">
-<script>window.HUDDLE_WEB={"api":"https://script.google.com/macros/s/AKfycbzM8K_-XRMDdOJYJ3THn_FhyZkRreMddHIBAOFCFVoq5S_Y7MnsfFLsl7ac_fyDPrch/exec","clientId":"473377418367-cqmmnfum4kshq16973m4sj2jqqfa55p0.apps.googleusercontent.com","build":"943157e"};document.documentElement.classList.add('web');</script>
+<script>window.HUDDLE_WEB={"api":"https://script.google.com/macros/s/AKfycbzM8K_-XRMDdOJYJ3THn_FhyZkRreMddHIBAOFCFVoq5S_Y7MnsfFLsl7ac_fyDPrch/exec","clientId":"473377418367-cqmmnfum4kshq16973m4sj2jqqfa55p0.apps.googleusercontent.com","build":"fd6d178"};document.documentElement.classList.add('web');</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <!-- The fonts load without holding up the first paint; the page shows in the phone's own font for a moment if needed. -->
@@ -839,6 +839,40 @@
   html.vt-page::view-transition-new(root) { animation:vtIn .3s cubic-bezier(.2,.8,.2,1) both; }
   html.vt-page::view-transition-old(root) { animation:vtOut .18s ease both; }
   nav.bottom { view-transition-name:tabbar; } .fab { view-transition-name:fab; } .alf-fab { view-transition-name:alfred; }
+  /* Nov 10 (Batch 2): one set of motion tokens, and every screen change slides in 0.25s (Brayden's choice).
+     Push (into a screen from More, Settings or a banner): the new page slides in from the right over the old one, which
+     moves a third of the way left and dims. Pop (‹ Back): the reverse. Tabs: the new tab slides in from the side of the tab
+     you tapped while the old one slides out the other way. The tab bar, + and Alfred stay put. */
+  :root { --ease-ios:cubic-bezier(.32,.72,0,1); --ease-out:cubic-bezier(.2,.8,.2,1); --ease-in:cubic-bezier(.4,0,1,1); --d-nav:.25s; }
+  @keyframes navInRight { from { transform:translateX(100%); } }
+  @keyframes navInLeft { from { transform:translateX(-100%); } }
+  @keyframes navOutLeft { to { transform:translateX(-100%); } }
+  @keyframes navOutRight { to { transform:translateX(100%); } }
+  @keyframes navUnder { to { transform:translateX(-30%); filter:brightness(.9); } }
+  @keyframes navFromUnder { from { transform:translateX(-30%); filter:brightness(.9); } }
+  html.vt-push::view-transition-old(root), html.vt-push::view-transition-new(root), html.vt-pop::view-transition-old(root), html.vt-pop::view-transition-new(root),
+  html.vt-tab-r::view-transition-old(root), html.vt-tab-r::view-transition-new(root), html.vt-tab-l::view-transition-old(root), html.vt-tab-l::view-transition-new(root) { mix-blend-mode:normal; }
+  html.vt-push::view-transition-old(root) { animation:navUnder var(--d-nav) var(--ease-ios) both; }
+  html.vt-push::view-transition-new(root) { animation:navInRight var(--d-nav) var(--ease-ios) both; }
+  html.vt-pop::view-transition-old(root) { animation:navOutRight var(--d-nav) var(--ease-ios) both; z-index:1; }
+  html.vt-pop::view-transition-new(root) { animation:navFromUnder var(--d-nav) var(--ease-ios) both; }
+  html.vt-tab-r::view-transition-old(root) { animation:navOutLeft var(--d-nav) var(--ease-ios) both; }
+  html.vt-tab-r::view-transition-new(root) { animation:navInRight var(--d-nav) var(--ease-ios) both; }
+  html.vt-tab-l::view-transition-old(root) { animation:navOutRight var(--d-nav) var(--ease-ios) both; }
+  html.vt-tab-l::view-transition-new(root) { animation:navInLeft var(--d-nav) var(--ease-ios) both; }
+  /* During a screen change the switch pills move with their page (not as separate pieces). */
+  html.vt-push .seg, html.vt-pop .seg, html.vt-tab-r .seg, html.vt-tab-l .seg { view-transition-name:none !important; }
+  /* More is a page (Batch 2, LB-2): one grouped list like the iPhone's Settings. */
+  .more-menu { gap:0; border:1px solid var(--line); border-radius:12px; overflow:hidden; background:var(--card); }
+  .more-menu button { border:none; border-radius:0; border-top:1px solid var(--line-soft); }
+  .more-menu button:first-child { border-top:none; }
+  .more-menu .chev { margin-left:auto; color:var(--muted); font-size:20px; line-height:1; }
+  /* Computer top tabs: one gold underline that slides to the tab you pick. */
+  nav.top { position:relative; }
+  nav.top .top-ind { position:absolute; left:0; bottom:0; height:3px; border-radius:2px; background:var(--gold); pointer-events:none; transition:transform var(--d-nav) var(--ease-ios), width var(--d-nav) var(--ease-ios); }
+  nav.top.has-ind button.on { border-bottom-color:transparent; }
+  /* The edge swipe back moves the page with the finger. */
+  main.edge-drag { will-change:transform; }
   ::view-transition-old(tabbar), ::view-transition-old(fab), ::view-transition-old(alfred) { display:none; }
   ::view-transition-new(tabbar), ::view-transition-new(fab), ::view-transition-new(alfred) { animation:none; }
   ::view-transition-group(tabbar), ::view-transition-group(fab), ::view-transition-group(alfred) { animation:none; }
@@ -1654,16 +1688,16 @@ function renderNav(){
   const rc=S.data.tasks.filter(t=>t.status==='Needs Review').length;
   const badge = rc && S.data.isApprover ? '<span class="count">'+rc+'</span>' : '';
   // LB-11: on a computer, Change Requests, Recently Deleted, Settings and Account live in one labeled More menu.
-  const inMenu = ['settings','requests','deleted','admin'].indexOf(S.view)>=0;
+  const inMenu = ['more','settings','requests','deleted','admin'].indexOf(S.view)>=0;
   document.getElementById('navTop').innerHTML = TABS.filter(([k])=>k!=='review' || S.data.isApprover).map(([k,l])=>'<button type="button" class="'+(S.view===k||(k==='meetings'&&S.view==='live')?'on':'')+'" data-act="go" data-view="'+k+'">'+l+(k==='review'?badge:'')+'</button>').join('')
-    + '<button type="button" class="morebtn'+(inMenu?' on':'')+'" data-act="more" aria-haspopup="dialog">More'+ICON.chevron+'</button>';
+    + '<button type="button" class="morebtn'+(inMenu?' on':'')+'" data-act="go" data-view="more">More</button>';
   renderLivebar();
-  const inMore = ['topics','review','deleted','settings','requests','admin'].indexOf(S.view)>=0, inMeet = S.view==='meetings' || S.view==='live';
+  const inMore = ['more','topics','review','deleted','settings','requests','admin'].indexOf(S.view)>=0, inMeet = S.view==='meetings' || S.view==='live';
   // The tab bar is drawn once; after that only the highlight moves, so nothing flashes and the highlight slides.
   const BT=[['mine','My Tasks'],['team','Team Tasks'],['meetings','Meetings'],['more','More']], nb=document.getElementById('navBottom');
   let tabs=nb.querySelector('.tabs');
   if (!tabs) {
-    nb.innerHTML='<div class="tabs"><span class="ind" aria-hidden="true"></span>'+BT.map(([k,l])=>'<button type="button" data-act="'+(k==='more'?'more':'go')+'" data-view="'+k+'">'+ICON[k]+'<span>'+l+'</span></button>').join('')+'</div>';
+    nb.innerHTML='<div class="tabs"><span class="ind" aria-hidden="true"></span>'+BT.map(([k,l])=>'<button type="button" data-act="go" data-view="'+k+'">'+ICON[k]+'<span>'+l+'</span></button>').join('')+'</div>';
     tabs=nb.querySelector('.tabs');
   }
   let at=-1;
@@ -1674,15 +1708,39 @@ function renderNav(){
   });
   const ind=tabs.querySelector('.ind');
   ind.style.opacity=at<0?'0':''; if (at>=0) ind.style.transform='translateX('+(at*100)+'%)';
+  // Computer: the gold underline slides from the last tab to this one.
+  const nt=document.getElementById('navTop'), on=nt && nt.querySelector('button.on');
+  if (nt && on && nt.offsetWidth) {
+    const ti=document.createElement('span'); ti.className='top-ind'; ti.setAttribute('aria-hidden','true'); nt.appendChild(ti); nt.classList.add('has-ind');
+    const to={ x:on.offsetLeft, w:on.offsetWidth }, from=S.topInd||to;
+    ti.style.transition='none'; ti.style.width=from.w+'px'; ti.style.transform='translateX('+from.x+'px)'; void ti.offsetWidth;
+    ti.style.transition=''; ti.style.width=to.w+'px'; ti.style.transform='translateX('+to.x+'px)'; S.topInd=to;
+  }
 }
 // Cross-fade a redraw with the browser's View Transitions (iOS 18+); older browsers just redraw.
-const VT_ACTS=new Set(['ttab','go','back','quick','person','layout','reset-filters','owner','set','tp-status','tp-owner','mtab','lv-owner','lv-due','due-quick',
+const VT_ACTS=new Set(['ttab','go','back','layout','owner','set','tp-status','tp-owner','mtab','lv-owner','lv-due','due-quick',
   'remind-days','req-toggle','pref-set','team-set','text-size','theme-set','lv-next','lv-prev','lv-motive-swap','lv-one','lv-rate','search-close']);
 function canMorph(){ return !REDUCED && typeof document.startViewTransition==='function' && !document.hidden; }
-function morph(fn, page){
-  const root=document.documentElement; root.classList.toggle('vt-page', !!page);
-  try { S.vt=document.startViewTransition(()=>{ fn(); }); S.vt.ready.catch(()=>{}); S.vt.finished.catch(()=>{}).finally(()=>{ S.vt=null; root.classList.remove('vt-page'); }); }
+// kind: 'push' / 'pop' (into a screen and back), 'tab-r' / 'tab-l' (a tab to the right / left), 'page' (other screen
+// changes) or nothing (an in-place cross-fade).
+const NAV_KINDS=['vt-page','vt-push','vt-pop','vt-tab-r','vt-tab-l'];
+function morph(fn, kind){
+  const root=document.documentElement; NAV_KINDS.forEach(c=>root.classList.remove(c));
+  if (kind) root.classList.add('vt-'+(kind===true?'page':kind));
+  try { S.vt=document.startViewTransition(()=>{ fn(); }); S.vt.ready.catch(()=>{}); S.vt.finished.catch(()=>{}).finally(()=>{ S.vt=null; NAV_KINDS.forEach(c=>root.classList.remove(c)); }); }
   catch (err) { S.vt=null; fn(); }
+}
+// Where a screen sits, left to right, so a tab change knows which way to slide.
+const NAV_ORDER={ mine:0, team:1, review:2, meetings:3, live:3, more:4, requests:4, deleted:4, settings:4, admin:4 };
+function navKind(el){
+  const a=el.dataset.act;
+  if (a==='back') return 'pop';
+  if (a!=='go') return null;
+  if (el.dataset.back) return 'push';
+  const v=el.dataset.view==='topics'?'meetings':el.dataset.view, from=NAV_ORDER[S.view], to=NAV_ORDER[v];
+  if (v==='live') return 'push';
+  if (from==null || to==null || from===to) return 'page';
+  return to>from ? 'tab-r' : 'tab-l';
 }
 // back: the screen this one was reached from ('More', 'Settings', 'My Tasks'), shown as "‹ More" above the title (AP-1).
 function go(v, back){
@@ -1692,12 +1750,16 @@ function go(v, back){
   if (v!==S.view) { S.q=''; S.status='open'; S.priority=''; S.meeting=''; S.sort='due'; S.person=''; S.searchOpen=false; }
   const t0=performance.now();
   if (v==='live' && S.view!=='live') S.liveAt=Date.now();
-  S.view=v; S.back=back||null; S.quick=''; closeSheet(true); render(); window.scrollTo(0,0);
+  // Each tab remembers where you'd scrolled (AP-6); screens you push into start at the top.
+  const TABV={ mine:1, team:1, meetings:1, more:1 }; S.scrollMem=S.scrollMem||{};
+  if (TABV[S.view] && !S.back) S.scrollMem[S.view]=window.scrollY;
+  const keepY=(!back && TABV[v] && v!==S.view) ? (S.scrollMem[v]||0) : 0;
+  S.view=v; S.back=back||null; S.quick=''; closeSheet(true); render(); window.scrollTo(0,keepY);
   requestAnimationFrame(()=>{ S.lastNav={ view:v, ms:Math.round(performance.now()-t0) }; });
 }
 function backLink(){ return S.back ? '<button type="button" class="back" data-act="back">‹ '+esc(S.back)+'</button>' : ''; }
 function goBack(){
-  if (S.back==='More') { S.sheet='more'; showSheet(); }
+  if (S.back==='More') go('more');
   else if (S.back==='Settings') go('settings', 'More');
   else go('mine');
 }
@@ -1714,9 +1776,34 @@ function heldRedraw(kind){
   REDRAW_T=setTimeout(()=>{ REDRAW_HOLD=0; const p=REDRAW_PAGE, sh=REDRAW_SHEET; REDRAW_PAGE=REDRAW_SHEET=false; if (p) render(); if (sh && S.sheet) renderSheet(); }, Math.max(0, REDRAW_HOLD-performance.now()));
   return true;
 }
+// MO-5: when the same screen redraws (finish, add, delete, undo, filter, sort, refresh), rows slide from where they were to
+// where they are now, and new rows fade in. Rows are matched by data-id. Screen changes use the slide instead.
+function flipSnap(){
+  const out={}; document.querySelectorAll('#main article.task[data-id], #main .card[data-id]').forEach(el=>{
+    const r=el.getBoundingClientRect(); if (r.bottom>-200 && r.top<innerHeight+200 && el.dataset.id) out[el.dataset.id]=r.top; });
+  return out;
+}
+function flipPlay(before){
+  const ids=Object.keys(before); if (!ids.length) return;
+  document.querySelectorAll('#main article.task[data-id], #main .card[data-id]').forEach(el=>{
+    const r=el.getBoundingClientRect(); if (r.bottom<-200 || r.top>innerHeight+200) return;
+    const old=before[el.dataset.id];
+    if (old==null) { el.animate([{ opacity:0, transform:'scale(.98)' }, { opacity:1, transform:'none' }], { duration:220, easing:'cubic-bezier(.2,.8,.2,1)' }); return; }
+    const dy=old-r.top; if (Math.abs(dy)<1) return;
+    el.animate([{ transform:'translateY('+dy+'px)' }, { transform:'none' }], { duration:300, easing:'cubic-bezier(.2,.8,.2,1)' });
+  });
+}
 function render(){
   if (!S.data) return;
   if (heldRedraw('page')) return;
+  const key=S.view+'|'+(S.mtab||'')+'|'+(S.ttab||'');
+  const snap=(S.flipKey===key && !REDUCED && !S.vt && !document.hidden && document.body.animate) ? flipSnap() : null;
+  S.flipKey=key;
+  renderPage();
+  placeSegs();   // pill highlights are in place before anything animates
+  if (snap) flipPlay(snap);
+}
+function renderPage(){
   renderNav();
   // The same wide + button starts a task on task screens and a meeting on the Meetings tab.
   const fab=document.getElementById('fab'), onMeetings=S.view==='meetings';
@@ -1732,6 +1819,7 @@ function render(){
   syncWakeLock();
   updateAlfredFab();
   const m=document.getElementById('main');
+  if (S.view==='more') return renderMore(m);
   if (S.view==='review') return renderReview(m);
   if (S.view==='topics') return renderTopics(m);
   if (S.view==='meetings') return renderMeetings(m);
@@ -1741,6 +1829,20 @@ function render(){
   if (S.view==='requests') return renderRequests(m);
   if (S.view==='admin') return renderAdmin(m);
   renderTasks(m);
+}
+
+/* ---------- More (a page since Nov 10, Batch 2) ---------- */
+// LB-2: one grouped list. Each row pushes its screen; "‹ More" pops back here. Phones also get Review (approvers);
+// computers have Review as a top tab.
+function renderMore(m){
+  const rc=reviewCount();
+  const row=(view,icon,l,d,extra)=>'<button type="button" '+(view==='account'?'data-act="account"':'data-act="go" data-view="'+view+'" data-back="More"')+'><span class="menu-ico">'+icon+'</span><span class="grow">'+l+'<small>'+d+'</small></span>'+(extra||'')+'<span class="chev" aria-hidden="true">›</span></button>';
+  m.innerHTML='<div class="head-row"><h2>More</h2></div><div class="menu more-menu">'
+    +(isPhone() && S.data.isApprover ? row('review',ICON.review,'Review','Meeting tasks waiting for approval', rc?'<span class="count">'+rc+'</span>':'') : '')
+    +row('requests',ICON.requests,'Change Requests','Feature requests and bug reports sent from the Alfred chat')
+    +row('deleted',ICON.deleted,'Recently Deleted','Restore deleted tasks, meetings and Parking Lot topics')
+    +row('settings',GEAR,'Settings','Notifications, text size, light or dark mode')
+    +row('account',avatar(S.data.me,30),'Account',esc(S.data.me))+'</div>';
 }
 
 /* ---------- task lists ---------- */
@@ -2021,6 +2123,12 @@ function setStatus(id, status, opts){
   if (status==='Done' && !(opts && opts.quiet)) haptic();   // a tap you can feel (the box tap does its own)
   if (status==='Done' && row && !S.sheet && !REDUCED) finishRow(row);
   else if (status==='Done' && card && !REDUCED) { card.classList.add('celebrate'); setTimeout(render, 750); }
+  else if (row && !S.sheet && !REDUCED) {
+    // MO-4: the box changes where you tapped it (its fill eases in, with a small spring), then the list catches up.
+    const c=row.querySelector('.circ'); if (c) { c.classList.remove('on','prog','blk'); if (status==='In Progress') c.classList.add('prog'); else if (status==='Blocked') c.classList.add('blk');
+      if (c.animate) c.animate([{ transform:'scale(.88)' }, { transform:'scale(1.08)', offset:.55 }, { transform:'scale(1)' }], { duration:300, easing:'ease-out' }); }
+    setTimeout(render, 320);
+  }
   else render();
   if (S.sheet==='task' && S.edit && S.edit.task.id===id) { S.edit.task.status=status; renderSheet(); }
   if (S.sheet==='meeting') renderSheet();
@@ -2164,7 +2272,7 @@ function closeSheet(silent){
     sh.style.transition=''; sh.style.transform='';
     w.classList.remove('enter','opening'); w.classList.add('leave'); w.classList.toggle('dragged', dragged);
     clearTimeout(S.closeT);
-    S.closeT=setTimeout(()=>{ w.hidden=true; w.classList.remove('leave','dialog','dragged'); }, 290);
+    S.closeT=setTimeout(()=>{ w.hidden=true; w.classList.remove('leave','dialog','dragged'); const bd=w.querySelector('.backdrop'); if (bd) bd.style.opacity=''; }, 290);
   }
   if (!silent) render();
 }
@@ -2172,7 +2280,7 @@ function renderSheet(){
   if (heldRedraw('sheet')) return;
   renderSheetBody();
   const el=document.getElementById('sheet'), h=el.querySelector('h3');
-  el.setAttribute('aria-label', h ? h.textContent : S.sheet==='more' ? 'More' : 'Panel');
+  el.setAttribute('aria-label', h ? h.textContent : 'Panel');
   placeSegs();   // the pill highlight goes straight to its spot before anything measures the panel
   ['f-title','lv-title'].forEach(i=>{ const b=document.getElementById(i); if (b) autoGrow(b, 240); });   // BUG-2: long titles show in full
   if (S.afterSheet) { const f=S.afterSheet; S.afterSheet=null; f(); }
@@ -2250,19 +2358,6 @@ function renderSheetBody(){
       : '<div class="menu mt-s"><a class="menu-link" href="https://accounts.google.com/AccountChooser?continue='+encodeURIComponent(S.data.appUrl)+'" target="_top">'
       +'<span class="menu-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3l4 4-4 4"/><path d="M20 7H9a5 5 0 0 0-5 5"/><path d="M8 21l-4-4 4-4"/><path d="M4 17h11a5 5 0 0 0 5-5"/></svg></span>'
       +'<span>Switch Google Account<small>For a shared computer, or if this shows the wrong person</small></span></a></div>');
-    return;
-  }
-  // LB-11: each thing in one place. Phones: everything that isn't a tab. Computers: what isn't a top tab.
-  if (S.sheet==='more') {
-    const phone=isPhone(), rc=reviewCount();
-    const item=(view,icon,l,d,extra)=>'<button type="button" '+(view==='account'?'data-act="account"':'data-act="go" data-view="'+view+'" data-back="More"')+'><span class="menu-ico">'+icon+'</span><span class="grow">'+l+'<small>'+d+'</small></span>'+(extra||'')+'</button>';
-    el.innerHTML='<div class="grab" data-act="close-sheet"></div><div class="sheet-head"><h3>More</h3><button type="button" class="btn ghost sm" data-act="close-sheet">Done</button></div><div class="menu">'
-      +(phone && S.data.isApprover ? item('review',ICON.review,'Review','Meeting tasks waiting for approval', rc?'<span class="count">'+rc+'</span>':'') : '')
-
-      +item('requests',ICON.requests,'Change Requests','Feature requests and bug reports sent from the Alfred chat')
-      +item('deleted',ICON.deleted,'Recently Deleted','Restore deleted tasks, meetings and Parking Lot topics')
-      +item('settings',GEAR,'Settings','Notifications, text size, light or dark mode')
-      +item('account',avatar(S.data.me,30),'Account',esc(S.data.me))+'</div>';
     return;
   }
   const t=S.edit.task, sel=owners(t), d=S.edit.detail, isNew=S.edit.isNew;
@@ -3496,7 +3591,7 @@ async function liveAddItem(el){
 /* ---------- Alfred chat bubble ---------- */
 // The conversation lives only in this page (S.alf) and is gone after a reload. Every message carries the screen
 // context below, and the screenshot taken when the bubble was tapped, so nobody has to describe where they were.
-const APP_VERSION = '2026.11.10-parking-lot';
+const APP_VERSION = '2026.11.10-batch2';
 const H2C_URL = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
 const DIAG = { errors:[], actions:[] };   // last 10 of each, for bug reports
 function pushDiag(list, item){ list.push(item); if (list.length>10) list.shift(); }
@@ -3979,10 +4074,12 @@ document.addEventListener('click', e=>{
     // Nov 10: a tap inside an open panel, or on a switch pill, animates in place (softAct) instead of cross-fading the whole page.
     // The page cross-fade drew the tab bar over the open panel for a moment and fought the pill's slide.
     const pageNav=el.dataset.act==='go' || el.dataset.act==='back';
+    // Tapping the tab you're already on scrolls back to the top, like the iPhone (AP-6).
+    if (el.dataset.act==='go' && el.closest('nav') && el.dataset.view===S.view && !S.back) { window.scrollTo({ top:0, behavior:'smooth' }); return; }
     const whole=el.dataset.act==='theme-set' || el.dataset.act==='text-size';   // these restyle everything: cross-fade the page
     const inSheet=!pageNav && !whole && el.closest('#sheet'), inSeg=!pageNav && !whole && !inSheet && el.closest('.seg');
     if (inSheet || inSeg) { softAct(()=>actClick(e, el), inSheet ? document.getElementById('sheet') : document.getElementById('main'), !!inSeg, el); return; }
-    if (canMorph()) { morph(()=>actClick(e, el), pageNav); return; }
+    if (canMorph()) { morph(()=>actClick(e, el), pageNav ? navKind(el) : null); return; }
   }
   actClick(e, el);
 });
@@ -4033,12 +4130,12 @@ function actClick(e, el){
     mineOrConfirm(t, next, ()=>{ haptic(); setStatus(id, next, { quiet:true }); }); }
   else if (a==='sortfilter') { S.sheet='sortfilter'; showSheet(); }
   else if (a==='sf') { S[el.dataset.key]=v; closeSheet(); }
-  else if (a==='search-open') { S.searchOpen=true; render(); const q=document.getElementById('q'); if (q) q.focus(); }
+  else if (a==='search-open') { S.searchOpen=true; render(); const q=document.getElementById('q'); if (q) { q.focus();
+    const lab=q.closest('label'); if (lab && lab.animate && !REDUCED) { const h=lab.offsetHeight; lab.animate([{ height:'0px', opacity:0, overflow:'hidden' }, { height:h+'px', opacity:1, overflow:'hidden' }], { duration:250, easing:'cubic-bezier(.2,.8,.2,1)' }); } } }
   else if (a==='search-close') { S.searchOpen=false; S.q=''; render(); }
   else if (a==='add-details') { S.edit.showDetails=true; renderSheet(); const f=document.getElementById('f-details'); if (f) f.focus(); }
   else if (a==='reload-view') { S.topicsFailed=false; S.teamFailed=false; render(); }
   else if (a==='reload-detail') { if (S.edit) { S.edit.detailErr=false; renderSheet(); loadDetail(S.edit.task.id); } }
-  else if (a==='more') { S.sheet='more'; showSheet(); }
   else if (a==='new') newTask();
   else if (a==='task') openTask(id);
   else if (a==='close-sheet') { if (S.sheet==='liveitem') { S.lvOwners=[]; S.lvDue=null; S.lvCid=null; } closeSheet(); }
@@ -4090,7 +4187,7 @@ function actClick(e, el){
   else if (a==='tour-open') startCoach();
   else if (a==='mtab') { S.mtab=v; render(); }
   else if (a==='lv-new') { if (S.live) { S.view='live'; S.liveAt=Date.now(); render(); } else { S.sheet='newmeeting'; showSheet(); } }
-  else if (a==='lv-start') { S.pendingType=v; S.sheet='otter'; showSheet(); }
+  else if (a==='lv-start') { S.pendingType=v; if (S.sheet && !REDUCED) { closeSheet(true); setTimeout(()=>{ S.sheet='otter'; showSheet(); }, 290); } else { S.sheet='otter'; showSheet(); } }
   else if (a==='lv-confirm') startLive(S.pendingType, true);
   else if (a==='lv-pause') liveAct(livePause);
   else if (a==='lv-next') { const gate=reviewGate(S.live); if (gate) askLive('New Dates Needed', gate, 'OK', null, null, { single:true }); else liveAct(st=>liveStep(st, 1)); }
@@ -4159,7 +4256,7 @@ document.addEventListener('keydown', e=>{
 let swipe=null;
 document.addEventListener('touchstart', e=>{
   const card=e.target.closest && e.target.closest('article.task');
-  if (!card || e.target.closest('select, a, button') || pref('lt-swipe','on')==='off') return;
+  if (!card || e.target.closest('select, a, button') || pref('lt-swipe','on')==='off' || e.touches[0].clientX<20) return;   // the left edge is the swipe back
   const t=find(card.dataset.id); if (!t || !isOpen(t)) return;
   swipe={ card:card, x:e.touches[0].clientX, y:e.touches[0].clientY, dx:0, on:false };
 }, { passive:true });
@@ -4177,7 +4274,9 @@ document.addEventListener('touchend', ()=>{
   const s=swipe; swipe=null;
   if (!s.on) return;
   S.swiped=true; setTimeout(()=>{ S.swiped=false; }, 400);
-  s.card.classList.remove('swiping'); s.card.style.transform='';
+  s.card.classList.remove('swiping');
+  if (s.dx<=90 && s.card.animate && !REDUCED) s.card.animate([{ transform:'translateX('+s.dx+'px)' }, { transform:'none' }], { duration:220, easing:'cubic-bezier(.2,.8,.2,1)' });
+  s.card.style.transform='';
   if (s.dx>90) { const t=find(s.card.dataset.id), card=s.card; mineOrConfirm(t, 'Done', ()=>{ haptic(); setStatus(card.dataset.id, 'Done', { quiet:true }); }, ()=>card.classList.remove('swipe-ready')); } else s.card.classList.remove('swipe-ready');
 });
 
@@ -4223,11 +4322,42 @@ async function fullRefresh(){
   S.refreshing=false;
 }
 
+// MO-1: a swipe from the left edge goes back on any screen with "‹ Back", with the page following the finger.
+let edge=null;
+document.addEventListener('touchstart', e=>{
+  if (!S.back || S.sheet || (S.alf && S.alf.open) || S.view==='live' || REDUCED || e.touches[0].clientX>20) return;
+  edge={ x:e.touches[0].clientX, y:e.touches[0].clientY, dx:0, on:false, hist:[{ x:e.touches[0].clientX, t:performance.now() }] };
+}, { passive:true });
+document.addEventListener('touchmove', e=>{
+  if (!edge) return;
+  const dx=e.touches[0].clientX-edge.x, dy=e.touches[0].clientY-edge.y, m=document.getElementById('main');
+  if (!edge.on) { if (Math.abs(dy)>Math.abs(dx) && Math.abs(dy)>8) { edge=null; return; } if (dx<10) return; edge.on=true; m.classList.add('edge-drag'); }
+  e.preventDefault();
+  edge.dx=Math.max(0, dx); edge.hist.push({ x:e.touches[0].clientX, t:performance.now() }); if (edge.hist.length>4) edge.hist.shift();
+  m.style.transform='translateX('+edge.dx+'px)';
+}, { passive:false });
+document.addEventListener('touchend', ()=>{
+  if (!edge) return;
+  const g=edge; edge=null; if (!g.on) return;
+  const m=document.getElementById('main'), w=window.innerWidth, a=g.hist[0], b=g.hist[g.hist.length-1], v=(b.x-a.x)/Math.max(1, b.t-a.t);
+  m.classList.remove('edge-drag');
+  if (g.dx>w*0.35 || (v>0.5 && g.dx>30)) {
+    m.animate([{ transform:'translateX('+g.dx+'px)' }, { transform:'translateX('+w+'px)' }], { duration:160, easing:'cubic-bezier(.4,0,1,1)' }).onfinish=()=>{
+      m.style.transform=''; goBack();
+      const n=document.getElementById('main'); if (n && n.animate) n.animate([{ transform:'translateX(-30%)', filter:'brightness(.9)' }, { transform:'none', filter:'none' }], { duration:250, easing:'cubic-bezier(.32,.72,0,1)' });
+    };
+    m.style.transform='translateX('+w+'px)';
+  } else {
+    m.animate([{ transform:'translateX('+g.dx+'px)' }, { transform:'none' }], { duration:250, easing:'cubic-bezier(.32,.72,0,1)' });
+    m.style.transform='';
+  }
+});
+
 let pull=null;
 document.addEventListener('touchstart', e=>{
   const sheet=e.target.closest && e.target.closest('#sheet');
   if (!sheet || S.sheet==='otter' || sheet.scrollTop>0 || e.target.closest('input, textarea, select')) return;
-  pull={ sheet:sheet, y:e.touches[0].clientY, x:e.touches[0].clientX, dy:0, on:false };
+  pull={ sheet:sheet, y:e.touches[0].clientY, x:e.touches[0].clientX, dy:0, on:false, hist:[{ y:e.touches[0].clientY, t:performance.now() }] };
 }, { passive:true });
 document.addEventListener('touchmove', e=>{
   // While a panel is open, a drag on the dimmed area behind it never moves the page.
@@ -4240,16 +4370,23 @@ document.addEventListener('touchmove', e=>{
     pull.on=true; pull.sheet.style.transition='none'; document.getElementById('sheetWrap').classList.remove('opening');
   }
   e.preventDefault();
-  pull.dy=Math.max(0, dy);
-  pull.sheet.style.transform='translateY('+pull.dy+'px)';
+  pull.dy=dy; pull.hist.push({ y:e.touches[0].clientY, t:performance.now() }); if (pull.hist.length>4) pull.hist.shift();
+  // MO-3: down follows the finger; up stretches a little (rubber band); the dimmed background fades as the panel goes.
+  pull.sheet.style.transform='translateY('+(dy>=0 ? dy : dy*0.2)+'px)';
+  const bd=document.querySelector('#sheetWrap .backdrop'); if (bd) bd.style.opacity=String(Math.max(0, 1-Math.max(0,dy)/(pull.sheet.offsetHeight||600)));
 }, { passive:false });
 document.addEventListener('touchend', ()=>{
   if (!pull) return;
   const p=pull; pull=null;
   if (!p.on) return;
   p.sheet.style.transition='';
-  if (p.dy>90) closeSheet();          // continues smoothly from where the finger let go
-  else p.sheet.style.transform='';    // springs back
+  const h=p.sheet.offsetHeight||600, a=p.hist[0], b=p.hist[p.hist.length-1], v=(b.y-a.y)/Math.max(1, b.t-a.t);   // px per ms
+  const bd=document.querySelector('#sheetWrap .backdrop');
+  if (p.dy>Math.min(90, h*0.25) || (v>0.5 && p.dy>12)) { closeSheet(); return; }   // past a quarter, or a quick flick: close from where it is
+  // Otherwise spring back into place.
+  p.sheet.style.transition='transform .35s cubic-bezier(.34,1.3,.64,1)'; p.sheet.style.transform='';
+  if (bd) { bd.style.transition='opacity .3s ease'; bd.style.opacity=''; setTimeout(()=>{ bd.style.transition=''; }, 320); }
+  setTimeout(()=>{ if (!pull) p.sheet.style.transition=''; }, 360);
 });
 
 document.addEventListener('input', e=>{
@@ -4331,9 +4468,13 @@ window.addEventListener('scroll', ()=>{
   if (want!==away) document.body.classList.toggle('fabs-away', want);
   clearTimeout(fabsT); fabsT=setTimeout(()=>{ scrollV=0; document.body.classList.remove('fabs-away'); }, 150);
 }, { passive:true });
-new MutationObserver(()=>{
-  queueDots(); placeSegs();
-  document.querySelectorAll(PRESSABLE).forEach(b=>{ const v=b.classList.contains('on')?'true':'false'; if (b.getAttribute('aria-pressed')!==v) b.setAttribute('aria-pressed', v); });
+// Once a frame at most, and never for the meeting timers or Alfred's progress line ticking (MO-B10).
+let MO_Q=false;
+new MutationObserver(list=>{
+  if (list.every(m=>{ const n=m.target.nodeType===1?m.target:m.target.parentElement; return n && n.closest && n.closest('#lvStep, #lvTopic, #lvPerson, #lvTotal, #alfProg, #toast'); })) return;
+  if (MO_Q) return; MO_Q=true;
+  requestAnimationFrame(()=>{ MO_Q=false; queueDots(); placeSegs();
+    document.querySelectorAll(PRESSABLE).forEach(b=>{ const v=b.classList.contains('on')?'true':'false'; if (b.getAttribute('aria-pressed')!==v) b.setAttribute('aria-pressed', v); }); });
 }).observe(document.body, { childList:true, subtree:true });
 
 /* ---------- Huddle's own web address (window.HUDDLE_WEB) ---------- */
