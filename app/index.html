@@ -19,7 +19,7 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" type="image/png" href="icon-192.png">
-<script>window.HUDDLE_WEB={"api":"https://script.google.com/macros/s/AKfycbzM8K_-XRMDdOJYJ3THn_FhyZkRreMddHIBAOFCFVoq5S_Y7MnsfFLsl7ac_fyDPrch/exec","clientId":"473377418367-cqmmnfum4kshq16973m4sj2jqqfa55p0.apps.googleusercontent.com","build":"d96d74d"};document.documentElement.classList.add('web');</script>
+<script>window.HUDDLE_WEB={"api":"https://script.google.com/macros/s/AKfycbzM8K_-XRMDdOJYJ3THn_FhyZkRreMddHIBAOFCFVoq5S_Y7MnsfFLsl7ac_fyDPrch/exec","clientId":"473377418367-cqmmnfum4kshq16973m4sj2jqqfa55p0.apps.googleusercontent.com","build":"83f0b85"};document.documentElement.classList.add('web');</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <!-- The fonts load without holding up the first paint; the page shows in the phone's own font for a moment if needed. -->
@@ -1468,12 +1468,12 @@ const BOX={ todo:'<i class="tbox"></i>', prog:'<i class="tbox prog"></i>', blk:'
 const COACH=[
   { view:'mine', h:'Welcome to Huddle', b:'<p>Huddle is one place for the leadership team\'s tasks and meetings. Alfred, our assistant, reads each recorded meeting and writes the summary and the tasks, so nobody has to take notes.</p><p class="muted">Here\'s a quick walk through. It takes about a minute.</p>' },
   { view:'mine', sel:'article.task .circ', h:'The Status Box', b:'<div class="tour-legend"><div>'+BOX.todo+'<span><b>Not Started</b> · every task starts here</span></div><div>'+BOX.prog+'<span><b>Tap once</b> · In Progress</span></div><div>'+BOX.done+'<span><b>Tap again</b> · Done</span></div><div>'+BOX.blk+'<span><b>Blocked</b> · stuck waiting on something</span></div></div><p>Hold the box to start over. Set <b>Blocked</b> under Status inside a task (or at the tactical); a tap on a Blocked box moves it to In Progress. You can also swipe a task to the right to finish it.</p>' },
-  { view:'mine', sel:'article.task .pbar', h:'Priority and Due Date', b:'<div class="tour-legend row"><div><i class="pdot p-high"></i><b>High</b></div><div><i class="pdot p-med"></i><b>Medium</b></div><div><i class="pdot p-low"></i><b>Low</b></div></div><p>The colored bar at the left of each task is its priority, the only color on a task. The date sits under the title; overdue dates are in italics.</p><p>Initials on the right show who else shares a task.</p>' },
+  { view:'mine', sel:'article.task .pbar', h:'Priority and Due Date', b:'<div class="tour-legend row"><div><i class="pdot p-high"></i><b>High</b></div><div><i class="pdot p-med"></i><b>Medium</b></div><div><i class="pdot p-low"></i><b>Low</b></div></div><p>The colored bar at the left of each task is its priority, the only color on a task. The date sits under the title; overdue dates are in italics.</p><p>Initials on the right show who owns the task: yours on top, then anyone who shares it.</p>' },
   { view:'mine', sel:'article.task .title', h:'Task Details', b:'<p>Tap a task to see everything: details, owners, the meeting it came from and comments. Type @ and a name in a comment to email that person.</p>' },
   { view:'mine', sel:'#fab', h:'Add a Task', b:'<p>Tap <b>+</b> to add a task. Give it a title, owners and a due date. Turn on <b>Only Me</b> to keep it to yourself.</p>' },
   { view:'mine', sel:'.head-tools, .toolbar', h:'Search and Filter', b:'<p>Search finds any task. <b>Filter</b> sorts the list and narrows it by status (like <b>Blocked</b>), priority or meeting.</p>' },
   { view:'mine', sel:'nav.bottom [data-view="team"], nav.top [data-view="team"]', h:'Switch to Team Tasks', b:'<p>The tabs at the bottom switch screens. Tap <b>Team Tasks</b> to see what everyone on the team owns.</p>' },
-  { view:'team', sel:'.people', h:'Team Tasks', b:'<p>Everyone\'s tasks in one place, with the owners\' names under each title. The bubble on each person is how many open tasks they have; <b>red</b> means some are overdue. Tap a person to see just their tasks.</p><p>The <b>Action Items | One-on-Ones</b> switch at the top flips to each leader\'s one-on-ones this month, plus how they\'re doing on meeting action items: on time, blocked and slipping (moved twice or more).</p><p>Changing the status of someone else\'s task asks you to confirm first.</p>' },
+  { view:'team', sel:'.people', h:'Team Tasks', b:'<p>Everyone\'s tasks in one place, with each task\'s owners as initials on the right. The bubble on each person is how many open tasks they have; <b>red</b> means some are overdue. Tap a person to see just their tasks.</p><p>The <b>Action Items | One-on-Ones</b> switch at the top flips to each leader\'s one-on-ones this month, plus how they\'re doing on meeting action items: on time, blocked and slipping (moved twice or more).</p><p>Changing the status of someone else\'s task asks you to confirm first.</p>' },
   { view:'team', sel:'.print-btn', h:'Print the Accountability Report', b:'<p>The printer opens the Accountability Report right inside Huddle: everyone\'s open and overdue tasks, ready for the tactical. Tap <b>Print</b> at the top, or <b>Close</b> to come back.</p>' },
   { view:'team', sel:'nav.bottom [data-view="meetings"], nav.top [data-view="meetings"]', h:'Switch to Meetings', b:'<p>Tap <b>Meetings</b> to run the weekly tactical and read every meeting\'s summary.</p>' },
   { view:'meetings', sel:'.start-card, #fab', h:'Run a Meeting', b:'<p>On Meetings, <b>+</b> starts a meeting (on tactical day there\'s a Start Weekly Tactical card too). It walks the agenda step by step, with a timer on everyone\'s phone.</p><p>On the <b>Accountability</b> step, each person\'s meeting action items that are due get a quick update: Done, In Progress, Not Started or Blocked. Anything not done needs a <b>new date</b> before the host can move on.</p>' },
@@ -1892,15 +1892,15 @@ function sourceLink(t){
 }
 // The title is the row's button for VoiceOver and the keyboard (the whole row still opens on a tap).
 function cardTitle(t){ return '<div class="title" role="button" tabindex="0">'+(isPriv(t)?LOCK:'')+esc(t.title)+'</div>'; }
-// LB-1 / LB-3: tap the circle to finish (hold it for In Progress). My Tasks shows only co-owners' avatars; Team Tasks shows owners at 28pt.
+// LB-1 / LB-3: tap the circle to finish (hold it for In Progress). Every row shows all its owners' initials (yours on top on My Tasks).
 // Team Tasks shows owners on every row, so it uses the stacked row: the title gets the full width, details go underneath.
 function taskRows(list, mode){ if (!mode && S.view==='team') mode='stack'; return '<div class="rows'+(mode?' rows-'+mode:'')+'">'+list.map(t=>taskRow(t, mode)).join('')+'</div>'; }
 function taskRow(t, mode){
   const done=t.status==='Done', prog=t.status==='In Progress', blk=t.status==='Blocked';
   // Row layout 1A: a fixed-height priority bar at the far left, the status box, the title with the date under it (gray, italic
-  // when overdue; no line at all when there is no date), and the owners' initials stacked on the right. My Tasks shows only the
-  // other owners, so a bubble there means "shared with"; Team Tasks and meeting summaries show everyone.
-  const all=owners(t), shown=(S.view==='mine' && mode!=='stack') ? all.filter(o=>o!==S.data.me) : all;
+  // when overdue; no line at all when there is no date), and the owners' initials stacked on the right. Everyone shows on every
+  // screen (Nov 10: My Tasks too, with your own bubble on top, so it's always clear whose task it is).
+  const all=owners(t), shown=(S.view==='mine' && all.indexOf(S.data.me)>0) ? [S.data.me].concat(all.filter(o=>o!==S.data.me)) : all;
   const pr=String(t.priority||'').toLowerCase(), date=dateLine(t);
   const review = t.status==='Needs Review' ? 'For '+esc(ownerText(all)||'no one yet') : '';
   const line=[blk?'<span>Blocked</span>':'', date, review].filter(Boolean).join(' · ');
@@ -3361,7 +3361,7 @@ async function liveAddItem(el){
 /* ---------- Alfred chat bubble ---------- */
 // The conversation lives only in this page (S.alf) and is gone after a reload. Every message carries the screen
 // context below, and the screenshot taken when the bubble was tapped, so nobody has to describe where they were.
-const APP_VERSION = '2026.11.10-alfred-anchor';
+const APP_VERSION = '2026.11.10-my-bubble';
 const H2C_URL = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
 const DIAG = { errors:[], actions:[] };   // last 10 of each, for bug reports
 function pushDiag(list, item){ list.push(item); if (list.length>10) list.shift(); }
