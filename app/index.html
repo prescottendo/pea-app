@@ -19,7 +19,7 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" type="image/png" href="icon-192.png">
-<script>window.HUDDLE_WEB={"api":"https://script.google.com/macros/s/AKfycbzM8K_-XRMDdOJYJ3THn_FhyZkRreMddHIBAOFCFVoq5S_Y7MnsfFLsl7ac_fyDPrch/exec","clientId":"473377418367-cqmmnfum4kshq16973m4sj2jqqfa55p0.apps.googleusercontent.com","build":"83f0b85"};document.documentElement.classList.add('web');</script>
+<script>window.HUDDLE_WEB={"api":"https://script.google.com/macros/s/AKfycbzM8K_-XRMDdOJYJ3THn_FhyZkRreMddHIBAOFCFVoq5S_Y7MnsfFLsl7ac_fyDPrch/exec","clientId":"473377418367-cqmmnfum4kshq16973m4sj2jqqfa55p0.apps.googleusercontent.com","build":"25ef2c8"};document.documentElement.classList.add('web');</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <!-- The fonts load without holding up the first paint; the page shows in the phone's own font for a moment if needed. -->
@@ -1669,8 +1669,19 @@ function goBack(){
   else go('mine');
 }
 
+// Nov 10: after an on/off switch is flipped, redraws wait about 300ms so the switch's own slide plays out (holdRedraw).
+let REDRAW_HOLD=0, REDRAW_T=0, REDRAW_SHEET=false, REDRAW_PAGE=false;
+function holdRedraw(){ REDRAW_HOLD=performance.now()+300; }
+function heldRedraw(kind){
+  if (!REDRAW_HOLD || performance.now()>=REDRAW_HOLD) return false;
+  if (kind==='sheet') REDRAW_SHEET=true; else REDRAW_PAGE=true;
+  clearTimeout(REDRAW_T);
+  REDRAW_T=setTimeout(()=>{ REDRAW_HOLD=0; const p=REDRAW_PAGE, sh=REDRAW_SHEET; REDRAW_PAGE=REDRAW_SHEET=false; if (p) render(); if (sh && S.sheet) renderSheet(); }, Math.max(0, REDRAW_HOLD-performance.now()));
+  return true;
+}
 function render(){
   if (!S.data) return;
+  if (heldRedraw('page')) return;
   renderNav();
   // The same wide + button starts a task on task screens and a meeting on the Meetings tab.
   const fab=document.getElementById('fab'), onMeetings=S.view==='meetings';
@@ -2123,6 +2134,7 @@ function closeSheet(silent){
   if (!silent) render();
 }
 function renderSheet(){
+  if (heldRedraw('sheet')) return;
   renderSheetBody();
   const el=document.getElementById('sheet'), h=el.querySelector('h3');
   el.setAttribute('aria-label', h ? h.textContent : S.sheet==='more' ? 'More' : 'Panel');
@@ -3361,7 +3373,7 @@ async function liveAddItem(el){
 /* ---------- Alfred chat bubble ---------- */
 // The conversation lives only in this page (S.alf) and is gone after a reload. Every message carries the screen
 // context below, and the screenshot taken when the bubble was tapped, so nobody has to describe where they were.
-const APP_VERSION = '2026.11.10-my-bubble';
+const APP_VERSION = '2026.11.10-smooth-pills';
 const H2C_URL = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
 const DIAG = { errors:[], actions:[] };   // last 10 of each, for bug reports
 function pushDiag(list, item){ list.push(item); if (list.length>10) list.shift(); }
@@ -3837,9 +3849,42 @@ document.addEventListener('click', e=>{
   // Changes that redraw the screen in place cross-fade (and the tab highlight slides) instead of snapping.
   // A tap that comes while a cross-fade is still starting waits for it, so taps always apply in order.
   if (S.vt) { const vt=S.vt; try { vt.skipTransition(); } catch (err) {} vt.updateCallbackDone.catch(()=>{}).then(()=>actClick(e, el)); return; }
-  if (VT_ACTS.has(el.dataset.act) && S.data && canMorph()) { morph(()=>actClick(e, el), el.dataset.act==='go' || el.dataset.act==='back'); return; }
+  if (VT_ACTS.has(el.dataset.act) && S.data && !REDUCED) {
+    // Nov 10: a tap inside an open panel, or on a switch pill, animates in place (softAct) instead of cross-fading the whole page.
+    // The page cross-fade drew the tab bar over the open panel for a moment and fought the pill's slide.
+    const pageNav=el.dataset.act==='go' || el.dataset.act==='back';
+    const inSheet=!pageNav && el.closest('#sheet'), inSeg=!pageNav && !inSheet && el.closest('.seg');
+    if (inSheet || inSeg) { softAct(()=>actClick(e, el), inSheet ? document.getElementById('sheet') : document.getElementById('main'), !!inSeg); return; }
+    if (canMorph()) { morph(()=>actClick(e, el), pageNav); return; }
+  }
   actClick(e, el);
 });
+// In-place animation for taps in panels and on switch pills (Nov 10). Chips and buttons that change color fade from their old
+// colors to the new ones and give a small pop; the pill's highlight slides (placeSegs); a pill that swaps the content below it
+// fades that content in. Uses the Web Animations API, so it works without View Transitions.
+function softAct(fn, box, fadeContent){
+  const keyOf=b=>[b.dataset.act, b.dataset.email||b.dataset.val||b.dataset.field||b.dataset.id||'', b.textContent.trim().slice(0,40)].join('|');
+  const before=new Map();
+  if (box) box.querySelectorAll('button[data-act]').forEach(b=>{ const cs=getComputedStyle(b); before.set(keyOf(b), [cs.backgroundColor, cs.color, cs.borderColor]); });
+  fn();
+  const now=document.getElementById(box && box.id) || box;
+  if (!now || !now.animate) return;
+  const ease='cubic-bezier(.2,.8,.2,1)';
+  now.querySelectorAll('button[data-act]').forEach(b=>{
+    const old=before.get(keyOf(b)); if (!old) return;
+    const cs=getComputedStyle(b); if (old[0]===cs.backgroundColor && old[1]===cs.color && old[2]===cs.borderColor) return;
+    if (b.closest('.seg')) return;   // the pill's own highlight slides instead
+    b.animate([{ backgroundColor:old[0], color:old[1], borderColor:old[2], transform:'scale(.94)' },
+               { backgroundColor:cs.backgroundColor, color:cs.color, borderColor:cs.borderColor, transform:'scale(1)' }], { duration:240, easing:ease });
+  });
+  if (fadeContent) {
+    const seg=now.querySelector('.seg'); let after=false;
+    [...now.children].forEach(c=>{
+      if (seg && c.contains(seg)) { after=true; return; }
+      if (after) c.animate([{ opacity:0, transform:'translateY(6px)' }, { opacity:1, transform:'none' }], { duration:240, easing:ease });
+    });
+  }
+}
 function actClick(e, el){
   const a=el.dataset.act, id=el.dataset.id, v=el.dataset.val;
   breadcrumb(el);
@@ -4093,7 +4138,7 @@ function switchChanged(a, el){
 }
 document.addEventListener('change', e=>{
   if (e.target.id==='mtg-rewrite') { if (S.mtg) S.mtg.rewrite=e.target.checked; return; }
-  if (e.target.classList && e.target.classList.contains('sw')) { if (S.data) switchChanged(e.target.dataset.act, e.target); return; }
+  if (e.target.classList && e.target.classList.contains('sw')) { if (S.data) { holdRedraw(); switchChanged(e.target.dataset.act, e.target); } return; }
   const k=e.target.dataset && e.target.dataset.change; if (!k) return;
   if (k==='status') setStatus(e.target.dataset.id, e.target.value);
   else if (k==='filter') { S[e.target.dataset.key]=e.target.value; if (S.sheet==='sortfilter') closeSheet(); else render(); }
