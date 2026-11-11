@@ -19,7 +19,7 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" type="image/png" href="icon-192.png">
-<script>window.HUDDLE_WEB={"api":"https://script.google.com/macros/s/AKfycbzM8K_-XRMDdOJYJ3THn_FhyZkRreMddHIBAOFCFVoq5S_Y7MnsfFLsl7ac_fyDPrch/exec","clientId":"473377418367-cqmmnfum4kshq16973m4sj2jqqfa55p0.apps.googleusercontent.com","build":"fd6d178"};document.documentElement.classList.add('web');</script>
+<script>window.HUDDLE_WEB={"api":"https://script.google.com/macros/s/AKfycbzM8K_-XRMDdOJYJ3THn_FhyZkRreMddHIBAOFCFVoq5S_Y7MnsfFLsl7ac_fyDPrch/exec","clientId":"473377418367-cqmmnfum4kshq16973m4sj2jqqfa55p0.apps.googleusercontent.com","build":"f042768"};document.documentElement.classList.add('web');</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <!-- The fonts load without holding up the first paint; the page shows in the phone's own font for a moment if needed. -->
@@ -841,27 +841,20 @@
   nav.bottom { view-transition-name:tabbar; } .fab { view-transition-name:fab; } .alf-fab { view-transition-name:alfred; }
   /* Nov 10 (Batch 2): one set of motion tokens, and every screen change slides in 0.25s (Brayden's choice).
      Push (into a screen from More, Settings or a banner): the new page slides in from the right over the old one, which
-     moves a third of the way left and dims. Pop (‹ Back): the reverse. Tabs: the new tab slides in from the side of the tab
-     you tapped while the old one slides out the other way. The tab bar, + and Alfred stay put. */
+     moves a third of the way left and dims. Pop (‹ Back): the reverse. Switching tabs is instant (only the tab bar's pill
+     slides). The tab bar, + and Alfred stay put. */
   :root { --ease-ios:cubic-bezier(.32,.72,0,1); --ease-out:cubic-bezier(.2,.8,.2,1); --ease-in:cubic-bezier(.4,0,1,1); --d-nav:.25s; }
   @keyframes navInRight { from { transform:translateX(100%); } }
-  @keyframes navInLeft { from { transform:translateX(-100%); } }
-  @keyframes navOutLeft { to { transform:translateX(-100%); } }
   @keyframes navOutRight { to { transform:translateX(100%); } }
   @keyframes navUnder { to { transform:translateX(-30%); filter:brightness(.9); } }
   @keyframes navFromUnder { from { transform:translateX(-30%); filter:brightness(.9); } }
-  html.vt-push::view-transition-old(root), html.vt-push::view-transition-new(root), html.vt-pop::view-transition-old(root), html.vt-pop::view-transition-new(root),
-  html.vt-tab-r::view-transition-old(root), html.vt-tab-r::view-transition-new(root), html.vt-tab-l::view-transition-old(root), html.vt-tab-l::view-transition-new(root) { mix-blend-mode:normal; }
+  html.vt-push::view-transition-old(root), html.vt-push::view-transition-new(root), html.vt-pop::view-transition-old(root), html.vt-pop::view-transition-new(root) { mix-blend-mode:normal; }
   html.vt-push::view-transition-old(root) { animation:navUnder var(--d-nav) var(--ease-ios) both; }
   html.vt-push::view-transition-new(root) { animation:navInRight var(--d-nav) var(--ease-ios) both; }
   html.vt-pop::view-transition-old(root) { animation:navOutRight var(--d-nav) var(--ease-ios) both; z-index:1; }
   html.vt-pop::view-transition-new(root) { animation:navFromUnder var(--d-nav) var(--ease-ios) both; }
-  html.vt-tab-r::view-transition-old(root) { animation:navOutLeft var(--d-nav) var(--ease-ios) both; }
-  html.vt-tab-r::view-transition-new(root) { animation:navInRight var(--d-nav) var(--ease-ios) both; }
-  html.vt-tab-l::view-transition-old(root) { animation:navOutRight var(--d-nav) var(--ease-ios) both; }
-  html.vt-tab-l::view-transition-new(root) { animation:navInLeft var(--d-nav) var(--ease-ios) both; }
   /* During a screen change the switch pills move with their page (not as separate pieces). */
-  html.vt-push .seg, html.vt-pop .seg, html.vt-tab-r .seg, html.vt-tab-l .seg { view-transition-name:none !important; }
+  html.vt-push .seg, html.vt-pop .seg { view-transition-name:none !important; }
   /* More is a page (Batch 2, LB-2): one grouped list like the iPhone's Settings. */
   .more-menu { gap:0; border:1px solid var(--line); border-radius:12px; overflow:hidden; background:var(--card); }
   .more-menu button { border:none; border-radius:0; border-top:1px solid var(--line-soft); }
@@ -1721,9 +1714,9 @@ function renderNav(){
 const VT_ACTS=new Set(['ttab','go','back','layout','owner','set','tp-status','tp-owner','mtab','lv-owner','lv-due','due-quick',
   'remind-days','req-toggle','pref-set','team-set','text-size','theme-set','lv-next','lv-prev','lv-motive-swap','lv-one','lv-rate','search-close']);
 function canMorph(){ return !REDUCED && typeof document.startViewTransition==='function' && !document.hidden; }
-// kind: 'push' / 'pop' (into a screen and back), 'tab-r' / 'tab-l' (a tab to the right / left), 'page' (other screen
+// kind: 'push' / 'pop' (into a screen and back), 'page' (other screen
 // changes) or nothing (an in-place cross-fade).
-const NAV_KINDS=['vt-page','vt-push','vt-pop','vt-tab-r','vt-tab-l'];
+const NAV_KINDS=['vt-page','vt-push','vt-pop'];
 function morph(fn, kind){
   const root=document.documentElement; NAV_KINDS.forEach(c=>root.classList.remove(c));
   if (kind) root.classList.add('vt-'+(kind===true?'page':kind));
@@ -1740,7 +1733,7 @@ function navKind(el){
   const v=el.dataset.view==='topics'?'meetings':el.dataset.view, from=NAV_ORDER[S.view], to=NAV_ORDER[v];
   if (v==='live') return 'push';
   if (from==null || to==null || from===to) return 'page';
-  return to>from ? 'tab-r' : 'tab-l';
+  return 'instant';   // Nov 10: switching tabs doesn't slide (Brayden's choice); only the tab bar's pill moves
 }
 // back: the screen this one was reached from ('More', 'Settings', 'My Tasks'), shown as "‹ More" above the title (AP-1).
 function go(v, back){
@@ -3591,7 +3584,7 @@ async function liveAddItem(el){
 /* ---------- Alfred chat bubble ---------- */
 // The conversation lives only in this page (S.alf) and is gone after a reload. Every message carries the screen
 // context below, and the screenshot taken when the bubble was tapped, so nobody has to describe where they were.
-const APP_VERSION = '2026.11.10-batch2';
+const APP_VERSION = '2026.11.10-tabs-instant';
 const H2C_URL = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
 const DIAG = { errors:[], actions:[] };   // last 10 of each, for bug reports
 function pushDiag(list, item){ list.push(item); if (list.length>10) list.shift(); }
@@ -4079,7 +4072,8 @@ document.addEventListener('click', e=>{
     const whole=el.dataset.act==='theme-set' || el.dataset.act==='text-size';   // these restyle everything: cross-fade the page
     const inSheet=!pageNav && !whole && el.closest('#sheet'), inSeg=!pageNav && !whole && !inSheet && el.closest('.seg');
     if (inSheet || inSeg) { softAct(()=>actClick(e, el), inSheet ? document.getElementById('sheet') : document.getElementById('main'), !!inSeg, el); return; }
-    if (canMorph()) { morph(()=>actClick(e, el), pageNav ? navKind(el) : null); return; }
+    const kind=pageNav ? navKind(el) : null;
+    if (kind!=='instant' && canMorph()) { morph(()=>actClick(e, el), kind); return; }
   }
   actClick(e, el);
 });
