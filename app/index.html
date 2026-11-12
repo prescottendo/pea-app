@@ -19,7 +19,7 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" type="image/png" href="icon-192.png">
-<script>window.HUDDLE_WEB={"api":"https://script.google.com/macros/s/AKfycbzM8K_-XRMDdOJYJ3THn_FhyZkRreMddHIBAOFCFVoq5S_Y7MnsfFLsl7ac_fyDPrch/exec","clientId":"473377418367-cqmmnfum4kshq16973m4sj2jqqfa55p0.apps.googleusercontent.com","build":"f042768"};document.documentElement.classList.add('web');</script>
+<script>window.HUDDLE_WEB={"api":"https://script.google.com/macros/s/AKfycbzM8K_-XRMDdOJYJ3THn_FhyZkRreMddHIBAOFCFVoq5S_Y7MnsfFLsl7ac_fyDPrch/exec","clientId":"473377418367-cqmmnfum4kshq16973m4sj2jqqfa55p0.apps.googleusercontent.com","build":"8346f57"};document.documentElement.classList.add('web');</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <!-- The fonts load without holding up the first paint; the page shows in the phone's own font for a moment if needed. -->
@@ -591,14 +591,12 @@
 
   .alf-wrap { position:fixed; inset:0; z-index:45; display:flex; align-items:flex-end; justify-content:center; }
   .alf-panel { position:relative; width:100%; max-width:640px; min-width:0; height:min(88vh, 860px); display:flex; flex-direction:column; background:var(--page);
-    border-radius:18px 18px 0 0; box-shadow:0 -8px 30px var(--shadow); transition:transform .36s cubic-bezier(.32,.72,0,1), opacity .3s ease; overflow:hidden; }
-  .alf-wrap.enter .backdrop, .alf-wrap.leave .backdrop { opacity:0; }
-  .alf-wrap.enter .alf-panel, .alf-wrap.leave .alf-panel { transform:translateY(105%); }
+    border-radius:18px 18px 0 0; box-shadow:0 -8px 30px var(--shadow); overflow:hidden; }
+  /* Batch 3: the panel's opening (grows from the bubble), closing and drag are driven from the script (showAlfred / closeAlfred). */
   @media (min-width:700px) {
     .alf-wrap { justify-content:flex-end; align-items:stretch; }
     .alf-wrap .backdrop { background:rgba(5,20,36,.18); }
     .alf-panel { width:420px; max-width:100%; height:100%; border-radius:0; border-left:1px solid var(--line); box-shadow:-8px 0 30px var(--shadow); }
-    .alf-wrap.enter .alf-panel, .alf-wrap.leave .alf-panel { transform:translateX(105%); }
   }
   .alf-head { display:flex; align-items:center; gap:12px; padding:12px max(14px, env(safe-area-inset-right, 0px)) 10px 14px; background:var(--header); color:var(--header-ink); flex:none; }
   .alf-head .hat { width:36px; height:36px; border-radius:50%; color:var(--header-ink); display:grid; place-items:center; flex:none; }
@@ -1153,7 +1151,7 @@
   /* Nov 10: a white border so the toast stands apart from the same-colored + and Alfred buttons. */
   .toast { border:2px solid var(--primary-ink); box-shadow:0 6px 20px rgba(0,0,0,.18); }
   /* The Accountability Report opens inside the app (Nov 10): the page color and a spinner while it loads, no white tab. */
-  .report-screen { position:fixed; inset:0; z-index:60; background:var(--page); overflow-y:auto; -webkit-overflow-scrolling:touch; animation:fade .18s ease both; }
+  .report-screen { position:fixed; inset:0; z-index:60; background:var(--page); overflow-y:auto; -webkit-overflow-scrolling:touch; }
   .report-screen .rp-load { position:fixed; inset:0; display:grid; place-items:center; }
   .report-screen .rp-load .spin { width:28px; height:28px; border:3px solid var(--line); border-top-color:var(--heading); border-radius:50%; animation:spin .8s linear infinite; }
   .report-screen .rp-bar { position:sticky; top:0; z-index:1; display:flex; align-items:center; gap:12px; padding:calc(10px + env(safe-area-inset-top, 0px)) 16px 10px; background:var(--page); border-bottom:1px solid var(--line); }
@@ -1196,6 +1194,40 @@
   .si-err { margin:8px 0 0; min-height:1.45em; color:var(--gold); font-size:var(--fs-sub); font-weight:600; line-height:1.45; }
   .si-err:empty { display:none; }
   body.signing-in .alf-fab, body.signing-in .fab { display:none !important; }
+  /* ---------- Batch 3 (Nov 11): motion ---------- */
+  /* One set of motion tokens (the Batch 2 ones plus a gentle spring). linear() is used where the browser has it; older
+     iPhones get the cubic fallback. The script uses the same values (EASE in the main script). */
+  :root { --spring:cubic-bezier(.34,1.3,.64,1); --d-fast:.18s; }
+  @supports (transition-timing-function:linear(0, 1)) {
+    :root { --spring:linear(0, .18 6%, .55 15%, .86 26%, 1.02 38%, 1.04 46%, 1.01 60%, 1); } }
+  /* Timers ease into gold (last minute) and red (over) instead of snapping (MO-8). */
+  .timer, .bigtimer, .step-line span, .tv-timer, .tv-small span { transition:color .4s ease, background-color .4s ease, border-color .4s ease; }
+  /* The live meeting bar collapses in and out (MO-11); while it moves its content stays put. */
+  .livebar.moving { overflow:hidden; }
+  /* TV mode on and off cross-fade (MO-13). */
+  html.vt-fade::view-transition-old(root), html.vt-fade::view-transition-new(root) { animation-duration:.25s; animation-timing-function:ease; }
+  /* A toast follows the finger when it's swiped down (MO-B12). */
+  .toast.dragging { transition:none !important; }
+  /* Numbers that change get a small pop (MO-12): they need a box to scale. */
+  [data-num] { display:inline-grid; }
+  nav.bottom .count[data-num], .fbadge[data-num] { display:inline-grid; place-items:center; }
+  /* "This Isn't Your Task" over an open panel (MO-B9): its own small dialog above the panel. */
+  .ask-over { position:fixed; inset:0; z-index:47; display:grid; place-items:center; padding:24px; }
+  .ask-over .backdrop { background:var(--backdrop); }
+  .ask-over .ask-box { position:relative; width:100%; max-width:380px; background:var(--card); border-radius:18px; padding:24px; box-shadow:0 12px 40px var(--shadow); }
+  .ask-over .ask-box h3 { margin:0 0 8px; }
+  .ask-over .ask-box p { margin:0 0 16px; line-height:1.45; }
+  /* Kinder Reduce Motion (MO-14): nothing slides, scales or springs, but changes still fade in 150-200ms, and the
+     switch and tab pills still move (straight, no overshoot). The script swaps its own movement for fades (motion()). */
+  @media (prefers-reduced-motion: reduce) {
+    .seg-ind, nav.bottom .ind { transition:transform .2s ease, width .2s ease, opacity .2s ease !important; }
+    nav.top .top-ind { transition:transform .2s ease, width .2s ease !important; }
+    .sheet-wrap.opening .sheet, .sheet-wrap.dialog.opening .sheet { animation:fade .18s ease both !important; }
+    .sheet-wrap.leave .sheet, .sheet-wrap.dialog.leave .sheet, .sheet-wrap.leave.dragged .sheet { animation:bdOut .18s ease both !important; transition:none !important; }
+    .sheet-wrap.opening .backdrop { animation:fade .18s ease both !important; }
+    .sheet-wrap.leave .backdrop { animation:bdOut .18s ease both !important; }
+    .timer, .bigtimer, .step-line span { transition:color .2s ease, background-color .2s ease, border-color .2s ease !important; }
+  }
 </style>
 </head>
 <body>
@@ -1250,6 +1282,48 @@ const MARKS = { Low:'<i class="pdot p-low" aria-hidden="true"></i>', Medium:'<i 
 const WEB = window.HUDDLE_WEB && window.HUDDLE_WEB.api ? window.HUDDLE_WEB : null;
 const MOCK = !WEB && !(window.google && google.script && google.script.run);
 const REDUCED = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+// Batch 3 (Nov 11): one set of motion values for the script, the same as the CSS tokens (--ease-ios, --ease-out,
+// --ease-in, --d-nav, --spring). The spring uses linear() where the browser has it, else a cubic with a little overshoot.
+const EASE = { ios:'cubic-bezier(.32,.72,0,1)', out:'cubic-bezier(.2,.8,.2,1)', in:'cubic-bezier(.4,0,1,1)',
+  spring:(window.CSS && CSS.supports && CSS.supports('transition-timing-function','linear(0, 1)')) ? 'linear(0, .18 6%, .55 15%, .86 26%, 1.02 38%, 1.04 46%, 1.01 60%, 1)' : 'cubic-bezier(.34,1.3,.64,1)' };
+// In-place motion goes through motion() (Web Animations, so it works on every iPhone). With Reduce Motion on, the
+// movement is swapped for a short fade: reduced 'in' (the default) fades in, 'out' fades out, false does nothing,
+// or an array of keyframes of its own. Returns the Animation (or null).
+function motion(el, frames, opts, reduced){
+  if (!el || !el.animate) return null;
+  opts=opts||{};
+  try {
+    if (REDUCED) {
+      if (reduced===false) return null;
+      const f = Array.isArray(reduced) ? reduced : reduced==='out' ? [{ opacity:1 }, { opacity:0 }] : [{ opacity:0 }, { opacity:1 }];
+      return el.animate(f, { duration:180, easing:'ease', fill:opts.fill||'none' });
+    }
+    return el.animate(frames, opts);
+  } catch(e){ try { return el.animate(frames, Object.assign({}, opts, { easing:EASE.out })); } catch(err){ return null; } }
+}
+// Runs fn once, when the animation finishes or after ms at the latest (an animation can be cut off).
+function afterAnim(a, ms, fn){ let done=false; const go=()=>{ if (done) return; done=true; fn(); }; if (a) a.onfinish=go; setTimeout(go, a ? ms+80 : 0); }
+// A plain fade (also used with Reduce Motion, where fades are still fine).
+function fadeIn(el, ms, delay){ if (!el || !el.animate || document.hidden) return null; return el.animate([{ opacity:0 }, { opacity:1 }], { duration:ms||200, delay:delay||0, easing:'ease-out', fill:'backwards' }); }
+// MO-10: content that replaces a loading placeholder fades in (~200ms) instead of snapping. fn redraws box; the children
+// of box that weren't there before (compared by their text) fade in. Nothing happens unless box held a placeholder.
+function melt(box, fn){
+  const before=meltSnap(box), r=fn();
+  if (before) meltPlay(box, before);
+  return r;
+}
+const meltKey=c=>c.tagName+'|'+c.textContent.replace(/\s+/g,' ').trim().slice(0,300);
+const isSkel=c=>c.classList.contains('skel') || !!c.querySelector('.skel');
+function meltSnap(box){ return box && box.querySelector && box.querySelector('.skel') ? new Set([...box.children].filter(c=>!isSkel(c)).map(meltKey)) : null; }
+function meltPlay(box, before){ if (box.isConnected) [...box.children].forEach(c=>{ if (!before.has(meltKey(c)) && !isSkel(c)) fadeIn(c, 200); }); }
+// Screens that load their list after drawing a placeholder (Meetings, Decisions, Parking Lot, Recently Deleted, Change
+// Requests) return a promise; once it settles on the same screen, the list melts in.
+function meltAsync(box, p){
+  const before=p && p.then ? meltSnap(box) : null; if (!before) return p;
+  const view=S.view, tab=S.mtab;
+  p.then(()=>{ if (S.view===view && S.mtab===tab && !box.querySelector('.skel')) meltPlay(box, before); }, ()=>{});
+  return p;
+}
 const ICON = {
   mine:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.6 2.5L16 9.5"/></svg>',
   team:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8.5" r="3.2"/><path d="M3.5 19c.6-3 2.8-4.6 5.5-4.6s4.9 1.6 5.5 4.6"/><circle cx="17" cy="9.5" r="2.5"/><path d="M15.5 14.6c2.3.1 4.2 1.5 4.8 4.4"/></svg>',
@@ -1329,10 +1403,48 @@ function toast(msg, undo, opts){
   opts=opts||{};
   toastAfter();   // a newer message replaces the old one, so its Undo is gone: finish what it was holding back
   S.undo = undo || null; S.toastAfter = opts.after || null;
+  const replacing=el.classList.contains('show');
+  el.classList.remove('dragging'); el.style.transform=''; el.style.opacity='';
   el.innerHTML = '<span>'+esc(msg)+'</span>'+(undo?'<button type="button" data-act="undo">'+esc(opts.label||'Undo')+'</button>':'');
-  if (el.classList.contains('show') && el.animate && !REDUCED) el.animate([{ transform:'scale(.95)' }, { transform:'scale(1)' }], { duration:260, easing:'cubic-bezier(.34,1.45,.64,1)' });   // a new message gives a small bump
-  el.classList.add('show'); clearTimeout(toast.t); toast.t=setTimeout(()=>{ el.classList.remove('show'); S.undo=null; toastAfter(); }, undo?8000:2600);
+  if (replacing) {
+    // Batch 3 (MO-B12): a new message cross-fades its text in 150ms, and the toast gives a small bump.
+    [...el.children].forEach(c=>fadeIn(c, 150));
+    motion(el, [{ transform:'scale(.95)' }, { transform:'scale(1)' }], { duration:260, easing:EASE.spring }, false);
+  }
+  el.classList.add('show'); clearTimeout(toast.t); toast.t=setTimeout(toastHide, undo?8000:2600);
 }
+// The toast goes away on its own, or when it's swiped down (Batch 3); either way what it was holding back goes ahead.
+function toastHide(){ const el=document.getElementById('toast'); clearTimeout(toast.t); el.classList.remove('show','dragging'); el.style.transform=''; el.style.opacity=''; S.undo=null; toastAfter(); }
+(function(){
+  let d=null;
+  document.addEventListener('touchstart', e=>{
+    const el=e.target.closest && e.target.closest('#toast'); if (!el || !el.classList.contains('show')) return;
+    d={ el, y:e.touches[0].clientY, x:e.touches[0].clientX, dy:0, on:false, t:performance.now() };
+  }, { passive:true });
+  document.addEventListener('touchmove', e=>{
+    if (!d) return;
+    const dy=e.touches[0].clientY-d.y, dx=e.touches[0].clientX-d.x;
+    if (!d.on) { if (Math.abs(dx)>Math.abs(dy) || dy<6) { if (Math.abs(dx)>10 || dy<-6) d=null; return; } d.on=true; d.el.classList.add('dragging'); clearTimeout(toast.t); }
+    e.preventDefault();
+    d.dy=Math.max(0, dy); d.el.style.transform='translateY('+d.dy+'px)'; d.el.style.opacity=String(Math.max(.2, 1-d.dy/120));
+  }, { passive:false });
+  const end=()=>{
+    if (!d) return; const g=d; d=null; if (!g.on) return;
+    const v=g.dy/Math.max(1, performance.now()-g.t);
+    if (g.dy>36 || v>0.5) {
+      g.el.style.transform=''; g.el.style.opacity='';
+      const a=motion(g.el, [{ transform:'translateY('+g.dy+'px)', opacity:Math.max(.2, 1-g.dy/120) }, { transform:'translateY('+(g.dy+60)+'px)', opacity:0 }], { duration:180, easing:EASE.in, fill:'forwards' }, 'out');
+      // Still marked dragging (no CSS transition), so it doesn't flash back before it's hidden.
+      afterAnim(a, 180, ()=>{ g.el.classList.remove('show'); if (a) a.cancel(); void g.el.offsetWidth; toastHide(); });
+    } else {
+      g.el.classList.remove('dragging');
+      motion(g.el, [{ transform:'translateY('+g.dy+'px)' }, { transform:'none' }], { duration:250, easing:EASE.spring }, false);
+      g.el.style.transform=''; g.el.style.opacity='';
+      clearTimeout(toast.t); toast.t=setTimeout(toastHide, S.undo?5000:2000);
+    }
+  };
+  document.addEventListener('touchend', end); document.addEventListener('touchcancel', end);
+})();
 // The Accountability Report opens on its own screen inside the app (Nov 10). Before, the print button opened a new
 // Google tab that stayed white for a few seconds; now the page color and a spinner show while it loads.
 function openReport(){
@@ -1341,11 +1453,14 @@ function openReport(){
   el.setAttribute('role','dialog'); el.setAttribute('aria-modal','true'); el.setAttribute('aria-label','Accountability Report');
   el.innerHTML='<div class="rp-load" role="status" aria-label="Loading the Accountability Report"><i class="spin"></i></div>';
   document.body.appendChild(el); document.body.classList.add('printing-report');
+  // Batch 3 (MO-11): it slides up like a panel, and Close slides it back down.
+  motion(el, [{ transform:'translateY(100%)' }, { transform:'none' }], { duration:420, easing:EASE.ios });
   const mine=el;
   call('apiAccountabilityReport').then(r=>{
     if (document.getElementById('report')!==mine) return;
     mine.innerHTML='<div class="rp-bar"><button type="button" class="btn ghost sm" data-act="report-close">Close</button><b>Accountability Report</b>'
       +'<button type="button" class="btn primary sm" data-act="report-print">Print</button></div><div class="rp-paper">'+((r&&r.html)||'')+'</div>';
+    fadeIn(mine.querySelector('.rp-paper'), 220);   // the report melts in over the spinner's spot (MO-10)
     const pb=mine.querySelector('[data-act="report-print"]'); if (pb) pb.focus();
   }).catch(err=>{
     if (document.getElementById('report')!==mine) return;
@@ -1353,7 +1468,13 @@ function openReport(){
       +'<div class="rp-err"><p>The report didn\'t load. '+esc((err&&err.message)||'')+'</p><button type="button" class="btn ghost sm" data-act="report-open">Try Again</button></div>';
   });
 }
-function closeReport(){ const el=document.getElementById('report'); if (el) el.remove(); document.body.classList.remove('printing-report'); }
+function closeReport(animate){
+  const el=document.getElementById('report'); document.body.classList.remove('printing-report');
+  if (!el) return;
+  el.id='report-leaving';   // a new report can open at once; this one finishes sliding away
+  const a=animate ? motion(el, [{ transform:'none' }, { transform:'translateY(100%)' }], { duration:280, easing:EASE.in, fill:'forwards' }, 'out') : null;
+  afterAnim(a, 280, ()=>el.remove());
+}
 function toastAfter(){ const f=S.toastAfter; S.toastAfter=null; if (f) f(); }
 // Plain words for a failed call. Google's "NetworkError: Connection failure due to HTTP 0" becomes "No connection right now."
 function isNetErr(e){ return !navigator.onLine || /NetworkError|HTTP 0|Failed to fetch|Load failed|network|connection fail/i.test(String(e && e.message || e || '')); }
@@ -1679,10 +1800,11 @@ function tick(){
 /* ---------- navigation ---------- */
 function renderNav(){
   const rc=S.data.tasks.filter(t=>t.status==='Needs Review').length;
-  const badge = rc && S.data.isApprover ? '<span class="count">'+rc+'</span>' : '';
+  const badgeFor = k=>rc && S.data.isApprover ? '<span class="count" data-num="'+k+'">'+rc+'</span>' : '';
+  const badge = badgeFor('tab-more');
   // LB-11: on a computer, Change Requests, Recently Deleted, Settings and Account live in one labeled More menu.
   const inMenu = ['more','settings','requests','deleted','admin'].indexOf(S.view)>=0;
-  document.getElementById('navTop').innerHTML = TABS.filter(([k])=>k!=='review' || S.data.isApprover).map(([k,l])=>'<button type="button" class="'+(S.view===k||(k==='meetings'&&S.view==='live')?'on':'')+'" data-act="go" data-view="'+k+'">'+l+(k==='review'?badge:'')+'</button>').join('')
+  document.getElementById('navTop').innerHTML = TABS.filter(([k])=>k!=='review' || S.data.isApprover).map(([k,l])=>'<button type="button" class="'+(S.view===k||(k==='meetings'&&S.view==='live')?'on':'')+'" data-act="go" data-view="'+k+'">'+l+(k==='review'?badgeFor('top-review'):'')+'</button>').join('')
     + '<button type="button" class="morebtn'+(inMenu?' on':'')+'" data-act="go" data-view="more">More</button>';
   renderLivebar();
   const inMore = ['more','topics','review','deleted','settings','requests','admin'].indexOf(S.view)>=0, inMeet = S.view==='meetings' || S.view==='live';
@@ -1711,12 +1833,15 @@ function renderNav(){
   }
 }
 // Cross-fade a redraw with the browser's View Transitions (iOS 18+); older browsers just redraw.
+// Batch 3: the meeting's Back / Next slide the step instead (liveMove), a rating or one-on-one answer only changes its own
+// button (SOFT_ACTS), and a change request row opens and closes in place (req-toggle), so none of them cross-fade the page.
 const VT_ACTS=new Set(['ttab','go','back','layout','owner','set','tp-status','tp-owner','mtab','lv-owner','lv-due','due-quick',
-  'remind-days','req-toggle','pref-set','team-set','text-size','theme-set','lv-next','lv-prev','lv-motive-swap','lv-one','lv-rate','search-close']);
+  'remind-days','pref-set','team-set','text-size','theme-set','lv-motive-swap','search-close']);
+const SOFT_ACTS=new Set(['lv-rate','lv-one']);
 function canMorph(){ return !REDUCED && typeof document.startViewTransition==='function' && !document.hidden; }
 // kind: 'push' / 'pop' (into a screen and back), 'page' (other screen
 // changes) or nothing (an in-place cross-fade).
-const NAV_KINDS=['vt-page','vt-push','vt-pop'];
+const NAV_KINDS=['vt-page','vt-push','vt-pop','vt-fade'];
 function morph(fn, kind){
   const root=document.documentElement; NAV_KINDS.forEach(c=>root.classList.remove(c));
   if (kind) root.classList.add('vt-'+(kind===true?'page':kind));
@@ -1786,15 +1911,46 @@ function flipPlay(before){
     el.animate([{ transform:'translateY('+dy+'px)' }, { transform:'none' }], { duration:300, easing:'cubic-bezier(.2,.8,.2,1)' });
   });
 }
+// MO-12: a count that changed since the last redraw (tab and More badges, the overdue chip, the Team Tasks face bubbles,
+// the review banner) gives a small spring pop. A badge that appears pops too; the first draw doesn't. Skipped with Reduce Motion.
+const NUMS={};
+function popNums(){
+  const seen={};
+  document.querySelectorAll('[data-num]').forEach(el=>{
+    const k=el.dataset.num, v=el.textContent.trim(); seen[k]=1;
+    if (NUMS[k]!==undefined && NUMS[k]!==v && !REDUCED && !document.hidden && el.offsetWidth)
+      motion(el, [{ transform:'scale(1)' }, { transform:'scale(1.25)', offset:.4 }, { transform:'scale(1)' }], { duration:250, easing:'ease-out' }, false);
+    NUMS[k]=v;
+  });
+  // A badge that went away on the screen it lives on counts as empty, so when it comes back it pops. Counts on other
+  // screens are left alone (coming back to Team Tasks doesn't pop every face).
+  const home={ 'tab-more':1, 'top-review':1, 'more-review':S.view==='more', 'banner-review':S.view==='mine', 'late':S.view==='team' && S.ttab!=='ones' };
+  Object.keys(NUMS).forEach(k=>{ if (!seen[k] && home[k]) NUMS[k]=''; });
+}
 function render(){
   if (!S.data) return;
   if (heldRedraw('page')) return;
+  if (S.liveOut) { S.liveOut.again=true; return; }   // a meeting step is sliding out; it redraws once it's gone
   const key=S.view+'|'+(S.mtab||'')+'|'+(S.ttab||'');
-  const snap=(S.flipKey===key && !REDUCED && !S.vt && !document.hidden && document.body.animate) ? flipSnap() : null;
+  const same=S.flipKey===key;
+  // Batch 3 (MO-7): a new meeting step or person slides in from the side it came from, on every phone.
+  // After the slide out, the redraw that follows slides the new step in (S.liveIn) instead of looking for a move again.
+  const mv=S.liveIn || (same && S.view==='live' ? liveMove() : null), sliding=!!S.liveIn; S.liveIn=null;
+  if (mv && !sliding && mv.out.length && !REDUCED && !S.vt && !document.hidden) {
+    const anims=mv.out.map(el=>motion(el, [{ transform:'none', opacity:1 }, { transform:'translateX('+(-24*mv.dir)+'px)', opacity:0 }], { duration:180, easing:EASE.in, fill:'forwards' }, false));
+    S.liveOut={ again:true };
+    afterAnim(anims[0], 180, ()=>{ S.liveOut=null; S.liveIn=S.view==='live' ? mv : null; render(); });
+    return;
+  }
+  const snap=(same && !mv && !REDUCED && !S.vt && !document.hidden && document.body.animate) ? flipSnap() : null;
+  const first=S.flipKey==null;   // the very first draw replaces the loading placeholder, so it melts in too
   S.flipKey=key;
-  renderPage();
+  const m=document.getElementById('main');
+  if (same || first) melt(m, renderPage); else renderPage();
   placeSegs();   // pill highlights are in place before anything animates
   if (snap) flipPlay(snap);
+  if (mv) liveMoveIn(mv);
+  popNums();
 }
 function renderPage(){
   renderNav();
@@ -1808,18 +1964,18 @@ function renderPage(){
   document.body.classList.add('v-'+S.view);
   setNavH();
   if (window.HUDDLE_WEB) webTint();
-  if (S.view!=='live') renderLiveCtl();
+  if (S.view!=='live') { renderLiveCtl(); S.liveShown=null; }
   syncWakeLock();
   updateAlfredFab();
   const m=document.getElementById('main');
   if (S.view==='more') return renderMore(m);
   if (S.view==='review') return renderReview(m);
-  if (S.view==='topics') return renderTopics(m);
-  if (S.view==='meetings') return renderMeetings(m);
+  if (S.view==='topics') return meltAsync(m, renderTopics(m));
+  if (S.view==='meetings') return meltAsync(m, renderMeetings(m));
   if (S.view==='live') return renderLive(m);
-  if (S.view==='deleted') return renderDeleted(m);
+  if (S.view==='deleted') return meltAsync(m, renderDeleted(m));
   if (S.view==='settings') return renderSettings(m);
-  if (S.view==='requests') return renderRequests(m);
+  if (S.view==='requests') return meltAsync(m, renderRequests(m));
   if (S.view==='admin') return renderAdmin(m);
   renderTasks(m);
 }
@@ -1831,7 +1987,7 @@ function renderMore(m){
   const rc=reviewCount();
   const row=(view,icon,l,d,extra)=>'<button type="button" '+(view==='account'?'data-act="account"':'data-act="go" data-view="'+view+'" data-back="More"')+'><span class="menu-ico">'+icon+'</span><span class="grow">'+l+'<small>'+d+'</small></span>'+(extra||'')+'<span class="chev" aria-hidden="true">›</span></button>';
   m.innerHTML='<div class="head-row"><h2>More</h2></div><div class="menu more-menu">'
-    +(isPhone() && S.data.isApprover ? row('review',ICON.review,'Review','Meeting tasks waiting for approval', rc?'<span class="count">'+rc+'</span>':'') : '')
+    +(isPhone() && S.data.isApprover ? row('review',ICON.review,'Review','Meeting tasks waiting for approval', rc?'<span class="count" data-num="more-review">'+rc+'</span>':'') : '')
     +row('requests',ICON.requests,'Change Requests','Feature requests and bug reports sent from the Alfred chat')
     +row('deleted',ICON.deleted,'Recently Deleted','Restore deleted tasks, meetings and Parking Lot topics')
     +row('settings',GEAR,'Settings','Notifications, text size, light or dark mode')
@@ -1855,7 +2011,7 @@ function renderTasks(m){
   if (mine) {
     html+=tacticalCard();
     const rc=reviewCount(), uc=S.data.isApprover ? S.data.tasks.filter(t=>t.status==='Needs Review' && uncertainOf(t)).length : 0;   // LB-7: Review where approvers already are
-    if (rc) html+='<button type="button" class="banner rv-banner" data-act="go" data-view="review" data-back="My Tasks"><span class="count">'+rc+'</span><span>'+rc+' meeting task'+(rc===1?'':'s')+' to review'+(uc?' · '+uc+' need'+(uc===1?'s':'')+' a look':'')+'</span><span class="go" aria-hidden="true">›</span></button>';
+    if (rc) html+='<button type="button" class="banner rv-banner" data-act="go" data-view="review" data-back="My Tasks"><span class="count" data-num="banner-review">'+rc+'</span><span>'+rc+' meeting task'+(rc===1?'':'s')+' to review'+(uc?' · '+uc+' need'+(uc===1?'s':'')+' a look':'')+'</span><span class="go" aria-hidden="true">›</span></button>';
   }
   const nf=activeFilters(), showSearch=!phone || S.searchOpen || S.q;
   // Phones: the greeting, search and Sort & Filter share one row on My Tasks, so the overdue tasks sit higher up.
@@ -1878,7 +2034,7 @@ function renderTasks(m){
     html+='<div class="people faces" role="group" aria-label="Pick a person">'+S.data.people.map(p=>{
       const c=counts(p), on=S.person===p.email;
       return '<button type="button" class="face'+(on?' on':'')+'" data-act="person" data-email="'+esc(p.email)+'" aria-pressed="'+on+'" aria-label="'+esc(nameOf(p.email))+': '+c.open+' open'+(c.late?', '+c.late+' overdue':'')+'">'
-        +'<span class="face-av">'+avatar(p.email,40)+'<span class="fbadge'+(c.late?' late':'')+'">'+c.open+'</span></span><span class="face-name">'+esc(firstName(p.email))+'</span></button>';
+        +'<span class="face-av">'+avatar(p.email,40)+'<span class="fbadge'+(c.late?' late':'')+'" data-num="face-'+esc(p.email)+'">'+c.open+'</span></span><span class="face-name">'+esc(firstName(p.email))+'</span></button>';
     }).join('')+'</div>';
     if (S.person) { const pp=S.data.people.find(p=>p.email===S.person), c=pp?counts(pp):{open:0,late:0};
       html+='<p class="face-sel">Showing <b>'+esc(nameOf(S.person))+'</b> · '+c.open+' open'+(c.late?' · <span class="od">'+c.late+' overdue</span>':'')+' · <button type="button" class="linkbtn" data-act="person" data-email="'+esc(S.person)+'">Show Everyone</button></p>'; }
@@ -1888,7 +2044,7 @@ function renderTasks(m){
     +(phone?'<button type="button" class="search-x" data-act="search-close" aria-label="Close search">'+ICON.x+'</button>':'')+'</label>';
   if (phone && showSearch) html+='<div class="search-row">'+search+'</div>';
   if (!compact) html+='<div class="toolbar">'+(phone?'':search)
-    +(!mine && lateN ? '<button type="button" class="chipbtn late'+(S.quick==='late'?' on':'')+'" data-act="quick" data-val="late" aria-pressed="'+(S.quick==='late')+'">'+lateN+' Overdue</button>' : '')
+    +(!mine && lateN ? '<button type="button" class="chipbtn late'+(S.quick==='late'?' on':'')+'" data-act="quick" data-val="late" aria-pressed="'+(S.quick==='late')+'"><span data-num="late">'+lateN+'</span> Overdue</button>' : '')
     +(phone?'<span class="sp"></span>':'')
     +(phone && !showSearch ? '<button type="button" class="tool-ico" data-act="search-open" aria-label="Search tasks">'+ICON.search+'</button>' : '')
     +'<button type="button" class="chipbtn'+(nf?' on':'')+'" data-act="sortfilter" aria-haspopup="dialog">Sort &amp; Filter'+(nf?'<span class="count">'+nf+'</span>':'')+'</button>'
@@ -2212,7 +2368,9 @@ function openTask(id){
   loadDetail(id);
 }
 function loadDetail(id){
-  call('apiTaskDetail', id).then(d=>{ if (S.edit && S.edit.task.id===id) { const fresh=newComments(id, d.comments); S.edit.detail=d; renderSheet(); markSeen(id, d.comments);
+  call('apiTaskDetail', id).then(d=>{ if (S.edit && S.edit.task.id===id) { const fresh=newComments(id, d.comments), first=!S.edit.detail; S.edit.detail=d; renderSheet(); markSeen(id, d.comments);
+      // MO-10: the comments and history fade in where "Loading…" was.
+      if (first) document.querySelectorAll('#f-comments .comment, #f-comments .none, #sheet .thread .log').forEach(el=>fadeIn(el, 200));
       // after the panel has finished sliding up, or the scroll is lost
       if (fresh) setTimeout(()=>{ if (S.edit && S.edit.task.id===id) scrollToComments(); }, Math.max(0, 400-(Date.now()-(S.sheetAt||0)))); } })
     .catch(()=>{ if (S.edit && S.edit.task.id===id) { S.edit.detailErr=true; renderSheet(); } });
@@ -2636,9 +2794,18 @@ function mtgCache(id, d){
   if (!MOCK) try { localStorage.setItem('lt-mtg', JSON.stringify(c)); } catch(e){ try { localStorage.removeItem('lt-mtg'); } catch(err){} }
 }
 function glideIn(skip){
-  const sh=document.getElementById('sheet'); if (!sh || REDUCED || !sh.animate) return;
+  const sh=document.getElementById('sheet'); if (!sh || !sh.animate) return;
+  if (REDUCED) { [...sh.children].slice(skip||0).forEach(c=>fadeIn(c, 180)); return; }   // Reduce Motion: a fade, no rise
   [...sh.children].slice(skip||0, (skip||0)+10).forEach((c,i)=>c.animate([{ opacity:0, transform:'translateY(10px)' }, { opacity:1, transform:'none' }],
     { duration:320, delay:i*25, easing:'cubic-bezier(.2,.8,.2,1)', fill:'backwards' }));
+}
+// MO-10: when a panel's content arrives and it gets taller (or shorter), its height eases to the new size instead of jumping.
+function growSheet(fn){
+  const sh=document.getElementById('sheet'), h0=sh ? sh.offsetHeight : 0;
+  fn();
+  if (!sh || REDUCED || document.hidden) return;
+  const h1=sh.offsetHeight;
+  if (h0 && Math.abs(h1-h0)>4) motion(sh, [{ height:h0+'px' }, { height:h1+'px' }], { duration:320, easing:EASE.ios }, false);
 }
 function openMeeting(id){
   const cached=mtgCache(id);
@@ -2647,7 +2814,7 @@ function openMeeting(id){
     mtgCache(id, d);
     if (!S.mtg || S.mtg.id!==id || S.sheet!=='meeting') return;
     const fresh=!S.mtg.data; S.mtg.data=d;
-    if (fresh) { S.afterSheet=()=>glideIn(3); renderSheet(); }
+    if (fresh) { S.afterSheet=()=>glideIn(3); growSheet(renderSheet); }
     else if (JSON.stringify(cached)!==JSON.stringify(d) && !S.mtg.mode) renderSheet();
   }).catch(e=>{ if (S.mtg && !S.mtg.data) { S.mtg.err=errText(e); renderSheet(); } });
 }
@@ -3189,16 +3356,43 @@ function startLive(type, begin){
   const st={ id:'L'+Date.now(), type:type, title:t.title, draft:!!t.draft, motiveSet:S.data.motiveNext||'A', ratings:{}, steps:clone(t.steps), i:0, phase:'ready', startedAt:null, stepStart:null,
              pausedAt:null, pausedTotal:0, extra:0, topic:null, topics:[], person:0, personStart:null, items:[], log:[], startedBy:S.data.me, host:S.data.me };
   if (begin) liveBegin(st);
-  S.live=st; S.view='live'; S.liveAt=Date.now(); closeSheet(true); render(); window.scrollTo(0,0);
+  S.live=st; S.view='live'; S.liveAt=Date.now(); closeSheet(true); render(); window.scrollTo(0,0); zoomIn();
   // If someone else started a meeting a moment ago, the server keeps theirs and this phone joins it.
   call('apiLiveSet', st).then(res=>{ if (res && res.conflict && res.state) toast('A meeting was already running, so you joined it.'); applyLive(res && res.conflict ? { state:res.state, now:res.now } : res); })
     .catch(e=>toast('Could not start the meeting for everyone: '+errText(e)));
 }
+// Batch 3 (MO-B6): starting (or joining with +) a meeting zooms the meeting screen out of the Start card or the + button.
+function zoomIn(){
+  const m=document.getElementById('main'), from=S.zoomFrom; S.zoomFrom=null; if (!m || document.hidden) return;
+  const r=m.getBoundingClientRect();
+  m.style.transformOrigin = from ? Math.round(from.left+from.width/2-r.left)+'px '+Math.round(from.top+from.height/2-r.top)+'px' : '50% 30%';
+  const a=motion(m, [{ transform:'scale(.86)', opacity:0 }, { opacity:1, offset:.4 }, { transform:'none', opacity:1 }], { duration:340, easing:EASE.ios });
+  afterAnim(a, 340, ()=>{ m.style.transformOrigin=''; });
+}
+// A card that just arrived in a list grows into its place (End Meeting's new meeting row).
+function growIn(el, delay){
+  if (!el || document.hidden) return;
+  const h=el.offsetHeight, cs=getComputedStyle(el); delay=delay||0;
+  el.style.overflow='hidden';
+  const a=motion(el, [{ height:'0px', paddingTop:'0px', paddingBottom:'0px', opacity:0, transform:'scale(.96)' }, { height:h+'px', paddingTop:cs.paddingTop, paddingBottom:cs.paddingBottom, opacity:1, transform:'none' }],
+    { duration:380, delay:delay, easing:EASE.ios, fill:'backwards' });
+  afterAnim(a, 380+delay, ()=>{ el.style.overflow=''; });
+}
 function renderLivebar(){
   const el=document.getElementById('livebar'); if (!el) return;
-  const st=S.live;
-  el.hidden = !st || S.view==='live';
+  const st=S.live, show=!!st && S.view!=='live';
   if (st) el.innerHTML='<span class="dot"></span><span><b>'+esc(st.title)+'</b> '+(st.phase==='running'?'· '+esc(st.steps[st.i].title):'· wrapping up')+'</span><span class="join">Join ›</span>';
+  // Batch 3 (MO-11): when a meeting starts or ends while you're on another screen (or you step out of it), the bar opens
+  // and closes smoothly instead of pushing the page down in one jump. Screen changes and the first draw just show it.
+  const shown=!el.hidden && !el.dataset.leaving, seen=S.livebarSeen; S.livebarSeen=true;
+  if (show===shown) return;
+  if (el.lbAnim) { el.lbAnim.cancel(); el.lbAnim=null; }
+  const animate=seen && !S.vt && !REDUCED && !document.hidden && el.animate;
+  if (!animate) { el.hidden=!show; delete el.dataset.leaving; el.classList.remove('moving'); return; }
+  el.hidden=false; el.classList.add('moving');
+  const cs=getComputedStyle(el), full={ height:el.offsetHeight+'px', paddingTop:cs.paddingTop, paddingBottom:cs.paddingBottom, opacity:1 }, none={ height:'0px', paddingTop:'0px', paddingBottom:'0px', opacity:0 };
+  if (show) { delete el.dataset.leaving; el.lbAnim=motion(el, [none, full], { duration:300, easing:EASE.ios }); afterAnim(el.lbAnim, 300, ()=>{ if (!el.dataset.leaving) el.classList.remove('moving'); }); }
+  else { el.dataset.leaving='1'; const a=el.lbAnim=motion(el, [full, none], { duration:240, easing:EASE.in, fill:'forwards' }); afterAnim(a, 240, ()=>{ if (el.lbAnim!==a) return; el.lbAnim=null; el.hidden=true; delete el.dataset.leaving; el.classList.remove('moving'); if (a) a.cancel(); }); }
 }
 
 /* chime: a soft two-note bell. Only the host's phone and a TV screen play it, so the room hears one chime (MD-6, AP-4). */
@@ -3221,7 +3415,10 @@ function liveTick(){
     if (secs<=0 && key && !S.fired[key]) { S.fired[key]=1; chime(); if (isHost() && !S.tv) buzz([40,80,40]); }
     const el=S.view==='live' && document.getElementById(id); if (!el) return;
     const txt=el.dataset.line ? fmtClock(secs).replace('+','')+(secs<0?' over':' left') : fmtClock(secs);
-    if (el.textContent!==txt) el.textContent=txt; el.classList.toggle('over', secs<0); el.classList.toggle('warn', !!warn && secs>=0 && secs<=60); };
+    if (el.textContent!==txt) el.textContent=txt; el.classList.toggle('over', secs<0); el.classList.toggle('warn', !!warn && secs>=0 && secs<=60);
+    // Batch 3 (MO-8): at one minute left the timer gives one soft pulse as it turns gold (once per timer).
+    if (key && warn && secs>=0 && secs<=60 && !S.fired[key+':w']) { S.fired[key+':w']=1;
+      motion(el.closest('.step-line') ? el.parentElement : el, [{ transform:'scale(1)' }, { transform:'scale(1.04)', offset:.45 }, { transform:'scale(1)' }], { duration:600, easing:'ease-in-out' }, false); } };
   set('lvStep', stepLeft(st), st.id+':s'+st.i+':'+(st.extra||0), true);
   if (st.topic) {
     set('lvTopic', topicLeft(st), st.id+':t'+st.topics.length+':'+(st.topic.extra||0), true);
@@ -3328,21 +3525,75 @@ function tacticalCard(){
 // opts.single: one button only (a notice, like "New Dates Needed").
 function askLive(title, body, ok, fn, cancel, opts){ S.ask={ title, body, ok, fn, cancel, single:!!(opts && opts.single), no:(opts && opts.no)||'Cancel', danger:!!(opts && opts.danger) }; S.sheet='ask'; showSheet(); }
 // Changing the status of someone else's task asks first ("This Isn't Your Task"). Your own tasks, tasks with no owner, and
-// the host updating people during a guided meeting go straight through. If the task panel was open, it reopens afterward.
+// the host updating people during a guided meeting go straight through. From the task panel it asks over the panel (askOver).
 function mineOrConfirm(t, status, fn, onCancel){
   const own=t ? owners(t) : [];
   if (!t || !own.length || own.indexOf(S.data.me)>=0) return fn();
   const back = S.sheet==='task' && S.edit ? S.edit.task.id : null;
   const what = { 'Done':'mark it Done', 'In Progress':'mark it In Progress', 'Blocked':'mark it Blocked', 'Not Done':'start it over' }[status] || 'change its status';
   const ok = { 'Done':'Mark Done', 'In Progress':'Mark In Progress', 'Blocked':'Mark Blocked', 'Not Done':'Start Over' }[status] || 'Change It';
-  askLive('This Isn\'t Your Task', '<b>'+esc(ownerText(own))+'</b> '+(own.length>1?'own':'owns')+' "'+esc(t.title)+'". Are you sure you want to '+what+'?', ok,
-    ()=>{ fn(); if (back) setTimeout(()=>openTask(back), 320); },
-    ()=>{ if (onCancel) onCancel(); if (back) setTimeout(()=>openTask(back), 320); });
+  const body='<b>'+esc(ownerText(own))+'</b> '+(own.length>1?'own':'owns')+' "'+esc(t.title)+'". Are you sure you want to '+what+'?';
+  // Batch 3 (MO-B9): from inside the task panel, the question shows over the panel, which stays open behind it.
+  if (back) return askOver('This Isn\'t Your Task', body, ok, fn, onCancel);
+  askLive('This Isn\'t Your Task', body, ok, fn, onCancel);
+}
+// A small question dialog over an open panel (the panel isn't closed and reopened).
+function askOver(title, body, ok, fn, cancel){
+  closeAskOver(true);
+  const w=document.createElement('div'); w.className='ask-over'; w.id='askOver';
+  w.innerHTML='<div class="backdrop" data-act="ask2-cancel"></div><div class="ask-box" role="alertdialog" aria-modal="true" aria-labelledby="askOverH" tabindex="-1"><h3 id="askOverH">'+esc(title)+'</h3><p>'+body+'</p>'
+    +'<div class="step-actions"><button type="button" class="btn primary" data-act="ask2-ok">'+esc(ok)+'</button><button type="button" class="btn ghost" data-act="ask2-cancel">Cancel</button></div></div>';
+  document.body.appendChild(w); S.askOver={ fn, cancel };
+  const box=w.querySelector('.ask-box');
+  motion(box, [{ transform:'scale(.94)', opacity:0 }, { transform:'none', opacity:1 }], { duration:260, easing:EASE.out }); fadeIn(w.querySelector('.backdrop'), 200);
+  setTimeout(()=>{ const b=w.querySelector('[data-act="ask2-ok"]'); if (b) b.focus({ preventScroll:true }); }, 30);
+}
+function closeAskOver(now){
+  const w=document.getElementById('askOver'); if (!w) return;
+  w.id=''; w.style.pointerEvents='none';
+  const a=now ? null : motion(w, [{ opacity:1 }, { opacity:0 }], { duration:180, easing:'ease', fill:'forwards' }, 'out');
+  afterAnim(a, 180, ()=>w.remove());
 }
 function takeOver(){ if (!S.live) return; S.live.host=S.data.me; liveWrite('apiLiveTakeOver', S.live.id); render(); toast('You\'re the host now'); }
 
+// Batch 3 (MO-7, MO-B14): where the meeting is (step, person, wrap-up), so a redraw knows whether it moved and which way.
+function livePos(st){ st=st||S.live; if (!st || !st.steps) return null;
+  return { id:st.id, done:st.phase==='done', i:st.i, p:st.phase==='running' && perPerson(st) ? (st.person||0) : 0, topic:!!st.topic, n:(st.topics||[]).length }; }
+// What moved since the last time this screen was drawn: dir (1 = forward, -1 = back), the elements to slide out now and
+// how to find their replacements. Only the person card moves when just the person changed.
+function liveMove(){
+  const was=S.liveShown, now=livePos();
+  if (!was || !now || was.id!==now.id || S.tv) return null;
+  const ord=p=>p.done ? 1e9 : p.i*1000+p.p, d=ord(now)-ord(was);
+  if (d) {
+    const person=!now.done && !was.done && now.i===was.i;
+    const sel=person ? '#main .step-body > .acct:first-child' : '#main .live-slide';
+    return { dir:d>0?1:-1, sel:sel, out:[...document.querySelectorAll(sel)] };
+  }
+  if (now.topic && !was.topic) return { grow:'#main .topic-timer', out:[] };   // a topic started: its timer grows in
+  return null;
+}
+function liveMoveIn(mv){
+  if (mv.grow) { const el=document.querySelector(mv.grow); motion(el, [{ transform:'scale(.9)', opacity:0 }, { transform:'none', opacity:1 }], { duration:250, easing:EASE.spring }); return; }
+  document.querySelectorAll(mv.sel).forEach((el,k)=>motion(el, [{ transform:'translateX('+(24*mv.dir)+'px)', opacity:0 }, { transform:'none', opacity:1 }], { duration:300, delay:k*30, easing:EASE.out, fill:'backwards' }));
+}
+// MO-12: the wrap-up's numbers count up over about 600ms, once per wrap-up (not again on every redraw). The elements are
+// looked up each frame, so a redraw in the middle (a rating tap) just carries on.
+function countUpStats(key, list){
+  if (REDUCED || S.countedUp===key || document.hidden) { S.countedUp=key; return; }
+  S.countedUp=key;
+  const t0=performance.now(), ease=x=>1-Math.pow(1-x, 3);
+  list.forEach(([id, to, fmt])=>{ const el=document.getElementById(id); if (el) el.textContent=fmt(0); });
+  const frame=now=>{
+    const k=Math.min(1, (now-t0)/600);
+    list.forEach(([id, to, fmt])=>{ const el=document.getElementById(id); if (el) el.textContent=fmt(Math.round(to*ease(k))); });
+    if (k<1 && S.countedUp===key) requestAnimationFrame(frame);
+  };
+  requestAnimationFrame(frame);
+}
 function renderLive(m){
   const st=S.live;
+  S.liveShown=livePos(st);
   renderLiveCtl();
   if (!st) { m.innerHTML='<div class="empty"><b>No Meeting Running</b>Start one from the Meetings tab.</div>'; return; }
   const step=st.steps[st.i], host=isHost(st), hostName=liveHost(st) ? firstName(liveHost(st)) : '';
@@ -3358,13 +3609,15 @@ function renderLive(m){
     const topicsN=st.topics.length+(st.topic?1:0);
     const over=st.log.filter(l=>l&&l.secs>l.planned).length, skipped=st.steps.filter((x,k)=>!st.log[k] || st.log[k].secs<SKIPPED_SECS).length;
     const timing=[over?over+' step'+(over===1?'':'s')+' ran over':'', skipped?skipped+' step'+(skipped===1?' was':'s were')+' skipped':''].filter(Boolean).join(' and ');
-    m.innerHTML=leaveLink()+'<div class="live-top"><div><h2>'+esc(st.title)+' Wrap-Up</h2>'+hostLine+'</div>'+takeOver+'</div><div class="stack">'
-      +'<div class="stats three"><div class="stat"><b>'+fmtClock((st.endedAt-st.startedAt-(st.pausedTotal||0))/1000).replace('+','')+'</b><span>of '+Math.round(plannedTotal(st)/60)+' Min Planned</span></div>'
-      +'<div class="stat"><b>'+topicsN+'</b><span>Topics Discussed</span></div><div class="stat"><b>'+st.items.length+'</b><span>Action Items</span></div></div>'
+    const wuSecs=Math.max(0, Math.round((st.endedAt-st.startedAt-(st.pausedTotal||0))/1000));
+    m.innerHTML=leaveLink()+'<div class="live-top"><div><h2>'+esc(st.title)+' Wrap-Up</h2>'+hostLine+'</div>'+takeOver+'</div><div class="stack live-slide">'
+      +'<div class="stats three"><div class="stat"><b class="count-up" id="wuTime">'+fmtClock(wuSecs).replace('+','')+'</b><span>of '+Math.round(plannedTotal(st)/60)+' Min Planned</span></div>'
+      +'<div class="stat"><b class="count-up" id="wuTopics">'+topicsN+'</b><span>Topics Discussed</span></div><div class="stat"><b class="count-up" id="wuItems">'+st.items.length+'</b><span>Action Items</span></div></div>'
       +'<p class="small muted">'+(timing?timing.charAt(0).toUpperCase()+timing.slice(1)+'. Times are below.':'Every step finished on time.')+'</p>'
       +ratingCard(st)
       +outline
       +'<p class="small muted">'+(host?'Back returns to '+esc(step.title)+'. End Meeting saves it for everyone. Stop the Otter recording first.':'Rate the meeting above. '+esc(hostName)+' ends the meeting for everyone.')+'</p>'+cancelCard(host)+'</div>';
+    countUpStats(st.id+':'+st.endedAt, [['wuTime', wuSecs, n=>fmtClock(n).replace('+','')], ['wuTopics', topicsN, String], ['wuItems', st.items.length, String]]);
     return;
   }
   const next=st.steps[st.i+1];
@@ -3376,11 +3629,11 @@ function renderLive(m){
     +'<button type="button" class="btn ghost sm tv-btn" data-act="lv-tv">TV</button>'
     +(host?'<button type="button" class="iconbtn" data-act="lv-pause" aria-label="'+(st.pausedAt?'Resume':'Pause')+' meeting">'+(st.pausedAt?ICON.play:ICON.pause)+'</button>'
       +'<button type="button" class="btn ghost sm" data-act="lv-wrap-ask">Wrap Up</button>':takeOver)+'</div>'
-    +'<div class="card step-card'+(compact?' compact':'')+'"><div class="sec">'+esc(step.sec)+(st.pausedAt?' · Paused':'')+'</div><div class="step-title">'+esc(step.title)+'</div>'
+    +'<div class="card step-card live-slide'+(compact?' compact':'')+'"><div class="sec">'+esc(step.sec)+(st.pausedAt?' · Paused':'')+'</div><div class="step-title">'+esc(step.title)+'</div>'
     +(compact?'<div class="step-line"><span>Step: <span id="lvStep" data-line="1">'+fmtClock(stepLeft(st)).replace('+','')+'</span></span>'+plus+'</div>'
       :'<div class="timer-row"><div class="bigtimer" id="lvStep">'+fmtClock(stepLeft(st))+'</div>'+plus+'</div>')
     +(next && !compact?'<div class="small muted up-next">Up next: '+esc(next.title)+' · '+next.mins+' min</div>':'')+'</div>';   // compact: the pinned Next says what's next
-  html += '<div class="step-body">'+liveBody(st, step)+'</div>'+cancelCard(host);
+  html += '<div class="step-body live-slide">'+liveBody(st, step)+'</div>'+cancelCard(host);
   html += '<h3 class="sec-h">Agenda</h3>'+outline;
   m.innerHTML=html; liveTick();
 }
@@ -3525,7 +3778,7 @@ function cancelCard(host){
 function cancelLive(){
   const st=S.live; if (!st) return;
   S.endedId=st.id; S.live=null; S.tv=false; document.body.classList.remove('tv');
-  S.view='meetings'; render(); window.scrollTo(0,0);
+  S.view='meetings'; render(); window.scrollTo(0,0); fadeIn(document.getElementById('main'), 200);   // Batch 3: Cancel Meeting fades
   call('apiLiveCancel').then(()=>{
     toast('Meeting canceled', ()=>call('apiLiveUndoCancel', st.id).then(res=>{ S.endedId=null; applyLive(res); if (S.live) { S.view='live'; S.liveAt=Date.now(); render(); toast('Meeting back on'); } })
       .catch(e=>toast('Couldn\'t undo. '+errText(e))), { label:'Undo' });
@@ -3542,7 +3795,9 @@ function endLive(){
       review_list:Object.keys(st.review||{}).filter(id=>find(id)).map(id=>Object.assign({ task_id:id, owners:owners(find(id)), title:find(id).title }, st.review[id])) }]);
   }
   S.endedId=st.id; S.live=null; S.tv=false; document.body.classList.remove('tv');
-  S.view='meetings'; render(); window.scrollTo(0,0);
+  S.view='meetings'; S.mtab='meetings'; render(); window.scrollTo(0,0);
+  // Batch 3 (MO-B6): Meetings fades in, and the meeting you just ended grows into the list.
+  fadeIn(document.getElementById('main'), 250); growIn(cardFor('log-open', st.id), 150);
   toast('Meeting saved to "Meetings"');
   call('apiLiveEnd').then(()=>{ S.liveLogs=null; S.meetings=null; S.ones=null; S.acct=null; if (S.view==='meetings') render(); })
     .catch(e=>{ S.endedId=null; S.localLogs=(S.localLogs||[]).filter(l=>l.id!==st.id); toast('Couldn\'t end the meeting. '+errText(e)); S.liveChecked=0; livePoll(); });
@@ -3584,7 +3839,7 @@ async function liveAddItem(el){
 /* ---------- Alfred chat bubble ---------- */
 // The conversation lives only in this page (S.alf) and is gone after a reload. Every message carries the screen
 // context below, and the screenshot taken when the bubble was tapped, so nobody has to describe where they were.
-const APP_VERSION = '2026.11.10-tabs-instant';
+const APP_VERSION = '2026.11.10-batch3';
 const H2C_URL = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
 const DIAG = { errors:[], actions:[] };   // last 10 of each, for bug reports
 function pushDiag(list, item){ list.push(item); if (list.length>10) list.shift(); }
@@ -3719,45 +3974,105 @@ async function captureScreen(){
   finally { document.body.classList.remove('alf-capturing'); }
 }
 
-async function openAlfred(){
-  const fab=document.getElementById('alfFab');
-  if (S.alf.justDragged) return;
-  if (S.alf.open || fab.classList.contains('busy')) return;
-  fab.classList.add('busy');
-  const shot=await captureScreen();
-  fab.classList.remove('busy');
-  if (shot) { S.alf.shot=shot; S.alf.shotUsed=false; }
+// Batch 3 (MO-9): the panel opens at once, growing out of the bubble, and the screenshot of the screen behind it is taken
+// in the background (html2canvas leaves the panel out). It starts once the panel has finished growing, so the opening
+// stays smooth; a message sent before it's ready waits for it (S.alf.shotP).
+function openAlfred(){
+  if (S.alf.justDragged || S.alf.open) return;
   showAlfred();
+  const p=S.alf.shotP=new Promise(r=>setTimeout(r, REDUCED?0:420)).then(()=>captureScreen()).then(shot=>{
+    if (S.alf.shotP!==p) return null;
+    if (shot) { S.alf.shot=shot; S.alf.shotUsed=false; alfNote(); }
+    S.alf.shotP=null; return shot;
+  });
+}
+// Where the bubble is, as a transform-origin inside the panel (the panel grows out of it and shrinks back into it).
+function alfOrigin(panel){
+  const fab=document.getElementById('alfFab'), r=fab && !fab.hidden ? fab.getBoundingClientRect() : null, p=panel.getBoundingClientRect();
+  panel.style.transformOrigin = r && r.width ? Math.round(r.left+r.width/2-p.left)+'px '+Math.round(r.top+r.height/2-p.top)+'px' : '50% 100%';
 }
 function showAlfred(){
-  const w=document.getElementById('alfWrap');
+  const w=document.getElementById('alfWrap'), panel=document.getElementById('alfPanel'), bd=w.querySelector('.backdrop');
+  const opening=w.hidden || !S.alf.open;
   S.alf.open=true; document.body.classList.add('alf-open'); document.body.style.overflow='hidden';
-  clearTimeout(S.alf.closeT); w.classList.remove('leave'); w.hidden=false;
-  renderAlfred(); w.classList.add('enter'); void w.offsetWidth;
-  requestAnimationFrame(()=>requestAnimationFrame(()=>w.classList.remove('enter')));
+  clearTimeout(S.alf.closeT); if (S.alf.anim) { S.alf.anim.cancel(); S.alf.anim=null; } if (S.alf.bdAnim) { S.alf.bdAnim.cancel(); S.alf.bdAnim=null; }
+  w.hidden=false; panel.style.transform=''; panel.style.transition=''; bd.style.opacity='';
+  S.alf.quiet=true; renderAlfred(); S.alf.quiet=false;   // what was already there doesn't animate again
+  if (opening) {
+    alfOrigin(panel);
+    S.alf.anim=motion(panel, [{ transform:'scale(.3)', opacity:0 }, { opacity:1, offset:.35 }, { transform:'none', opacity:1 }], { duration:380, easing:EASE.ios });
+    fadeIn(bd, 300);
+  }
   const box=document.getElementById('alfInput');
   if (deviceKind()==='computer') setTimeout(()=>box.focus(), 300);
-  else setTimeout(()=>document.getElementById('alfPanel').focus({ preventScroll:true }), 60);
+  else setTimeout(()=>panel.focus({ preventScroll:true }), 60);
 }
+// Done, Escape or a tap outside: it shrinks back into the bubble. After a drag down it keeps going down from where the
+// finger let go.
 function closeAlfred(){
   return new Promise(done=>{
-    const w=document.getElementById('alfWrap');
+    const w=document.getElementById('alfWrap'), panel=document.getElementById('alfPanel'), bd=w.querySelector('.backdrop');
     S.alf.open=false; document.body.classList.remove('alf-open'); if (!S.sheet) document.body.style.overflow='';
     if (w.hidden) return done();
-    w.classList.add('leave'); clearTimeout(S.alf.closeT);
-    S.alf.closeT=setTimeout(()=>{ w.hidden=true; w.classList.remove('leave'); done(); }, REDUCED?0:330);
+    clearTimeout(S.alf.closeT); if (S.alf.anim) { S.alf.anim.cancel(); S.alf.anim=null; }
+    const m=/translateY\(([-\d.]+)px\)/.exec(panel.style.transform||''), dy=m ? parseFloat(m[1]) : 0;
+    panel.style.transition='none';
+    let a;
+    if (dy>0) a=motion(panel, [{ transform:'translateY('+dy+'px)' }, { transform:'translateY(105%)' }], { duration:240, easing:EASE.in, fill:'forwards' }, 'out');
+    else { alfOrigin(panel); a=motion(panel, [{ transform:'none', opacity:1 }, { transform:'scale(.3)', opacity:0 }], { duration:260, easing:EASE.in, fill:'forwards' }, 'out'); }
+    panel.style.transform='';
+    const from=getComputedStyle(bd).opacity;
+    const b=bd.animate ? bd.animate([{ opacity:from }, { opacity:0 }], { duration:240, easing:'ease', fill:'forwards' }) : null;
+    S.alf.anim=a; S.alf.bdAnim=b;
+    S.alf.closeT=setTimeout(()=>{ w.hidden=true; if (a) a.cancel(); if (b) b.cancel(); S.alf.anim=S.alf.bdAnim=null; bd.style.opacity=''; panel.style.transition=''; done(); }, a ? 270 : 0);
   });
 }
 // Retake (and "Tap what you mean"): step out of the way, capture the screen as it is, and come back.
 async function retakeShot(){
   await closeAlfred();
   await new Promise(r=>setTimeout(r, 120));
+  S.alf.shotP=null;
   const shot=await captureScreen();
   if (shot) { S.alf.shot=shot; S.alf.shotUsed=false; }
   else toast('Could not take a new screenshot');
   showAlfred();
 }
+// Drag the chat down to close it, like the other panels (phones): the dimmed background follows, a flick or a drag past
+// a quarter closes it, anything less springs back. It starts from the header, or from the messages when they're at the top.
+(function(){
+  let d=null;
+  document.addEventListener('touchstart', e=>{
+    if (!S.alf.open || window.innerWidth>=700 || !e.target.closest) return;
+    const panel=e.target.closest('#alfPanel'); if (!panel || e.target.closest('textarea, input, select, .alf-foot')) return;
+    const msgs=e.target.closest('#alfMsgs'); if (msgs && msgs.scrollTop>0) return;
+    d={ panel, y:e.touches[0].clientY, x:e.touches[0].clientX, dy:0, on:false, hist:[{ y:e.touches[0].clientY, t:performance.now() }] };
+  }, { passive:true });
+  document.addEventListener('touchmove', e=>{
+    if (!d) return;
+    const dy=e.touches[0].clientY-d.y, dx=e.touches[0].clientX-d.x;
+    if (!d.on) {
+      if (dy<0 || Math.abs(dx)>Math.abs(dy)) { if (dy<0 || Math.abs(dx)>8) d=null; return; }
+      e.preventDefault(); if (dy<8) return;
+      d.on=true; d.panel.style.transition='none'; if (S.alf.anim) { S.alf.anim.cancel(); S.alf.anim=null; }
+    }
+    e.preventDefault();
+    d.dy=dy; d.hist.push({ y:e.touches[0].clientY, t:performance.now() }); if (d.hist.length>4) d.hist.shift();
+    d.panel.style.transform='translateY('+(dy>=0 ? dy : dy*0.2)+'px)';
+    const bd=document.querySelector('#alfWrap .backdrop'); if (bd) bd.style.opacity=String(Math.max(0, 1-Math.max(0,dy)/(d.panel.offsetHeight||600)));
+  }, { passive:false });
+  const end=()=>{
+    if (!d) return; const g=d; d=null; if (!g.on) return;
+    const h=g.panel.offsetHeight||600, a=g.hist[0], b=g.hist[g.hist.length-1], v=(b.y-a.y)/Math.max(1, b.t-a.t);
+    if (g.dy>Math.min(90, h*0.25) || (v>0.5 && g.dy>12)) { closeAlfred(); return; }
+    const bd=document.querySelector('#alfWrap .backdrop');
+    g.panel.style.transition='transform .35s '+EASE.spring; g.panel.style.transform='';
+    if (bd) { bd.style.transition='opacity .3s ease'; bd.style.opacity=''; setTimeout(()=>{ bd.style.transition=''; }, 320); }
+    setTimeout(()=>{ if (!d) g.panel.style.transition=''; }, 360);
+  };
+  document.addEventListener('touchend', end); document.addEventListener('touchcancel', end);
+})();
 function startPick(){
+  S.alf.shotP=null;   // the picked screen's own picture replaces the one being taken
   closeAlfred().then(()=>{ S.alf.picking=true; document.getElementById('alfPick').hidden=false; });
 }
 function endPick(){ S.alf.picking=false; document.getElementById('alfPick').hidden=true; }
@@ -3826,19 +4141,29 @@ function renderAlfred(){
   const A=S.alf, nearBottom=box.scrollHeight-box.scrollTop-box.clientHeight<80;
   let html='';
   if (S.data && S.data.alfred && !S.data.alfred.ready) html+='<div class="alf-msg err">Alfred isn\'t available yet. Brayden is setting it up.</div>';
-  if (!A.msgs.length) html+='<div class="alf-hello"><b>Good '+partOfDay()+', '+esc(firstName(S.data.me))+'</b>Ask me about past meetings, decisions and tasks, or how to do something in the app. I can also mark a task done, move a date or add a task once you confirm, and write up a problem for Brayden.'
+  if (!A.msgs.length) html+='<div class="alf-hello" data-k="hello"><b>Good '+partOfDay()+', '+esc(firstName(S.data.me))+'</b>Ask me about past meetings, decisions and tasks, or how to do something in the app. I can also mark a task done, move a date or add a task once you confirm, and write up a problem for Brayden.'
     +'<div class="alf-sugg">'+ALF_SUGGEST.map(q=>'<button type="button" data-act="alf-suggest" data-val="'+esc(q)+'">'+esc(q)+'</button>').join('')+'</div></div>';
   A.msgs.forEach((m,i)=>{
-    if (m.role==='user') html+='<div class="alf-msg me">'+esc(m.text)+'</div>'+(m.failed?'<div class="alf-msg err">'+esc(m.error||'Alfred could not answer.')+'<button type="button" class="retry" data-act="alf-retry" data-val="'+i+'">Try Again</button></div>':'');
-    else if (m.role==='assistant') { html+='<div class="alf-msg bot">'+alfMd(m.text)+'</div>'; (m.drafts||[]).forEach((d,j)=>{ html+=draftCard(d, i, j); }); (m.proposals||[]).forEach((p,j)=>{ html+=proposalCard(p, i, j); }); }
+    if (m.role==='user') html+='<div class="alf-msg me" data-k="m'+i+'">'+esc(m.text)+'</div>'+(m.failed?'<div class="alf-msg err" data-k="e'+i+'">'+esc(m.error||'Alfred could not answer.')+'<button type="button" class="retry" data-act="alf-retry" data-val="'+i+'">Try Again</button></div>':'');
+    else if (m.role==='assistant') { html+='<div class="alf-msg bot" data-k="m'+i+'">'+alfMd(m.text)+'</div>'; (m.drafts||[]).forEach((d,j)=>{ html+=draftCard(d, i, j).replace('<div class="alf-draft', '<div data-k="d'+i+'-'+j+'" class="alf-draft'); }); (m.proposals||[]).forEach((p,j)=>{ html+=proposalCard(p, i, j).replace('<div class="alf-draft', '<div data-k="p'+i+'-'+j+'" class="alf-draft'); }); }
   });
-  if (A.sending) html+='<div class="alf-typing" role="status" aria-label="Alfred is working"><i></i><i></i><i></i><span class="alf-prog" id="alfProg">'+esc(A.progress||'')+'</span></div>';
+  if (A.sending) html+='<div class="alf-typing" data-k="typing" role="status" aria-label="Alfred is working"><i></i><i></i><i></i><span class="alf-prog" id="alfProg">'+esc(A.progress||'')+'</span></div>';
+  // Batch 3 (MO-9): only what's new moves. Your message slides up from the box; the dots and Alfred's reply fade and rise.
+  const had=new Set([...box.querySelectorAll('[data-k]')].map(el=>el.dataset.k));
   box.innerHTML=html;
-  if (nearBottom || A.sending || A.scrollDown) box.scrollTop=box.scrollHeight;
+  if (!A.quiet && box.isConnected) box.querySelectorAll('[data-k]').forEach(el=>{
+    if (had.has(el.dataset.k)) return;
+    const me=el.classList.contains('me');
+    motion(el, [{ opacity:0, transform:'translateY('+(me?12:8)+'px)' }, { opacity:1, transform:'none' }], { duration:me?250:300, easing:EASE.out, fill:'backwards' });
+  });
+  if (nearBottom || A.sending || A.scrollDown) { if (A.quiet || REDUCED || !box.scrollTo) box.scrollTop=box.scrollHeight; else box.scrollTo({ top:box.scrollHeight, behavior:'smooth' }); }
   A.scrollDown=false;
-  const note=document.getElementById('alfNote');
-  if (note) note.textContent = A.tapped ? 'Pointing at: '+(A.tapped.card||A.tapped.label||A.tapped.tag) : A.shot ? 'Alfred can see the screen you were on.' : '';
+  alfNote();
   const send=document.querySelector('[data-act="alf-send"]'); if (send) send.disabled=A.sending;
+}
+function alfNote(){
+  const A=S.alf, note=document.getElementById('alfNote');
+  if (note) note.textContent = A.tapped ? 'Pointing at: '+(A.tapped.card||A.tapped.label||A.tapped.tag) : A.shot ? 'Alfred can see the screen you were on.' : A.shotP ? 'Taking a picture of the screen you were on…' : '';
 }
 
 function ctxSummary(c){
@@ -3929,10 +4254,14 @@ async function sendAlfred(text, retryIndex){
     text=String(text||'').trim(); if (!text) return;
     const ctx=appContext();
     msg={ role:'user', text:text, api:text+'\n\n<app_context>\n'+JSON.stringify(ctx)+'\n</app_context>', ctx:ctx };
-    if (A.shot && !A.shotUsed) { A.msgs.forEach(m=>{ m.shot=false; }); msg.shot=true; A.shotUsed=true; }
     A.lastCtx=ctx; A.msgs.push(msg);
   }
   A.sending=true; A.scrollDown=true; A.progress=''; renderAlfred();
+  // The screenshot is taken while the panel opens (Batch 3); a quick first message waits for it here.
+  if (retryIndex==null) {
+    if (A.shotP) { try { await A.shotP; } catch(e){} }
+    if (A.shot && !A.shotUsed) { A.msgs.forEach(m=>{ m.shot=false; }); msg.shot=true; A.shotUsed=true; }
+  }
   // While Alfred works, ask every 1.5 seconds what it's doing ("Searching meetings…").
   const pid=Date.now().toString(36)+Math.random().toString(36).slice(2,7);
   const poll=setInterval(()=>{ call('apiAlfredProgress', pid).then(t=>{ if (A.sending && t && t!==A.progress) { A.progress=t; const el=document.getElementById('alfProg'); if (el) el.textContent=t; } }).catch(()=>{}); }, 1500);
@@ -4033,7 +4362,24 @@ async function renderRequests(m){
 }
 S.reqUi={};
 function requestClick(a, el){
-  if (a==='req-toggle') { const x=S.reqUi[el.dataset.id]=S.reqUi[el.dataset.id]||{}; x.open=!x.open; render(); return true; }
+  if (a==='req-toggle') { const id=el.dataset.id, x=S.reqUi[id]=S.reqUi[id]||{}, card=el.closest('.card');
+    // Batch 3 (MO-15): the row opens and closes smoothly. Closing folds the open part away first, then redraws.
+    const findCard=()=>{ const b=document.querySelector('#main [data-act="req-toggle"][data-id="'+(window.CSS && CSS.escape ? CSS.escape(id) : id)+'"]'); return b && b.closest('.card'); };
+    if (!card || REDUCED || !card.animate || document.hidden) { x.open=!x.open; render(); return true; }
+    const h0=card.offsetHeight;
+    if (x.open) {
+      const r=card.getBoundingClientRect(), lr=el.getBoundingClientRect(), to=Math.round(lr.bottom-r.top+5);
+      card.style.overflow='hidden';
+      const a=card.animate([{ height:h0+'px', paddingBottom:getComputedStyle(card).paddingBottom }, { height:to+'px', paddingBottom:'4px' }], { duration:240, easing:EASE.ios, fill:'forwards' });
+      [...card.children].forEach(c=>{ if (c!==el) c.animate([{ opacity:1 }, { opacity:0 }], { duration:160, fill:'forwards' }); });
+      afterAnim(a, 240, ()=>{ x.open=false; render(); });
+    } else {
+      x.open=true; render();
+      const c=findCard(); if (!c) return true;
+      const h1=c.offsetHeight; c.style.overflow='hidden';
+      afterAnim(c.animate([{ height:h0+'px' }, { height:h1+'px' }], { duration:300, easing:EASE.ios }), 300, ()=>{ c.style.overflow=''; });
+    }
+    return true; }
   if (a==='req-shot') { const id=el.dataset.id, x=S.reqUi[id]=S.reqUi[id]||{}; if (x.loading) return true; x.loading=true; render();
     call('apiChangeRequestScreenshot', id).then(u=>{ x.loading=false; x.shot=u||''; if (!u) toast('No screenshot was saved'); render(); }).catch(e=>{ x.loading=false; toast(e.message); render(); }); return true; }
   if (a==='req-decide') { const id=el.dataset.id, x=S.reqUi[id]=S.reqUi[id]||{}, v=el.dataset.val; el.disabled=true;
@@ -4049,6 +4395,17 @@ document.addEventListener('focusout', e=>{
 });
 document.addEventListener('input', e=>{ const id=e.target.dataset && e.target.dataset.reqNote; if (id) { (S.reqUi[id]=S.reqUi[id]||{}).note=e.target.value; } });
 
+// Batch 3 (MO-15): a <details> section (the Motive points, Screen Details) eases open and closed, instead of only opening.
+document.addEventListener('click', e=>{
+  const sm=e.target.closest && e.target.closest('details > summary'); if (!sm || S.alf.picking) return;
+  const d=sm.parentElement; if (REDUCED || !d.animate || d.dataset.moving) return;
+  e.preventDefault();
+  const h0=d.offsetHeight, opening=!d.open;
+  d.open=opening; const h1=d.offsetHeight; d.open=true;   // measure the other size, then show the content while it moves
+  d.style.overflow='hidden'; d.dataset.moving='1';
+  const a=d.animate([{ height:h0+'px' }, { height:h1+'px' }], { duration:opening?280:220, easing:opening?EASE.ios:EASE.in });
+  afterAnim(a, opening?280:220, ()=>{ d.open=opening; d.style.overflow=''; delete d.dataset.moving; });
+});
 /* ---------- events ---------- */
 document.addEventListener('click', e=>{
   unlockAudio();
@@ -4063,6 +4420,9 @@ document.addEventListener('click', e=>{
   // Changes that redraw the screen in place cross-fade (and the tab highlight slides) instead of snapping.
   // A tap that comes while a cross-fade is still starting waits for it, so taps always apply in order.
   if (S.vt) { const vt=S.vt; try { vt.skipTransition(); } catch (err) {} vt.updateCallbackDone.catch(()=>{}).then(()=>actClick(e, el)); return; }
+  if (SOFT_ACTS.has(el.dataset.act) && S.data && !REDUCED) { softAct(()=>actClick(e, el), document.getElementById('main'), false, el); return; }
+  // Reduce Motion (MO-14): screens that would slide in or out fade in instead (tab switches stay instant).
+  if (REDUCED && S.data && (el.dataset.act==='go' || el.dataset.act==='back')) { const k=navKind(el); actClick(e, el); if (k && k!=='instant') fadeIn(document.getElementById('main'), 180); return; }
   if (VT_ACTS.has(el.dataset.act) && S.data && !REDUCED) {
     // Nov 10: a tap inside an open panel, or on a switch pill, animates in place (softAct) instead of cross-fading the whole page.
     // The page cross-fade drew the tab bar over the open panel for a moment and fought the pill's slide.
@@ -4166,7 +4526,7 @@ function actClick(e, el){
   else if (a==='ttab') { S.ttab=v; render(); }
   else if (a==='report-open') openReport();
   else if (a==='signout' && WEB) webSignOut();
-  else if (a==='report-close') closeReport();
+  else if (a==='report-close') closeReport(true);
   else if (a==='report-print') window.print();
   else if (a==='log-open') { S.lvlog={ id:id, confirmDel:false }; S.sheet='livelog'; showSheet(); }
   else if (a==='log-delete') deleteLiveLog(el);
@@ -4180,8 +4540,8 @@ function actClick(e, el){
   else if (a==='tp-unlink') linkTopicDecision('', el);
   else if (a==='tour-open') startCoach();
   else if (a==='mtab') { S.mtab=v; render(); }
-  else if (a==='lv-new') { if (S.live) { S.view='live'; S.liveAt=Date.now(); render(); } else { S.sheet='newmeeting'; showSheet(); } }
-  else if (a==='lv-start') { S.pendingType=v; if (S.sheet && !REDUCED) { closeSheet(true); setTimeout(()=>{ S.sheet='otter'; showSheet(); }, 290); } else { S.sheet='otter'; showSheet(); } }
+  else if (a==='lv-new') { S.zoomFrom=el.getBoundingClientRect(); if (S.live) { S.view='live'; S.liveAt=Date.now(); render(); zoomIn(); } else { S.sheet='newmeeting'; showSheet(); } }
+  else if (a==='lv-start') { S.pendingType=v; if (!el.closest('#sheet')) S.zoomFrom=el.getBoundingClientRect(); if (S.sheet && !REDUCED) { closeSheet(true); setTimeout(()=>{ S.sheet='otter'; showSheet(); }, 290); } else { S.sheet='otter'; showSheet(); } }
   else if (a==='lv-confirm') startLive(S.pendingType, true);
   else if (a==='lv-pause') liveAct(livePause);
   else if (a==='lv-next') { const gate=reviewGate(S.live); if (gate) askLive('New Dates Needed', gate, 'OK', null, null, { single:true }); else liveAct(st=>liveStep(st, 1)); }
@@ -4190,7 +4550,9 @@ function actClick(e, el){
   else if (a==='lv-prev') liveAct(st=>liveStep(st, -1));
   else if (a==='lv-back') liveAct(liveResume);
   else if (a==='lv-leave') { if (Date.now()-(S.liveAt||0)<1000) return;   // a stray tap as the meeting screen appears isn't a Leave
-    go('meetings'); toast('You left the meeting. Tap the gold bar to rejoin.'); }
+    // Batch 3 (MO-B8): Leave pops back like a back link.
+    const leave=()=>{ go('meetings'); toast('You left the meeting. Tap the gold bar to rejoin.'); };
+    if (canMorph()) morph(leave, 'pop'); else { leave(); fadeIn(document.getElementById('main'), 180); } }
   else if (a==='lv-cancel-ask') askLive('Cancel This Meeting?', 'It ends for everyone and isn\'t saved. Action items and task updates made during it stay.', 'Cancel Meeting', ()=>cancelLive(), null, { no:'Keep Going', danger:true });
   else if (a==='lv-wrap-ask') askLive('Skip to the Wrap-Up?', 'You\'re on <b>'+esc(S.live.steps[S.live.i].title)+'</b>. Back on the wrap-up brings you right back here.', 'Wrap Up', ()=>liveAct(liveWrap));
   else if (a==='lv-end-ask') { const n=Object.keys(S.live.ratings||{}).length, of=S.data.people.length;
@@ -4212,7 +4574,9 @@ function actClick(e, el){
     // LB-15: answering for the person whose turn it is moves on to the next person (the server checks it's still their turn).
     let move=null; if (val && P[i] && P[i].email===e && i<P.length-1) { move={ step:st.i, from:i, to:i+1 }; st.person=i+1; st.personStart=srvNow(); }
     liveMark('oneonones', e, val, move); }
-  else if (a==='lv-tv') { S.tv=!S.tv; document.body.classList.toggle('tv', S.tv); render(); window.scrollTo(0,0); }
+  else if (a==='lv-tv') { const flip=()=>{ S.tv=!S.tv; document.body.classList.toggle('tv', S.tv); render(); window.scrollTo(0,0); };
+    if (canMorph()) morph(flip, 'fade'); else { flip(); fadeIn(document.getElementById('main'), 250); } }   // Batch 3 (MO-13): TV mode cross-fades in and out
+  else if (a==='ask2-ok' || a==='ask2-cancel') { const q=S.askOver; S.askOver=null; closeAskOver(); if (q) { const f=a==='ask2-ok' ? q.fn : q.cancel; if (f) f(); } }
   else if (a==='ask-cancel') { const c=S.ask && S.ask.cancel; S.ask=null; closeSheet(true); render(); if (c) c(); }
   else if (a==='ask-ok') { const f=S.ask && S.ask.fn; S.ask=null; closeSheet(true); if (f) f(); else render(); }
   else if (a==='lv-park') { const i=document.getElementById('lv-park'), text=i && i.value.trim(), why='Parked during '+S.live.title+'.';
@@ -4232,7 +4596,8 @@ function actClick(e, el){
 document.addEventListener('keydown', e=>{
   if (e.key==='Escape' && S.alf.picking) { endPick(); showAlfred(); return; }
   if (e.key==='Escape' && S.alf.open) { closeAlfred(); return; }
-  if (e.key==='Escape' && document.getElementById('report')) { closeReport(); return; }
+  if (e.key==='Escape' && document.getElementById('askOver')) { const q=S.askOver; S.askOver=null; closeAskOver(); if (q && q.cancel) q.cancel(); return; }
+  if (e.key==='Escape' && document.getElementById('report')) { closeReport(true); return; }
   if (e.key==='Escape' && S.sheet) closeSheet();
   const typing=/^(INPUT|TEXTAREA|SELECT)$/.test((document.activeElement||{}).tagName||'');
   // MD-9: on a computer, the arrow keys move Back / Next and Space pauses (host only).
@@ -4465,7 +4830,7 @@ window.addEventListener('scroll', ()=>{
 // Once a frame at most, and never for the meeting timers or Alfred's progress line ticking (MO-B10).
 let MO_Q=false;
 new MutationObserver(list=>{
-  if (list.every(m=>{ const n=m.target.nodeType===1?m.target:m.target.parentElement; return n && n.closest && n.closest('#lvStep, #lvTopic, #lvPerson, #lvTotal, #alfProg, #toast'); })) return;
+  if (list.every(m=>{ const n=m.target.nodeType===1?m.target:m.target.parentElement; return n && n.closest && n.closest('#lvStep, #lvTopic, #lvPerson, #lvTotal, #alfProg, #toast, .count-up'); })) return;
   if (MO_Q) return; MO_Q=true;
   requestAnimationFrame(()=>{ MO_Q=false; queueDots(); placeSegs();
     document.querySelectorAll(PRESSABLE).forEach(b=>{ const v=b.classList.contains('on')?'true':'false'; if (b.getAttribute('aria-pressed')!==v) b.setAttribute('aria-pressed', v); }); });
@@ -4568,9 +4933,11 @@ function webGotCredential(resp){
     try { localStorage.setItem(WEB_KEYS.token, r.token); localStorage.setItem(WEB_KEYS.me, r.me); } catch(e){ err.textContent='This browser won\'t save your sign-in. Turn off Private Browsing, then try again.'; return; }
     const el=document.getElementById('signin');
     if (el && el.dataset.reload) { location.reload(); return; }   // signed out mid-session: start clean
-    if (el) el.remove();
+    // Batch 3 (MO-11): the sign-in screen stays while the app loads behind it (4 seconds at most), then fades away.
+    if (el) { el.id='signin-out'; el.style.pointerEvents='none'; }
     document.body.classList.remove('signing-in');
-    load();
+    const fade=()=>{ if (!el || !el.isConnected) return; const a=motion(el, [{ opacity:1 }, { opacity:0 }], { duration:300, easing:'ease', fill:'forwards' }, [{ opacity:1 }, { opacity:0 }]); afterAnim(a, 300, ()=>el.remove()); };
+    Promise.race([load(), new Promise(r=>setTimeout(r, 4000))]).then(fade, fade);
   }).catch(e=>{ box.classList.remove('busy'); err.textContent=errText(e); });
 }
 // Account › Sign Out: ends this device's session on the server, then forgets it here.
