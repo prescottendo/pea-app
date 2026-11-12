@@ -19,7 +19,7 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" type="image/png" href="icon-192.png">
-<script>window.HUDDLE_WEB={"api":"https://script.google.com/macros/s/AKfycbzM8K_-XRMDdOJYJ3THn_FhyZkRreMddHIBAOFCFVoq5S_Y7MnsfFLsl7ac_fyDPrch/exec","clientId":"473377418367-cqmmnfum4kshq16973m4sj2jqqfa55p0.apps.googleusercontent.com","build":"9ea2d0b"};document.documentElement.classList.add('web');</script>
+<script>window.HUDDLE_WEB={"api":"https://script.google.com/macros/s/AKfycbzM8K_-XRMDdOJYJ3THn_FhyZkRreMddHIBAOFCFVoq5S_Y7MnsfFLsl7ac_fyDPrch/exec","clientId":"473377418367-cqmmnfum4kshq16973m4sj2jqqfa55p0.apps.googleusercontent.com","build":"1b9b336"};document.documentElement.classList.add('web');</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <!-- The fonts load without holding up the first paint; the page shows in the phone's own font for a moment if needed. -->
@@ -458,6 +458,18 @@
   .live-ctl { position:fixed; left:0; right:0; bottom:var(--nav-h, 0px); z-index:24; background:var(--card); border-top:1px solid var(--line);
     padding:8px max(14px, env(safe-area-inset-right, 0px)) 8px max(14px, env(safe-area-inset-left, 0px)); box-shadow:0 -6px 16px var(--shadow); }
   @media (min-width:700px) { .live-ctl { padding-bottom:max(12px, env(safe-area-inset-bottom, 0px)); } }
+  /* Nov 12 (MT-5): on phones the meeting gets the whole screen: no tab bar (‹ Leave gets you out), the pinned bar sits at the
+     bottom, and Alfred is a hat button in that bar instead of a floating bubble. */
+  @media (max-width:699px) { body.v-live nav.bottom { display:none; } body.v-live .live-ctl { padding-bottom:max(12px, env(safe-area-inset-bottom, 0px)); } }
+  body.v-live .alf-fab { display:none !important; }
+  .tv-items { list-style:none; margin:16px auto 0; padding:0; max-width:900px; width:100%; display:grid; gap:8px; font-size:clamp(18px, 2.2vw, 28px); }
+  .tv-items li { display:flex; justify-content:space-between; gap:24px; border-bottom:1px solid rgba(255,255,255,.15); padding:8px 0; }
+  .tv-items b { white-space:nowrap; font-weight:600; }
+  .live-ctl .hat-btn { flex:0 0 44px; width:44px; padding:0; display:grid; place-items:center; }
+  .live-ctl .hat-btn svg { width:24px; height:24px; }
+  .chg-dot { display:inline-block; width:8px; height:8px; border-radius:50%; background:var(--gold); margin-right:8px; vertical-align:middle; }
+  .prep-item.ok { opacity:.7; }
+  .waiting-box { display:contents; }
   .live-ctl .ctl-row { display:grid; grid-template-columns:minmax(0,.9fr) minmax(0,1.2fr) minmax(0,1.4fr); gap:8px; max-width:640px; margin:0 auto; }
   .live-ctl .ctl-row.one { grid-template-columns:minmax(0,1fr); max-width:420px; }
   .live-ctl .btn { min-height:48px; padding:8px 8px; line-height:1.15; }
@@ -1653,7 +1665,7 @@ const COACH=[
   { view:'team', sel:'.people', h:'Team Tasks', b:'<p>Everyone\'s tasks in one place, with each task\'s owners as initials on the right. The bubble on each person is how many open tasks they have; <b>red</b> means some are overdue. Tap a person to see just their tasks.</p><p>The <b>Action Items | One-on-Ones</b> switch at the top flips to each leader\'s one-on-ones this month, plus how they\'re doing on meeting action items: on time, blocked and slipping (moved twice or more).</p><p>Changing the status of someone else\'s task asks you to confirm first.</p>' },
   { view:'team', sel:'.print-btn', h:'Print the Accountability Report', b:'<p>The printer opens the Accountability Report right inside Huddle: everyone\'s open and overdue tasks, ready for the tactical. Tap <b>Print</b> at the top, or <b>Close</b> to come back.</p>' },
   { view:'team', sel:'nav.bottom [data-view="meetings"], nav.top [data-view="meetings"]', h:'Switch to Meetings', b:'<p>Tap <b>Meetings</b> to run the weekly tactical and read every meeting\'s summary.</p>' },
-  { view:'meetings', sel:'.start-card, #fab', h:'Run a Meeting', b:'<p>On Meetings, <b>+</b> starts a meeting (on tactical day there\'s a Start Weekly Tactical card too). It walks the agenda step by step, with a timer on everyone\'s phone.</p><p>On the <b>Accountability</b> step, each person\'s meeting action items that are due get a quick update: Done, In Progress, Not Started or Blocked. Anything not done needs a <b>new date</b> before the host can move on.</p><p><b>‹ Leave</b> at the top steps out (the gold bar brings you back). The host can <b>Cancel Meeting</b> at the bottom to end it without saving.</p>' },
+  { view:'meetings', sel:'.start-card, #fab', h:'Run a Meeting', b:'<p>On Meetings, <b>+</b> starts a meeting (on tactical day there\'s a Start Weekly Tactical card too). It walks the agenda step by step, with a timer on everyone\'s phone.</p><p>On the <b>Accountability</b> step, each person\'s meeting action items that are due get a quick update: Done, In Progress, Not Started or Blocked. Anything not done needs a <b>new date</b> before the host can move on. From Monday, the <b>Before the Tactical</b> card on My Tasks lets you update yours ahead of time.</p><p><b>‹ Leave</b> at the top steps out (the gold bar brings you back). The host can <b>Cancel Meeting</b> at the bottom to end it without saving.</p>' },
   { view:'meetings', sel:'.mtab', h:'Meetings, Decisions and Parking Lot', b:'<p><b>Meetings</b> lists every meeting, newest first. Search finds words inside summaries and transcripts. Filter by Tactical, Strategic or Offsite, and by date (the date filter works on all three tabs).</p><p><b>Decisions</b> lists every decision. <b>Parking Lot</b> holds the Parking Lot topics; in one, <b>Link a Decision</b> records how it was settled.</p>' },
   { view:'meetings', sel:'.card.meeting', h:'Read and Edit a Meeting', b:'<p>Tap a meeting to read its summary and check off its action items. Meetings run with the timer also show the <b>Accountability Review</b>: what was done, moved and blocked. At the bottom you can <b>add context</b> (Alfred updates the summary), <b>edit the details</b> or <b>delete</b> it (its timer log goes with it). Meetings still waiting for a summary can be opened and deleted too.</p>' },
   { view:'meetings', sel:'.alf-fab', h:'Ask Alfred', b:'<p>The hat is Alfred. Ask about meetings, decisions or tasks. He can mark a task done, move a date or add a task once you tap Confirm, and he can <b>request a feature or report a bug</b> for you. Drag him anywhere.</p>' },
@@ -1748,7 +1760,7 @@ function docUrl(u){ u=String(u||''); return /^https:\/\/(docs|drive)\.google\.co
 function quickDates(list){ const seen={}; return list.filter(([l,v])=>{ if (v==='' ) return true; if (seen[v]) return false; seen[v]=1; return true; }); }
 function newCid(){ return 'c'+Date.now().toString(36)+Math.random().toString(36).slice(2,10); }
 // DI-1: the fields of a task panel that changed since it opened (or since the last save), plus the id.
-const TASK_FIELDS=['title','details','owners','status','priority','due','private'];
+const TASK_FIELDS=['title','details','owners','status','priority','due','private','waiting_on'];
 function taskChanges(base, now){ const c={ id:now.id }; TASK_FIELDS.forEach(f=>{ if (String(now[f]==null?'':now[f])!==String(base[f]==null?'':base[f])) c[f]=now[f]; }); return c; }
 function isTmp(id){ return String(id||'').indexOf('tmp-')===0; }
 function queueEdit(t){
@@ -1810,11 +1822,11 @@ function renderNav(){
   const badgeFor = k=>rc && S.data.isApprover ? '<span class="count" data-num="'+k+'">'+rc+'</span>' : '';
   const badge = badgeFor('tab-more');
   // LB-11: on a computer, Change Requests, Recently Deleted, Settings and Account live in one labeled More menu.
-  const inMenu = ['more','settings','requests','deleted','admin'].indexOf(S.view)>=0;
+  const inMenu = ['more','settings','teamset','requests','deleted','admin'].indexOf(S.view)>=0;
   document.getElementById('navTop').innerHTML = TABS.filter(([k])=>k!=='review' || S.data.isApprover).map(([k,l])=>'<button type="button" class="'+(S.view===k||(k==='meetings'&&S.view==='live')?'on':'')+'" data-act="go" data-view="'+k+'">'+l+(k==='review'?badgeFor('top-review'):'')+'</button>').join('')
     + '<button type="button" class="morebtn'+(inMenu?' on':'')+'" data-act="go" data-view="more">More</button>';
   renderLivebar();
-  const inMore = ['more','topics','review','deleted','settings','requests','admin'].indexOf(S.view)>=0, inMeet = S.view==='meetings' || S.view==='live';
+  const inMore = ['more','topics','review','deleted','settings','teamset','requests','admin'].indexOf(S.view)>=0, inMeet = S.view==='meetings' || S.view==='live';
   // The tab bar is drawn once; after that only the highlight moves, so nothing flashes and the highlight slides.
   const BT=[['mine','My Tasks'],['team','Team Tasks'],['meetings','Meetings'],['more','More']], nb=document.getElementById('navBottom');
   let tabs=nb.querySelector('.tabs');
@@ -1842,7 +1854,7 @@ function renderNav(){
 // Cross-fade a redraw with the browser's View Transitions (iOS 18+); older browsers just redraw.
 // Batch 3: the meeting's Back / Next slide the step instead (liveMove), a rating or one-on-one answer only changes its own
 // button (SOFT_ACTS), and a change request row opens and closes in place (req-toggle), so none of them cross-fade the page.
-const VT_ACTS=new Set(['ttab','go','back','layout','owner','set','tp-status','tp-owner','mtab','lv-owner','lv-due','due-quick',
+const VT_ACTS=new Set(['ttab','go','back','layout','owner','waiting','prep-status','prep-due','set','tp-status','tp-owner','mtab','lv-owner','lv-due','due-quick',
   'remind-days','pref-set','team-set','text-size','theme-set','lv-motive-swap','search-close']);
 const SOFT_ACTS=new Set(['lv-rate','lv-one']);
 function canMorph(){ return !REDUCED && typeof document.startViewTransition==='function' && !document.hidden; }
@@ -1856,7 +1868,7 @@ function morph(fn, kind){
   catch (err) { S.vt=null; fn(); }
 }
 // Where a screen sits, left to right, so a tab change knows which way to slide.
-const NAV_ORDER={ mine:0, team:1, review:2, meetings:3, live:3, more:4, requests:4, deleted:4, settings:4, admin:4 };
+const NAV_ORDER={ mine:0, team:1, review:2, meetings:3, live:3, more:4, requests:4, deleted:4, settings:4, teamset:4, admin:4 };
 function navKind(el){
   const a=el.dataset.act;
   if (a==='back') return 'pop';
@@ -1878,13 +1890,17 @@ function go(v, back){
   // Each tab remembers where you'd scrolled (AP-6); screens you push into start at the top.
   const TABV={ mine:1, team:1, meetings:1, more:1 }; S.scrollMem=S.scrollMem||{};
   if (TABV[S.view] && !S.back) S.scrollMem[S.view]=window.scrollY;
+  // NF-3: leaving Team Tasks (or opening it the first time) counts as having looked.
+  try { if ((S.view==='team' && v!=='team') || (v==='team' && !localStorage.getItem('lt-team-seen'))) localStorage.setItem('lt-team-seen', stampNow()); } catch(e){}
+  try { if (v==='live') sessionStorage.setItem('lt-was-live','1'); else sessionStorage.removeItem('lt-was-live'); } catch(e){}   // MT-6
   const keepY=(!back && TABV[v] && v!==S.view) ? (S.scrollMem[v]||0) : 0;
   S.view=v; S.back=back||null; S.quick=''; closeSheet(true); render(); window.scrollTo(0,keepY);
   requestAnimationFrame(()=>{ S.lastNav={ view:v, ms:Math.round(performance.now()-t0) }; });
 }
 function backLink(){ return S.back ? '<button type="button" class="back" data-act="back">‹ '+esc(S.back)+'</button>' : ''; }
 function goBack(){
-  if (S.back==='More') go('more');
+  if (S.back==='Settings' && S.view==='teamset') go('settings', 'More');
+  else if (S.back==='More') go('more');
   else if (S.back==='Settings') go('settings', 'More');
   else go('mine');
 }
@@ -1976,6 +1992,7 @@ function renderPage(){
   updateAlfredFab();
   const m=document.getElementById('main');
   if (S.view==='more') return renderMore(m);
+  if (S.view==='teamset') return renderTeamSettings(m);
   if (S.view==='review') return renderReview(m);
   if (S.view==='topics') return meltAsync(m, renderTopics(m));
   if (S.view==='meetings') return meltAsync(m, renderMeetings(m));
@@ -2016,7 +2033,7 @@ function renderTasks(m){
   const base=scoped(), mine=S.view==='mine', phone=isPhone(), lateN=base.filter(isLate).length;
   let html='';
   if (mine) {
-    html+=tacticalCard();
+    html+=tacticalCard()+prepCard();
     const rc=reviewCount(), uc=S.data.isApprover ? S.data.tasks.filter(t=>t.status==='Needs Review' && uncertainOf(t)).length : 0;   // LB-7: Review where approvers already are
     if (rc) html+='<button type="button" class="banner rv-banner" data-act="go" data-view="review" data-back="My Tasks"><span class="count" data-num="banner-review">'+rc+'</span><span>'+rc+' meeting task'+(rc===1?'':'s')+' to review'+(uc?' · '+uc+' need'+(uc===1?'s':'')+' a look':'')+'</span><span class="go" aria-hidden="true">›</span></button>';
   }
@@ -2182,7 +2199,17 @@ function sourceLink(t){
   return '<div class="small muted">From '+(mt && docUrl(mt.summary_url) ? '<a class="doc linkbtn" href="'+esc(docUrl(mt.summary_url))+'" target="_blank">'+esc(text)+'</a>' : esc(text))+'</div>';
 }
 // The title is the row's button for VoiceOver and the keyboard (the whole row still opens on a tap).
-function cardTitle(t){ return '<div class="title" role="button" tabindex="0">'+(isPriv(t)?LOCK:'')+esc(t.title)+'</div>'; }
+function cardTitle(t, dot){ return '<div class="title" role="button" tabindex="0">'+(dot?'<i class="chg-dot" aria-label="Changed since you last looked"></i>':'')+(isPriv(t)?LOCK:'')+esc(t.title)+'</div>'; }
+function waitName(w){ w=String(w||''); return w.indexOf('@')>0 ? firstName(w) : w; }
+// NF-3 (Nov 12): a small gold dot on Team Tasks for a task someone else changed since you last looked at Team Tasks (or opened it).
+function stampNow(){ const d=new Date(), z=n=>String(n).padStart(2,'0'); return d.getFullYear()+'-'+z(d.getMonth()+1)+'-'+z(d.getDate())+' '+z(d.getHours())+':'+z(d.getMinutes()); }
+function taskSeenMap(){ try { return JSON.parse(localStorage.getItem('lt-task-seen')||'{}')||{}; } catch(e){ return {}; } }
+function changedForMe(t){
+  const by=String(t.updated_by||'').toLowerCase(); if (!t.updated_at || !by || by===S.data.me) return false;
+  let team=''; try { team=localStorage.getItem('lt-team-seen')||''; } catch(e){}
+  if (!team) return false;   // the first visit shows no dots
+  const seen=taskSeenMap()[t.id]||''; return String(t.updated_at) > (seen>team?seen:team);
+}
 // LB-1 / LB-3: tap the circle to finish (hold it for In Progress). Every row shows all its owners' initials (yours on top on My Tasks).
 // Team Tasks shows owners on every row, so it uses the stacked row: the title gets the full width, details go underneath.
 function taskRows(list, mode){ if (!mode && S.view==='team') mode='stack'; return '<div class="rows'+(mode?' rows-'+mode:'')+'">'+list.map(t=>taskRow(t, mode)).join('')+'</div>'; }
@@ -2194,12 +2221,12 @@ function taskRow(t, mode){
   const all=owners(t), shown=(S.view==='mine' && all.indexOf(S.data.me)>0) ? [S.data.me].concat(all.filter(o=>o!==S.data.me)) : all;
   const pr=String(t.priority||'').toLowerCase(), date=dateLine(t);
   const review = t.status==='Needs Review' ? 'For '+esc(ownerText(all)||'no one yet') : '';
-  const line=[blk?'<span>Blocked</span>':'', date, review].filter(Boolean).join(' · ');
+  const line=[blk?'<span>Blocked'+(t.waiting_on?' · Waiting on '+esc(waitName(t.waiting_on)):'')+'</span>':'', date, review].filter(Boolean).join(' · ');
   return '<article class="task row-a pr-'+(pr||'none')+(done?' done':'')+'" data-act="task" data-id="'+t.id+'">'
     +'<i class="pbar" aria-hidden="true"></i>'
     +'<button type="button" class="circ box'+(done?' on':prog?' prog':blk?' blk':'')+'" data-act="circle" data-id="'+t.id+'" aria-label="'+(done?'Done. Hold to start over: ':prog?'In progress. Mark done: ':blk?'Blocked. Mark in progress: ':'Mark in progress: ')+esc(t.title)+(t.priority?', '+esc(t.priority)+' priority':'')+'"'
     +(isPhone()?'':' title="'+(done?'Done (hold to start over)':prog?'Mark done (hold to start over)':blk?'Blocked: mark in progress (hold to start over)':'Mark in progress')+'"')+'><i>'+ICON.check+'</i></button>'
-    +'<div class="body">'+cardTitle(t)+(line?'<div class="meta row-date">'+line+'</div>':'')+'</div>'
+    +'<div class="body">'+cardTitle(t, S.view==='team' && changedForMe(t))+(line?'<div class="meta row-date">'+line+'</div>':'')+'</div>'
     +'<span class="side">'+ownerStack(shown)+'</span></article>';
 }
 // The date under the title: "Thu" this week, "Nov 20" later, "Done Nov 8" once finished. Overdue dates are gray italics.
@@ -2249,7 +2276,7 @@ function setStatus(id, status, opts){
   }
   else render();
   if (S.sheet==='task' && S.edit && S.edit.task.id===id) { S.edit.task.status=status; renderSheet(); }
-  if (S.sheet==='meeting') renderSheet();
+  if (S.sheet==='meeting' || S.sheet==='prep') renderSheet();
   const undo = (!opts || opts.undo!==false) ? ()=>setStatus(id, prev, {undo:false}) : null;
   const msg = status==='Done' ? 'Marked Done ✓' : 'Marked '+label(status);
   if (!navigator.onLine || S.outbox.length) { queueStatus(t); toast(msg+'. It will send when you\'re back online.', undo); return; }
@@ -2334,6 +2361,7 @@ async function undoReview(ids, ok){
 function openTask(id){
   const t=find(id); if (!t) return;
   S.edit={ task:Object.assign({}, t), base:Object.assign({}, t), detail:null, isNew:false }; S.sheet='task'; showSheet();
+  try { const m=taskSeenMap(), now=stampNow(), u=String(t.updated_at||''); m[id]=u>now?u:now; const keys=Object.keys(m); if (keys.length>300) delete m[keys[0]]; localStorage.setItem('lt-task-seen', JSON.stringify(m)); } catch(e){}
   loadDetail(id);
 }
 const DETAIL_MEM={};
@@ -2443,6 +2471,7 @@ function renderSheetBody(){
     return;
   }
   if (S.sheet==='liveitem') { el.innerHTML=liveItemSheet(); return; }
+  if (S.sheet==='prep') { el.innerHTML=prepSheet(); return; }
   if (S.sheet==='otter') {
     const t=TEMPLATES[S.pendingType];
     el.innerHTML='<div class="otter-pop"><div class="otter-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21"/></svg></div>'
@@ -2501,6 +2530,9 @@ function renderSheetBody(){
     +(S.edit.live?'<p class="small muted live-link">This will be an action item from the '+esc(S.live?S.live.title:'meeting')+'.</p>':'')
     +(isPriv(t)?'':'<div class="owners-box"><label>Owners</label><div class="chips">'+S.data.people.map(p=>'<button type="button" class="'+(sel.indexOf(p.email)>=0?'on':'')+'" data-act="owner" data-email="'+esc(p.email)+'">'+esc(firstName(p.email))+'</button>').join('')+'</div></div>')
     +(isNew?'':'<label>Status</label>'+(t.status==='Needs Review' ? '<p class="small muted">Waiting in Review. '+(S.data.isApprover?'Approve it on the Review screen to start it.':'An approver will look at it soon.')+'</p>' : seg('status',['Not Done','In Progress','Blocked','Done'])))
+    // NF-4: a Blocked task says who or what it's waiting on; a teammate picked here gets one reminder after 3 days.
+    +(!isNew && t.status==='Blocked' ? '<div class="waiting-box"><label>Waiting On</label><div class="chips">'+S.data.people.filter(p=>owners(t).indexOf(p.email)<0).map(p=>'<button type="button" class="'+(t.waiting_on===p.email?'on':'')+'" data-act="waiting" data-email="'+esc(p.email)+'">'+esc(firstName(p.email))+'</button>').join('')+'</div>'
+      +'<input type="text" class="box mt-s" data-input="waiting_on" placeholder="Or type who or what (a vendor, a part…)" value="'+esc(t.waiting_on && t.waiting_on.indexOf('@')<0 ? t.waiting_on : '')+'"></div>' : '')
     +'<label>Priority</label>'+seg('priority',['High','Medium','Low'])
     +'<label for="f-due">Due Date</label><input type="date" id="f-due" data-change="due" value="'+esc(t.due)+'">'
     +'<div class="quick-dates">'+quickDates([['Today',S.data.today],['Tomorrow',addDays(S.data.today,1)],['Next Tactical',S.data.defaultDue],['Next Week',addDays(S.data.today,7)],['No Date','']])
@@ -2615,8 +2647,7 @@ const EMAIL_OPTS = [
   ['assigned','New Tasks for Me','One email per meeting with your new tasks, and when someone gives you a task'],
   ['mentions','Mentions','When someone @mentions you in a comment'],
   ['reminders','Overdue Reminders','Other weekday mornings, only when a task of yours has just gone overdue (twice at most per task)'],
-  ['digest','Monday "Your Week"','Your week at a glance, plus comments that mentioned you'],
-  ['report','"Before the Tactical" Report','{report} morning: the Accountability Report with your items first']
+  ['digest','Monday "Your Week"','Your week at a glance, the Accountability Report before the tactical, and comments that mentioned you']
 ];
 const DAY_NAMES=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
 function dayName(v){ return v!=='' && v!=null && DAY_NAMES[Number(v)] ? DAY_NAMES[Number(v)] : ''; }
@@ -2632,8 +2663,8 @@ const WEEKDAYS=[['1','Mon'],['2','Tue'],['3','Wed'],['4','Thu'],['5','Fri']];
 function teamSettingsHtml(){
   if (!S.team) {
     if (S.teamFailed) return '<h3 class="set-sec">Team Settings</h3>'+loadFail('Team Settings');
-    if (!S.teamLoading) { S.teamLoading=true; call('apiTeamSettings').then(t=>{ S.team=t; S.teamLoading=false; if (S.view==='settings') render(); })
-      .catch(()=>{ S.teamLoading=false; S.teamFailed=true; if (S.view==='settings') render(); }); }
+    if (!S.teamLoading) { S.teamLoading=true; call('apiTeamSettings').then(t=>{ S.team=t; S.teamLoading=false; if (S.view==='teamset') render(); })
+      .catch(()=>{ S.teamLoading=false; S.teamFailed=true; if (S.view==='teamset') render(); }); }
     return '<h3 class="set-sec">Team Settings</h3><div class="skel" style="height:120px"></div>';
   }
   const t=S.team, tog=(key,on,off,label,desc)=>switchRow('team-toggle', t[key]===on, label, desc, 'data-key="'+key+'" data-on="'+on+'" data-off="'+off+'"');
@@ -2642,9 +2673,8 @@ function teamSettingsHtml(){
     +tog('auto_approve','on','off','Auto-Approve After 24 Hours','While Review is on: tasks Alfred is sure about are approved by Alfred if nobody acts within a day. Ones it\'s unsure about always wait')
     +tog('status_from_meeting','auto','comment','Meeting Updates Change Status','When someone reports progress in a meeting, Alfred updates the task\'s status (always logged in History)')
     +tog('weekly_digest','on','off','Monday "Your Week" Email','Sent to everyone who hasn\'t turned it off')
-    +tog('report_email','on','off','"Before the Tactical" Report Email','The Accountability Report on report day, each person\'s items first')
+    +tog('report_email','on','off','Accountability Report in Monday\'s Email','Monday\'s Your Week also brings Since Last Tactical and the rest of the team\'s items, with a print link')
     +tog('alfred_chat','on','off','Alfred Chat','The hat button on every screen for questions and change requests. Off hides it for everyone')
-    +'<div class="set-field'+(t.report_email==='off'?' dim':'')+'">Report Day'+segRow('team-set', t.report_weekday, WEEKDAYS, 'report_weekday')+'</div>'
     +'<div class="set-field">Tactical Day<small>Used for default due dates ("Next Tactical")</small>'+segRow('team-set', t.tactical_weekday, WEEKDAYS, 'tactical_weekday')+'</div>'
     +'<div class="set-field">Default Reminder Look Ahead<small>For anyone who hasn\'t picked their own</small>'+segRow('team-set', t.reminder_days_ahead, [['1','1 day'],['2','2 days'],['3','3 days'],['5','5 days']], 'reminder_days_ahead')+'</div>'
     +'</div><p class="set-note">These change things for the whole team. Only approvers see this section.</p>';
@@ -2708,14 +2738,16 @@ async function runAdmin(k){
   } catch(e){ A.out[k]={text:String(e && e.message || e).replace(/^(Exception|Error):\s*/,''), err:true}; }
   A.busy=null; if (S.view==='admin') render();
 }
+// LB-6 (Nov 12): Team Settings is its own screen (Settings › Team Settings), so personal Settings is short.
+function renderTeamSettings(m){
+  m.innerHTML='<div class="settings">'+backLink()+'<h2>Team Settings</h2>'+teamSettingsHtml().replace('<h3 class="set-sec">Team Settings</h3>','')+'</div>';
+}
 function renderSettings(m){
   const em=S.data.emails||{}, mode=textMode(), th=theme();
   m.innerHTML='<div class="settings">'+backLink()+'<h2>Settings</h2>'
     +'<h3 class="set-sec">Email Notifications</h3><div class="set-card">'
     +EMAIL_OPTS.map(([k,l,d])=>switchRow('email-toggle', em[k]!==false, k==='report' && dayName(S.data.tacticalWeekday) ? '"Before '+dayName(S.data.tacticalWeekday)+'\'s Tactical" Report' : l,
       d.replace('{report}', dayName(S.data.reportWeekday)||'Report day'), 'data-kind="'+k+'"')).join('')
-    +'<div class="set-field'+(em.reminders===false?' dim':'')+'">Coming Up Look Ahead<small>How many days ahead your reminders list what\'s due</small>'
-      +segRow('remind-days', String(S.data.reminderDays||2), [['1','1 day'],['2','2 days'],['3','3 days'],['5','5 days']])+'</div>'
     +'</div><p class="set-note">You get at most one morning email a day, and none on the tactical day or the day before. These only change your own emails; meeting posts in the Leadership Team chat are managed in Connecteam.</p>'
     // LB-10 / AP-8: a size applies the moment it's tapped. Match iPhone follows the phone's own text size.
     +'<h3 class="set-sec">Text Size</h3><div class="set-card" role="radiogroup" aria-label="Text size">'
@@ -2730,7 +2762,7 @@ function renderSettings(m){
     +(deviceKind()==='computer' ? '' : switchRow('pref-toggle', pref('lt-swipe','on')!=='off', 'Swipe to Complete', 'Swipe a task right to mark it done', 'data-key="lt-swipe"'))   // WD-7
     +'</div><p class="set-note">Saved on this device, and remembered for you when the app updates.</p>'
     +'<div class="set-card mt-l"><button type="button" class="set-row" data-act="tour-open"><span>Welcome Tour<small>A one-minute guided walk through the app</small></span><span class="chev" aria-hidden="true">›</span></button></div>'
-    +(S.data.isApprover ? teamSettingsHtml()
+    +(S.data.isApprover ? '<div class="set-card mt-l"><button type="button" class="set-row" data-act="go" data-view="teamset" data-back="Settings"><span>Team Settings<small>Review, auto-approve, emails, Alfred and the tactical day, for everyone</small></span><span class="chev" aria-hidden="true">›</span></button></div>'
       +'<div class="set-card mt-l"><button type="button" class="set-row" data-act="go" data-view="admin" data-back="Settings"><span>Admin Tools<small>Process meetings now, repair scheduled jobs, test email, recent problems</small></span><span class="chev" aria-hidden="true">›</span></button></div>' : '')
     +'<p class="set-note mt-l">Version '+esc(APP_VERSION)+(WEB && WEB.build ? ' ('+esc(WEB.build)+')' : '')+(S.lastNav?' · Last screen change: '+(S.lastNav.ms<1000?S.lastNav.ms+' ms':(S.lastNav.ms/1000).toFixed(1)+' s'):'')+'</p>'
     +'</div>';
@@ -3266,6 +3298,8 @@ function applyLive(res){
     return;
   }
   if (S.liveDirty && !res.fromWrite) return;                         // our own change is still on its way to the server
+  // MT-6: after signing in again mid-meeting, the app opens back on the meeting.
+  try { if (!S.live && S.view!=='live' && sessionStorage.getItem('lt-was-live')) { S.view='live'; S.liveAt=Date.now(); } } catch(e){}
   if (S.live && S.live.id===st.id && (st.version||0) < (S.live.version||0)) return;   // an older copy arrived late
   const changed = !S.live || st.version!==S.live.version || res.fromWrite;
   if (S.live && S.live.id===st.id && liveHost(S.live)===S.data.me && liveHost(st)!==S.data.me) toast(firstName(liveHost(st))+' is the host now. You\'re following along.');
@@ -3462,10 +3496,13 @@ function renderLiveCtl(){
   const st=S.live, on=!!st && S.view==='live' && !S.tv;
   el.hidden=!on; document.body.classList.toggle('live-on', on);
   if (!on) { el.innerHTML=''; return; }
-  const item='<button type="button" class="btn ghost" data-act="lv-item">+ Action Item</button>';
-  if (!isHost(st)) { el.innerHTML='<div class="ctl-row one">'+item+'</div>'; document.documentElement.style.setProperty('--ctl-h', el.offsetHeight+'px'); return; }
+  const narrow=window.innerWidth<400;
+  const item='<button type="button" class="btn ghost" data-act="lv-item">'+(narrow?'+ Item':'+ Action Item')+'</button>';
+  // Nov 12: during a meeting Alfred sits in this bar instead of floating over the agenda.
+  const hat=alfredEnabled() ? '<button type="button" class="btn ghost hat-btn" data-act="alf-open" aria-label="Ask Alfred"><svg viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><rect x="8" y="6.7" width="16" height="14.6" rx="1"/><rect x="8" y="15.9" width="16" height="3" class="hat-band"/><path d="M5 19.7Q16 21.7 27 19.7L27 21.68Q16 26.92 5 21.68Z"/></svg></button>' : '';
+  if (!isHost(st)) { el.innerHTML='<div class="ctl-row one">'+hat+item+'</div>'; document.documentElement.style.setProperty('--ctl-h', el.offsetHeight+'px'); return; }
   const nx=liveNextBtn(st);
-  el.innerHTML='<div class="ctl-row"><button type="button" class="btn ghost" data-act="'+(st.phase==='done'?'lv-back':'lv-prev')+'"'+(liveBackOff(st)?' disabled':'')+'>‹ Back</button>'
+  el.innerHTML='<div class="ctl-row">'+hat+'<button type="button" class="btn ghost" data-act="'+(st.phase==='done'?'lv-back':'lv-prev')+'"'+(liveBackOff(st)?' disabled':'')+'>‹ Back</button>'
     +item+'<button type="button" class="btn primary" data-act="'+nx.act+'">'+esc(nx.label)+'</button></div>';
   document.documentElement.style.setProperty('--ctl-h', el.offsetHeight+'px');
 }
@@ -3486,6 +3523,33 @@ function syncWakeLock(){
 }
 document.addEventListener('visibilitychange', ()=>{ if (!document.hidden) S.wakeFailed=0; syncWakeLock(); });
 // LB-8: on tactical day from 7:45 to 9:00, a one-tap card at the top of My Tasks and Meetings. Join once it's running.
+// NF-1 (Nov 12): from Monday until the tactical starts, a card on My Tasks lists your meeting items that will come up,
+// so you can update them ahead of time. A Done item or one with a date after the tactical won't hold up the Accountability step.
+function prepItems(){
+  const next=S.data.defaultDue; if (!next) return [];
+  return S.data.tasks.filter(t=>isMeetingItem(t) && isOpen(t) && t.status!=='Needs Review' && t.due && t.due<=next && owners(t).indexOf(S.data.me)>=0)
+    .sort((a,b)=>String(a.due).localeCompare(String(b.due)));
+}
+function prepCard(){
+  const wd=S.data.tacticalWeekday; if (wd==='' || wd==null || S.live) return '';
+  const now=new Date(), day=now.getDay(), t=Number(wd), mins=now.getHours()*60+now.getMinutes();
+  if (day===0 || day===6 || day>t || (day===t && mins>=480)) return '';   // Monday until 8:00 on tactical day
+  const n=prepItems().length; if (!n) return '';
+  return '<button type="button" class="card start-card prep-card" data-act="prep-open"><span class="sec">Before '+esc(dayName(wd))+'\'s Tactical</span><b>'+n+' Item'+(n===1?'':'s')+' Coming Up</b><span class="go">Update Now ›</span></button>';
+}
+function prepSheet(){
+  const ids=S.prepIds||[], next=S.data.defaultDue, after=addDays(next,7), wk=addDays(S.data.today,7);
+  const rows=ids.map(find).filter(Boolean).map(t=>{
+    const ok = t.status==='Done' || (t.due && t.due>next);
+    const st=[['Done','Done'],['In Progress','In Progress'],['Not Done','Not Started'],['Blocked','Blocked']];
+    return '<div class="card prep-item'+(ok?' ok':'')+'"><div class="t">'+esc(t.title)+'</div><div class="small muted">'+(ok?'Ready ✓ · ':'')+(t.status==='Done'?'Done':'Due '+esc(fmtDate(t.due)))+'</div>'
+      +'<div class="mm-seg rv4 mt-s" role="group" aria-label="Status">'+st.map(([v,l])=>'<button type="button" class="'+v.replace(/ /g,'')+(t.status===v?' on':'')+'" data-act="prep-status" data-id="'+t.id+'" data-val="'+v+'">'+l+'</button>').join('')+'</div>'
+      +(t.status==='Done'?'':'<div class="quick-dates mt-s">'+quickDates([['After This Tactical · '+short(after),after],['Next Week · '+short(wk),wk]]).map(([l,d])=>'<button type="button" class="'+(t.due===d?'on':'')+'" data-act="prep-due" data-id="'+t.id+'" data-val="'+d+'">'+esc(l)+'</button>').join('')
+        +'<input type="date" data-change="prep-date" data-id="'+t.id+'" min="'+addDays(S.data.today,1)+'" value="'+esc(t.due||'')+'" aria-label="Pick a new due date"></div>')+'</div>';
+  }).join('');
+  return '<div class="grab" data-act="close-sheet"></div><div class="sheet-head"><h3>Before the Tactical</h3><button type="button" class="btn ghost sm" data-act="close-sheet">Done</button></div>'
+    +'<p class="small muted sheet-sub">Mark what\'s done and give the rest a new date now, so the Accountability step goes quickly.</p><div class="list">'+(rows||'<p class="none">Nothing left to update.</p>')+'</div>';
+}
 function tacticalCard(){
   const wd=S.data.tacticalWeekday, now=new Date(), mins=now.getHours()*60+now.getMinutes();
   if (wd==='' || wd==null || now.getDay()!==Number(wd) || mins<465 || mins>=540) return '';
@@ -3615,7 +3679,9 @@ function tvHtml(st, step, next){
   let mid='';
   if (perPerson(st)) {
     const P=stepPeople(st), p=P[Math.min(st.person||0, P.length-1)], nx=P[(st.person||0)+1];
-    mid='<div class="tv-person">'+avatar(p.email,120)+'<div class="tv-name">'+esc(nameOf(p.email))+'</div></div>'
+    const rvTv = step.kind==='accountability' ? reviewItems(p.email, st).open.map(t=>{ const e=(st.review||{})[t.id]; const s2=(e&&e.status_after)||t.status;
+      return '<li><span>'+esc(t.title)+'</span><b>'+esc(label(s2))+(s2!=='Done' && t.due ? ' · '+esc(short(t.due)) : '')+'</b></li>'; }).join('') : '';
+    mid='<div class="tv-person">'+avatar(p.email,120)+'<div class="tv-name">'+esc(nameOf(p.email))+'</div></div>'+(rvTv?'<ul class="tv-items">'+rvTv+'</ul>':'')
       +'<div class="tv-timer tv-timer-md" id="lvPerson">'+fmtClock(personLeft(st))+'</div>'
       +'<div class="tv-small">Step: <span id="lvStep" data-line="1"></span>'+(nx?' · Next: '+esc(firstName(nx.email)):'')+'</div>';
   } else if (st.topic) {
@@ -3811,7 +3877,7 @@ async function liveAddItem(el){
 /* ---------- Alfred chat bubble ---------- */
 // The conversation lives only in this page (S.alf) and is gone after a reload. Every message carries the screen
 // context below, and the screenshot taken when the bubble was tapped, so nobody has to describe where they were.
-const APP_VERSION = '2026.11.12-batch4';
+const APP_VERSION = '2026.11.12-batch5';
 const H2C_URL = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
 const DIAG = { errors:[], actions:[] };   // last 10 of each, for bug reports
 function pushDiag(list, item){ list.push(item); if (list.length>10) list.shift(); }
@@ -4496,6 +4562,10 @@ function actClick(e, el){
   else if (a==='mtg-delete') deleteMeeting(el);
   else if (a==='restore-meeting') restoreMeeting(id, el);
   else if (a==='ttab') { S.ttab=v; render(); }
+  else if (a==='waiting') { const t=S.edit.task; t.waiting_on = t.waiting_on===el.dataset.email ? '' : el.dataset.email; renderSheet(); queueSave(0); }
+  else if (a==='prep-open') { S.prepIds=prepItems().map(t=>t.id); S.sheet='prep'; showSheet(); }
+  else if (a==='prep-status') { setStatus(id, v); if (S.sheet==='prep') renderSheet(); }
+  else if (a==='prep-due') { const t=find(id); if (t && t.due!==v) { t.due=v; saveTaskEdit({ id:id, due:v }); render(); } if (S.sheet==='prep') renderSheet(); }
   else if (a==='report-open') openReport();
   else if (a==='signout' && WEB) webSignOut();
   else if (a==='report-close') closeReport(true);
@@ -4750,6 +4820,7 @@ document.addEventListener('change', e=>{
   else if (k==='due') { S.edit.task.due=e.target.value; queueSave(0); }
   else if (k==='tp-sched') { if (S.topicEdit) { S.topicEdit.scheduled_for=e.target.value; queueTopic(0); } }
   else if (k==='rv-date') { if (e.target.value) reviewSet(e.target.dataset.id, { due:e.target.value }); }
+  else if (k==='prep-date') { const id=e.target.dataset.id, t=find(id), v=e.target.value; if (t && v && t.due!==v) { t.due=v; saveTaskEdit({ id:id, due:v }); render(); if (S.sheet==='prep') renderSheet(); } }
   else if (k==='rv-note') { const e2=((S.live && S.live.review)||{})[e.target.dataset.id]; if (e.target.value.trim()!==((e2 && e2.note)||'')) reviewSet(e.target.dataset.id, { note:e.target.value }); }
 });
 
