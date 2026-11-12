@@ -19,7 +19,7 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" type="image/png" href="icon-192.png">
-<script>window.HUDDLE_WEB={"api":"https://script.google.com/macros/s/AKfycbzM8K_-XRMDdOJYJ3THn_FhyZkRreMddHIBAOFCFVoq5S_Y7MnsfFLsl7ac_fyDPrch/exec","clientId":"473377418367-cqmmnfum4kshq16973m4sj2jqqfa55p0.apps.googleusercontent.com","build":"1b9b336"};document.documentElement.classList.add('web');</script>
+<script>window.HUDDLE_WEB={"api":"https://script.google.com/macros/s/AKfycbzM8K_-XRMDdOJYJ3THn_FhyZkRreMddHIBAOFCFVoq5S_Y7MnsfFLsl7ac_fyDPrch/exec","clientId":"473377418367-cqmmnfum4kshq16973m4sj2jqqfa55p0.apps.googleusercontent.com","build":"1c7e1a0"};document.documentElement.classList.add('web');</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <!-- The fonts load without holding up the first paint; the page shows in the phone's own font for a moment if needed. -->
@@ -994,8 +994,9 @@
   /* Team Tasks: the print button sits to the right of the title. */
   .head-row.team-head { align-items:flex-start; flex-wrap:wrap; row-gap:8px; }
   /* Nov 12: the printer sits beside the title without making the row taller, so Team Tasks lines up with the other tabs. */
-  .head-row.team-head .print-btn { margin:-3px 0 -6px; }
-  .print-btn { margin-left:auto; width:44px; height:44px; border-radius:50%; border:1px solid var(--line); background:var(--card); color:var(--heading); display:grid; place-items:center; flex:none; }
+  .head-row.team-head .print-btn { margin:1px 0 0; }
+  .print-btn::after { content:""; position:absolute; inset:-4px; }   /* 44pt to tap, 36pt to look at */
+  .print-btn { position:relative; margin-left:auto; width:36px; height:36px; border-radius:50%; border:1px solid var(--line); background:var(--card); color:var(--heading); display:grid; place-items:center; flex:none; }
   .print-btn svg { width:22px; height:22px; }
   .print-btn:active { transform:scale(.94); }
   .team-head + .compact-sync { margin-top:8px; }
@@ -1660,7 +1661,7 @@ const COACH=[
   { view:'mine', sel:'article.task .pbar', h:'Priority and Due Date', b:'<div class="tour-legend row"><div><i class="pdot p-high"></i><b>High</b></div><div><i class="pdot p-med"></i><b>Medium</b></div><div><i class="pdot p-low"></i><b>Low</b></div></div><p>The colored bar at the left of each task is its priority, the only color on a task. The date sits under the title; overdue dates are in italics.</p><p>Initials on the right show who owns the task: yours on top, then anyone who shares it.</p>' },
   { view:'mine', sel:'article.task .title', h:'Task Details', b:'<p>Tap a task to see everything: details, owners, the meeting it came from and comments. Type @ and a name in a comment to email that person.</p>' },
   { view:'mine', sel:'#fab', h:'Add a Task', b:'<p>Tap <b>+</b> to add a task. Give it a title, owners and a due date. Turn on <b>Only Me</b> to keep it to yourself.</p>' },
-  { view:'mine', sel:'.head-tools, .toolbar', h:'Search and Filter', b:'<p>Search finds any task. <b>Filter</b> sorts the list and narrows it by status (like <b>Blocked</b>), priority or meeting.</p>' },
+  { view:'mine', sel:'.toolbar', h:'Search and Filter', b:'<p>Search finds any task. <b>Sort &amp; Filter</b> sorts the list and narrows it by status (like <b>Blocked</b>), priority or meeting.</p>' },
   { view:'mine', sel:'nav.bottom [data-view="team"], nav.top [data-view="team"]', h:'Switch to Team Tasks', b:'<p>The tabs at the bottom switch screens. Tap <b>Team Tasks</b> to see what everyone on the team owns.</p>' },
   { view:'team', sel:'.people', h:'Team Tasks', b:'<p>Everyone\'s tasks in one place, with each task\'s owners as initials on the right. The bubble on each person is how many open tasks they have; <b>red</b> means some are overdue. Tap a person to see just their tasks.</p><p>The <b>Action Items | One-on-Ones</b> switch at the top flips to each leader\'s one-on-ones this month, plus how they\'re doing on meeting action items: on time, blocked and slipping (moved twice or more).</p><p>Changing the status of someone else\'s task asks you to confirm first.</p>' },
   { view:'team', sel:'.print-btn', h:'Print the Accountability Report', b:'<p>The printer opens the Accountability Report right inside Huddle: everyone\'s open and overdue tasks, ready for the tactical. Tap <b>Print</b> at the top, or <b>Close</b> to come back.</p>' },
@@ -2032,20 +2033,19 @@ function reviewCount(){ return S.data.isApprover ? S.data.tasks.filter(t=>t.stat
 function renderTasks(m){
   const base=scoped(), mine=S.view==='mine', phone=isPhone(), lateN=base.filter(isLate).length;
   let html='';
+  // Nov 12: every tab starts with its title (My Tasks, Team Tasks, Meetings) and the printer; notices sit below the title.
+  const printBtn='<button type="button" class="print-btn" data-act="report-open" aria-label="Print Accountability Report" title="Print Accountability Report">'+ICON.print+'</button>';
+  html+='<div class="head-row team-head"><h2>'+(mine ? 'My Tasks' : 'Team Tasks')+'</h2>'+printBtn+'</div><span class="synced compact-sync" id="synced"></span>';
   if (mine) {
     html+=tacticalCard()+prepCard();
     const rc=reviewCount(), uc=S.data.isApprover ? S.data.tasks.filter(t=>t.status==='Needs Review' && uncertainOf(t)).length : 0;   // LB-7: Review where approvers already are
     if (rc) html+='<button type="button" class="banner rv-banner" data-act="go" data-view="review" data-back="My Tasks"><span class="count" data-num="banner-review">'+rc+'</span><span>'+rc+' meeting task'+(rc===1?'':'s')+' to review'+(uc?' · '+uc+' need'+(uc===1?'s':'')+' a look':'')+'</span><span class="go" aria-hidden="true">›</span></button>';
   }
   const nf=activeFilters(), showSearch=!phone || S.searchOpen || S.q;
-  // Phones: the greeting, search and Sort & Filter share one row on My Tasks, so the overdue tasks sit higher up.
-  const compact=phone && mine && !showSearch;
+  const compact=false;   // (the old My Tasks greeting row with search and Filter beside it is gone)
   const tools='<button type="button" class="tool-ico" data-act="search-open" aria-label="Search tasks">'+ICON.search+'</button>'
     +'<button type="button" class="chipbtn'+(nf?' on':'')+'" data-act="sortfilter" aria-haspopup="dialog">'+(compact?'Filter':'Sort &amp; Filter')+(nf?'<span class="count">'+nf+'</span>':'')+'</button>';
-  const printBtn='<button type="button" class="print-btn" data-act="report-open" aria-label="Print Accountability Report" title="Print Accountability Report">'+ICON.print+'</button>';
-  html+='<div class="head-row'+(compact?' compact':'')+(!mine?' team-head':'')+'"><h2>'+(mine ? 'Good '+partOfDay()+', '+esc(firstName(S.data.me)) : 'Team Tasks')+'</h2>'
-    +(compact?'<span class="head-tools">'+tools+'</span>':!mine?printBtn:'<span class="synced" id="synced"></span>')+'</div>'
-    +(compact||!mine?'<span class="synced compact-sync" id="synced"></span>':'');
+
   // Team Tasks has a Tasks | One-on-Ones switch; the One-on-Ones side is its own page.
   if (!mine) {
     html+='<div class="seg mtab ttab" role="group" aria-label="Show">'+[['tasks','Action Items'],['ones','One-on-Ones']].map(([k,l])=>'<button type="button" class="'+((S.ttab||'tasks')===k?'on':'')+'" data-act="ttab" data-val="'+k+'" aria-pressed="'+((S.ttab||'tasks')===k)+'">'+l+'</button>').join('')+'</div>';
@@ -3106,7 +3106,7 @@ function reviewSection(list){
         return '<div class="rv-row"><div class="t">'+esc(e.title||'')+'</div><div class="small muted">'+esc(bits)+(e.note?' · <i>'+esc(e.note)+'</i>':'')+'</div></div>'; }).join('')+'</div>'; }).join('');
 }
 /* ---------- strategy topics + meetings ---------- */
-function topicsHead(){ return tacticalCard()+'<div class="head-row"><h2>Meetings</h2></div>'+meetingsSeg(); }
+function topicsHead(){ return '<div class="head-row"><h2>Meetings</h2></div>'+tacticalCard()+meetingsSeg(); }
 async function renderTopics(m){
   if (!S.topics) {
     m.innerHTML=topicsHead()+'<div class="list"><div class="skel" style="height:80px"></div><div class="skel" style="height:80px"></div></div>';
@@ -3133,7 +3133,7 @@ async function renderTopics(m){
 function meetingsSeg(){ const tab=S.mtab||'meetings';
   return '<div class="seg mtab" role="group" aria-label="Show">'+[['meetings','Meetings'],['decisions','Decisions'],['topics','Parking Lot']].map(([k,l])=>'<button type="button" class="'+(tab===k?'on':'')+'" data-act="mtab" data-val="'+k+'" aria-pressed="'+(tab===k)+'">'+l+'</button>').join('')+'</div>'; }
 async function renderDecisions(m){
-  const head=tacticalCard()+'<div class="head-row"><h2>Meetings</h2></div>'+meetingsSeg();
+  const head='<div class="head-row"><h2>Meetings</h2></div>'+tacticalCard()+meetingsSeg();
   if (!S.decisions) {
     m.innerHTML=head+'<div class="list"><div class="skel" style="height:70px"></div><div class="skel" style="height:70px"></div></div>';
     try { S.decisions=await call('apiDecisions'); saveLists(); } catch(e){ if (S.view==='meetings' && S.mtab==='decisions') m.innerHTML=head+loadFail('Decisions'); return; }
@@ -3167,7 +3167,7 @@ async function renderMeetings(m){
   if (!S.meetings) { m.innerHTML='<div class="head-row"><h2>Meetings</h2></div>'+meetingsSeg()+'<div class="list"><div class="skel" style="height:90px"></div><div class="skel" style="height:90px"></div></div>';
     let r; try { r=await Promise.all([call('apiMeetings'), call('apiLiveLogs')]); } catch(e){ if (S.view==='meetings') m.innerHTML='<div class="head-row"><h2>Meetings</h2></div>'+loadFail('Meetings'); return; }
     setMeetingLists(r); saveLists(); if (S.view!=='meetings') return; }
-  m.innerHTML=tacticalCard()+'<div class="head-row"><h2>Meetings</h2></div>'+meetingsSeg()
+  m.innerHTML='<div class="head-row"><h2>Meetings</h2></div>'+tacticalCard()+meetingsSeg()
     +(S.live?'<button type="button" class="card live-card" data-act="go" data-view="live"><div class="sec">● Live Now</div><div class="t">'+esc(S.live.title)+'</div><div class="small muted">Tap to join</div></button>':'')
     +'<div class="mtools"><label class="search">'+ICON.search+'<input type="search" id="mq" data-input="mq" placeholder="Search summaries and transcripts" value="'+esc(S.mq||'')+'" aria-label="Search meetings"></label>'
     +'<div class="mfilters"><select class="sf-sel" data-change="filter" data-key="mfType" aria-label="Meeting type">'
@@ -3877,7 +3877,7 @@ async function liveAddItem(el){
 /* ---------- Alfred chat bubble ---------- */
 // The conversation lives only in this page (S.alf) and is gone after a reload. Every message carries the screen
 // context below, and the screenshot taken when the bubble was tapped, so nobody has to describe where they were.
-const APP_VERSION = '2026.11.12-batch5';
+const APP_VERSION = '2026.11.12-mytasks-title';
 const H2C_URL = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
 const DIAG = { errors:[], actions:[] };   // last 10 of each, for bug reports
 function pushDiag(list, item){ list.push(item); if (list.length>10) list.shift(); }
@@ -3908,7 +3908,7 @@ function alfBounds(side){
   const navTop = Math.min(nav && getComputedStyle(nav).display!=='none' ? nav.getBoundingClientRect().top : H, ctl && !ctl.hidden ? ctl.getBoundingClientRect().top : H);
   let minTop=(head ? head.getBoundingClientRect().bottom : 0)+gap, maxTop=navTop-size-gap;
   if (plus && !plus.hidden) {
-    const pr=plus.getBoundingClientRect();
+    const pr={ top:plus.offsetTop, height:plus.offsetHeight };   // Nov 12: the +'s own spot, not its animated (shrunk) box
     // Left side: the lowest spot is level with the + . Right side: it stays above the + .
     maxTop = side==='right' ? Math.min(maxTop, pr.top-size-gap) : Math.min(maxTop, Math.round(pr.top+(pr.height-size)/2));
   }
@@ -3917,7 +3917,7 @@ function alfBounds(side){
 // The bottom edge of the area fixed buttons are placed in, measured the way the + and the tab bar see it.
 function alfViewportBottom(){
   const plus=document.getElementById('fab'), nav=document.getElementById('navBottom');
-  if (plus && !plus.hidden && getComputedStyle(plus).display!=='none') return plus.getBoundingClientRect().bottom+(parseFloat(getComputedStyle(plus).bottom)||0);
+  if (plus && !plus.hidden && getComputedStyle(plus).display!=='none') return plus.offsetTop+plus.offsetHeight+(parseFloat(getComputedStyle(plus).bottom)||0);
   if (nav && getComputedStyle(nav).display!=='none') return nav.getBoundingClientRect().bottom;
   return document.documentElement.clientHeight;
 }
