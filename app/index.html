@@ -8,7 +8,7 @@
 <head>
 <base target="_top">
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://accounts.google.com/gsi/client https://cdnjs.cloudflare.com/ajax/libs/html2canvas/; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://accounts.google.com/gsi/style; font-src https://fonts.gstatic.com; img-src 'self' data: blob: https://*.googleusercontent.com https://*.gstatic.com; connect-src 'self' https://script.google.com https://script.googleusercontent.com https://accounts.google.com/gsi/; frame-src https://accounts.google.com/gsi/; worker-src 'self'; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://accounts.google.com/gsi/client https://cdnjs.cloudflare.com/ajax/libs/html2canvas/ https://www.gstatic.com/firebasejs/; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://accounts.google.com/gsi/style; font-src https://fonts.gstatic.com; img-src 'self' data: blob: https://*.googleusercontent.com https://*.gstatic.com; connect-src 'self' https://script.google.com https://script.googleusercontent.com https://accounts.google.com/gsi/ https://firebaseinstallations.googleapis.com https://fcmregistrations.googleapis.com; frame-src https://accounts.google.com/gsi/; worker-src 'self'; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'none'">
 <title>Huddle</title>
 <meta name="robots" content="noindex">
 <meta name="theme-color" content="#EBE6D9">
@@ -19,7 +19,7 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" type="image/png" href="icon-192.png">
-<script>window.HUDDLE_WEB={"api":"https://script.google.com/macros/s/AKfycbzM8K_-XRMDdOJYJ3THn_FhyZkRreMddHIBAOFCFVoq5S_Y7MnsfFLsl7ac_fyDPrch/exec","clientId":"473377418367-cqmmnfum4kshq16973m4sj2jqqfa55p0.apps.googleusercontent.com","build":"1c7e1a0"};document.documentElement.classList.add('web');</script>
+<script>window.HUDDLE_WEB={"api":"https://script.google.com/macros/s/AKfycbzM8K_-XRMDdOJYJ3THn_FhyZkRreMddHIBAOFCFVoq5S_Y7MnsfFLsl7ac_fyDPrch/exec","clientId":"473377418367-cqmmnfum4kshq16973m4sj2jqqfa55p0.apps.googleusercontent.com","build":"103336b","push":{"config":{"apiKey":"AIzaSyBON-0KvTXPD_MV6ykhYvCoBRiECEHyE9c","authDomain":"huddle-e2548.firebaseapp.com","projectId":"huddle-e2548","storageBucket":"huddle-e2548.firebasestorage.app","messagingSenderId":"554653922065","appId":"1:554653922065:web:87de53b4cb11b36835d2b0"},"vapidKey":"BHKeDoBmW7vL-qAT3ocyTaMaZ27Ca66jvQtTes2NC4CPoWFiPBJcga7wVd-RD1IuyhBki0oKXwPBGSNq002s8o8"}};document.documentElement.classList.add('web');</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <!-- The fonts load without holding up the first paint; the page shows in the phone's own font for a moment if needed. -->
@@ -1608,7 +1608,9 @@ async function load(){
   if (!load.painted) await paintBoot(); else render();
   if (S.startMeeting) { const id=S.startMeeting; S.startMeeting=null; openMeeting(id); }
   if (S.startReport) { S.startReport=false; openReport(); }
+  if (S.startTask) { const id=S.startTask; S.startTask=null; if (find(id)) openTask(id); }
   flushOutbox();
+  if (WEB) setTimeout(pushRefresh, 6000);
   restoreLists(); setTimeout(prefetchLists, 400);   // every tab's list is fresh before you tap it
   if (load.started) return;
   load.started = true;
@@ -1636,13 +1638,14 @@ function bootFailed(e){
 function startParam(){
   return new Promise(ok=>{
     // ?meeting=ID (the summary email's link) opens that meeting's summary on the Meetings screen.
-    const pick=(v,mtg)=>{ v=String(v||''); const allowed=['mine','team','meetings','topics','settings','requests','deleted'].concat(S.data.isApprover?['review','admin']:[]);
+    const pick=(v,mtg,task)=>{ v=String(v||''); if (task) S.startTask=String(task);
+      if (v==='live') { S.startLive=true; v='meetings'; }   // a "meeting started" notification const allowed=['mine','team','meetings','topics','settings','requests','deleted'].concat(S.data.isApprover?['review','admin']:[]);
       if (mtg && S.data.meetings && S.data.meetings[mtg]) { S.startMeeting=String(mtg); v='meetings'; }
       if (v==='report') { S.startReport=true; v='team'; }   // the report email's link (?view=report) on the web address
       ok(allowed.indexOf(v)>=0?v:''); };
     setTimeout(()=>ok(''), 1500);
     // The web address reads its own address too, then tidies it away so a later reload doesn't jump back.
-    try { if (MOCK || WEB) { const q=new URLSearchParams(location.search); pick(q.get('view'), q.get('meeting')); if (WEB && location.search) history.replaceState(null, '', location.pathname); }
+    try { if (MOCK || WEB) { const q=new URLSearchParams(location.search); pick(q.get('view'), q.get('meeting'), q.get('task')); if (WEB && location.search) history.replaceState(null, '', location.pathname); }
       else google.script.url.getLocation(l=>pick(l && l.parameter && l.parameter.view, l && l.parameter && l.parameter.meeting)); } catch(e){ ok(''); }
   });
 }
@@ -1670,8 +1673,8 @@ const COACH=[
   { view:'meetings', sel:'.mtab', h:'Meetings, Decisions and Parking Lot', b:'<p><b>Meetings</b> lists every meeting, newest first. Search finds words inside summaries and transcripts. Filter by Tactical, Strategic or Offsite, and by date (the date filter works on all three tabs).</p><p><b>Decisions</b> lists every decision. <b>Parking Lot</b> holds the Parking Lot topics; in one, <b>Link a Decision</b> records how it was settled.</p>' },
   { view:'meetings', sel:'.card.meeting', h:'Read and Edit a Meeting', b:'<p>Tap a meeting to read its summary and check off its action items. Meetings run with the timer also show the <b>Accountability Review</b>: what was done, moved and blocked. At the bottom you can <b>add context</b> (Alfred updates the summary), <b>edit the details</b> or <b>delete</b> it (its timer log goes with it). Meetings still waiting for a summary can be opened and deleted too.</p>' },
   { view:'meetings', sel:'.alf-fab', h:'Ask Alfred', b:'<p>The hat is Alfred. Ask about meetings, decisions or tasks. He can mark a task done, move a date or add a task once you tap Confirm, and he can <b>request a feature or report a bug</b> for you. Drag him anywhere.</p>' },
-  { view:'meetings', sel:'nav.bottom [data-view="more"], nav.top .morebtn', h:'More and Settings', b:'<p><b>More</b> holds Change Requests, Recently Deleted, <b>Settings</b> (your emails, text size, light or dark mode) and <b>Account</b>, where you can sign out.</p>' },
-  { view:'mine', h:'You\'re All Set', b:'<p>Pull down on a list to refresh it. No signal? Keep going: your changes wait on your phone and send once you\'re back online.</p><p>You can replay this tour any time from <b>Settings › Welcome Tour</b>.</p>' }
+  { view:'meetings', sel:'nav.bottom [data-view="more"], nav.top .morebtn', h:'More and Settings', b:'<p><b>More</b> holds Change Requests, Recently Deleted, <b>Settings</b> (notifications on this phone, your emails, text size, light or dark mode) and <b>Account</b>, where you can sign out.</p>' },
+  { view:'mine', h:'You\'re All Set', b:'<p>Pull down on a list to refresh it. No signal? Keep going: your changes wait on your phone and send once you\'re back online.</p><p>Want a buzz when a meeting starts or someone needs you? Turn on notifications in <b>Settings</b>.</p><p>You can replay this tour any time from <b>Settings › Welcome Tour</b>.</p>' }
 ];
 function startCoach(){
   closeSheet(true); document.body.classList.remove('fabs-away');
@@ -2745,6 +2748,7 @@ function renderTeamSettings(m){
 function renderSettings(m){
   const em=S.data.emails||{}, mode=textMode(), th=theme();
   m.innerHTML='<div class="settings">'+backLink()+'<h2>Settings</h2>'
+    +pushSettingsHtml()
     +'<h3 class="set-sec">Email Notifications</h3><div class="set-card">'
     +EMAIL_OPTS.map(([k,l,d])=>switchRow('email-toggle', em[k]!==false, k==='report' && dayName(S.data.tacticalWeekday) ? '"Before '+dayName(S.data.tacticalWeekday)+'\'s Tactical" Report' : l,
       d.replace('{report}', dayName(S.data.reportWeekday)||'Report day'), 'data-kind="'+k+'"')).join('')
@@ -3294,12 +3298,14 @@ function applyLive(res){
   const st = res.state && res.state.id===S.endedId ? null : res.state;   // ignore the meeting we just ended
   if (!st) {
     const why = res.canceled && S.live && res.canceled.id===S.live.id ? res.canceled.by+' canceled the meeting' : 'The meeting has ended';
+    if (S.startLive) { S.startLive=false; toast('That meeting has already ended.'); }
     if (S.live) { S.live=null; if (S.view==='live') { S.view='meetings'; toast(why); render(); } else { renderLivebar(); if (res.canceled) toast(why); } }
     return;
   }
   if (S.liveDirty && !res.fromWrite) return;                         // our own change is still on its way to the server
   // MT-6: after signing in again mid-meeting, the app opens back on the meeting.
-  try { if (!S.live && S.view!=='live' && sessionStorage.getItem('lt-was-live')) { S.view='live'; S.liveAt=Date.now(); } } catch(e){}
+  try { if (!S.live && S.view!=='live' && (S.startLive || sessionStorage.getItem('lt-was-live'))) { S.view='live'; S.liveAt=Date.now(); } } catch(e){}
+  S.startLive=false;
   if (S.live && S.live.id===st.id && (st.version||0) < (S.live.version||0)) return;   // an older copy arrived late
   const changed = !S.live || st.version!==S.live.version || res.fromWrite;
   if (S.live && S.live.id===st.id && liveHost(S.live)===S.data.me && liveHost(st)!==S.data.me) toast(firstName(liveHost(st))+' is the host now. You\'re following along.');
@@ -3877,7 +3883,7 @@ async function liveAddItem(el){
 /* ---------- Alfred chat bubble ---------- */
 // The conversation lives only in this page (S.alf) and is gone after a reload. Every message carries the screen
 // context below, and the screenshot taken when the bubble was tapped, so nobody has to describe where they were.
-const APP_VERSION = '2026.11.12-mytasks-title';
+const APP_VERSION = '2026.11.12-push';
 const H2C_URL = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
 const DIAG = { errors:[], actions:[] };   // last 10 of each, for bug reports
 function pushDiag(list, item){ list.push(item); if (list.length>10) list.shift(); }
@@ -4630,6 +4636,9 @@ function actClick(e, el){
   else if (a==='team-set') saveTeam(el.dataset.key, v);
   else if (a==='admin') runAdmin(el.dataset.key);
   else if (a==='text-size') { setTextSize(v); render(); }
+  else if (a==='push-on') pushOn();
+  else if (a==='push-off') pushOff();
+  else if (a==='push-test') call('apiPushTest').then(()=>toast('Test Sent. It should arrive in a few seconds.')).catch(e=>toast(errText(e)));
   else if (a==='theme-set') { setTheme(el.dataset.val); render(); }
   else if (a==='mm-status') setStatus(id, v);
   else if (a==='topic-add') { const i=document.getElementById('tp-new'), d=document.getElementById('tp-desc'), text=i.value.trim();
@@ -4808,6 +4817,7 @@ function switchChanged(a, el){
   else if (a==='email-toggle') { const k=el.dataset.kind, em=S.data.emails=S.data.emails||{}, on=em[k]===false; em[k]=on; render();
     const name=EMAIL_OPTS.find(o=>o[0]===k)[1]; toast(name+(on?' On':' Off'));
     call('apiSetMyEmail', k, on).catch(()=>{ em[k]=!on; render(); toast('Couldn\'t save. Try again.'); }); }
+  else if (a==='push-kind') pushKind(el.dataset.kind);
   else if (a==='pref-toggle') { const k=el.dataset.key, on=pref(k,'on')==='off'; setPref(k, on?'on':'off'); render(); }
   else if (a==='team-toggle') saveTeam(el.dataset.key, S.team[el.dataset.key]===el.dataset.on ? el.dataset.off : el.dataset.on);
 }
@@ -5008,11 +5018,111 @@ function webServiceWorker(){
   };
   document.addEventListener('visibilitychange', ()=>{ if (document.hidden && S.updateWaiting && !S.outbox.length && !S.pending) apply(S.updateWaiting); });
   navigator.serviceWorker.addEventListener('controllerchange', ()=>{ if (applying) location.reload(); });
+  navigator.serviceWorker.addEventListener('message', e=>{ const d=e.data||{}; if (d.type==='open-url' && S.data) openFromPush(d.url); });
   navigator.serviceWorker.register('sw.js').then(reg=>{
     if (reg.waiting) ready(reg.waiting);
     reg.addEventListener('updatefound', ()=>{ const w=reg.installing; if (w) w.addEventListener('statechange', ()=>{ if (w.state==='installed') ready(w); }); });
     document.addEventListener('visibilitychange', ()=>{ if (!document.hidden) reg.update().catch(()=>{}); });
   }).catch(()=>{});
+}
+/* ---------- Push notifications (Nov 12) ---------- */
+// Web address only. Settings › Notifications turns them on for this device: the phone asks permission, Firebase's pinned
+// scripts (gstatic, loaded only then) sign this device up for a push address ("token") using sw.js, and the server keeps it
+// (apiPushRegister). The server sends meeting starts, @mentions, new tasks and "waiting on you" reminders to every device
+// that wants that kind; sw.js shows them and opens the right screen when one is tapped. On an iPhone this only works in
+// the Huddle app on the Home Screen (iOS 16.4 or later), not in a Safari tab. Saved on this device in lt-push.
+const PUSH_OPTS=[['meeting','Meeting Started','When someone starts a meeting, with a tap to join'],['mentions','Mentions','When someone @mentions you in a comment'],
+  ['tasks','New Tasks','Tasks someone gives you, and your action items after a meeting'],['waiting','Waiting on You','When a teammate has been waiting on you for 3 days']];
+const FIREBASE_JS='https://www.gstatic.com/firebasejs/10.12.2/';
+function pushCfg(){ return WEB && WEB.push && WEB.push.vapidKey ? WEB.push : null; }
+function pushSaved(v){
+  if (v===undefined) { try { const s=JSON.parse(localStorage.getItem('lt-push')||'null'); return s && s.me===(S.data&&S.data.me) ? s : null; } catch(e){ return null; } }
+  try { if (v) localStorage.setItem('lt-push', JSON.stringify(v)); else localStorage.removeItem('lt-push'); } catch(e){}
+}
+function isIPhone(){ return /iPhone|iPad|iPod/.test(navigator.userAgent) || (navigator.platform==='MacIntel' && navigator.maxTouchPoints>1); }
+// 'none' (not offered here), 'install' (iPhone in Safari: add to the Home Screen first), 'denied', 'off' or 'on'.
+function pushState(){
+  if (!MOCK && !pushCfg()) return 'none';
+  if (!MOCK && (!('serviceWorker' in navigator) || !('PushManager' in window) || !('Notification' in window))) return isIPhone() ? 'install' : 'none';
+  if (!MOCK && Notification.permission==='denied') return 'denied';
+  return pushSaved() && (MOCK || Notification.permission==='granted') ? 'on' : 'off';
+}
+function loadJs(src){
+  return new Promise((ok,fail)=>{ const sc=document.createElement('script'); sc.src=src; sc.crossOrigin='anonymous'; sc.referrerPolicy='no-referrer';
+    sc.onload=ok; sc.onerror=()=>fail(new Error('NetworkError: Connection failure')); document.head.appendChild(sc); });
+}
+function pushMessaging(){
+  if (!pushMessaging.p) {
+    pushMessaging.p=loadJs(FIREBASE_JS+'firebase-app-compat.js').then(()=>loadJs(FIREBASE_JS+'firebase-messaging-compat.js')).then(()=>{
+      const app=firebase.apps.length ? firebase.app() : firebase.initializeApp(pushCfg().config);
+      return firebase.messaging(app);
+    });
+    pushMessaging.p.catch(()=>{ pushMessaging.p=null; });
+  }
+  return pushMessaging.p;
+}
+async function pushToken(){
+  if (MOCK) return 'mock-device-token-0123456789';
+  const reg=await navigator.serviceWorker.ready, msg=await pushMessaging();
+  const tok=await msg.getToken({ vapidKey:pushCfg().vapidKey, serviceWorkerRegistration:reg });
+  if (!tok) throw new Error('This device couldn\'t sign up for notifications. Try again.');
+  return tok;
+}
+// Turn On: the permission question has to come straight from the tap, so it's asked before anything loads.
+function pushOn(){
+  if (S.pushBusy) return;
+  let ask;
+  try { ask=MOCK || Notification.permission==='granted' ? Promise.resolve('granted') : Promise.resolve(Notification.requestPermission()); } catch(e){ ask=Promise.resolve('default'); }
+  if (!MOCK) pushMessaging().catch(()=>{});   // start loading while the question is up
+  S.pushBusy=true; render();
+  ask.then(p=>{ if (p!=='granted') throw new Error(p==='denied' ? 'push-denied' : 'Notifications weren\'t turned on.'); return pushToken(); })
+    .then(tok=>call('apiPushRegister', tok, PUSH_OPTS.map(o=>o[0]), navigator.userAgent).then(r=>{ pushSaved({ token:tok, kinds:r.kinds, me:S.data.me, at:Date.now() }); }))
+    .then(()=>toast('Notifications On'))
+    .catch(e=>toast(e && e.message==='push-denied' ? 'Notifications are off for Huddle in your phone\'s Settings.' : errText(e)))
+    .finally(()=>{ S.pushBusy=false; if (S.view==='settings') render(); });
+}
+function pushOff(){
+  const s=pushSaved(); if (!s) return;
+  pushSaved(null); render(); toast('Notifications Off on This Device');
+  call('apiPushUnregister', s.token).catch(()=>{});
+  if (!MOCK) pushMessaging().then(m=>m.deleteToken()).catch(()=>{});
+}
+function pushKind(k){
+  const s=pushSaved(); if (!s) return;
+  const was=s.kinds.slice(), on=s.kinds.indexOf(k)<0;
+  s.kinds=on ? s.kinds.concat(k) : s.kinds.filter(x=>x!==k); pushSaved(s); render();
+  call('apiPushUpdate', s.token, s.kinds).catch(e=>{ s.kinds=was; pushSaved(s); render(); toast(errText(e)); });
+}
+// Once a day the app quietly checks that this device's push address hasn't changed (phones renew them now and then).
+function pushRefresh(){
+  const s=pushSaved();
+  if (MOCK || !s || pushState()!=='on' || Date.now()-(s.at||0)<86400000) return;
+  pushToken().then(tok=>call('apiPushRegister', tok, s.kinds, navigator.userAgent).then(()=>{
+    if (tok!==s.token) call('apiPushUnregister', s.token).catch(()=>{});
+    pushSaved(Object.assign(s, { token:tok, at:Date.now() }));
+  })).catch(()=>{});
+}
+// A tapped notification (sw.js sends its address when Huddle is already open): go to that task, the meeting or the tab.
+function openFromPush(url){
+  let q; try { q=new URL(url, location.href).searchParams; } catch(e){ return; }
+  const task=q.get('task'), v=q.get('view');
+  if (task) { if (find(task)) { if (S.sheet) closeSheet(true); openTask(task); } else go('mine'); return; }
+  if (v==='live') { if (S.live) go('live'); else { S.startLive=true; S.liveChecked=0; livePoll(); } return; }
+  if (['mine','team','meetings','topics'].indexOf(v)>=0) go(v);
+}
+function pushSettingsHtml(){
+  const st=pushState(); if (st==='none') return '';
+  const s=pushSaved(), kinds=s ? s.kinds : [];
+  let body;
+  if (st==='install') body='<div class="set-card set-pad"><p class="small">On an iPhone, notifications work in the Huddle app on your Home Screen, not in a Safari tab. In Safari, tap Share, then Add to Home Screen. Open Huddle from your Home Screen and come back here.</p></div><p class="set-note">Needs iOS 16.4 or later.</p>';
+  else if (st==='denied') body='<div class="set-card set-pad"><p class="small">Notifications are turned off for Huddle on this device. To turn them on, open your phone\'s Settings, then Notifications, then Huddle, and turn on Allow Notifications. Then come back here.</p></div>';
+  else if (st==='off') body='<div class="set-card"><button type="button" class="set-row" data-act="push-on"'+(S.pushBusy?' disabled':'')+'><span>'+(S.pushBusy?'Turning On…':'Turn On Notifications')+'<small>Meeting starts, mentions, new tasks and reminders, right on this device</small></span><span class="chev" aria-hidden="true">›</span></button></div>'
+    +'<p class="set-note">Your phone asks once. Emails still come as set below.</p>';
+  else body='<div class="set-card">'+PUSH_OPTS.map(([k,l,d])=>switchRow('push-kind', kinds.indexOf(k)>=0, l, d, 'data-kind="'+k+'"')).join('')+'</div>'
+    +'<div class="set-card mt-l"><button type="button" class="set-row" data-act="push-test"><span>Send a Test Notification<small>Arrives on this device in a few seconds</small></span><span class="chev" aria-hidden="true">›</span></button>'
+    +'<button type="button" class="set-row" data-act="push-off"><span>Turn Off on This Device<small>Your other devices keep theirs</small></span><span class="chev" aria-hidden="true">›</span></button></div>'
+    +'<p class="set-note">These are for this device only. Each phone or computer has its own.</p>';
+  return '<h3 class="set-sec">Notifications on This Device</h3>'+body;
 }
 function webStart(){
   document.documentElement.classList.add('web');
