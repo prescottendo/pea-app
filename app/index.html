@@ -19,7 +19,7 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" type="image/png" href="icon-192.png">
-<script>window.HUDDLE_WEB={"api":"https://script.google.com/macros/s/AKfycbzM8K_-XRMDdOJYJ3THn_FhyZkRreMddHIBAOFCFVoq5S_Y7MnsfFLsl7ac_fyDPrch/exec","clientId":"473377418367-cqmmnfum4kshq16973m4sj2jqqfa55p0.apps.googleusercontent.com","build":"8346f57"};document.documentElement.classList.add('web');</script>
+<script>window.HUDDLE_WEB={"api":"https://script.google.com/macros/s/AKfycbzM8K_-XRMDdOJYJ3THn_FhyZkRreMddHIBAOFCFVoq5S_Y7MnsfFLsl7ac_fyDPrch/exec","clientId":"473377418367-cqmmnfum4kshq16973m4sj2jqqfa55p0.apps.googleusercontent.com","build":"9ea2d0b"};document.documentElement.classList.add('web');</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <!-- The fonts load without holding up the first paint; the page shows in the phone's own font for a moment if needed. -->
@@ -114,21 +114,23 @@
   .logo { height:42px; width:auto; flex:none; display:block; }
   .divider { width:1px; height:30px; background:rgba(255,255,255,.28); flex:none; }
   /* The logo's ENDODONTIC line sits 4.8% of the logo height below its middle; this lines the title up with it. */
-  .bar h1 { margin:0; font-family:var(--serif); font-weight:600; font-size:20px; line-height:1; white-space:nowrap; transform:translateY(calc(42px * .048)); }
+  .bar h1 { margin:0; font-family:var(--serif); font-weight:600; font-size:var(--fs-title); line-height:1; white-space:nowrap; transform:translateY(calc(42px * .048)); }
   /* LB-17: on phones the logo bar shows only at the top of My Tasks and scrolls away; elsewhere the page title is enough. */
-  @media (max-width:699px) { .bar h1, .bar .divider { display:none; } header { position:relative; } body:not(.v-mine) header { display:none; }
+  @media (max-width:699px) { .bar h1, .bar .divider { display:none; } header { position:relative; } body.v-live header { display:none; }
     /* Nov 10: the space under the clock sits above the pull-to-refresh strip, not inside the page, so "Release to refresh"
        grows into view below the clock (it used to grow under the clock, where it couldn't be seen). */
-    body:not(.v-mine) #ptr { margin-top:env(safe-area-inset-top, 0px); }
-    body:not(.v-mine) #livebar:not([hidden]) ~ #ptr { margin-top:0; }
+    body.v-live #ptr { margin-top:env(safe-area-inset-top, 0px); }
+    body.v-live #livebar:not([hidden]) ~ #ptr { margin-top:0; }
     /* The no-signal bar too: when it's the first thing on the page, it starts below the clock. */
-    body:not(.v-mine) #offline:not([hidden]) { padding-top:calc(8px + env(safe-area-inset-top, 0px)); }
-    body:not(.v-mine) #livebar:not([hidden]) ~ #offline:not([hidden]) { padding-top:8px; }
-    body:not(.v-mine) #offline:not([hidden]) ~ #ptr { margin-top:0; }
-    body:not(.v-mine) main { padding-top:24px; }
+    body.v-live #offline:not([hidden]) { padding-top:calc(8px + env(safe-area-inset-top, 0px)); }
+    body.v-live #livebar:not([hidden]) ~ #offline:not([hidden]) { padding-top:8px; }
+    body.v-live #offline:not([hidden]) ~ #ptr { margin-top:0; }
+    body.v-live main { padding-top:24px; }
     /* Nov 10: the live meeting bar shows on every tab. Without the logo bar it used to sit under the clock, out of sight;
        now it starts below the clock and stays pinned to the top while you scroll, so anyone can join from anywhere. */
-    body:not(.v-mine) #livebar { position:sticky; top:0; z-index:22; padding-top:calc(8px + env(safe-area-inset-top, 0px)); }
+    body.v-live #livebar { position:sticky; top:0; z-index:22; padding-top:calc(8px + env(safe-area-inset-top, 0px)); }
+    /* Nov 12: with the header on every tab, the live bar sits under it and sticks just below the clock while you scroll. */
+    body:not(.v-live) #livebar { position:sticky; top:env(safe-area-inset-top, 0px); z-index:22; }
  }
   @media (max-width:420px) { .logo { height:30px; } .divider { height:24px; } .bar { gap:8px; } }
 
@@ -239,7 +241,7 @@
   .btn.approve { background:var(--green); color:var(--on-green); }
   .btn.sm { padding:8px 12px; font-size:var(--fs-sub); }
   .btn:disabled { opacity:.45; cursor:default; }
-  .fab { position:fixed; right:max(18px, env(safe-area-inset-right, 0px)); bottom:calc(22px + env(safe-area-inset-bottom, 0px)); z-index:24;
+  .fab { position:fixed; right:max(16px, env(safe-area-inset-right, 0px)); bottom:calc(22px + env(safe-area-inset-bottom, 0px)); z-index:24;
     width:54px; height:54px; border-radius:50%; border:none; background:var(--primary); color:var(--primary-ink); padding:0;
     display:grid; place-items:center; box-shadow:0 6px 16px var(--shadow); }
   .fab svg { width:26px; height:26px; display:block; }
@@ -576,7 +578,7 @@
   /* ---------- Alfred chat bubble and panel ---------- */
   /* Alfred is a round floating bubble (navy with the white hat, like the + button). Drag it anywhere; it settles against
      the nearest side and each device remembers where. It hides while a panel is open so it never covers controls. */
-  .alf-fab { position:fixed; left:0; top:0; z-index:41; width:52px; height:52px; border-radius:50%; border:none; padding:0;
+  .alf-fab { position:fixed; left:0; top:0; z-index:41; width:54px; height:54px; border-radius:50%; border:none; padding:0;
     background:var(--primary); color:var(--primary-ink); display:grid; place-items:center; cursor:pointer; touch-action:none;
     box-shadow:0 6px 16px var(--shadow); -webkit-user-select:none; user-select:none; -webkit-tap-highlight-color:transparent;
     transition:left .3s cubic-bezier(.2,.8,.2,1), top .3s cubic-bezier(.2,.8,.2,1), bottom .3s cubic-bezier(.2,.8,.2,1), transform .15s, box-shadow .15s, opacity .2s; }
@@ -836,6 +838,10 @@
   @keyframes vtOut { to { opacity:0; } }
   html.vt-page::view-transition-new(root) { animation:vtIn .3s cubic-bezier(.2,.8,.2,1) both; }
   html.vt-page::view-transition-old(root) { animation:vtOut .18s ease both; }
+  /* AP-2: on Huddle's own web address the tab bar is iPhone-sized (the 30px minimum was for Google's frame). */
+  html.web { --nav-under:max(8px, env(safe-area-inset-bottom, 0px)); }
+  html.web nav.bottom { padding-top:4px; }
+  html.web nav.bottom button { padding:6px 0 4px; }
   nav.bottom { view-transition-name:tabbar; } .fab { view-transition-name:fab; } .alf-fab { view-transition-name:alfred; }
   /* Nov 10 (Batch 2): one set of motion tokens, and every screen change slides in 0.25s (Brayden's choice).
      Push (into a screen from More, Settings or a banner): the new page slides in from the right over the old one, which
@@ -862,6 +868,16 @@
   nav.top { position:relative; }
   nav.top .top-ind { position:absolute; left:0; bottom:0; height:3px; border-radius:2px; background:var(--gold); pointer-events:none; transition:transform var(--d-nav) var(--ease-ios), width var(--d-nav) var(--ease-ios); }
   nav.top.has-ind button.on { border-bottom-color:transparent; }
+  /* AP-5: a task row turns light gray while pressed, like an iPhone list. */
+  article.task { transition:background-color .15s; }
+  article.task:active:not(.swiping) { background-color:var(--line-soft); }
+  /* AC-1: chips, tabs, back links and banners keep their look but get a 44pt tap area. */
+  .chips button, .quick-dates button, .mtab button, .back, .chipbtn, .rv-banner { position:relative; }
+  .chips button::after, .quick-dates button::after, .mtab button::after, .chipbtn::after, .rv-banner::after { content:""; position:absolute; inset:-4px 0; }
+  .back::after { content:""; position:absolute; inset:-8px -6px; }
+  @media (max-width:699px) { .head-tools .tool-ico { width:44px; height:44px; } }
+  /* AC-3: page titles use the title line height. */
+  h2 { line-height:1.15; }
   /* The edge swipe back moves the page with the finger. */
   main.edge-drag { will-change:transform; }
   ::view-transition-old(tabbar), ::view-transition-old(fab), ::view-transition-old(alfred) { display:none; }
@@ -875,7 +891,7 @@
   /* The toast can use the full width (minus 16px each side), so short messages stay on one line, and it has roomy padding
      with rounded (not pill) corners, so wrapped text never crowds the edges. */
   .toast { left:0; right:0; margin:0 auto; width:max-content; max-width:calc(100% - 32px); box-sizing:border-box;
-    padding:14px 18px 14px 20px; border-radius:16px; gap:20px; line-height:1.35;
+    padding:12px 16px; border-radius:12px; gap:16px; line-height:1.35;
     transform:translateY(16px); transition:opacity .22s, transform .34s cubic-bezier(.2,.8,.2,1); }
   .toast.show { transform:none; }
   .toast button { flex:none; padding:8px 4px; }
@@ -892,7 +908,7 @@
   .fab:active { transform:scale(.92); }
   /* Phones: a tighter top on My Tasks: a slim review line, and the greeting shares a row with search and Filter. */
   @media (max-width:699px) {
-    body.v-mine main { padding-top:16px; }
+    body:not(.v-live) main { padding-top:16px; }   /* every page under the header starts at the same height */
     .rv-banner { padding:8px 12px; margin-bottom:12px; font-size:var(--fs-sub); gap:8px; }
     .rv-banner .go { font-size:var(--fs-body); }
     .head-row.compact { align-items:center; margin-bottom:12px; }
@@ -918,14 +934,14 @@
   .chipbtn.late.on { background:var(--line-soft); box-shadow:inset 0 0 0 1px var(--heading); }
   /* Layout A: one row per task. */
   article.task.row-a { align-items:center; padding-top:10px; padding-bottom:10px; }
-  .row-a .body { gap:2px; }
+  .row-a .body { gap:4px; }
   .row-a .side { display:flex; align-items:center; gap:8px; margin-left:8px; align-self:center; }
   .row-a .avatars .avatar + .avatar { margin-left:-6px; }
   .rdate { display:inline-flex; align-items:center; gap:6px; font-size:var(--fs-sub); color:var(--muted); white-space:nowrap; font-variant-numeric:tabular-nums; }
   .rdate.late { color:var(--muted); font-weight:400; font-style:italic; }
   .row-a.done .rdate .pdot { opacity:.4; }
   /* The status box: empty = Not Started, half = In Progress, checked = Done. Gray, never colored. */
-  .circ.box i, .tbox { width:calc(22px * var(--ts)); height:calc(22px * var(--ts)); border-radius:7px; border:2px solid currentColor; display:grid; place-items:center; transition:background .2s, transform .2s cubic-bezier(.2,.8,.2,1); }
+  .circ.box i, .tbox { width:calc(22px * var(--ts)); height:calc(22px * var(--ts)); border-radius:8px; border:2px solid currentColor; display:grid; place-items:center; transition:background .2s, transform .2s cubic-bezier(.2,.8,.2,1); }
   .circ.box, .circ.box.prog, .circ.box.on, .task.checking .circ.box { color:var(--muted); }
   .circ.box.prog i, .tbox.prog { background:linear-gradient(90deg, currentColor 50%, transparent 50%); }
   .circ.box.on i, .task.checking .circ.box i, .tbox.on { background:currentColor; }
@@ -964,14 +980,14 @@
   .sheet-wrap.dialog.opening .sheet { animation:dlgIn .26s cubic-bezier(.2,.8,.2,1) both; }
   .sheet-wrap.dialog.leave .sheet { animation:dlgOut .2s ease both; }
   /* Team Tasks: the print button sits to the right of the title. */
-  .head-row.team-head { align-items:center; flex-wrap:wrap; row-gap:8px; }
-  .head-row.team-head h2 { margin-bottom:0; }
+  .head-row.team-head { align-items:flex-start; flex-wrap:wrap; row-gap:8px; }
+  /* Nov 12: the printer sits beside the title without making the row taller, so Team Tasks lines up with the other tabs. */
+  .head-row.team-head .print-btn { margin:-3px 0 -6px; }
   .print-btn { margin-left:auto; width:44px; height:44px; border-radius:50%; border:1px solid var(--line); background:var(--card); color:var(--heading); display:grid; place-items:center; flex:none; }
   .print-btn svg { width:22px; height:22px; }
   .print-btn:active { transform:scale(.94); }
   .team-head + .compact-sync { margin-top:8px; }
-  @media (max-width:699px) { .head-row.team-head { margin-bottom:16px; } }
-  @media (min-width:700px) { .head-row.team-head { margin-bottom:24px; } }
+
   /* Search: an x inside the field instead of a Cancel button. */
   .search .search-x { position:absolute; right:4px; top:50%; transform:translateY(-50%); width:36px; height:36px; border:none; background:none; color:var(--muted); display:grid; place-items:center; padding:0; }
   .search .search-x svg { position:static; transform:none; width:18px; height:18px; color:inherit; }
@@ -987,25 +1003,15 @@
   .del-row span { color:var(--red); }
   .del-row.armed { background:var(--red-soft); }
   /* Welcome tour. */
-  .tour { display:grid; gap:16px; padding:8px 4px 4px; }
-  .tour-step h3 { font-family:var(--serif); font-size:var(--fs-title); color:var(--heading); margin:4px 0 12px; }
-  .tour-step p { margin:0 0 12px; }
-  .tour-step.from-right { animation:tourR .32s cubic-bezier(.2,.8,.2,1); }
-  .tour-step.from-left { animation:tourL .32s cubic-bezier(.2,.8,.2,1); }
-  @keyframes tourR { from { opacity:0; transform:translateX(40px); } }
-  @keyframes tourL { from { opacity:0; transform:translateX(-40px); } }
   .tour-legend { display:grid; gap:12px; background:var(--card); border:1px solid var(--line); border-radius:12px; padding:12px 16px; margin:0 0 12px; }
   .tour-legend > div { display:flex; align-items:center; gap:12px; }
   .tour-legend .pdot { width:14px; height:14px; margin:0 4px; }
-  .tour-dots { display:flex; justify-content:center; gap:8px; }
-  .tour-dots i { width:8px; height:8px; border-radius:50%; background:var(--line); transition:background .2s, transform .2s; }
-  .tour-dots i.on { background:var(--heading); transform:scale(1.25); }
 
   /* ---------- Guided tour: a spotlight on the real app with a bubble beside it ---------- */
   .coach { position:fixed; inset:0; z-index:60; }
   .coach-spot { position:fixed; border-radius:12px; box-shadow:0 0 0 9999px rgba(6,16,28,.62), 0 0 0 2px var(--gold); pointer-events:none;
     transition:left .38s cubic-bezier(.32,.72,0,1), top .38s cubic-bezier(.32,.72,0,1), width .38s cubic-bezier(.32,.72,0,1), height .38s cubic-bezier(.32,.72,0,1), border-radius .38s; }
-  .coach-bub { position:fixed; background:var(--card); color:var(--ink); border-radius:16px; padding:16px; box-shadow:0 12px 32px rgba(0,0,0,.35);
+  .coach-bub { position:fixed; background:var(--card); color:var(--ink); border-radius:12px; padding:16px; box-shadow:0 12px 32px rgba(0,0,0,.35);
     transition:top .38s cubic-bezier(.32,.72,0,1), left .38s cubic-bezier(.32,.72,0,1); animation:coachIn .3s cubic-bezier(.2,.8,.2,1); }
   @keyframes coachIn { from { opacity:0; transform:translateY(8px) scale(.98); } }
   .coach-bub::before { content:""; position:absolute; left:calc(var(--ax, 50%) - 9px); width:18px; height:18px; background:var(--card); transform:rotate(45deg); display:none; }
@@ -1013,7 +1019,7 @@
   .coach-bub.arrow-down::before { display:block; bottom:-8px; }
   .coach-bub h3 { font-family:var(--serif); font-size:var(--fs-title); color:var(--heading); margin:2px 0 8px; }
   .coach-bub p { margin:0 0 8px; }
-  .coach-step { font-size:var(--fs-cap); color:var(--muted); font-weight:600; letter-spacing:.04em; }
+  .coach-step { font-size:var(--fs-cap); color:var(--muted); font-weight:600; letter-spacing:.06em; }
   .coach-acts { display:flex; align-items:center; gap:8px; margin-top:12px; }
   .coach-acts .sp { flex:1; }
   .coach-acts .linkbtn { padding:8px 0; }
@@ -1052,7 +1058,7 @@
   .face-av { position:relative; display:block; border-radius:50%; transition:box-shadow .25s; }
   .face.on .face-av { box-shadow:0 0 0 2px var(--page), 0 0 0 4px var(--gold); }
   .face:active .face-av { transform:scale(.94); }
-  .fbadge { position:absolute; top:-6px; right:-9px; min-width:20px; height:20px; padding:0 5px; border-radius:10px; box-sizing:border-box;
+  .fbadge { position:absolute; top:-6px; right:-9px; min-width:20px; height:20px; padding:0 5px; border-radius:999px; box-sizing:border-box;
     background:var(--bubble); color:var(--bubble-ink); border:1px solid var(--bubble-line); font-size:var(--fs-cap); font-weight:600; line-height:1;
     display:grid; place-items:center; font-variant-numeric:tabular-nums; }
   /* Overdue: the same red as the High priority dot, with a thin white ring. */
@@ -1095,7 +1101,7 @@
 
   /* Task rows, layout 1A: a 40-point priority bar centered at the far left, initials stacked on the right. */
   article.task.row-a { align-items:center; min-height:56px; padding-left:14px; }
-  .row-a .pbar { position:absolute; left:6px; top:50%; width:5px; height:40px; margin-top:-20px; border-radius:5px; background:transparent; }
+  .row-a .pbar { position:absolute; left:6px; top:50%; width:5px; height:40px; margin-top:-20px; border-radius:999px; background:transparent; }
   .row-a.pr-high .pbar { background:var(--p-high); } .row-a.pr-medium .pbar { background:var(--p-med); } .row-a.pr-low .pbar { background:var(--p-low); }
   .row-a.done .pbar { opacity:.35; }
   .rows-stack article.task { align-items:center; }
@@ -1155,9 +1161,10 @@
   .report-screen .rp-load { position:fixed; inset:0; display:grid; place-items:center; }
   .report-screen .rp-load .spin { width:28px; height:28px; border:3px solid var(--line); border-top-color:var(--heading); border-radius:50%; animation:spin .8s linear infinite; }
   .report-screen .rp-bar { position:sticky; top:0; z-index:1; display:flex; align-items:center; gap:12px; padding:calc(10px + env(safe-area-inset-top, 0px)) 16px 10px; background:var(--page); border-bottom:1px solid var(--line); }
-  .report-screen .rp-bar b { flex:1; min-width:0; text-align:center; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; font-family:var(--serif, "STIX Two Text", Georgia, serif); font-size:18px; color:var(--heading); }
+  .report-screen .rp-bar b { flex:1; min-width:0; text-align:center; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; font-family:var(--serif, "STIX Two Text", Georgia, serif); font-size:var(--fs-body); color:var(--heading); }
   .report-screen .rp-paper { background:#fff; color:#333; border-radius:12px; margin:16px auto calc(24px + env(safe-area-inset-bottom, 0px)); padding:16px; max-width:820px; width:calc(100% - 32px); box-sizing:border-box; overflow-x:auto; }
   .report-screen .rp-paper h2 { margin-top:0; }
+  @media screen { .report-screen .rp-paper > div > h2:first-child { display:none; } }   /* LB-4: the bar already says it; it still prints */
   .report-screen .rp-err { text-align:center; padding:64px 16px; color:var(--muted); }
   @media print {
     body.printing-report > *:not(#report) { display:none !important; }
@@ -1177,7 +1184,7 @@
   /* Nov 10: a solid strip under the clock, the color of what's at the top (navy header on My Tasks, the page elsewhere), so
      content scrolls cleanly under it and the iPhone's blur under the clock has nothing to smudge (like Google Docs). */
   html.web body::before { content:""; position:fixed; left:0; right:0; top:0; height:env(safe-area-inset-top, 0px); background:var(--page); z-index:30; pointer-events:none; }
-  html.web body.v-mine::before { background:var(--header); }
+  html.web body:not(.v-live)::before { background:var(--header); }
   html.web body.tv::before, html.web body.signing-in::before { display:none; }
   /* The sign-in screen (webSignIn): navy, Huddle's name, Google's button. */
   .signin { position:fixed; inset:0; z-index:80; background:var(--header); color:var(--header-ink); display:grid; place-items:center; overflow-y:auto;
@@ -2104,19 +2111,6 @@ function acctHtml(email){
       +' <span>· moved '+x.moves+' times'+(x.due?', now due '+esc(short(x.due)):'')+'</span></button>').join('')+'</div>' : '');
 }
 // Team Tasks with nobody picked: this month's latest one-on-one answer for everyone who has direct reports.
-function teamOnesHtml(){
-  const who=S.data.people.filter(p=>NO_DIRECT_REPORTS.indexOf(nameOf(p.email))<0);
-  if (!who.length) return '';
-  if (!S.ones) { onesHtml(who[0].email); return ''; }   // starts the load; the screen redraws when it arrives
-  if (S.ones.failed) return '';
-  const month=S.ones.month ? new Date(S.ones.month+'-15T12:00:00').toLocaleDateString('en-US',{month:'long'}) : 'This Month';
-  const word={ none:'None', some:'Some', all:'All' };
-  return '<div class="team-ones"><div class="lbl">One-on-Ones in '+esc(month)+'</div><div class="team-ones-grid">'+who.map(p=>{
-    const list=(S.ones.people||{})[p.email]||[], last=list[list.length-1];
-    return '<button type="button" class="to-cell" data-act="person" data-email="'+esc(p.email)+'"><span class="to-name">'+esc(firstName(p.email))+'</span>'
-      +(last?'<span class="tag oo-'+esc(last.answer)+'">'+esc(word[last.answer]||last.answer)+'</span>':'<span class="small muted">Not asked</span>')+'</button>';
-  }).join('')+'</div></div>';
-}
 function onesHtml(email){
   if (NO_DIRECT_REPORTS.indexOf(nameOf(email))>=0) return '';
   if (!S.ones) {
@@ -2235,33 +2229,8 @@ function ownerText(list){
 }
 // Owners on the far right (option C): up to three initials with a light overlap; four or more show two and "+N";
 // the whole team shows one "All" bubble. Every owner's full name is in the task panel.
-function ownerBubbles(list){
-  if (!list.length) return '';
-  const chip=txt=>{ const h=14, fs=txt.length>2?10:11; return '<svg class="avatar more" width="28" height="28" viewBox="0 0 28 28" aria-hidden="true"><circle cx="14" cy="14" r="13" stroke-width="2"/><text x="14" y="'+(h+fs*0.368).toFixed(1)+'" text-anchor="middle" font-size="'+fs+'">'+txt+'</text></svg>'; };
-  const names=list.map(nameOf).join(', ');
-  if (list.length>1 && list.length>=S.data.people.length) return '<span class="obub" role="img" aria-label="Everyone">'+chip('All')+'</span>';
-  const shown=list.length<=3 ? list : list.slice(0,2), extra=list.length-shown.length;
-  return '<span class="obub" role="img" aria-label="'+esc(names)+'">'+shown.map(o=>avatar(o,28)).join('')+(extra?chip('+'+extra):'')+'</span>';
-}
-function stackLine(t){
-  // "Not Started" isn't spelled out (the empty box says it), so the line usually fits on one row.
-  const when = t.status==='Done' ? 'Done'+(t.completed_at?' '+short(t.completed_at):'') : !t.due ? 'No date' : (isLate(t)?'Overdue ':'')+short(t.due);
-  const bits=[t.status==='In Progress'||t.status==='Blocked'?t.status:'', (MARKS[t.priority]||'')+'<span>'+esc(when)+'</span>', owners(t).length?'':'No owner'].filter(Boolean);
-  return '<div class="meta stack-meta">'+bits.map((b,i)=>'<span class="mb">'+(i?'<i class="dot" aria-hidden="true">·</i>':'')+b+'</span>').join('')+'</div>';
-}
 // The right side of a row: priority dot + a short date ("Thu" this week, "Nov 20" later). Overdue dates are bold, not red,
 // so red always means High priority.
-function rowDate(t){
-  const dot=MARKS[t.priority]||'';
-  let txt='', cls='';
-  if (t.status==='Done') { txt=t.completed_at?short(t.completed_at):'Done'; cls=' plain'; }
-  else if (!t.due) txt='';
-  else if (isLate(t)) { txt=short(t.due); cls=' late'; }
-  else if (isThisWeek(t)) txt=fmtDate(t.due,{weekday:'short'});
-  else txt=short(t.due);
-  const pr=t.priority?esc(t.priority)+' priority':'', when=t.status==='Done'?'Done '+txt:!t.due?'No due date':(isLate(t)?'Overdue, was due ':'Due ')+txt;
-  return '<span class="rdate'+cls+'" aria-label="'+esc([pr,when].filter(Boolean).join(', '))+'">'+dot+'<span>'+esc(txt)+'</span></span>';
-}
 
 /* ---------- status changes (optimistic, with undo) ---------- */
 function setStatus(id, status, opts){
@@ -2367,8 +2336,11 @@ function openTask(id){
   S.edit={ task:Object.assign({}, t), base:Object.assign({}, t), detail:null, isNew:false }; S.sheet='task'; showSheet();
   loadDetail(id);
 }
+const DETAIL_MEM={};
 function loadDetail(id){
-  call('apiTaskDetail', id).then(d=>{ if (S.edit && S.edit.task.id===id) { const fresh=newComments(id, d.comments), first=!S.edit.detail; S.edit.detail=d; renderSheet(); markSeen(id, d.comments);
+  // SP-4: a task opened earlier this session shows its comments and history at once, then refreshes.
+  if (DETAIL_MEM[id] && S.edit && S.edit.task.id===id && !S.edit.detail) { S.edit.detail=DETAIL_MEM[id]; renderSheet(); }
+  call('apiTaskDetail', id).then(d=>{ DETAIL_MEM[id]=d; if (S.edit && S.edit.task.id===id) { const fresh=newComments(id, d.comments), first=!S.edit.detail; S.edit.detail=d; renderSheet(); markSeen(id, d.comments);
       // MO-10: the comments and history fade in where "Loading…" was.
       if (first) document.querySelectorAll('#f-comments .comment, #f-comments .none, #sheet .thread .log').forEach(el=>fadeIn(el, 200));
       // after the panel has finished sliding up, or the scroll is lost
@@ -2516,10 +2488,10 @@ function renderSheetBody(){
   // LB-6 / AP-9: a new task has Cancel at the top left and Add at the top right, so Add is never under the keyboard.
   let html='<div class="grab"></div><div class="sheet-head">'
     +(isNew ? '<button type="button" class="btn ghost sm" data-act="close-sheet">Cancel</button><h3>'+(S.edit.live?'New Action Item':'New Task')+'</h3><button type="button" class="btn primary sm" data-act="add-task">Add</button>'
-      : '<h3>Task</h3><span class="saved" id="saveState" role="status"></span><button type="button" class="btn ghost sm" data-act="close-sheet">Done</button>')
+      : '<h3>Task Details</h3><span class="saved" id="saveState" role="status"></span><button type="button" class="btn ghost sm" data-act="close-sheet">Done</button>')
     +'</div><div class="err" id="f-err" role="alert"></div>'
     +'<div class="form">'
-    +'<label for="f-title">Task</label><textarea id="f-title" data-input="title" rows="2" placeholder="What needs to be done?">'+esc(t.title)+'</textarea>'
+    +'<label for="f-title">Title</label><textarea id="f-title" data-input="title" rows="2" placeholder="What needs to be done?">'+esc(t.title)+'</textarea>'
     +(isNew && !S.edit.showDetails && !t.details ? '<button type="button" class="linkbtn mt-s" data-act="add-details">Add Details</button>'
       : '<label for="f-details">Details</label><textarea id="f-details" data-input="details" rows="3" placeholder="Context, links, notes">'+esc(t.details)+'</textarea>')
     +(canPrivate(t)?'<div class="set-card priv-card">'+switchRow('private-toggle', isPriv(t), LOCK+'Only Me', isPriv(t)?'Only you can see this task. It stays out of Team Tasks, reports and meetings.':'Turn on to keep this task to yourself')
@@ -2773,7 +2745,7 @@ async function renderDeleted(m){
   const d=S.deleted, who=e=>e?nameOf(e):'';
   const row=(title,sub,act,id)=>'<div class="card del"><div><div class="t">'+esc(title)+'</div><div class="small muted">'+sub+'</div></div><button type="button" class="btn ghost sm" data-act="'+act+'" data-id="'+id+'">Restore</button></div>';
   const lead=backLink()+'<h2>Recently Deleted</h2><p class="lead">Nothing here is gone for good. Restore puts it back exactly where it was. Meeting tasks rejected in Review stay here for 30 days.</p>';
-  if (!d.tasks.length && !d.topics.length && !(d.meetings||[]).length) { m.innerHTML=lead+'<div class="empty"><b>Nothing Deleted</b>Deleted tasks and topics wait here so you can restore them.</div>'; return; }
+  if (!d.tasks.length && !d.topics.length && !(d.meetings||[]).length) { m.innerHTML=lead+'<div class="empty"><b>Nothing Deleted</b>Deleted tasks, Parking Lot topics and meetings wait here so you can restore them.</div>'; return; }
   const none=(b,t)=>'<p class="none">'+t+'</p>';
   m.innerHTML=lead
     +'<h3 class="set-sec">Tasks</h3><div class="list">'+(d.tasks.length?d.tasks.map(t=>row(t.title,(t.rejected?'Rejected in Review ':'Deleted ')+esc(fmtDate(t.deleted_at))+(t.deleted_by?' by '+esc(who(t.deleted_by)):'')+' · '+esc(owners(t).map(firstName).join(', ')),'restore-task',t.id)).join(''):none('No Deleted Tasks','Deleted tasks will show up here.'))+'</div>'
@@ -3061,7 +3033,7 @@ function reviewCard(t, e, can, person){
       '<button type="button" class="'+s.replace(/ /g,'')+(v.status===s?' on':'')+'" data-act="rv-status" data-id="'+t.id+'" data-val="'+s+'"'+dis+' aria-pressed="'+(v.status===s)+'">'+l+'</button>').join('')+'</div>';
   if (v.status!=='Done') {
     const need=needsDate(t, e), next=S.data.defaultDue, week=addDays(today,7);
-    h+='<div class="rv-due'+(need?' need':'')+'"><div class="rv-due-h">'+(need?'Pick a new date':'New date: '+esc(fmtDate(v.due)))+'</div>'
+    h+='<div class="rv-due'+(need?' need':'')+'"><div class="rv-due-h">'+(need?'Pick a New Date':'New Date: '+esc(fmtDate(v.due)))+'</div>'
       +'<div class="quick-dates">'+quickDates([['Next Tactical · '+short(next),next],['Next Week · '+short(week),week]]).map(([l,d])=>
         '<button type="button" class="'+(v.due===d?'on':'')+'" data-act="rv-due" data-id="'+t.id+'" data-val="'+d+'"'+dis+' aria-pressed="'+(v.due===d)+'">'+esc(l)+'</button>').join('')+'</div>'
       +'<input type="date" data-change="rv-date" data-id="'+t.id+'" min="'+addDays(today,1)+'" value="'+esc(need?'':v.due||'')+'" aria-label="Pick a new due date"'+dis+'></div>';
@@ -3677,7 +3649,7 @@ function ratingCard(st){
   const r=st.ratings||{}, mine=r[S.data.me], votes=Object.keys(r), avg=votes.length?(votes.reduce((a,k)=>a+r[k],0)/votes.length).toFixed(1):null;
   return '<div class="card reading"><h3>Was this the highest and best use of our time together?</h3><p class="small muted">Everyone rates on their own phone, 1 to 10.</p>'
     +'<div class="rate" role="group" aria-label="Your rating, 1 to 10">'+[1,2,3,4,5,6,7,8,9,10].map(n=>'<button type="button" class="'+(mine===n?'on':'')+'" data-act="lv-rate" data-val="'+n+'">'+n+'</button>').join('')+'</div>'
-    +'<div class="rate-sum">'+(avg?'<b>'+avg+'</b><span>average from '+votes.length+' of '+S.data.people.length+'</span><span class="avatars">'+votes.map(e=>avatar(e,24)).join('')+'</span>':'<span class="small muted">No ratings yet</span>')+'</div></div>';
+    +'<div class="rate-sum">'+(avg?'<b>'+avg+'</b><span>average from '+votes.length+' of '+S.data.people.length+'</span><span class="avatars">'+votes.map(e=>avatar(e,24)).join('')+'</span>':'<span class="small muted">No Ratings Yet</span>')+'</div></div>';
 }
 
 function liveBody(st, step){
@@ -3839,7 +3811,7 @@ async function liveAddItem(el){
 /* ---------- Alfred chat bubble ---------- */
 // The conversation lives only in this page (S.alf) and is gone after a reload. Every message carries the screen
 // context below, and the screenshot taken when the bubble was tapped, so nobody has to describe where they were.
-const APP_VERSION = '2026.11.10-batch3';
+const APP_VERSION = '2026.11.12-batch4';
 const H2C_URL = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
 const DIAG = { errors:[], actions:[] };   // last 10 of each, for bug reports
 function pushDiag(list, item){ list.push(item); if (list.length>10) list.shift(); }
@@ -3864,7 +3836,7 @@ function updateAlfredFab(){
 }
 // Where the bubble may sit: below the header, above the tab bar, and (on the right side) above the + button.
 function alfBounds(side){
-  const size=52, gap=12, H=window.innerHeight, W=window.innerWidth;
+  const size=54, gap=12, edge=16, H=window.innerHeight, W=window.innerWidth;   // the same size and edge distance as the +
   const head=document.querySelector('header'), nav=document.getElementById('navBottom'), plus=document.getElementById('fab');
   const ctl=document.getElementById('liveCtl');
   const navTop = Math.min(nav && getComputedStyle(nav).display!=='none' ? nav.getBoundingClientRect().top : H, ctl && !ctl.hidden ? ctl.getBoundingClientRect().top : H);
@@ -3874,7 +3846,7 @@ function alfBounds(side){
     // Left side: the lowest spot is level with the + . Right side: it stays above the + .
     maxTop = side==='right' ? Math.min(maxTop, pr.top-size-gap) : Math.min(maxTop, Math.round(pr.top+(pr.height-size)/2));
   }
-  return { size, minTop, maxTop:Math.max(minTop, maxTop), left:gap, right:W-size-gap };
+  return { size, minTop, maxTop:Math.max(minTop, maxTop), left:edge, right:W-size-edge };
 }
 // The bottom edge of the area fixed buttons are placed in, measured the way the + and the tab bar see it.
 function alfViewportBottom(){
@@ -4876,7 +4848,7 @@ function webSignedOut(msg){
 // Nov 10: the phone tints the area under the clock with theme-color; keep it the page's own color (light or dark).
 function webTint(){
   const m=document.querySelector('meta[name="theme-color"]'); if (!m) return;
-  const c=document.getElementById('signin') ? '#0A345A' : document.body.classList.contains('v-mine') ? getComputedStyle(document.documentElement).getPropertyValue('--header').trim() : getComputedStyle(document.body).backgroundColor;
+  const c=document.getElementById('signin') ? '#0A345A' : !document.body.classList.contains('v-live') ? getComputedStyle(document.documentElement).getPropertyValue('--header').trim() : getComputedStyle(document.body).backgroundColor;
   if (c && m.content!==c) m.content=c;
 }
 function webSignIn(msg, reloadAfter){
