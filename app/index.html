@@ -19,7 +19,7 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" type="image/png" href="icon-192.png">
-<script>window.HUDDLE_WEB={"api":"https://script.google.com/macros/s/AKfycbzM8K_-XRMDdOJYJ3THn_FhyZkRreMddHIBAOFCFVoq5S_Y7MnsfFLsl7ac_fyDPrch/exec","clientId":"473377418367-cqmmnfum4kshq16973m4sj2jqqfa55p0.apps.googleusercontent.com","build":"0eac577","push":{"config":{"apiKey":"AIzaSyBON-0KvTXPD_MV6ykhYvCoBRiECEHyE9c","authDomain":"huddle-e2548.firebaseapp.com","projectId":"huddle-e2548","storageBucket":"huddle-e2548.firebasestorage.app","messagingSenderId":"554653922065","appId":"1:554653922065:web:87de53b4cb11b36835d2b0"},"vapidKey":"BHKeDoBmW7vL-qAT3ocyTaMaZ27Ca66jvQtTes2NC4CPoWFiPBJcga7wVd-RD1IuyhBki0oKXwPBGSNq002s8o8"}};document.documentElement.classList.add('web');</script>
+<script>window.HUDDLE_WEB={"api":"https://script.google.com/macros/s/AKfycbzM8K_-XRMDdOJYJ3THn_FhyZkRreMddHIBAOFCFVoq5S_Y7MnsfFLsl7ac_fyDPrch/exec","clientId":"473377418367-cqmmnfum4kshq16973m4sj2jqqfa55p0.apps.googleusercontent.com","build":"34b6c3c","push":{"config":{"apiKey":"AIzaSyBON-0KvTXPD_MV6ykhYvCoBRiECEHyE9c","authDomain":"huddle-e2548.firebaseapp.com","projectId":"huddle-e2548","storageBucket":"huddle-e2548.firebasestorage.app","messagingSenderId":"554653922065","appId":"1:554653922065:web:87de53b4cb11b36835d2b0"},"vapidKey":"BHKeDoBmW7vL-qAT3ocyTaMaZ27Ca66jvQtTes2NC4CPoWFiPBJcga7wVd-RD1IuyhBki0oKXwPBGSNq002s8o8"}};document.documentElement.classList.add('web');</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <!-- The fonts load without holding up the first paint; the page shows in the phone's own font for a moment if needed. -->
@@ -1263,7 +1263,7 @@
 <button type="button" class="livebar" id="livebar" data-act="go" data-view="live" hidden></button>
 <div class="offline" id="offline" role="status" hidden></div>
 <div class="preview" id="preview" hidden>Sample data preview. Nothing here is saved.</div>
-<div id="ptr" aria-live="polite"><span>Pull to refresh</span></div>
+<div id="ptr" aria-live="polite"><span>Pull to Refresh</span></div>
 <main class="wrap" id="main">
   <div class="list"><div class="skel" style="height:92px"></div><div class="skel" style="height:92px"></div><div class="skel" style="height:92px"></div></div>
 </main>
@@ -1365,7 +1365,7 @@ const ICON = {
   signout:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 4H6.5A1.5 1.5 0 0 0 5 5.5v13A1.5 1.5 0 0 0 6.5 20H14"/><path d="M10 12h10M16.5 8.5 20 12l-3.5 3.5"/></svg>',
   hat:'<svg viewBox="0 0 32 32" fill="currentColor"><rect x="8" y="6.7" width="16" height="14.6" rx="1"/><path d="M5 19.7Q16 21.7 27 19.7L27 21.68Q16 26.92 5 21.68Z"/></svg>'
 };
-// Phones (under 700 wide) get the bottom tab bar, list layout only, pull-down search and the phone header (LB-4, LB-5, LB-17).
+// Phones (under 700 wide) get the bottom tab bar, list layout only, search behind the magnifier and the phone header (LB-4, LB-5, LB-17).
 function isPhone(){ return window.innerWidth<700; }
 function layoutNow(){ return isPhone() ? 'list' : S.layout; }
 // AP-3: Android phones buzz for done and time's up. Browsers allow it only after the person has tapped the page once.
@@ -3297,10 +3297,14 @@ function applyLive(res){
   S.offset = res.now - Date.now();
   const st = res.state && res.state.id===S.endedId ? null : res.state;   // ignore the meeting we just ended
   if (!st) {
-    // Nov 12: one empty answer isn't proof the meeting ended (a read can land mid-save). Unless it was canceled, check once
-    // more a moment later, and only then close the meeting on this phone.
-    if (S.live && !res.canceled && !(res.state && res.state.id===S.endedId)) {
-      if (!S.liveGone || Date.now()-S.liveGone>15000) { S.liveGone=Date.now(); setTimeout(()=>{ S.liveChecked=0; livePoll(); }, 1200); return; }
+    // Nov 13: an empty answer isn't proof the meeting ended (a read can land mid-save, and the Nov 12 single re-check wasn't
+    // enough). The server now says when a meeting ended or was canceled (res.ended / res.canceled); without that, the phone
+    // keeps the meeting open, checks again every 2 seconds, and only closes it after 3 empty answers over 45 seconds.
+    const said = S.live && [res.ended, res.canceled].some(x=>x && x.id===S.live.id);
+    if (S.live && !said && !(res.state && res.state.id===S.endedId)) {
+      if (!S.liveGone || Date.now()-S.liveGone.last>60000) S.liveGone={ at:Date.now(), n:0 };
+      S.liveGone.n++; S.liveGone.last=Date.now();
+      if (S.liveGone.n<3 || Date.now()-S.liveGone.at<45000) { clearTimeout(S.liveRecheck); S.liveRecheck=setTimeout(()=>{ S.liveChecked=0; livePoll(); }, 2000); return; }
     }
     S.liveGone=0;
     const why = res.canceled && S.live && res.canceled.id===S.live.id ? res.canceled.by+' canceled the meeting' : 'The meeting has ended';
@@ -3890,7 +3894,7 @@ async function liveAddItem(el){
 /* ---------- Alfred chat bubble ---------- */
 // The conversation lives only in this page (S.alf) and is gone after a reload. Every message carries the screen
 // context below, and the screenshot taken when the bubble was tapped, so nobody has to describe where they were.
-const APP_VERSION = '2026.11.12-live-gap';
+const APP_VERSION = '2026.11.13-live-gap-2';
 const H2C_URL = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
 const DIAG = { errors:[], actions:[] };   // last 10 of each, for bug reports
 function pushDiag(list, item){ list.push(item); if (list.length>10) list.shift(); }
@@ -4714,18 +4718,16 @@ document.addEventListener('touchmove', e=>{
   const was=ptr.h; ptr.h=Math.min(90, dy*.5);
   if (was<PTR_AT && ptr.h>=PTR_AT) haptic();
   const el=document.getElementById('ptr'); el.classList.remove('settle'); el.style.height=ptr.h+'px';
-  el.firstElementChild.textContent = ptr.h>=PTR_AT ? 'Release to refresh' : searchable() ? 'Release to search' : 'Pull to refresh';
+  el.firstElementChild.textContent = ptr.h>=PTR_AT ? 'Release to Refresh' : 'Pull to Refresh';
 }, { passive:false });
 document.addEventListener('touchend', ()=>{
   if (!ptr) return;
   const p=ptr; ptr=null; if (!p.on) return;
   const el=document.getElementById('ptr'); el.classList.add('settle');
-  if (p.h>=20 && p.h<PTR_AT && searchable()) { S.searchOpen=true; renderTasks(document.getElementById('main')); }
   if (p.h<PTR_AT) { el.style.height='0px'; return; }
   el.style.height='44px'; el.innerHTML='<i class="spin"></i><span>Refreshing…</span>';
-  fullRefresh().finally(()=>{ el.style.height='0px'; setTimeout(()=>{ el.innerHTML='<span>Pull to refresh</span>'; }, 260); });
+  fullRefresh().finally(()=>{ el.style.height='0px'; setTimeout(()=>{ el.innerHTML='<span>Pull to Refresh</span>'; }, 260); });
 });
-function searchable(){ return (S.view==='mine' || S.view==='team') && isPhone() && !S.searchOpen && !S.q; }
 async function fullRefresh(){
   S.refreshing=true;
   try {
