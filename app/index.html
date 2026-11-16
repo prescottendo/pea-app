@@ -19,7 +19,7 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" type="image/png" href="icon-192.png">
-<script>window.HUDDLE_WEB={"api":"https://script.google.com/macros/s/AKfycbzM8K_-XRMDdOJYJ3THn_FhyZkRreMddHIBAOFCFVoq5S_Y7MnsfFLsl7ac_fyDPrch/exec","clientId":"473377418367-cqmmnfum4kshq16973m4sj2jqqfa55p0.apps.googleusercontent.com","build":"867f5dc","push":{"config":{"apiKey":"AIzaSyBON-0KvTXPD_MV6ykhYvCoBRiECEHyE9c","authDomain":"huddle-e2548.firebaseapp.com","projectId":"huddle-e2548","storageBucket":"huddle-e2548.firebasestorage.app","messagingSenderId":"554653922065","appId":"1:554653922065:web:87de53b4cb11b36835d2b0"},"vapidKey":"BHKeDoBmW7vL-qAT3ocyTaMaZ27Ca66jvQtTes2NC4CPoWFiPBJcga7wVd-RD1IuyhBki0oKXwPBGSNq002s8o8"}};document.documentElement.classList.add('web');</script>
+<script>window.HUDDLE_WEB={"api":"https://script.google.com/macros/s/AKfycbzM8K_-XRMDdOJYJ3THn_FhyZkRreMddHIBAOFCFVoq5S_Y7MnsfFLsl7ac_fyDPrch/exec","clientId":"473377418367-cqmmnfum4kshq16973m4sj2jqqfa55p0.apps.googleusercontent.com","build":"a1fd01d","push":{"config":{"apiKey":"AIzaSyBON-0KvTXPD_MV6ykhYvCoBRiECEHyE9c","authDomain":"huddle-e2548.firebaseapp.com","projectId":"huddle-e2548","storageBucket":"huddle-e2548.firebasestorage.app","messagingSenderId":"554653922065","appId":"1:554653922065:web:87de53b4cb11b36835d2b0"},"vapidKey":"BHKeDoBmW7vL-qAT3ocyTaMaZ27Ca66jvQtTes2NC4CPoWFiPBJcga7wVd-RD1IuyhBki0oKXwPBGSNq002s8o8"}};document.documentElement.classList.add('web');</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <!-- The fonts load without holding up the first paint; the page shows in the phone's own font for a moment if needed. -->
@@ -519,6 +519,19 @@
   .full-sum[open] > summary { color:var(--muted); }
   .mtg-menu { margin:8px 0 16px; }
   .mbar { display:flex; align-items:center; gap:8px; margin:12px 0 16px; }
+  .home-row { display:grid; grid-template-columns:1fr auto auto; gap:10px; align-items:center; }
+  .hcount { min-width:28px; height:24px; padding:0 8px; border-radius:999px; display:inline-grid; place-items:center; font-weight:600; font-size:var(--fs-sub); background:var(--line-soft); color:var(--ink); }
+  .hcount.late { background:var(--p-high, #D64545); color:#fff; } .hcount.gold { background:var(--gold); color:#142640; }
+  .act-row { display:grid; grid-template-columns:32px 1fr auto; gap:10px; align-items:start; text-align:left; }
+  .act-ico { width:32px; height:32px; border-radius:50%; display:grid; place-items:center; font-weight:700; font-size:15px; background:var(--line-soft); color:var(--heading); }
+  .act-mention { background:var(--gold); color:#142640; } .act-done { background:#3E9B5B; color:#fff; } .act-assigned { background:var(--primary); color:#fff; }
+  .act-body { display:flex; flex-direction:column; gap:2px; min-width:0; }
+  .act-line { font-size:var(--fs-sub); color:var(--muted); } .act-line b { color:var(--ink); font-weight:600; }
+  .act-title { font-weight:600; color:var(--ink); line-height:1.35; }
+  .act-text { font-size:var(--fs-sub); color:var(--muted); line-height:1.35; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+  .act-dot { width:9px; height:9px; border-radius:50%; background:var(--gold); margin-top:6px; }
+  nav.bottom [data-view="home"] { position:relative; }
+  nav.bottom [data-view="home"] .count { position:absolute; top:4px; left:calc(50% + 6px); }
   .card.clamped { max-height:168px; overflow:hidden; position:relative; }
   .card.clamped::after { content:''; position:absolute; left:0; right:0; bottom:0; height:64px; background:linear-gradient(to bottom, transparent, var(--card) 70%); pointer-events:none; }
   .card-more { position:absolute; right:12px; bottom:6px; z-index:1; font-weight:600; font-size:var(--fs-sub); color:var(--link); padding:10px 8px; }
@@ -1418,9 +1431,9 @@
 <div class="alf-pick-hint" id="alfPick" hidden>Tap the thing you mean <button type="button" data-act="alf-pick-cancel">Cancel</button></div>
 
 <script>
-const S = { view:pref('lt-start','mine'), layout:pref('lt-layout','list'), q:'', status:'open', priority:'', meeting:'', sort:'due', quick:'', person:'', searchOpen:false, back:null,
+const S = { view:'home', layout:pref('lt-layout','list'), q:'', status:'open', priority:'', meeting:'', sort:'due', quick:'', person:'', searchOpen:false, back:null,
             data:null, sheet:null, edit:null, saveTimer:null, pending:0, undo:null, topics:null, meetings:null, lastSync:0, swiped:false, outbox:[] };
-const TABS = [['mine','My Tasks'],['team','Team Tasks'],['review','Review'],['meetings','Meetings']];
+const TABS = [['home','Home'],['mine','My Tasks'],['team','Team Tasks'],['review','Review'],['meetings','Meetings']];
 // Strategy Topics live on the Meetings screen (Meetings | Decisions | Topics); the old 'topics' view opens that tab.
 function onTopics(){ return S.view==='topics' || (S.view==='meetings' && S.mtab==='topics'); }
 // Blocked (Nov 10) is open, like Not Started and In Progress: it shows in lists, counts as overdue and is in every report.
@@ -1531,6 +1544,7 @@ function avatar(email, size){
     +'<circle cx="'+h+'" cy="'+h+'" r="'+(h-1)+'" stroke-width="2"/><text x="'+h+'" y="'+y+'" text-anchor="middle" font-size="'+fs+'">'+esc(initials(email))+'</text></svg>';
 }
 function isPriv(t){ return t && t.private==='yes'; }
+ICON.home='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V20a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1V9.5"/></svg>';
 ICON.sort='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M7 12h10M10 17h4"/></svg>';
 ICON.bell='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>';
 ICON.tour='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M15.5 8.5l-2 5-5 2 2-5z"/></svg>';
@@ -1809,15 +1823,15 @@ function startParam(){
 // color Google's page, so on phones in that mode the very top of the header is the same light gray: the fade lands on a
 // matching color and the navy starts cleanly below it. (Moving Huddle to its own web address removes this for good.)
 // (markStandalone, the old Google-frame strip, was removed on Nov 10.)
-function maybeWelcome(){ if (pref('lt-tour','')==='4' || S.view==='live' || S.sheet) return; setPref('lt-tour','4'); setPref('lt-welcomed','1'); startCoach(); }
+function maybeWelcome(){ if (pref('lt-tour','')==='5' || S.view==='live' || S.sheet) return; setPref('lt-tour','5'); setPref('lt-welcomed','1'); startCoach(); }
 const BOX={ todo:'<i class="tbox"></i>', prog:'<i class="tbox prog"></i>', blk:'<i class="tbox blk"></i>', done:'<i class="tbox on">'+'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></i>' };
 // #5 (Nov 16): five short steps. Everything else is learned where it happens; the team guide and Alfred hold the rest.
 const COACH=[
-  { view:'mine', sel:'article.task .circ', h:'Your Tasks', b:'<p>Tap the box when a task is done. Hold it for In Progress or Blocked. Swipe a task right to finish it too.</p><p>Tap a task for details and comments.</p>' },
-  { view:'mine', sel:'#fab', h:'Add a Task', b:'<p>Tap <b>+</b> to add a task: a title, who owns it and when it\'s due.</p>' },
+  { view:'home', sel:'#main .set-card', h:'Home', b:'<p>What needs you today: the meeting, anything overdue or waiting on you, and what teammates did on your tasks. New items have a dot.</p>' },
+  { view:'mine', sel:'article.task .circ', h:'Your Tasks', b:'<p>Tap the box when a task is done. Hold it for In Progress or Blocked. Tap <b>+</b> to add a task.</p>' },
   { view:'team', sel:'.people', h:'Team Tasks', b:'<p>Everyone\'s tasks in one place. Tap a person to see just theirs. The printer opens the Accountability Report and One-on-Ones.</p>' },
-  { view:'meetings', sel:'.start-row, .start-card, .mtab', h:'Meetings', b:'<p>Start the weekly tactical here, and read any meeting\'s summary, decisions and Parking Lot.</p>' },
-  { view:'mine', sel:'.alf-fab, .ptitle .mebtn, #me .mebtn', h:'Alfred and Your Account', b:'<p>The hat is <b>Alfred</b>: ask about meetings and tasks, or report a problem.</p><p>Your initials open notifications, Recently Deleted and Sign Out.</p>' }
+  { view:'meetings', sel:'.mbar, .mtab', h:'Meetings', b:'<p>Start the weekly tactical here, and read any meeting\'s summary, decisions and Parking Lot.</p>' },
+  { view:'home', sel:'.alf-fab, .ptitle .mebtn, #me .mebtn', h:'Alfred and Your Account', b:'<p>The hat is <b>Alfred</b>: ask about meetings and tasks, or report a problem.</p><p>Your initials open notifications, appearance and Sign Out.</p>' }
 ];
 function startCoach(){
   closeSheet(true); document.body.classList.remove('fabs-away');
@@ -1834,7 +1848,7 @@ function startCoach(){
     }); }
   ov.hidden=false; document.body.classList.add('coach-on'); S.coach=0; showCoach();
 }
-function endCoach(){ const ov=document.getElementById('coach'); if (ov) ov.hidden=true; document.body.classList.remove('coach-on'); S.coach=null; if (S.view!=='mine') go('mine'); setTimeout(maybePushAsk, 600); }
+function endCoach(){ const ov=document.getElementById('coach'); if (ov) ov.hidden=true; document.body.classList.remove('coach-on'); S.coach=null; if (S.view!=='home') go('home'); setTimeout(maybePushAsk, 600); }
 function showCoach(){
   const st=COACH[S.coach]; if (!st) return endCoach();
   if (st.view && S.view!==st.view) go(st.view);
@@ -1877,6 +1891,7 @@ function busy(){
 }
 async function refresh(){
   if (!S.data) return;
+  if (WEB || MOCK) loadActivity();   // Home's count stays fresh (at most once a minute)
   if (S.outbox.length) { flushOutbox(); return; }   // send waiting changes first, so the list doesn't flip back
   if (busy() || !navigator.onLine) return;
   try {
@@ -1981,7 +1996,7 @@ function renderNav(){
   renderLivebar();
   const inMeet = S.view==='meetings' || S.view==='live';
   // The tab bar is drawn once; after that only the highlight moves, so nothing flashes and the highlight slides.
-  const BT=[['mine','My Tasks'],['team','Team Tasks'],['meetings','Meetings']], nb=document.getElementById('navBottom');
+  const BT=[['home','Home'],['mine','My Tasks'],['team','Team Tasks'],['meetings','Meetings']], nb=document.getElementById('navBottom');
   let tabs=nb.querySelector('.tabs');
   if (!tabs) {
     nb.innerHTML='<div class="tabs"><span class="ind" aria-hidden="true"></span>'+BT.map(([k,l])=>'<button type="button" data-act="go" data-view="'+k+'">'+ICON[k]+'<span>'+l+'</span></button>').join('')+'</div>';
@@ -1991,6 +2006,7 @@ function renderNav(){
   BT.forEach(([k],i)=>{
     const b=tabs.querySelector('[data-view="'+k+'"]'), on=S.view===k||(k==='meetings'&&inMeet)||(!TAB_VIEWS[S.view] && S.view!=='live' && S.lastTab===k);
     b.classList.toggle('on', on); if (on) { at=i; b.setAttribute('aria-current','page'); } else b.removeAttribute('aria-current');
+    if (k==='home') { const old=b.querySelector('.count'); if (old) old.remove(); const n=unreadActivity(); if (n) b.insertAdjacentHTML('beforeend','<span class="count" data-num="tab-home">'+n+'</span>'); }
   });
   const ind=tabs.querySelector('.ind');
   ind.style.opacity=at<0?'0':''; if (at>=0) ind.style.transform='translateX('+(at*100)+'%)';
@@ -2020,8 +2036,8 @@ function morph(fn, kind){
   catch (err) { S.vt=null; fn(); }
 }
 // Where a screen sits, left to right, so a tab change knows which way to slide.
-const NAV_ORDER={ mine:0, team:1, review:2, meetings:3, live:3, more:4, requests:4, deleted:4, settings:4, teamset:4, admin:4 };
-const TAB_VIEWS={ mine:'My Tasks', team:'Team Tasks', meetings:'Meetings', review:'Review' };
+const NAV_ORDER={ home:-1, mine:0, team:1, review:2, meetings:3, live:3, more:4, requests:4, deleted:4, settings:4, teamset:4, admin:4 };
+const TAB_VIEWS={ home:'Home', mine:'My Tasks', team:'Team Tasks', meetings:'Meetings', review:'Review' };
 // Your initials (header on computers, title row on phones) open your page; a gold dot means meeting tasks wait in Review.
 function meBtn(rc){ return '<button type="button" class="mebtn" data-act="me-open" aria-label="Your account'+(rc?', '+rc+' to review':'')+'" title="Account">'+avatar(S.data.me, 32)+(rc?'<span class="rdot" aria-hidden="true"></span>':'')+'</button>'; }
 function renderMe(rc){ const el=document.getElementById('me'); if (el) el.innerHTML=meBtn(rc); S.meRc=rc; }
@@ -2044,13 +2060,14 @@ function go(v, back){
   const t0=performance.now();
   if (v==='live' && S.view!=='live') { S.liveAt=Date.now(); if (S.live && !isHost(S.live)) setTimeout(maybePushAsk, 2500); }
   // Each tab remembers where you'd scrolled (AP-6); screens you push into start at the top.
-  const TABV={ mine:1, team:1, meetings:1 }; S.scrollMem=S.scrollMem||{};
+  const TABV={ home:1, mine:1, team:1, meetings:1 }; S.scrollMem=S.scrollMem||{};
   if (TABV[S.view] && !S.back) S.scrollMem[S.view]=window.scrollY;
   // NF-3: leaving Team Tasks (or opening it the first time) counts as having looked.
   try { if ((S.view==='team' && v!=='team') || (v==='team' && !localStorage.getItem('lt-team-seen'))) localStorage.setItem('lt-team-seen', stampNow()); } catch(e){}
   try { if (v==='live') sessionStorage.setItem('lt-was-live','1'); else sessionStorage.removeItem('lt-was-live'); } catch(e){}   // MT-6
   const keepY=0;   // Nov 16 (Brayden): every tab and screen opens at the top
   if (!S.popping) { if (back) (S.backFrom=S.backFrom||[]).push({ view:S.view, back:S.back }); else S.backFrom=[]; }
+  if (S.view==='home' && v!=='home') S.actSeenShown=null;
   S.view=v; S.back=back||null; S.quick=''; closeSheet(true); render(); window.scrollTo(0,keepY);
   requestAnimationFrame(()=>{ S.lastNav={ view:v, ms:Math.round(performance.now()-t0) }; });
 }
@@ -2178,6 +2195,7 @@ function renderPage(){
   const m=document.getElementById('main');
   const after=r=>{ decorateTitle(); setBadge(); return r; };
   const done=r=>r && typeof r.then==='function' ? r.then(after) : after(r);
+  if (S.view==='home') return done(renderHome(m));
   if (S.view==='more') return done(renderMore(m));
   if (S.view==='teamset') return done(renderTeamSettings(m));
   if (S.view==='review') return done(renderReview(m));
@@ -2193,9 +2211,55 @@ function renderPage(){
 // #38: the Home Screen icon shows a count: your overdue tasks, plus meeting tasks to review for approvers.
 function setBadge(){
   if (!WEB || !navigator.setAppBadge || !S.data) return;
-  const n=S.data.tasks.filter(t=>isLate(t) && owners(t).indexOf(S.data.me)>=0).length + reviewCount();
+  const n=S.data.tasks.filter(t=>isLate(t) && owners(t).indexOf(S.data.me)>=0).length + reviewCount() + unreadActivity();
   if (n===S.badgeN) return; S.badgeN=n;
   try { (n ? navigator.setAppBadge(n) : navigator.clearAppBadge()).catch(()=>{}); } catch(e){}
+}
+
+/* ---------- Home (Nov 16, Brayden's batch 6) ---------- */
+// The first tab: what needs you now. The meeting card (live, Start Weekly Tactical, or Before Thursday's Tactical), then
+// For You (overdue, due today, waiting on you, to review), then Activity: mentions, comments on your tasks, tasks given to
+// you, and things finished (apiActivity, the last 14 days). New activity since you last looked has a dot and is counted on
+// the Home tab and the Home Screen icon (lt-act-seen).
+function actSeen(v){ if (v===undefined) return pref('lt-act-seen',''); setPref('lt-act-seen', v); }
+function unreadActivity(){ const seen=actSeen(); return (S.activity||[]).filter(x=>x.at>seen).length; }
+function loadActivity(force){
+  if (S.actLoading || (!force && S.actAt && Date.now()-S.actAt<60000)) return;
+  S.actLoading=true;
+  call('apiActivity').then(list=>{ S.activity=list||[]; S.actAt=Date.now(); S.actLoading=false; if (S.view==='home') render(); else { renderNav(); setBadge(); } })
+    .catch(()=>{ S.actLoading=false; if (!S.activity) { S.activity=[]; S.actFailed=true; if (S.view==='home') render(); } });
+}
+function agoText(at){
+  const d=new Date(String(at).replace(' ','T')); if (isNaN(d)) return '';
+  const mins=Math.round((Date.now()-d)/60000);
+  return mins<1?'Just now':mins<60?mins+' min ago':mins<1440?Math.round(mins/60)+' hr ago':fmtDate(String(at).slice(0,10),{weekday:'short'});
+}
+function renderHome(m){
+  loadActivity();
+  const me=S.data.me, mineOpen=S.data.tasks.filter(t=>isOpen(t) && owners(t).indexOf(me)>=0);
+  const late=mineOpen.filter(isLate).length, today=mineOpen.filter(t=>t.due===S.data.today).length;
+  const waiting=S.data.tasks.filter(t=>t.status==='Blocked' && t.waiting_on===me), rc=reviewCount();
+  const now=tacticalCard() || (S.live ? '<button type="button" class="card start-card" data-act="go" data-view="live"><span class="sec"><span class="dot"></span> Live Now</span><b>'+esc(S.live.title)+'</b><span class="go">Join ›</span></button>' : '') || prepCard();
+  const row=(attrs,label,n,tone)=>'<button type="button" class="set-row home-row" '+attrs+'><span>'+label+'</span><span class="hcount'+(tone?' '+tone:'')+'">'+n+'</span><span class="chev" aria-hidden="true">›</span></button>';
+  const rows=(late?row('data-act="go" data-view="mine"','Overdue',late,'late'):'')
+    +(today?row('data-act="go" data-view="mine"','Due Today',today,''):'')
+    +(waiting.length?row('data-act="home-waiting"','Waiting on You',waiting.length,'gold'):'')
+    +(rc?row('data-act="go" data-view="review" data-back="Home"','To Review',rc,'gold'):'');
+  const seen=S.actSeenShown!=null ? S.actSeenShown : actSeen(); S.actSeenShown=seen;
+  const ICONS={ mention:'@', comment:'💬', assigned:'+', done:'✓' };
+  const said=x=>({ mention:'<b>'+esc(x.by_name)+'</b> mentioned you', comment:'<b>'+esc(x.by_name)+'</b> commented', assigned:'New task'+(x.by_name && x.by_name.indexOf('Alfred')<0?' from <b>'+esc(x.by_name)+'</b>':''), done:'<b>'+esc(x.by_name)+'</b> finished' }[x.kind]||'');
+  const act=S.activity==null ? '<div class="list"><div class="skel" style="height:64px"></div><div class="skel" style="height:64px"></div></div>'
+    : !S.activity.length ? '<p class="none">'+(S.actFailed?'Couldn\'t load activity. Pull down to try again.':'Nothing new in the last two weeks.')+'</p>'
+    : '<div class="set-card act-list">'+S.activity.slice(0,30).map(x=>'<button type="button" class="set-row act-row'+(x.at>seen?' unread':'')+'" data-act="task" data-id="'+esc(x.task_id)+'">'
+        +'<span class="act-ico act-'+x.kind+'" aria-hidden="true">'+ICONS[x.kind]+'</span><span class="act-body"><span class="act-line">'+said(x)+' <span class="act-when">· '+esc(agoText(x.at))+'</span></span>'
+        +'<span class="act-title">'+esc(x.title)+'</span>'+(x.text?'<span class="act-text">'+esc(x.text)+'</span>':'')+'</span>'+(x.at>seen?'<i class="act-dot" aria-label="New"></i>':'')+'</button>').join('')+'</div>';
+  m.innerHTML='<div class="head-row"><h2>Home</h2></div>'
+    +now
+    +'<h3 class="set-sec">For You</h3>'+(rows?'<div class="set-card">'+rows+'</div>':'<p class="none">You\'re all caught up.</p>')
+    +'<h3 class="set-sec">Activity</h3>'+act;
+  // Looking at Home counts as having seen it: the dots stay for this visit, the counts clear.
+  const newest=(S.activity||[]).reduce((a,x)=>x.at>a?x.at:a, '');
+  if (newest && newest>actSeen()) { actSeen(newest); setTimeout(()=>{ renderNav(); setBadge(); }, 0); }
 }
 
 /* ---------- More (a page since Nov 10, Batch 2) ---------- */
@@ -2246,8 +2310,8 @@ function renderTasks(m){
   if (mine) {
     // #13: one notice at a time: the meeting (live or ready to start), then Review, then "Before Thursday's Tactical".
     const rc=reviewCount(), uc=S.data.isApprover ? S.data.tasks.filter(t=>t.status==='Needs Review' && uncertainOf(t)).length : 0;   // LB-7: Review where approvers already are
-    const notice=tacticalCard() || (rc ? '<button type="button" class="banner rv-banner" data-act="go" data-view="review" data-back="My Tasks"><span class="count" data-num="banner-review">'+rc+'</span><span>'+rc+' to Review'+(uc?' · '+uc+' need'+(uc===1?'s':'')+' a look':'')+'</span><span class="go" aria-hidden="true">›</span></button>' : '') || prepCard();
-    html+=notice;
+    // Nov 16 (Home tab): the meeting, Review and Prep notices moved to Home; My Tasks is just your list.
+    void rc; void uc;
   }
   const nf=activeFilters(), showSearch=!phone || S.searchOpen || S.q;
   const compact=false;   // (the old My Tasks greeting row with search and Filter beside it is gone)
@@ -2708,6 +2772,12 @@ function renderSheetBody(){
   if (S.sheet==='meeting') { el.innerHTML=meetingSheet(); return; }
   if (S.sheet==='livelog') { el.innerHTML=liveLogSheet(); return; }
   if (S.sheet==='livemenu') { el.innerHTML=liveMenuSheet(); return; }
+  if (S.sheet==='waitlist') {
+    const list=S.data.tasks.filter(t=>t.status==='Blocked' && t.waiting_on===S.data.me);
+    el.innerHTML='<div class="grab"></div><div class="sheet-head"><h3>Waiting on You</h3><button type="button" class="btn ghost sm" data-act="close-sheet">Done</button></div>'
+      +'<p class="small muted sheet-sub">Teammates marked these Blocked, waiting on you.</p>'+(list.length?taskRows(list,'stack'):'<p class="none">Nothing is waiting on you.</p>');
+    return;
+  }
   if (S.sheet==='newdecision') {
     el.innerHTML='<div class="grab"></div><div class="sheet-head"><button type="button" class="btn ghost sm" data-act="close-sheet">Cancel</button><h3>New Decision</h3><button type="button" class="btn primary sm" data-act="dec-add" disabled>Add</button></div>'
       +'<div class="err" id="f-err" role="alert"></div><div class="form"><label for="dc-text">Decision</label><textarea id="dc-text" rows="3" placeholder="What did we decide?"></textarea>'
@@ -4200,7 +4270,7 @@ async function liveAddItem(el){
 /* ---------- Alfred chat bubble ---------- */
 // The conversation lives only in this page (S.alf) and is gone after a reload. Every message carries the screen
 // context below, and the screenshot taken when the bubble was tapped, so nobody has to describe where they were.
-const APP_VERSION = '2026.11.16-print';
+const APP_VERSION = '2026.11.16-home';
 const H2C_URL = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
 const DIAG = { errors:[], actions:[] };   // last 10 of each, for bug reports
 function pushDiag(list, item){ list.push(item); if (list.length>10) list.shift(); }
@@ -4916,6 +4986,7 @@ function actClick(e, el){
   else if (a==='prep-status') { setStatus(id, v); if (S.sheet==='prep') renderSheet(); }
   else if (a==='prep-due') { const t=find(id); if (t && t.due!==v) { t.due=v; saveTaskEdit({ id:id, due:v }); render(); } if (S.sheet==='prep') renderSheet(); }
   else if (a==='report-open') openReport();
+  else if (a==='home-waiting') { const ids=S.data.tasks.filter(t=>t.status==='Blocked' && t.waiting_on===S.data.me).map(t=>t.id); if (ids.length===1) openTask(ids[0]); else { S.sheet='waitlist'; showSheet(); } }
   else if (a==='rp-tab') { const r=document.getElementById('report'); if (r) { S.rpTab=v; r.querySelectorAll('.rp-seg button').forEach(b=>b.classList.toggle('on', b.dataset.val===v));
       r.querySelector('.rp-paper').hidden=v!=='report'; r.querySelector('.rp-ones').hidden=v!=='ones'; const pb=r.querySelector('[data-act="report-print"]'); if (pb) pb.hidden=v!=='report'; renderReportOnes(); } }
   else if (a==='signout' && WEB) webSignOut();
@@ -5103,7 +5174,7 @@ async function fullRefresh(){
     S.data.tasks=tasks; S.lastSync=Date.now();
     // Lists stay on screen while fresh copies load in the background (they used to be cleared, so every tab waited again).
     S.deleted=null; S.requests=null;
-    S.liveChecked=0; livePoll();
+    S.liveChecked=0; livePoll(); loadActivity(true);
     render(); S.prefetching=false; prefetchLists();
   } catch(e) { toast('Couldn\'t refresh. '+errText(e)); }
   S.refreshing=false;
