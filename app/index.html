@@ -19,7 +19,7 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" type="image/png" href="icon-192.png">
-<script>window.HUDDLE_WEB={"api":"https://script.google.com/macros/s/AKfycbzM8K_-XRMDdOJYJ3THn_FhyZkRreMddHIBAOFCFVoq5S_Y7MnsfFLsl7ac_fyDPrch/exec","clientId":"473377418367-cqmmnfum4kshq16973m4sj2jqqfa55p0.apps.googleusercontent.com","build":"cf63199","push":{"config":{"apiKey":"AIzaSyBON-0KvTXPD_MV6ykhYvCoBRiECEHyE9c","authDomain":"huddle-e2548.firebaseapp.com","projectId":"huddle-e2548","storageBucket":"huddle-e2548.firebasestorage.app","messagingSenderId":"554653922065","appId":"1:554653922065:web:87de53b4cb11b36835d2b0"},"vapidKey":"BHKeDoBmW7vL-qAT3ocyTaMaZ27Ca66jvQtTes2NC4CPoWFiPBJcga7wVd-RD1IuyhBki0oKXwPBGSNq002s8o8"}};document.documentElement.classList.add('web');</script>
+<script>window.HUDDLE_WEB={"api":"https://script.google.com/macros/s/AKfycbzM8K_-XRMDdOJYJ3THn_FhyZkRreMddHIBAOFCFVoq5S_Y7MnsfFLsl7ac_fyDPrch/exec","clientId":"473377418367-cqmmnfum4kshq16973m4sj2jqqfa55p0.apps.googleusercontent.com","build":"e1cb79f","push":{"config":{"apiKey":"AIzaSyBON-0KvTXPD_MV6ykhYvCoBRiECEHyE9c","authDomain":"huddle-e2548.firebaseapp.com","projectId":"huddle-e2548","storageBucket":"huddle-e2548.firebasestorage.app","messagingSenderId":"554653922065","appId":"1:554653922065:web:87de53b4cb11b36835d2b0"},"vapidKey":"BHKeDoBmW7vL-qAT3ocyTaMaZ27Ca66jvQtTes2NC4CPoWFiPBJcga7wVd-RD1IuyhBki0oKXwPBGSNq002s8o8"}};document.documentElement.classList.add('web');</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <!-- The fonts load without holding up the first paint; the page shows in the phone's own font for a moment if needed. -->
@@ -449,16 +449,19 @@
      initials on the right. The page shows through, blurred. */
   .tbar { display:none; }
   @media (max-width:699px) {
-    .tbar { display:grid; grid-template-columns:72px 1fr 72px; align-items:center; position:fixed; left:0; right:0; top:0; z-index:21;
-      padding:calc(env(safe-area-inset-top, 0px) + 22px) 12px 0; height:calc(66px + env(safe-area-inset-top, 0px)); box-sizing:border-box;
+    .tbar { display:grid; grid-template-columns:minmax(0,1fr) auto minmax(0,1fr); column-gap:8px; align-items:center; position:fixed; left:0; right:0; top:0; z-index:21;
+      padding:calc(env(safe-area-inset-top, 0px) + 20px) 16px 6px; height:calc(70px + env(safe-area-inset-top, 0px)); box-sizing:border-box;
       background:color-mix(in srgb, var(--page) 82%, transparent);
       border-bottom:1px solid var(--line-soft); opacity:0; visibility:hidden; pointer-events:none; transition:opacity .18s ease, visibility 0s linear .18s; }
     .tbar.show { opacity:1; visibility:visible; pointer-events:auto; transition:opacity .18s ease, visibility 0s;
       -webkit-backdrop-filter:blur(18px) saturate(180%); backdrop-filter:blur(18px) saturate(180%); }
-    .tbar .tb-t { text-align:center; font-family:var(--sans); font-weight:600; font-size:var(--fs-body); color:var(--heading); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .tbar .tb-t { max-width:56vw; text-align:center; font-family:var(--sans); font-weight:600; font-size:var(--fs-body); color:var(--heading); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
     .tbar .tb-l { justify-self:start; display:flex; align-items:center; } .tbar .tb-r { justify-self:end; }
     .tbar svg.tree { height:22px; }
-    .tbar .back { margin:0; padding:10px 0; }
+    .tbar .back { margin:0; padding:10px 0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:100%; }
+    .tbar .tb-l { min-width:0; } .tbar .tb-r { display:flex; align-items:center; }
+    .tbar .mebtn { margin:0; padding:4px; }
+    .tbar .mebtn .avatar { width:32px; height:32px; }
     body.v-live .tbar { display:none; }
   }
   .sort-ico { position:relative; }
@@ -2993,7 +2996,7 @@ function renderSettings(m){
   let allow='';
   if (st==='install') allow='<div class="set-card set-pad"><p class="small">On an iPhone, notifications work in the Huddle app on your Home Screen, not in a Safari tab. In Safari, tap Share, then Add to Home Screen, and open Huddle from there.</p></div>';
   else if (st==='denied') allow='<div class="set-card set-pad"><p class="small">Notifications are off for Huddle in your phone\'s Settings. Open Settings, then Notifications, then Huddle, and turn on Allow Notifications.</p></div>';
-  else if (st!=='none') allow='<div class="set-card">'+switchRow('push-allow', st==='on', 'Allow on This '+dev, S.pushBusy?'Turning on…':'', S.pushBusy?'disabled':'')+'</div>';
+  else if (st!=='none') allow='<div class="set-card">'+switchRow('push-allow', st==='on', 'Allow Notifications on This '+dev, S.pushBusy?'Turning on…':'', S.pushBusy?'disabled':'')+'</div>';
   m.innerHTML='<div class="settings">'+backLink()+'<h2>Notifications</h2>'
     +allow
     +'<h3 class="set-sec">Notify Me About</h3><div class="set-card">'
@@ -4196,7 +4199,7 @@ async function liveAddItem(el){
 /* ---------- Alfred chat bubble ---------- */
 // The conversation lives only in this page (S.alf) and is gone after a reload. Every message carries the screen
 // context below, and the screenshot taken when the bubble was tapped, so nobody has to describe where they were.
-const APP_VERSION = '2026.11.16-top';
+const APP_VERSION = '2026.11.16-tbar';
 const H2C_URL = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
 const DIAG = { errors:[], actions:[] };   // last 10 of each, for bug reports
 function pushDiag(list, item){ list.push(item); if (list.length>10) list.shift(); }
