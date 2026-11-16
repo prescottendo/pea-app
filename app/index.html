@@ -19,7 +19,7 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" type="image/png" href="icon-192.png">
-<script>window.HUDDLE_WEB={"api":"https://script.google.com/macros/s/AKfycbzM8K_-XRMDdOJYJ3THn_FhyZkRreMddHIBAOFCFVoq5S_Y7MnsfFLsl7ac_fyDPrch/exec","clientId":"473377418367-cqmmnfum4kshq16973m4sj2jqqfa55p0.apps.googleusercontent.com","build":"b8ff9d9","push":{"config":{"apiKey":"AIzaSyBON-0KvTXPD_MV6ykhYvCoBRiECEHyE9c","authDomain":"huddle-e2548.firebaseapp.com","projectId":"huddle-e2548","storageBucket":"huddle-e2548.firebasestorage.app","messagingSenderId":"554653922065","appId":"1:554653922065:web:87de53b4cb11b36835d2b0"},"vapidKey":"BHKeDoBmW7vL-qAT3ocyTaMaZ27Ca66jvQtTes2NC4CPoWFiPBJcga7wVd-RD1IuyhBki0oKXwPBGSNq002s8o8"}};document.documentElement.classList.add('web');</script>
+<script>window.HUDDLE_WEB={"api":"https://script.google.com/macros/s/AKfycbzM8K_-XRMDdOJYJ3THn_FhyZkRreMddHIBAOFCFVoq5S_Y7MnsfFLsl7ac_fyDPrch/exec","clientId":"473377418367-cqmmnfum4kshq16973m4sj2jqqfa55p0.apps.googleusercontent.com","build":"1caa4ce","push":{"config":{"apiKey":"AIzaSyBON-0KvTXPD_MV6ykhYvCoBRiECEHyE9c","authDomain":"huddle-e2548.firebaseapp.com","projectId":"huddle-e2548","storageBucket":"huddle-e2548.firebasestorage.app","messagingSenderId":"554653922065","appId":"1:554653922065:web:87de53b4cb11b36835d2b0"},"vapidKey":"BHKeDoBmW7vL-qAT3ocyTaMaZ27Ca66jvQtTes2NC4CPoWFiPBJcga7wVd-RD1IuyhBki0oKXwPBGSNq002s8o8"}};document.documentElement.classList.add('web');</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <!-- The fonts load without holding up the first paint; the page shows in the phone's own font for a moment if needed. -->
@@ -408,6 +408,34 @@
   .quick-dates button { border:1px solid var(--line); background:var(--field); border-radius:999px; padding:8px 12px; font-size:var(--fs-sub); color:var(--heading); font-weight:600; }
   .quick-dates button.on { background:var(--primary); border-color:var(--primary); color:var(--primary-ink); }
   .head-row { display:flex; align-items:baseline; justify-content:space-between; gap:12px; }
+  /* #35: panel headers use plain words like iOS: Cancel on the left, Done or Add on the right in bold, no border. */
+  .sheet-head .btn.sm { border:none !important; background:none !important; box-shadow:none !important; color:var(--link); font-size:17px; padding:10px 4px; min-height:44px; }
+  .sheet-head .btn.primary.sm, .sheet-head [data-act="close-sheet"]:last-child { font-weight:700; }
+  .sheet-head .btn.sm:disabled { color:var(--muted); opacity:.6; }
+  /* #8: the read-first task panel */
+  .tread { margin:4px 0 16px; }
+  .tread .ttl-big { width:100%; border:none; background:none; resize:none; padding:0; font-family:var(--serif); font-weight:600; font-size:var(--fs-large); line-height:1.2; color:var(--heading); overflow:hidden; }
+  .tread .det-plain { width:100%; border:none; background:none; resize:none; padding:0; margin-top:8px; font:inherit; font-size:var(--fs-body); color:var(--ink); line-height:1.45; overflow:hidden; }
+  .tread .ttl-big:focus, .tread .det-plain:focus { outline:none; }
+  #sheet .tread .ttl-big { font-size:var(--fs-large) !important; font-family:var(--serif) !important; line-height:1.2 !important; min-height:0; box-shadow:none; }
+  #sheet .tread .det-plain { font-size:var(--fs-body) !important; min-height:0; box-shadow:none; }
+  .tread .src { margin-top:8px; }
+  .trows .trow { display:grid; grid-template-columns:auto 1fr auto; gap:12px; align-items:center; }
+  .trows .trow .val { text-align:right; color:var(--muted); min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .trows .trow.open .chev { transform:rotate(90deg); }
+  .trows .chev { transition:transform .2s ease; }
+  .trow-pick { padding:4px 16px 14px; }
+  .pick-date { display:flex; align-items:center; justify-content:space-between; gap:12px; margin-top:10px; font-size:var(--fs-sub); color:var(--muted); font-weight:600; }
+  .pick-date input { width:auto; flex:1; max-width:200px; }
+  .cbox { display:flex; align-items:flex-end; gap:8px; margin-top:10px; border:1px solid var(--line); border-radius:20px; background:var(--field); padding:6px 6px 6px 14px; }
+  .cbox textarea { flex:1; border:none; background:none; resize:none; font:inherit; font-size:var(--fs-body); padding:6px 0; min-height:24px; color:var(--ink); }
+  .cbox textarea:focus { outline:none; }
+  .cbox .send { flex:none; width:34px; height:34px; border-radius:50%; border:none; background:var(--primary); color:var(--primary-ink); display:grid; place-items:center; padding:0; }
+  .cbox .send svg { width:18px; height:18px; }
+  .mention-sugg { display:flex; gap:6px; flex-wrap:wrap; margin-top:10px; }
+  .mention-sugg button { border:1px solid var(--line); background:var(--card); color:var(--heading); border-radius:999px; padding:8px 12px; min-height:36px; font-weight:600; font-size:var(--fs-sub); }
+  .rp-seg { margin:10px auto 0; max-width:420px; }
+  .rp-ones { max-width:820px; margin:16px auto; padding:0 16px calc(24px + env(safe-area-inset-bottom, 0px)); }
   /* Phones: the title row is tree, large title, the page's own icons, then your initials (#1, #7). */
   .head-row.ptitle { align-items:center !important; flex-wrap:nowrap !important; gap:4px; margin-bottom:12px; }
   .head-row.ptitle h2, .head-row.ptitle h2:only-child { display:flex; align-items:center; gap:10px; min-width:0; flex:1; margin:0 !important; line-height:1.15; }
@@ -613,7 +641,9 @@
   .tv-close { font-family:var(--serif); font-weight:600; color:#C6A85C; break-inside:avoid; }
   #ptr { height:0; overflow:hidden; display:flex; align-items:center; justify-content:center; gap:8px; color:var(--muted); font-size:var(--fs-sub); font-weight:600; }
   #ptr.settle { transition:height .25s ease; }
-  #ptr .spin { width:16px; height:16px; border:2px solid var(--line); border-top-color:var(--heading); border-radius:50%; animation:spin .8s linear infinite; }
+  #ptr .spin { width:20px; height:20px; border:2px solid var(--line); border-top-color:var(--heading); border-radius:50%; opacity:0; }
+  #ptr.busy .spin { opacity:1 !important; animation:spin .8s linear infinite; }
+  .sr-only { position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; }
   @keyframes spin { to { transform:rotate(360deg); } }
   .skel { background:var(--skeleton); border-radius:8px; animation:pulse 1.2s ease-in-out infinite; }
   @keyframes pulse { 50% { opacity:.55; } }
@@ -1329,7 +1359,7 @@
 <button type="button" class="livebar" id="livebar" data-act="go" data-view="live" hidden></button>
 <div class="offline" id="offline" role="status" hidden></div>
 <div class="preview" id="preview" hidden>Sample data preview. Nothing here is saved.</div>
-<div id="ptr" aria-live="polite"><span>Pull to Refresh</span></div>
+<div id="ptr" aria-live="polite"><i class="spin ptr-spin" aria-hidden="true"></i><span class="sr-only">Pull to refresh</span></div>
 <main class="wrap" id="main">
   <div class="list"><div class="skel" style="height:92px"></div><div class="skel" style="height:92px"></div><div class="skel" style="height:92px"></div></div>
 </main>
@@ -1550,7 +1580,10 @@ function openReport(){
   call('apiAccountabilityReport').then(r=>{
     if (document.getElementById('report')!==mine) return;
     mine.innerHTML='<div class="rp-bar"><button type="button" class="btn ghost sm" data-act="report-close">Close</button><b>Accountability Report</b>'
-      +'<button type="button" class="btn primary sm" data-act="report-print">Print</button></div><div class="rp-paper">'+((r&&r.html)||'')+'</div>';
+      +'<button type="button" class="btn primary sm" data-act="report-print">Print</button></div>'
+      +'<div class="seg rp-seg" role="group" aria-label="Show"><button type="button" class="on" data-act="rp-tab" data-val="report">Report</button><button type="button" data-act="rp-tab" data-val="ones">One-on-Ones</button></div>'
+      +'<div class="rp-paper">'+((r&&r.html)||'')+'</div><div class="rp-ones" hidden></div>';
+    S.rpTab='report';
     fadeIn(mine.querySelector('.rp-paper'), 220);   // the report melts in over the spinner's spot (MO-10)
     const pb=mine.querySelector('[data-act="report-print"]'); if (pb) pb.focus();
   }).catch(err=>{
@@ -1558,6 +1591,11 @@ function openReport(){
     mine.innerHTML='<div class="rp-bar"><button type="button" class="btn ghost sm" data-act="report-close">Close</button><b>Accountability Report</b></div>'
       +'<div class="rp-err"><p>The report didn\'t load. '+esc((err&&err.message)||'')+'</p><button type="button" class="btn ghost sm" data-act="report-open">Try Again</button></div>';
   });
+}
+// #6: the report screen's One-on-Ones side (each leader's answers this month, on-time rate, blocked and slipping items).
+function renderReportOnes(){
+  const el=document.getElementById('report'); if (!el || S.rpTab!=='ones') return;
+  const box=el.querySelector('.rp-ones'); if (box) box.innerHTML=onesPage();
 }
 function closeReport(animate){
   const el=document.getElementById('report'); document.body.classList.remove('printing-report');
@@ -1742,7 +1780,7 @@ const BOX={ todo:'<i class="tbox"></i>', prog:'<i class="tbox prog"></i>', blk:'
 const COACH=[
   { view:'mine', sel:'article.task .circ', h:'Your Tasks', b:'<p>Tap the box when a task is done. Hold it for In Progress or Blocked. Swipe a task right to finish it too.</p><p>Tap a task for details and comments.</p>' },
   { view:'mine', sel:'#fab', h:'Add a Task', b:'<p>Tap <b>+</b> to add a task: a title, who owns it and when it\'s due.</p>' },
-  { view:'team', sel:'.people', h:'Team Tasks', b:'<p>Everyone\'s tasks in one place. Tap a person to see just theirs. The printer opens the Accountability Report.</p>' },
+  { view:'team', sel:'.people', h:'Team Tasks', b:'<p>Everyone\'s tasks in one place. Tap a person to see just theirs. The printer opens the Accountability Report and One-on-Ones.</p>' },
   { view:'meetings', sel:'.start-row, .start-card, .mtab', h:'Meetings', b:'<p>Start the weekly tactical here, and read any meeting\'s summary, decisions and Parking Lot.</p>' },
   { view:'mine', sel:'.alf-fab, .ptitle .mebtn, #me .mebtn', h:'Alfred and Your Account', b:'<p>The hat is <b>Alfred</b>: ask about meetings and tasks, or report a problem.</p><p>Your initials open notifications, Recently Deleted and Sign Out.</p>' }
 ];
@@ -1831,6 +1869,12 @@ function queueStatus(t){
 // DI-2: a one-time id made when the person taps Add or Post; the server ignores a second copy with the same id.
 // BUG-3: on tactical day "Next Week" is the same date as "Next Tactical"; show that date once (and any repeated date once).
 function docUrl(u){ u=String(u||''); return /^https:\/\/(docs|drive)\.google\.com\//.test(u) || /^https:\/\/otter\.ai\//.test(u) ? u : ''; }
+// #14 (Nov 16): the same date shortcuts everywhere: Today, Tomorrow, Next Tactical (and Clear Date when there is one).
+function dateChips(cur, act, withToday, extra){
+  const list=quickDates([withToday?['Today',S.data.today]:null, ['Tomorrow',addDays(S.data.today,1)], ['Next Tactical',S.data.defaultDue]].filter(Boolean));
+  return list.map(([l,v])=>'<button type="button" class="'+(cur===v?'on':'')+'" data-act="'+act+'" data-val="'+v+'"'+(extra||'')+'>'+l+(l==='Next Tactical'?' · '+esc(short(v)):'')+'</button>').join('')
+    +(cur && act==='due-quick' ? '<button type="button" data-act="'+act+'" data-val="">Clear Date</button>' : '');
+}
 function quickDates(list){ const seen={}; return list.filter(([l,v])=>{ if (v==='' ) return true; if (seen[v]) return false; seen[v]=1; return true; }); }
 function newCid(){ return 'c'+Date.now().toString(36)+Math.random().toString(36).slice(2,10); }
 // DI-1: the fields of a task panel that changed since it opened (or since the last save), plus the id.
@@ -2175,11 +2219,7 @@ function renderTasks(m){
   const tools='<button type="button" class="tool-ico" data-act="search-open" aria-label="Search tasks">'+ICON.search+'</button>'
     +'<button type="button" class="chipbtn'+(nf?' on':'')+'" data-act="sortfilter" aria-haspopup="dialog">'+(compact?'Filter':'Sort &amp; Filter')+(nf?'<span class="count">'+nf+'</span>':'')+'</button>';
 
-  // Team Tasks has a Tasks | One-on-Ones switch; the One-on-Ones side is its own page.
-  if (!mine) {
-    html+='<div class="seg mtab ttab" role="group" aria-label="Show">'+[['tasks','Action Items'],['ones','One-on-Ones']].map(([k,l])=>'<button type="button" class="'+((S.ttab||'tasks')===k?'on':'')+'" data-act="ttab" data-val="'+k+'" aria-pressed="'+((S.ttab||'tasks')===k)+'">'+l+'</button>').join('')+'</div>';
-    if (S.ttab==='ones') { m.innerHTML=html+onesPage(); updateSynced(); return; }
-  }
+  // #6 (Nov 16): One-on-Ones moved into the Accountability Report screen (the printer), next to the report.
   if (!mine) {
     // Everyone in one row: initials with a count bubble (open tasks). The bubble is white, or coral when that person has
     // overdue tasks. The person you pick gets a gold ring; tap them again to see everyone.
@@ -2187,7 +2227,7 @@ function renderTasks(m){
     html+='<div class="people faces" role="group" aria-label="Pick a person">'+S.data.people.map(p=>{
       const c=counts(p), on=S.person===p.email;
       return '<button type="button" class="face'+(on?' on':'')+'" data-act="person" data-email="'+esc(p.email)+'" aria-pressed="'+on+'" aria-label="'+esc(nameOf(p.email))+': '+c.open+' open'+(c.late?', '+c.late+' overdue':'')+'">'
-        +'<span class="face-av">'+avatar(p.email,40)+'<span class="fbadge'+(c.late?' late':'')+'" data-num="face-'+esc(p.email)+'">'+c.open+'</span></span><span class="face-name">'+esc(firstName(p.email))+'</span></button>';
+        +'<span class="face-av">'+avatar(p.email,40)+(c.late?'<span class="fbadge late" data-num="face-'+esc(p.email)+'">'+c.late+'</span>':'')+'</span><span class="face-name">'+esc(firstName(p.email))+'</span></button>';
     }).join('')+'</div>';
     if (S.person) { const pp=S.data.people.find(p=>p.email===S.person), c=pp?counts(pp):{open:0,late:0};
       html+='<p class="face-sel">Showing <b>'+esc(nameOf(S.person))+'</b> · '+c.open+' open'+(c.late?' · <span class="od">'+c.late+' overdue</span>':'')+' · <button type="button" class="linkbtn" data-act="person" data-email="'+esc(S.person)+'">Show Everyone</button></p>'; }
@@ -2196,8 +2236,7 @@ function renderTasks(m){
   const search='<label class="search">'+ICON.search+'<input type="search" id="q" data-input="q" placeholder="Search" value="'+esc(S.q)+'" aria-label="Search tasks"'+(phone?'':' title="Search (/)"')+'>'
     +(phone?'<button type="button" class="search-x" data-act="search-close" aria-label="Close search">'+ICON.x+'</button>':'')+'</label>';
   if (phone && showSearch) html+='<div class="search-row">'+search+'</div>';
-  if (!compact && (!phone || (!mine && lateN))) html+='<div class="toolbar">'+(phone?'':search)
-    +(!mine && lateN ? '<button type="button" class="chipbtn late'+(S.quick==='late'?' on':'')+'" data-act="quick" data-val="late" aria-pressed="'+(S.quick==='late')+'"><span data-num="late">'+lateN+'</span> Overdue</button>' : '')
+  if (!compact && !phone) html+='<div class="toolbar">'+search
     +(phone?'':'<button type="button" class="chipbtn'+(nf?' on':'')+'" data-act="sortfilter" aria-haspopup="dialog">Sort &amp; Filter'+(nf?'<span class="count">'+nf+'</span>':'')+'</button>')
     +(phone ? '' : '<div class="seg" role="group" aria-label="Layout"><button type="button" class="'+(S.layout==='list'?'on':'')+'" data-act="layout" data-val="list">List</button><button type="button" class="'+(S.layout==='board'?'on':'')+'" data-act="layout" data-val="board">Board</button></div>')
     +'</div>';
@@ -2227,8 +2266,8 @@ function sortTasks(list){
 // over the last 30 days, open Blocked items, and slipping items (due date moved twice or more).
 function onesPage(){
   const all=S.data.people, who=all.filter(p=>NO_DIRECT_REPORTS.indexOf(nameOf(p.email))<0);
-  if (!S.acct && !S.acctLoading) { S.acctLoading=true; call('apiAccountability').then(r=>{ S.acct=r; S.acctLoading=false; if (S.view==='team') render(); })
-    .catch(()=>{ S.acctLoading=false; S.acct={ people:{}, failed:true }; if (S.view==='team') render(); }); }
+  if (!S.acct && !S.acctLoading) { S.acctLoading=true; call('apiAccountability').then(r=>{ S.acct=r; S.acctLoading=false; renderReportOnes(); })
+    .catch(()=>{ S.acctLoading=false; S.acct={ people:{}, failed:true }; renderReportOnes(); }); }
   if (!S.ones) { if (who.length) onesHtml(who[0].email); return '<div class="list"><div class="skel" style="height:64px"></div><div class="skel" style="height:64px"></div></div>'; }
   if (S.ones.failed) return loadFail('One-on-Ones');
   const month=S.ones.month ? new Date(S.ones.month+'-15T12:00:00').toLocaleDateString('en-US',{month:'long'}) : 'This Month';
@@ -2258,7 +2297,7 @@ function acctHtml(email){
 function onesHtml(email){
   if (NO_DIRECT_REPORTS.indexOf(nameOf(email))>=0) return '';
   if (!S.ones) {
-    if (!S.onesLoading) { S.onesLoading=true; call('apiOneOnOnes').then(r=>{ S.ones=r; S.onesLoading=false; saveLists(); if (S.view==='team') render(); }).catch(()=>{ S.onesLoading=false; S.ones={ month:'', people:{}, failed:true }; }); }
+    if (!S.onesLoading) { S.onesLoading=true; call('apiOneOnOnes').then(r=>{ S.ones=r; S.onesLoading=false; saveLists(); renderReportOnes(); if (S.view==='team') render(); }).catch(()=>{ S.onesLoading=false; S.ones={ month:'', people:{}, failed:true }; }); }
     return '';
   }
   if (S.ones.failed) return '';
@@ -2405,7 +2444,7 @@ function setStatus(id, status, opts){
   if (S.sheet==='task' && S.edit && S.edit.task.id===id) { S.edit.task.status=status; renderSheet(); }
   if (S.sheet==='meeting' || S.sheet==='prep') renderSheet();
   const undo = (!opts || opts.undo!==false) ? ()=>setStatus(id, prev, {undo:false}) : null;
-  const msg = status==='Done' ? 'Marked Done ✓' : 'Marked '+label(status);
+  const msg = status==='Done' ? 'Marked done' : 'Marked '+label(status).toLowerCase();
   if (!navigator.onLine || S.outbox.length) { queueStatus(t); toast(msg+'. It will send when you\'re back online.', undo); return; }
   S.pending++;
   call('apiSaveTask', { id:t.id, status:t.status }).then(replaceTask)
@@ -2563,6 +2602,7 @@ function renderSheet(){
   el.setAttribute('aria-label', h ? h.textContent : 'Panel');
   placeSegs();   // the pill highlight goes straight to its spot before anything measures the panel
   ['f-title','lv-title'].forEach(i=>{ const b=document.getElementById(i); if (b) autoGrow(b, 240); });   // BUG-2: long titles show in full
+  [['f-details',320],['f-comment',160]].forEach(([i,mx])=>{ const b=document.getElementById(i); if (b && b.closest('.tread, .cbox')) autoGrow(b, mx); });
   if (S.afterSheet) { const f=S.afterSheet; S.afterSheet=null; f(); }
 }
 // Nov 10: a section that appears or disappears in a panel opens or closes smoothly (Only Me hides and shows Owners).
@@ -2657,45 +2697,61 @@ function renderSheetBody(){
       +'<span>Switch Google Account<small>For a shared computer, or if this shows the wrong person</small></span></a></div>');
     return;
   }
-  const t=S.edit.task, sel=owners(t), d=S.edit.detail, isNew=S.edit.isNew;
+  const t=S.edit.task, sel=owners(t), d=S.edit.detail, isNew=S.edit.isNew, E=S.edit;
   const seg=(field,list)=>'<div class="seg wrap'+(field==='status'?' st4':'')+'" role="group">'+list.map(v=>'<button type="button" class="'+(t[field]===v?'on':'')+'" data-act="set" data-field="'+field+'" data-val="'+v+'">'+(field==='priority'?MARKS[v]+' '+v:label(v))+'</button>').join('')+'</div>';
-  // LB-6 / AP-9: a new task has Cancel at the top left and Add at the top right, so Add is never under the keyboard.
+  // #32: Only Me is the last owner chip.
+  const ownerChips='<div class="chips">'+S.data.people.map(p=>'<button type="button" class="'+(!isPriv(t) && sel.indexOf(p.email)>=0?'on':'')+'" data-act="owner" data-email="'+esc(p.email)+'">'+esc(firstName(p.email))+'</button>').join('')
+    +(canPrivate(t)?'<button type="button" class="'+(isPriv(t)?'on':'')+'" data-act="priv-chip">'+LOCK+' Only Me</button>':'')+'</div>'
+    +(E.confirmPriv?'<div class="priv-confirm" role="alert"><p>Remove '+esc(listNames(owners(t).filter(o=>o!==S.data.me).map(firstName)))+' and make this private?</p>'
+      +'<div class="acts"><button type="button" class="btn primary sm" data-act="private-yes">Remove and Make Private</button><button type="button" class="btn ghost sm" data-act="private-no">Cancel</button></div></div>':'');
+  const dates='<div class="quick-dates">'+dateChips(t.due, 'due-quick', true)+'</div>'
+    +'<label class="pick-date">Pick a Date<input type="date" id="f-due" data-change="due" value="'+esc(t.due)+'"></label>';
+  const waiting='<div class="chips">'+S.data.people.filter(p=>owners(t).indexOf(p.email)<0).map(p=>'<button type="button" class="'+(t.waiting_on===p.email?'on':'')+'" data-act="waiting" data-email="'+esc(p.email)+'">'+esc(firstName(p.email))+'</button>').join('')+'</div>'
+    +'<input type="text" class="box mt-s" data-input="waiting_on" placeholder="Or type who or what (a vendor, a part…)" value="'+esc(t.waiting_on && t.waiting_on.indexOf('@')<0 ? t.waiting_on : '')+'">';
   let html='<div class="grab"></div><div class="sheet-head">'
-    +(isNew ? '<button type="button" class="btn ghost sm" data-act="close-sheet">Cancel</button><h3>'+(S.edit.live?'New Action Item':'New Task')+'</h3><button type="button" class="btn primary sm" data-act="add-task">Add</button>'
+    +(isNew ? '<button type="button" class="btn ghost sm" data-act="close-sheet">Cancel</button><h3>New Task</h3><button type="button" class="btn primary sm" data-act="add-task"'+(t.title.trim()?'':' disabled')+'>Add</button>'
       : '<h3>Task Details</h3><span class="saved" id="saveState" role="status"></span><button type="button" class="btn ghost sm" data-act="close-sheet">Done</button>')
-    +'</div><div class="err" id="f-err" role="alert"></div>'
-    +'<div class="form">'
-    +'<label for="f-title">Title</label><textarea id="f-title" data-input="title" rows="2" placeholder="What needs to be done?">'+esc(t.title)+'</textarea>'
-    +(isNew && !S.edit.showDetails && !t.details ? '<button type="button" class="linkbtn mt-s" data-act="add-details">Add Details</button>'
-      : '<label for="f-details">Details</label><textarea id="f-details" data-input="details" rows="3" placeholder="Context, links, notes">'+esc(t.details)+'</textarea>')
-    +(canPrivate(t)?'<div class="set-card priv-card">'+switchRow('private-toggle', isPriv(t), LOCK+'Only Me', isPriv(t)?'Only you can see this task. It stays out of Team Tasks, reports and meetings.':'Turn on to keep this task to yourself')
-      +(S.edit.confirmPriv?'<div class="priv-confirm" role="alert"><p>Remove '+esc(listNames(owners(t).filter(o=>o!==S.data.me).map(firstName)))+' and make this private?</p>'
-        +'<div class="acts"><button type="button" class="btn primary sm" data-act="private-yes">Remove and Make Private</button><button type="button" class="btn ghost sm" data-act="private-no">Cancel</button></div></div>':'')
-      +'</div>':'')
-    +(S.edit.live?'<p class="small muted live-link">This will be an action item from the '+esc(S.live?S.live.title:'meeting')+'.</p>':'')
-    +(isPriv(t)?'':'<div class="owners-box"><label>Owners</label><div class="chips">'+S.data.people.map(p=>'<button type="button" class="'+(sel.indexOf(p.email)>=0?'on':'')+'" data-act="owner" data-email="'+esc(p.email)+'">'+esc(firstName(p.email))+'</button>').join('')+'</div></div>')
-    +(isNew?'':'<label>Status</label>'+(t.status==='Needs Review' ? '<p class="small muted">Waiting in Review. '+(S.data.isApprover?'Approve it on the Review screen to start it.':'An approver will look at it soon.')+'</p>' : seg('status',['Not Done','In Progress','Blocked','Done'])))
-    // NF-4: a Blocked task says who or what it's waiting on; a teammate picked here gets one reminder after 3 days.
-    +(!isNew && t.status==='Blocked' ? '<div class="waiting-box"><label>Waiting On</label><div class="chips">'+S.data.people.filter(p=>owners(t).indexOf(p.email)<0).map(p=>'<button type="button" class="'+(t.waiting_on===p.email?'on':'')+'" data-act="waiting" data-email="'+esc(p.email)+'">'+esc(firstName(p.email))+'</button>').join('')+'</div>'
-      +'<input type="text" class="box mt-s" data-input="waiting_on" placeholder="Or type who or what (a vendor, a part…)" value="'+esc(t.waiting_on && t.waiting_on.indexOf('@')<0 ? t.waiting_on : '')+'"></div>' : '')
-    +'<label>Priority</label>'+seg('priority',['High','Medium','Low'])
-    +'<label for="f-due">Due Date</label><input type="date" id="f-due" data-change="due" value="'+esc(t.due)+'">'
-    +'<div class="quick-dates">'+quickDates([['Today',S.data.today],['Tomorrow',addDays(S.data.today,1)],['Next Tactical',S.data.defaultDue],['Next Week',addDays(S.data.today,7)],['No Date','']])
-      .map(([l,v])=>'<button type="button" class="'+(t.due===v?'on':'')+'" data-act="due-quick" data-val="'+v+'">'+l+(l==='Next Tactical'?' · '+esc(short(v)):'')+'</button>').join('')+'</div>'
-    +(t.id?'<div class="mt-m">'+sourceLink(t)+'</div>':'')
-    +(t.id?'<div class="danger-row"><button type="button" class="linkbtn danger" data-act="task-delete">'+(S.confirmDel?'Tap again to delete':'Delete Task')+'</button></div>':'')
-    +'</div>';
-  if (!isNew) {
-    html+='<div class="form thread" id="f-comments"><h3 class="sec-h">Comments</h3>'
-      +(d ? (d.comments.map(c=>'<div class="comment"><span class="who">'+esc(nameOf(c.author))+'</span><span class="small muted">'+esc(fmtDate(c.created_at))+'</span><div>'+mentionify(c.text)+'</div></div>').join('') || '<p class="none">No comments yet.</p>')
-        : S.edit.detailErr ? '<p class="none">Couldn\'t load comments. <button type="button" class="linkbtn" data-act="reload-detail">Try Again</button></p>' : '<p class="none">Loading…</p>')
-      +'<textarea class="box mt-s" id="f-comment" rows="2" placeholder="'+(isPriv(t)?'Add a note for yourself.':'Add a comment. Type @ and a name to notify someone.')+'">'+esc(commentDraft(t.id))+'</textarea>'
-      +(isPriv(t)?'':'<div class="mentions"><span>Mention:</span>'+S.data.people.filter(p=>p.email!==S.data.me).map(p=>'<button type="button" data-act="mention" data-name="'+esc(firstName(p.email))+'">@'+esc(firstName(p.email))+'</button>').join('')+'</div>')
-      +'<div class="mt-s"><button type="button" class="btn ghost sm" data-act="post">Post Comment</button></div></div>'
-      +'<div class="form thread"><h3 class="sec-h">History</h3><div class="log">'
-      +(d ? d.history.slice().reverse().map(h=>'<span>'+esc(short(h.at))+'</span><span>'+esc(nameOf(h.user))+' '+(h.field==='created'?'created the task':h.field==='private'?(h.new_value==='yes'?'made it private':'shared it with the team'):'changed '+esc(h.field)+' to “'+esc(h.field==='status'?label(h.new_value):h.new_value)+'”')+'</span>').join('') : '')
-      +'</div></div>';
+    +'</div><div class="err" id="f-err" role="alert"></div>';
+  if (isNew) {
+    // A new task keeps the short form: title, details, owners (with Only Me), priority, date.
+    html+='<div class="form">'
+      +'<label for="f-title">Title</label><textarea id="f-title" data-input="title" rows="2" placeholder="What needs to be done?">'+esc(t.title)+'</textarea>'
+      +(!E.showDetails && !t.details ? '<button type="button" class="linkbtn mt-s" data-act="add-details">Add Details</button>'
+        : '<label for="f-details">Details</label><textarea id="f-details" data-input="details" rows="3" placeholder="Context, links, notes">'+esc(t.details)+'</textarea>')
+      +(E.live?'<p class="small muted live-link">This task is part of the '+esc(S.live?S.live.title:'meeting')+'.</p>':'')
+      +'<div class="owners-box"><label>Owners</label>'+ownerChips+'</div>'
+      +'<label>Priority</label>'+seg('priority',['High','Medium','Low'])
+      +'<label>Due Date</label>'+dates+'</div>';
+    el.innerHTML=html; el.scrollTop=top; return;
   }
+  // #8 (Nov 16): an open task reads first, like Reminders: the title in large type, four rows that open a picker in place,
+  // then the comments (a send arrow inside the box, @ suggestions as you type). History folds away.
+  const row=(k,l,val)=>'<button type="button" class="set-row trow'+(E.open===k?' open':'')+'" data-act="trow" data-k="'+k+'" aria-expanded="'+(E.open===k)+'"><span>'+l+'</span><span class="val">'+val+'</span><span class="chev" aria-hidden="true">›</span></button>';
+  const pick=(k,inner)=>E.open===k?'<div class="trow-pick">'+inner+'</div>':'';
+  const review=t.status==='Needs Review';
+  html+='<div class="tread">'
+    +'<textarea id="f-title" class="ttl-big" data-input="title" rows="1" aria-label="Title" placeholder="Title">'+esc(t.title)+'</textarea>'
+    +'<textarea id="f-details" class="det-plain" data-input="details" rows="1" aria-label="Details" placeholder="Add Details">'+esc(t.details)+'</textarea>'
+    +'<div class="src">'+sourceLink(t)+'</div></div>'
+    +'<div class="set-card trows">'
+    +row('status','Status', review?'Waiting in Review':esc(label(t.status)))+pick('status', review ? '<p class="small muted">'+(S.data.isApprover?'Approve it on the Review screen to start it.':'An approver will look at it soon.')+'</p>' : seg('status',['Not Done','In Progress','Blocked','Done']))
+    +(t.status==='Blocked' ? row('waiting','Waiting On', t.waiting_on?esc(waitName(t.waiting_on)):'Someone?')+pick('waiting', waiting) : '')
+    +row('due','Due', t.due?esc(fmtDate(t.due)):'No Date')+pick('due', dates)
+    +row('priority','Priority', t.priority?MARKS[t.priority]+' '+esc(t.priority):'None')+pick('priority', seg('priority',['High','Medium','Low']))
+    +row('owners','Owners', isPriv(t)?LOCK+' Only Me':esc(listNames(sel.map(firstName))||'No one'))+pick('owners', ownerChips)
+    +'</div>';
+  const people=S.data.people.filter(p=>p.email!==S.data.me), q=E.mentionQ;
+  const sugg=q==null||isPriv(t) ? '' : people.filter(p=>firstName(p.email).toLowerCase().indexOf(q.toLowerCase())===0);
+  html+='<div class="form thread" id="f-comments"><h3 class="sec-h">Comments</h3>'
+    +(d ? (d.comments.map(c=>'<div class="comment"><span class="who">'+esc(nameOf(c.author))+'</span><span class="small muted">'+esc(fmtDate(c.created_at))+'</span><div>'+mentionify(c.text)+'</div></div>').join('') || '<p class="none">No comments yet.</p>')
+      : E.detailErr ? '<p class="none">Couldn\'t load comments. <button type="button" class="linkbtn" data-act="reload-detail">Try Again</button></p>' : '<p class="none">Loading…</p>')
+    +(sugg && sugg.length ? '<div class="mention-sugg" role="listbox" aria-label="Mention someone">'+sugg.map(p=>'<button type="button" data-act="mention-pick" data-name="'+esc(firstName(p.email))+'">@'+esc(firstName(p.email))+'</button>').join('')+'</div>' : '')
+    +'<div class="cbox"><textarea id="f-comment" rows="1" placeholder="'+(isPriv(t)?'Add a note for yourself':'Add a comment (type @ to mention)')+'">'+esc(commentDraft(t.id))+'</textarea>'
+    +'<button type="button" class="send" data-act="post" aria-label="Post comment"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"/></svg></button></div></div>'
+    +'<div class="form thread">'+(E.showHist
+      ? '<h3 class="sec-h">History</h3><div class="log">'+(d ? d.history.slice().reverse().map(h=>'<span>'+esc(short(h.at))+'</span><span>'+esc(nameOf(h.user))+' '+(h.field==='created'?'created the task':h.field==='private'?(h.new_value==='yes'?'made it private':'shared it with the team'):'changed '+esc(h.field)+' to “'+esc(h.field==='status'?label(h.new_value):h.new_value)+'”')+'</span>').join('') : '')+'</div>'
+      : '<button type="button" class="linkbtn" data-act="show-history">Show History</button>')+'</div>'
+    +'<div class="danger-row"><button type="button" class="linkbtn danger" data-act="task-delete">'+(S.confirmDel?'Tap again to delete':'Delete Task')+'</button></div>';
   el.innerHTML=html; el.scrollTop=top;
 }
 // LB-5: one Sort & Filter menu. Each choice applies and closes it (menu + option = 2 taps).
@@ -2704,12 +2760,9 @@ function sortFilterSheet(){
   const opt=(key,val,lbl)=>'<button type="button" class="set-row" role="menuitemradio" aria-checked="'+(S[key]===val)+'" data-act="sf" data-key="'+key+'" data-val="'+esc(val)+'"><span>'+lbl+'</span><span class="chk" aria-hidden="true">✓</span></button>';
   return '<div class="grab" data-act="close-sheet"></div><div class="sheet-head"><h3>Sort &amp; Filter</h3>'+(activeFilters()?'<button type="button" class="linkbtn" data-act="reset-filters">Reset</button>':'')
     +'<button type="button" class="btn ghost sm" data-act="close-sheet">Done</button></div>'
-    +'<h4 class="set-sec">Sort By</h4><div class="set-card" role="menu">'+opt('sort','due','Due Date')+opt('sort','priority','Priority')+opt('sort','updated','Recently Updated')+opt('sort','title','A to Z')+'</div>'
-    +'<h4 class="set-sec">Status</h4><div class="set-card" role="menu">'+opt('status','open','All Open')+opt('status','Not Done','Not Started')+opt('status','In Progress','In Progress')+opt('status','Blocked','Blocked')+'</div>'
-    +'<h4 class="set-sec">Priority</h4><div class="set-card" role="menu">'+opt('priority','','Any Priority')+opt('priority','High',MARKS.High+' High')+opt('priority','Medium',MARKS.Medium+' Medium')+opt('priority','Low',MARKS.Low+' Low')+'</div>'
-    +'<h4 class="set-sec">Meeting</h4><div class="set-card set-pad"><select class="sf-sel" data-change="filter" data-key="meeting" aria-label="Meeting">'
-    +[['','All Meetings'],['manual','Added by Hand']].concat(meetings.map(x=>[x, sourceText(x)])).map(([v,l])=>'<option value="'+esc(v)+'"'+(S.meeting===v?' selected':'')+'>'+esc(l)+'</option>').join('')+'</select></div>'
-    +'<div class="set-card mt-m">'+switchRow('sf-done', S.status==='', 'Show Done', 'Include finished tasks in the list')+'</div>';
+    // #12 (Nov 16): just Sort (Due Date, Priority), Blocked Only and Show Done. Search covers titles and meetings.
+    +'<h4 class="set-sec">Sort By</h4><div class="set-card" role="menu">'+opt('sort','due','Due Date')+opt('sort','priority','Priority')+'</div>'
+    +'<div class="set-card mt-m">'+switchRow('sf-blocked', S.status==='Blocked', 'Blocked Only', '')+switchRow('sf-done', S.status==='', 'Show Done', '')+'</div>';
 }
 function mentionify(text){
   let h=esc(text);
@@ -3062,7 +3115,7 @@ async function saveMeetingDetails(el){
   if (!r || S.mtg!==g) return;
   if (g.data) g.data.meeting=r;
   if (S.data.meetings && S.data.meetings[r.id]) Object.assign(S.data.meetings[r.id], { title:r.title, type:r.type, date:r.date });
-  S.meetings=null; g.mode=''; renderSheet(); render(); toast('Meeting updated');
+  S.meetings=null; g.mode=''; renderSheet(); render();
 }
 async function deleteMeeting(el){
   // Delete asks first in a small box with Delete and Cancel; Cancel goes back to the meeting.
@@ -3137,15 +3190,13 @@ function togglePrivate(confirmed){
   if (on && !confirmed && owners(t).some(o=>o!==S.data.me)) { S.edit.confirmPriv=true; renderSheet(); return; }
   S.edit.confirmPriv=false;
   t.private = on ? 'yes' : '';
-  if (on) t.owners=S.data.me;
-  const box=document.querySelector('#sheet .owners-box');
-  if (on && box) slideBox(box, false, ()=>renderSheet());   // Owners closes, then the panel redraws without it
-  else { if (!on) S.afterSheet=()=>slideBox(document.querySelector('#sheet .owners-box'), true); renderSheet(); }
-  if (!S.edit.isNew) { queueSave(0); toast(on?'Only Me is on. Only you can see this task':'Only Me is off. Your team can see this task'); }
+  t.owners = S.data.me;
+  renderSheet();
+  if (!S.edit.isNew) queueSave(0);
 }
 async function addTask(el){
   const edit=S.edit, t=edit.task, err=document.getElementById('f-err');
-  if (!t.title.trim()) { err.textContent='Give the task a short title first.'; return; }
+  if (!t.title.trim()) { const f=document.getElementById('f-title'); if (f) f.focus(); return; }
   if (!owners(t).length) { err.textContent='Pick at least one owner.'; return; }
   err.textContent=''; t.cid=t.cid||newCid();
   if (!navigator.onLine || S.outbox.length) { queueNew(t); if (S.edit===edit) closeSheet(); toast('Task added. It will send when you\'re back online.'); return; }
@@ -3156,7 +3207,7 @@ async function addTask(el){
   replaceTask(saved);
   if (edit.live && S.live) { S.live.items=(S.live.items||[]).concat([saved.id]); liveMark('items', saved.id, true); }
   if (S.edit===edit) closeSheet();
-  toast(isPriv(saved)?'Added to My Tasks as Only Me':edit.live?'Action Item Added':'Task Added');
+  if (isPriv(saved) && S.view!=='mine') toast('Added to My Tasks as Only Me.');   // #17: the new row shows it was added
 }
 // Nov 16 (#41): a half-typed comment survives a redraw (tapping a priority, owner or date) and closing the panel. Drafts are
 // kept per task on this device (lt-drafts) until posted; closing a task with a draft says so and offers to post it.
@@ -3218,8 +3269,7 @@ function reviewCard(t, e, can, person){
   if (v.status!=='Done') {
     const need=needsDate(t, e), next=S.data.defaultDue, week=addDays(today,7);
     h+='<div class="rv-due'+(need?' need':'')+'"><div class="rv-due-h">'+(need?'Pick a New Date':'New Date: '+esc(fmtDate(v.due)))+'</div>'
-      +'<div class="quick-dates">'+quickDates([['Next Tactical · '+short(next),next],['Next Week · '+short(week),week]]).map(([l,d])=>
-        '<button type="button" class="'+(v.due===d?'on':'')+'" data-act="rv-due" data-id="'+t.id+'" data-val="'+d+'"'+dis+' aria-pressed="'+(v.due===d)+'">'+esc(l)+'</button>').join('')+'</div>'
+      +'<div class="quick-dates">'+dateChips(v.due, 'rv-due', false, ' data-id="'+t.id+'"'+dis)+'</div>'
       +'<input type="date" data-change="rv-date" data-id="'+t.id+'" min="'+addDays(today,1)+'" value="'+esc(need?'':v.due||'')+'" aria-label="Pick a new due date"'+dis+'></div>';
   }
   if (can) h+='<input type="text" class="rv-note" data-change="rv-note" data-id="'+t.id+'" maxlength="200" placeholder="Add a short note (optional)" value="'+esc(e && e.note || '')+'" aria-label="Note">';
@@ -3670,7 +3720,7 @@ function renderLiveCtl(){
   el.hidden=!on; document.body.classList.toggle('live-on', on);
   if (!on) { el.innerHTML=''; return; }
   const narrow=window.innerWidth<400;
-  const item='<button type="button" class="btn ghost" data-act="lv-item">'+(narrow?'+ Item':'+ Action Item')+'</button>';
+  const item='<button type="button" class="btn ghost" data-act="lv-item">+ Task</button>';
   // Nov 12: during a meeting Alfred sits in this bar instead of floating over the agenda.
   const hat=alfredEnabled() ? '<button type="button" class="btn ghost hat-btn" data-act="alf-open" aria-label="Ask Alfred"><svg viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><path d="M9 6.7h14a1 1 0 0 1 1 1v8.2H8V7.7a1 1 0 0 1 1-1z"/><rect x="8" y="18.9" width="16" height="2.4"/><path d="M5 19.7Q16 21.7 27 19.7L27 21.68Q16 26.92 5 21.68Z"/></svg></button>' : '';
   const hc=hat?' has-hat':'';
@@ -3955,7 +4005,7 @@ function liveBody(st, step){
   if (k==='closure') {
     const added=st.items.map(id=>find(id)).filter(Boolean);
     return '<div class="card reading"><p><b>What must be done, who will do it, and when?</b></p>'
-      +'<p class="optional">Alfred captures every action item from the recording. To add one now, tap <b>+ Action Item</b>. Alfred will skip it, so it won\'t be duplicated.</p></div>'
+      +'<p class="optional">Alfred captures every action item from the recording. To add one now, tap <b>+ Task</b>. Alfred will skip it, so it won\'t be duplicated.</p></div>'
       +(added.length?'<div class="card reading"><h3>Added in This Meeting · '+added.length+'</h3>'+taskRows(added)+'</div>':'')
       +cascadeCard();
   }
@@ -4025,11 +4075,10 @@ function openLiveItem(){
 }
 function liveItemSheet(){
   const sel=S.lvOwners||[], due=S.lvDue||S.data.defaultDue;
-  return '<div class="grab"></div><div class="sheet-head"><button type="button" class="btn ghost sm" data-act="close-sheet">Cancel</button><h3>New Action Item</h3><button type="button" class="btn primary sm" data-act="lv-add">Add</button></div>'
+  return '<div class="grab"></div><div class="sheet-head"><button type="button" class="btn ghost sm" data-act="close-sheet">Cancel</button><h3>New Task</h3><button type="button" class="btn primary sm" data-act="lv-add">Add</button></div>'
     +'<div class="err" id="lv-err" role="alert"></div><div class="form"><label for="lv-title">What needs to be done?</label><textarea id="lv-title" rows="2" placeholder="Call the lab about the new scanner">'+esc(S.lvTitle||'')+'</textarea>'
     +'<label>Who</label><div class="chips">'+S.data.people.map(p=>'<button type="button" class="'+(sel.indexOf(p.email)>=0?'on':'')+'" data-act="lv-owner" data-email="'+esc(p.email)+'" aria-pressed="'+(sel.indexOf(p.email)>=0)+'">'+esc(firstName(p.email))+'</button>').join('')+'</div>'
-    +'<label>When</label><div class="quick-dates">'+quickDates([['Today',S.data.today],['Tomorrow',addDays(S.data.today,1)],['Next Tactical',S.data.defaultDue],['Next Week',addDays(S.data.today,7)]])
-      .map(([l,v])=>'<button type="button" class="'+(due===v?'on':'')+'" data-act="lv-due" data-val="'+v+'" aria-pressed="'+(due===v)+'">'+l+'</button>').join('')+'</div>'
+    +'<label>When</label><div class="quick-dates">'+dateChips(due, 'lv-due', true)+'</div>'
     +'<p class="small muted live-link">Linked to the '+esc(S.live?S.live.title:'meeting')+'. Alfred won\'t add it again from the recording.</p></div>';
 }
 async function liveAddItem(el){
@@ -4045,13 +4094,13 @@ async function liveAddItem(el){
   replaceTask(saved); S.lvOwners=[]; S.lvDue=null; S.lvTitle=''; S.lvCid=null;
   if (S.live) { S.live.items=(S.live.items||[]).concat([saved.id]); liveMark('items', saved.id, true); }
   if (S.sheet==='liveitem') closeSheet();
-  toast('Action Item Added');
+
 }
 
 /* ---------- Alfred chat bubble ---------- */
 // The conversation lives only in this page (S.alf) and is gone after a reload. Every message carries the screen
 // context below, and the screenshot taken when the bubble was tapped, so nobody has to describe where they were.
-const APP_VERSION = '2026.11.16-appearance';
+const APP_VERSION = '2026.11.16-tasks';
 const H2C_URL = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
 const DIAG = { errors:[], actions:[] };   // last 10 of each, for bug reports
 function pushDiag(list, item){ list.push(item); if (list.length>10) list.shift(); }
@@ -4453,7 +4502,7 @@ async function applyProposal(p){
     p.cid=p.cid||newCid();
     const saved=await call('apiSaveTask', Object.assign({}, p.task, { cid:p.cid })); replaceTask(saved); render();
     p.state='done'; p.id=saved.id; renderAlfred();
-    toast('Task Added', async()=>{ try { await call('apiDeleteTask', saved.id); const i=S.data.tasks.findIndex(x=>x.id===saved.id); if (i>=0) S.data.tasks.splice(i,1); S.deleted=null; p.state='undone'; render(); renderAlfred(); toast('Removed'); } catch(e){ toast('Couldn\'t undo. '+errText(e)); } });
+    toast('Task added', async()=>{ try { await call('apiDeleteTask', saved.id); const i=S.data.tasks.findIndex(x=>x.id===saved.id); if (i>=0) S.data.tasks.splice(i,1); S.deleted=null; p.state='undone'; render(); renderAlfred(); toast('Removed'); } catch(e){ toast('Couldn\'t undo. '+errText(e)); } });
   } catch(e){ p.state='ready'; p.error='Not added: '+errText(e); renderAlfred(); }
 }
 
@@ -4603,7 +4652,16 @@ function requestClick(a, el){
       .catch(e=>{ el.disabled=false; toast('Not saved: '+String(e.message).replace(/^(Exception|Error):\s*/,'')); }); return true; }
   return false;
 }
-document.addEventListener('input', e=>{ if (e.target.id==='f-comment' && S.edit && S.edit.task.id) commentDraft(S.edit.task.id, e.target.value); });
+document.addEventListener('input', e=>{
+  if (e.target.id==='f-comment' && S.edit && S.edit.task.id) {
+    commentDraft(S.edit.task.id, e.target.value); autoGrow(e.target, 160);
+    // @ suggestions: the names that match what you've typed after @ show above the box.
+    const m=/@(\w*)$/.exec(e.target.value.slice(0, e.target.selectionStart||e.target.value.length)), q=m?m[1]:null;
+    if (q!==S.edit.mentionQ) { const at=e.target.selectionStart; S.edit.mentionQ=q; renderSheet(); const b=document.getElementById('f-comment'); if (b) { b.focus(); b.setSelectionRange(at, at); } }
+  }
+  if (e.target.id==='f-title' && S.edit && S.edit.isNew) { const b=document.querySelector('#sheet [data-act="add-task"]'); if (b) b.disabled=!e.target.value.trim(); }
+  if (e.target.id==='f-details' && S.edit && !S.edit.isNew) autoGrow(e.target, 320);
+});
 document.addEventListener('input', e=>{ if (e.target.id==='lv-title') S.lvTitle=e.target.value; if (e.target.id==='mtg-ctx' && S.mtg) S.mtg.ctx=e.target.value; });
 // Phones: tapping away from an empty search box closes it (no Cancel button needed).
 document.addEventListener('focusout', e=>{
@@ -4708,15 +4766,21 @@ function actClick(e, el){
   else if (a==='reload-view') { S.topicsFailed=false; S.teamFailed=false; render(); }
   else if (a==='reload-detail') { if (S.edit) { S.edit.detailErr=false; renderSheet(); loadDetail(S.edit.task.id); } }
   else if (a==='new') newTask();
-  else if (a==='task') openTask(id);
+  else if (a==='task') { if (document.getElementById('report')) closeReport(); openTask(id); }
   else if (a==='close-sheet') { if (S.sheet==='liveitem') { S.lvOwners=[]; S.lvDue=null; S.lvCid=null; } closeSheet(); }
   else if (a==='quick') { S.quick = S.quick===v ? '' : v; render(); }
   else if (a==='person') { S.person = S.person===el.dataset.email ? '' : el.dataset.email; render(); }
   else if (a==='layout') { S.layout=v; setPref('lt-layout', v); render(); }   // LB-4: computers remember the last choice
   else if (a==='reset-filters') { S.status='open'; S.priority=''; S.meeting=''; S.sort='due'; if (S.sheet==='sortfilter') closeSheet(); else render(); }
-  else if (a==='owner') { const t=S.edit.task, l=owners(t), i=l.indexOf(el.dataset.email); if (i>=0) l.splice(i,1); else l.push(el.dataset.email); t.owners=l.join(', '); renderSheet(); queueSave(0); }
-  else if (a==='set') { if (el.dataset.field==='status' && !S.edit.isNew) { const t=S.edit.task; mineOrConfirm(t, v, ()=>setStatus(t.id, v)); } else { S.edit.task[el.dataset.field]=v; renderSheet(); queueSave(0); } }
+  else if (a==='owner') { const t=S.edit.task; if (isPriv(t)) { t.private=''; t.owners=''; }
+    const l=owners(t), i=l.indexOf(el.dataset.email); if (i>=0) l.splice(i,1); else l.push(el.dataset.email); t.owners=l.join(', '); renderSheet(); queueSave(0); }
+  else if (a==='set') { if (!S.edit.isNew) S.edit.open=null; if (el.dataset.field==='status' && !S.edit.isNew) { const t=S.edit.task; mineOrConfirm(t, v, ()=>setStatus(t.id, v)); } else { S.edit.task[el.dataset.field]=v; renderSheet(); queueSave(0); } }
   else if (a==='add-task') addTask(el);
+  else if (a==='trow') { S.edit.open = S.edit.open===el.dataset.k ? null : el.dataset.k; S.edit.confirmPriv=false; renderSheet(); }
+  else if (a==='show-history') { S.edit.showHist=true; renderSheet(); }
+  else if (a==='priv-chip') togglePrivate();
+  else if (a==='mention-pick') { const b=document.getElementById('f-comment'); if (b) { const at=b.selectionStart||b.value.length, before=b.value.slice(0,at).replace(/@(\w*)$/, '@'+el.dataset.name+' ');
+      b.value=before+b.value.slice(at); commentDraft(S.edit.task.id, b.value); S.edit.mentionQ=null; renderSheet(); const nb=document.getElementById('f-comment'); if (nb) { nb.focus(); nb.setSelectionRange(before.length, before.length); } } }
   else if (a==='private-yes') togglePrivate(true);
   else if (a==='private-no') { S.edit.confirmPriv=false; renderSheet(); }
   else if (a==='post') postComment(el);
@@ -4748,6 +4812,8 @@ function actClick(e, el){
   else if (a==='prep-status') { setStatus(id, v); if (S.sheet==='prep') renderSheet(); }
   else if (a==='prep-due') { const t=find(id); if (t && t.due!==v) { t.due=v; saveTaskEdit({ id:id, due:v }); render(); } if (S.sheet==='prep') renderSheet(); }
   else if (a==='report-open') openReport();
+  else if (a==='rp-tab') { const r=document.getElementById('report'); if (r) { S.rpTab=v; r.querySelectorAll('.rp-seg button').forEach(b=>b.classList.toggle('on', b.dataset.val===v));
+      r.querySelector('.rp-paper').hidden=v!=='report'; r.querySelector('.rp-ones').hidden=v!=='ones'; const pb=r.querySelector('[data-act="report-print"]'); if (pb) pb.hidden=v!=='report'; renderReportOnes(); } }
   else if (a==='signout' && WEB) webSignOut();
   else if (a==='report-close') closeReport(true);
   else if (a==='report-print') window.print();
@@ -4804,7 +4870,7 @@ function actClick(e, el){
   else if (a==='ask-ok') { const f=S.ask && S.ask.fn; S.ask=null; closeSheet(true); if (f) f(); else render(); }
   else if (a==='lv-park') { const i=document.getElementById('lv-park'), text=i && i.value.trim(), why='Parked during '+S.live.title+'.';
     const cid=newCid(); if (text) saving(el, 'Parking…', ()=>call('apiAddTopic', text, why, cid)).then(r=>{ if (!r) return; S.topics=null; const b=document.getElementById('lv-park'); if (b) b.value=''; toast('Parked in the Parking Lot'); }); }
-  else if (a==='due-quick') { S.edit.task.due=v; renderSheet(); queueSave(0); }
+  else if (a==='due-quick') { S.edit.task.due=v; if (!S.edit.isNew) S.edit.open=null; renderSheet(); queueSave(0); }
   else if (a==='remind-days') { const old=S.data.reminderDays; S.data.reminderDays=Number(v); render(); toast('Reminders look '+v+' day'+(v==='1'?'':'s')+' ahead');
     call('apiSetMyReminderDays', Number(v)).catch(()=>{ S.data.reminderDays=old; render(); toast('Could not save. Try again.'); }); }
   else if (a==='pref-set') { setPref(el.dataset.key, v); if (el.dataset.key==='lt-layout') S.layout=v; render(); }
@@ -4818,7 +4884,7 @@ function actClick(e, el){
   else if (a==='theme-set') { setTheme(el.dataset.val); render(); }
   else if (a==='mm-status') setStatus(id, v);
   else if (a==='topic-add') { const i=document.getElementById('tp-new'), d=document.getElementById('tp-desc'), text=i.value.trim();
-    const cid=newCid(); if (text) saving(el, 'Adding…', ()=>call('apiAddTopic', text, d?d.value.trim():'', cid)).then(r=>{ if (!r) return; S.topics=null; toast('Topic Added'); render(); }); }
+    const cid=newCid(); if (text) saving(el, 'Adding…', ()=>call('apiAddTopic', text, d?d.value.trim():'', cid)).then(r=>{ if (!r) return; S.topics=null; render(); }); }
 }
 document.addEventListener('keydown', e=>{
   if (e.key==='Escape' && S.alf.picking) { endPick(); showAlfred(); return; }
@@ -4883,15 +4949,16 @@ document.addEventListener('touchmove', e=>{
   const was=ptr.h; ptr.h=Math.min(90, dy*.5);
   if (was<PTR_AT && ptr.h>=PTR_AT) haptic();
   const el=document.getElementById('ptr'); el.classList.remove('settle'); el.style.height=ptr.h+'px';
-  el.firstElementChild.textContent = ptr.h>=PTR_AT ? 'Release to Refresh' : 'Pull to Refresh';
+  // #37: a spinner that fills in as you pull and turns once it's far enough (no words, like iPhone apps).
+  const sp=el.querySelector('.ptr-spin'); if (sp) { sp.style.opacity=Math.min(1, ptr.h/PTR_AT); sp.style.transform='rotate('+(ptr.h/PTR_AT*270)+'deg)'; sp.classList.toggle('ready', ptr.h>=PTR_AT); }
 }, { passive:false });
 document.addEventListener('touchend', ()=>{
   if (!ptr) return;
   const p=ptr; ptr=null; if (!p.on) return;
   const el=document.getElementById('ptr'); el.classList.add('settle');
   if (p.h<PTR_AT) { el.style.height='0px'; return; }
-  el.style.height='44px'; el.innerHTML='<i class="spin"></i><span>Refreshing…</span>';
-  fullRefresh().finally(()=>{ el.style.height='0px'; setTimeout(()=>{ el.innerHTML='<span>Pull to Refresh</span>'; }, 260); });
+  el.style.height='44px'; el.classList.add('busy');
+  fullRefresh().finally(()=>{ el.style.height='0px'; setTimeout(()=>{ el.classList.remove('busy'); const sp=el.querySelector('.ptr-spin'); if (sp) { sp.style.opacity=0; sp.style.transform=''; } }, 260); });
 });
 async function fullRefresh(){
   S.refreshing=true;
@@ -4988,6 +5055,7 @@ function switchChanged(a, el){
   breadcrumb(el);
   if (a==='private-toggle') togglePrivate();
   else if (a==='sf-done') { S.status = S.status==='' ? 'open' : ''; closeSheet(); }
+  else if (a==='sf-blocked') { S.status = S.status==='Blocked' ? 'open' : 'Blocked'; closeSheet(); }
   else if (a==='email-toggle') { const k=el.dataset.kind, em=S.data.emails=S.data.emails||{}, on=em[k]===false; em[k]=on; render();
     call('apiSetMyEmail', k, on).catch(()=>{ em[k]=!on; render(); toast('Couldn\'t save. Try again.'); }); }
   else if (a==='push-kind') pushKind(el.dataset.kind);
@@ -5187,7 +5255,7 @@ function webServiceWorker(){
     if (!navigator.serviceWorker.controller) return;   // the very first install: this page is already the newest
     if (!tapped && Date.now()-opened<4000 && !S.sheet) { apply(w); return; }
     S.updateWaiting=w;   // applies when the app goes to the background (WEB-3); the toast is for long sessions
-    const offer=()=>{ if (S.updateWaiting!==w) return; if (S.undo || S.sheet) { setTimeout(offer, 3000); return; } toast('Update Ready', ()=>apply(w), { label:'Reload' }); };
+    const offer=()=>{ if (S.updateWaiting!==w) return; if (S.undo || S.sheet) { setTimeout(offer, 3000); return; } toast('An update is ready', ()=>apply(w), { label:'Reload' }); };
     setTimeout(offer, 1500);
   };
   document.addEventListener('visibilitychange', ()=>{ if (document.hidden && S.updateWaiting && !S.outbox.length && !S.pending) apply(S.updateWaiting); });
