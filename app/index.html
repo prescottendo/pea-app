@@ -19,7 +19,7 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" type="image/png" href="icon-192.png">
-<script>window.HUDDLE_WEB={"api":"https://script.google.com/macros/s/AKfycbzM8K_-XRMDdOJYJ3THn_FhyZkRreMddHIBAOFCFVoq5S_Y7MnsfFLsl7ac_fyDPrch/exec","clientId":"473377418367-cqmmnfum4kshq16973m4sj2jqqfa55p0.apps.googleusercontent.com","build":"60ee289","push":{"config":{"apiKey":"AIzaSyBON-0KvTXPD_MV6ykhYvCoBRiECEHyE9c","authDomain":"huddle-e2548.firebaseapp.com","projectId":"huddle-e2548","storageBucket":"huddle-e2548.firebasestorage.app","messagingSenderId":"554653922065","appId":"1:554653922065:web:87de53b4cb11b36835d2b0"},"vapidKey":"BHKeDoBmW7vL-qAT3ocyTaMaZ27Ca66jvQtTes2NC4CPoWFiPBJcga7wVd-RD1IuyhBki0oKXwPBGSNq002s8o8"}};document.documentElement.classList.add('web');</script>
+<script>window.HUDDLE_WEB={"api":"https://script.google.com/macros/s/AKfycbzM8K_-XRMDdOJYJ3THn_FhyZkRreMddHIBAOFCFVoq5S_Y7MnsfFLsl7ac_fyDPrch/exec","clientId":"473377418367-cqmmnfum4kshq16973m4sj2jqqfa55p0.apps.googleusercontent.com","build":"b154b4c","push":{"config":{"apiKey":"AIzaSyBON-0KvTXPD_MV6ykhYvCoBRiECEHyE9c","authDomain":"huddle-e2548.firebaseapp.com","projectId":"huddle-e2548","storageBucket":"huddle-e2548.firebasestorage.app","messagingSenderId":"554653922065","appId":"1:554653922065:web:87de53b4cb11b36835d2b0"},"vapidKey":"BHKeDoBmW7vL-qAT3ocyTaMaZ27Ca66jvQtTes2NC4CPoWFiPBJcga7wVd-RD1IuyhBki0oKXwPBGSNq002s8o8"}};document.documentElement.classList.add('web');</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <!-- The fonts load without holding up the first paint; the page shows in the phone's own font for a moment if needed. -->
@@ -222,6 +222,7 @@
   .group.late { color:var(--red); }
   .group.done-week { color:var(--st-done-ink); }
   .group .n { font-variant-numeric:tabular-nums; font-weight:600; }
+  .group .capsule { margin:0 2px 0 auto; text-transform:none; letter-spacing:0; }
   .list { display:grid; gap:8px; }
   .card { background:var(--card); border:1px solid var(--line); border-radius:12px; }
   .title .lock, .src.priv .lock { width:.95em; height:.95em; vertical-align:-.1em; margin-right:8px; color:var(--muted); }
@@ -1967,7 +1968,7 @@ const BOX={ todo:'<i class="tbox"></i>', prog:'<i class="tbox prog"></i>', blk:'
 // #5 (Nov 16): five short steps. Everything else is learned where it happens; the team guide and Alfred hold the rest.
 const COACH=[
   { view:'home', sel:'#main .focus-card, #main .set-card', h:'Huddle', b:'<p>What needs you today: the team\'s Rally Cry, anything overdue or waiting on you, and the next meeting.</p>' },
-  { view:'mine', sel:'article.task .circ', h:'Your Tasks', b:'<p>Tap the box when a task is done. Hold it for In Progress or Blocked. Tap <b>+</b> to add a task.</p>' },
+  { view:'mine', sel:'article.task .circ', h:'Your Tasks', b:'<p>Tap the box when a task is done. Hold it for In Progress or Blocked. Tap <b>＋ New Task</b> to add one.</p>' },
   { view:'team', sel:'.people', h:'Team Tasks', b:'<p>Everyone\'s tasks in one place. Tap a person to see just theirs. The printer opens the Accountability Report and One-on-Ones.</p>' },
   { view:'meetings', sel:'.capsule, .mtab', h:'Meetings', b:'<p>Start the weekly tactical here, and read any meeting\'s summary, decisions and Parking Lot.</p>' },
   { view:'home', sel:'.alf-fab', h:'Alfred', b:'<p>The hat is <b>Alfred</b>: ask about meetings and tasks, or report a problem. Drag him anywhere.</p>' },
@@ -2371,7 +2372,7 @@ function renderPage(){
   renderNav();
   // The same wide + button starts a task on task screens and a meeting on the Meetings tab.
   const fab=document.getElementById('fab'), onMeetings=S.view==='meetings';
-  fab.hidden = !(S.view==='mine'||S.view==='team');   // #16: + always means a new task; Meetings has a Start a Meeting row
+  fab.hidden = true;   // Nov 16 (Brayden, option A): New Task is the navy pill on the list; nothing floats but Alfred
   document.body.classList.toggle('has-fab', !fab.hidden);
   fab.dataset.act = 'new';
   fab.setAttribute('aria-label', 'New task');
@@ -2612,13 +2613,16 @@ function onesHtml(email){
   return '<div class="ones-trend"><span class="lbl">One-on-Ones in '+esc(month)+'</span>'
     +(list.length ? list.map(x=>'<span class="tag oo-'+esc(x.answer)+'">'+esc(short(x.date))+' · '+esc(word[x.answer]||x.answer)+'</span>').join('') : '<span class="small muted">Not asked yet this month.</span>')+'</div>';
 }
+// Nov 16 (Brayden, option A): "＋ New Task" is the same navy pill as Meetings' "＋ Start Meeting", on the first heading of the
+// list; the floating + is gone, so only Alfred floats.
+function taskCap(){ return '<button type="button" class="capsule" data-act="new">＋ New Task</button>'; }
 function renderResults(){
   const box=document.getElementById('results'); if (!box) return;
   let tasks=sortTasks(filtered());
   const weekAgo=addDays(S.data.today,-7), doneRecently=t=>t.status==='Done' && (t.completed_at||t.updated_at||'')>=weekAgo;
   if (layoutNow()==='board') {
     const cols=[['Not Done','Not Started'],['In Progress','In Progress'],['Blocked','Blocked'],['Done','Done This Week']];
-    box.innerHTML='<div class="board">'+cols.map(([st,lbl])=>{
+    box.innerHTML='<div class="mg-head mg-only">'+taskCap()+'</div><div class="board">'+cols.map(([st,lbl])=>{
       const items=tasks.filter(t=>t.status===st && (st!=='Done' || doneRecently(t)));
       return '<section class="col"><h4><span>'+lbl+'</span><span>'+items.length+'</span></h4>'+(items.length?taskRows(items):'<p class="none">No tasks here.</p>')+'</section>';
     }).join('')+'</div>';
@@ -2628,18 +2632,19 @@ function renderResults(){
   const doneWeek=(S.view==='team' && S.person && S.status==='open' && !S.quick && S.sort==='due') ? sortTasks(tasks.filter(doneRecently)) : [];
   if (!S.quick) { if (S.status==='open') tasks=tasks.filter(isOpen); else if (S.status) tasks=tasks.filter(t=>t.status===S.status); }
   if (!tasks.length && !doneWeek.length) {
-    box.innerHTML = '<div class="empty'+(!S.q && S.view==='mine'?' empty-mid':'')+'"><b>'+(S.q?'No Matches':S.view==='mine'?'You\'re All Caught Up':'Nothing Matches')+'</b>'+(S.q?'Try a different word.':S.view==='mine'?'No open tasks right now.':'Try a different filter.')
-      +(!S.q && S.view==='mine'?'<div class="empty-acts"><button type="button" class="btn primary" data-act="new">Add a Task</button></div>':'')+'</div>';   // layout #22
+    box.innerHTML = '<div class="mg-head mg-only">'+taskCap()+'</div><div class="empty'+(!S.q && S.view==='mine'?' empty-mid':'')+'"><b>'+(S.q?'No Matches':S.view==='mine'?'You\'re All Caught Up':'Nothing Matches')+'</b>'+(S.q?'Try a different word.':S.view==='mine'?'No open tasks right now.':'Try a different filter.')
+      +'</div>';
     return;
   }
-  if (S.sort!=='due') { box.innerHTML=taskRows(tasks); return; }
+  if (S.sort!=='due') { box.innerHTML='<div class="mg-head mg-only">'+taskCap()+'</div>'+taskRows(tasks); return; }
   const weekEnd=addDays(S.data.today,7);
   const groups=[['Overdue',t=>isLate(t),'late'],['This Week',t=>isThisWeek(t)],['Later',t=>isOpen(t)&&t.due>weekEnd],['No Due Date',t=>isOpen(t)&&!t.due],['Done',t=>t.status==='Done']];
   const used=new Set(); let html='';
   groups.forEach(([lbl,test,cls])=>{
     const items=tasks.filter(t=>!used.has(t.id)&&test(t)); items.forEach(t=>used.add(t.id));
-    if (items.length) html+='<div class="group'+(cls?' '+cls:'')+'">'+lbl+' <span class="n">'+items.length+'</span></div>'+taskRows(items);
+    if (items.length) html+='<div class="group'+(cls?' '+cls:'')+'">'+lbl+' <span class="n">'+items.length+'</span>'+(html?'':taskCap())+'</div>'+taskRows(items);
   });
+  if (!html) html='<div class="mg-head mg-only">'+taskCap()+'</div>';
   if (doneWeek.length) html+='<div class="group done-week">Done This Week <span class="n">'+doneWeek.length+'</span></div>'+taskRows(doneWeek);
   box.innerHTML=html;
 }
@@ -3991,35 +3996,46 @@ function livePoll(){
 // This phone then redoes the tap on the latest copy, unless the meeting has already moved on (another step, person or
 // topic, or a pause), in which case it just shows where everyone is. Adding time and action items are always redone.
 function liveKey(st){ return [st.id, st.phase, st.i, st.person||0, !!st.topic, !!st.pausedAt, st.motiveSet, liveHost(st)].join('|'); }
+// Nov 16 (Brayden: tapping Next quickly said "Someone else moved the meeting first"): this phone sends its taps one batch
+// at a time. Taps made while one is on its way wait, then go next, replayed on the copy the server just saved, so fast
+// taps never race each other. A real change by another phone still wins and says so.
 function liveAct(fn, always){
   if (!S.live) return;
   const seen=liveKey(S.live), st=clone(S.live); fn(st); S.live=st; render();
-  liveSend(fn, always, seen, st, 0);
+  (S.liveQ=S.liveQ||[]).push({ fn:fn, always:always, seen:seen });
+  if (!S.liveSending) liveFlush(null, 0);
 }
-function liveSend(fn, always, seen, st, tries){
-  S.liveDirty=(S.liveDirty||0)+1;
+function liveFlush(base, tries){
+  const q=S.liveQ||[]; if (!q.length) return;
+  S.liveQ=[];
+  let st;
+  if (base) { st=clone(base); q.forEach(p=>p.fn(st)); S.live=st; if (S.view==='live') render(); else renderLivebar(); }
+  else st=clone(S.live);
+  S.liveSending=true; S.liveDirty=(S.liveDirty||0)+1;
   call('apiLiveSet', st).then(res=>{
-    S.liveDirty--;
+    S.liveDirty--; S.liveSending=false;
     if (res && res.conflict) {
       if (res.notHost) {   // someone took over: this phone follows along now
+        S.liveQ=[];
         toast(firstName(liveHost(res.state))+' is the host. Tap Take Over to run the meeting.');
         applyLive({ state:res.state, now:res.now, fromWrite:!S.liveDirty });
         return;
       }
-      if (res.state && tries<3 && (always || liveKey(res.state)===seen)) {
+      if (res.state && tries<3 && (q.every(p=>p.always) || liveKey(res.state)===q[0].seen)) {
         S.offset=res.now-Date.now();
-        const fresh=clone(res.state); fn(fresh); S.live=fresh;
-        if (S.view==='live') render(); else renderLivebar();
-        liveSend(fn, always, seen, fresh, tries+1);
+        S.liveQ=q.concat(S.liveQ||[]);   // redo this batch on the latest copy, then anything tapped since
+        liveFlush(res.state, tries+1);
         return;
       }
+      S.liveQ=[];
       if (res.state) toast('Someone else moved the meeting first. You\'re seeing the latest.');
       applyLive({ state:res.state, now:res.now, fromWrite:!S.liveDirty });
       return;
     }
+    if ((S.liveQ||[]).length) { if (res && res.state) { S.offset=res.now-Date.now(); liveFlush(res.state, 0); } else liveFlush(null, 0); return; }   // taps made meanwhile go next
     if (res) res.fromWrite = !S.liveDirty;
     applyLive(res);
-  }).catch(e=>{ S.liveDirty--; toast('Could not sync: '+errText(e)); S.liveChecked=0; livePoll(); });
+  }).catch(e=>{ S.liveDirty--; S.liveSending=false; S.liveQ=[]; toast('Could not sync: '+errText(e)); S.liveChecked=0; livePoll(); });
 }
 // Ratings, one-on-ones and action items: merged on the server one at a time, so people who aren't the host can do them too.
 function liveMark(field, key, value, move){ render(); liveWrite('apiLiveMark', field, key, value, move||null); }
@@ -4569,7 +4585,7 @@ async function liveAddItem(el){
 /* ---------- Alfred chat bubble ---------- */
 // The conversation lives only in this page (S.alf) and is gone after a reload. Every message carries the screen
 // context below, and the screenshot taken when the bubble was tapped, so nobody has to describe where they were.
-const APP_VERSION = '2026.11.16-capspace';
+const APP_VERSION = '2026.11.16-newtask';
 const H2C_URL = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
 const DIAG = { errors:[], actions:[] };   // last 10 of each, for bug reports
 function pushDiag(list, item){ list.push(item); if (list.length>10) list.shift(); }
