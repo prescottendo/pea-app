@@ -19,7 +19,7 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" type="image/png" href="icon-192.png">
-<script>window.HUDDLE_WEB={"api":"https://script.google.com/macros/s/AKfycbzM8K_-XRMDdOJYJ3THn_FhyZkRreMddHIBAOFCFVoq5S_Y7MnsfFLsl7ac_fyDPrch/exec","clientId":"473377418367-cqmmnfum4kshq16973m4sj2jqqfa55p0.apps.googleusercontent.com","build":"09fca0b","push":{"config":{"apiKey":"AIzaSyBON-0KvTXPD_MV6ykhYvCoBRiECEHyE9c","authDomain":"huddle-e2548.firebaseapp.com","projectId":"huddle-e2548","storageBucket":"huddle-e2548.firebasestorage.app","messagingSenderId":"554653922065","appId":"1:554653922065:web:87de53b4cb11b36835d2b0"},"vapidKey":"BHKeDoBmW7vL-qAT3ocyTaMaZ27Ca66jvQtTes2NC4CPoWFiPBJcga7wVd-RD1IuyhBki0oKXwPBGSNq002s8o8"}};document.documentElement.classList.add('web');</script>
+<script>window.HUDDLE_WEB={"api":"https://script.google.com/macros/s/AKfycbzM8K_-XRMDdOJYJ3THn_FhyZkRreMddHIBAOFCFVoq5S_Y7MnsfFLsl7ac_fyDPrch/exec","clientId":"473377418367-cqmmnfum4kshq16973m4sj2jqqfa55p0.apps.googleusercontent.com","build":"820b0ed","push":{"config":{"apiKey":"AIzaSyBON-0KvTXPD_MV6ykhYvCoBRiECEHyE9c","authDomain":"huddle-e2548.firebaseapp.com","projectId":"huddle-e2548","storageBucket":"huddle-e2548.firebasestorage.app","messagingSenderId":"554653922065","appId":"1:554653922065:web:87de53b4cb11b36835d2b0"},"vapidKey":"BHKeDoBmW7vL-qAT3ocyTaMaZ27Ca66jvQtTes2NC4CPoWFiPBJcga7wVd-RD1IuyhBki0oKXwPBGSNq002s8o8"}};document.documentElement.classList.add('web');</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <!-- The fonts load without holding up the first paint; the page shows in the phone's own font for a moment if needed. -->
@@ -136,7 +136,7 @@
     body.v-live main { padding-top:30px; }
     /* Nov 10: the live meeting bar shows on every tab. Without the logo bar it used to sit under the clock, out of sight;
        now it starts below the clock and stays pinned to the top while you scroll, so anyone can join from anywhere. */
-    #livebar { position:sticky; top:0; z-index:22; padding-top:var(--top-safe); }
+    #livebar { position:sticky; top:0; z-index:22; padding-top:calc(var(--top-safe) + 4px); }
     /* Nov 12: with the header on every tab, the live bar sits under it and sticks just below the clock while you scroll. */
  }
   @media (max-width:420px) { .logo { height:30px; } .divider { height:24px; } .bar { gap:8px; } }
@@ -164,6 +164,10 @@
   nav.bottom .tabs { display:grid; grid-template-columns:repeat(4, 1fr); max-width:520px; margin:0 auto; }
   nav.bottom button { background:none; border:none; display:grid; justify-items:center; gap:4px; padding:8px 0 8px; color:var(--muted); font-size:var(--fs-cap); font-weight:600; position:relative; }
   nav.bottom button svg { width:24px; height:24px; }
+  nav.bottom button span { font-size:min(var(--fs-cap), 13px); white-space:nowrap; }   /* layout #8: like iOS, tab labels don't grow */
+  h2, .head-row h2 { overflow-wrap:normal; word-break:normal; hyphens:none; }
+  .ts-big .head-row.ptitle { flex-wrap:wrap; } .ts-big .head-row.ptitle .ptools { margin-left:auto; }
+  .mtab button { white-space:nowrap; min-width:0; overflow:hidden; text-overflow:ellipsis; }
   nav.bottom button.on { color:var(--heading); }
   nav.bottom button::before { content:""; position:absolute; inset:0 8px; border-radius:12px; background:var(--heading); opacity:0; transition:opacity .2s; z-index:-1; }
   nav.bottom button.on::before { opacity:.08; }
@@ -251,7 +255,7 @@
   .btn.approve { background:var(--green); color:var(--on-green); }
   .btn.sm { padding:8px 12px; font-size:var(--fs-sub); }
   .btn:disabled { opacity:.45; cursor:default; }
-  .fab { position:fixed; right:max(16px, env(safe-area-inset-right, 0px)); bottom:calc(22px + env(safe-area-inset-bottom, 0px)); z-index:24;
+  .fab { position:fixed; left:max(16px, env(safe-area-inset-left, 0px)); right:auto; bottom:calc(22px + env(safe-area-inset-bottom, 0px)); z-index:24;
     width:54px; height:54px; border-radius:50%; border:none; background:var(--primary); color:var(--primary-ink); padding:0;
     display:grid; place-items:center; box-shadow:0 6px 16px var(--shadow); }
   .fab svg { width:26px; height:26px; display:block; filter:drop-shadow(0 1px 1.5px rgba(0,0,0,.35)); }
@@ -282,8 +286,13 @@
   .otter-ico svg { width:26px; height:26px; }
   .grab { cursor:pointer; }
   .grab { width:40px; height:5px; border-radius:999px; background:var(--line); margin:4px auto 8px; }
-  .sheet-head { display:flex; align-items:center; gap:12px; position:sticky; top:-8px; background:var(--page); padding:8px 0 12px; z-index:2; }
-  .sheet-head h3 { margin:0; flex:1; }
+  .sheet-head { display:flex; align-items:center; gap:12px; position:sticky; top:-8px; background:var(--page); padding:8px 0 12px; z-index:2; min-height:52px; box-sizing:border-box; }
+  /* Critique 4 (#19): every panel header the iOS way: Cancel (or nothing) on the left, the title centered, Done or Save on the right. */
+  .sheet-head h3 { margin:0; position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); max-width:52%; text-align:center;
+    white-space:nowrap; overflow:hidden; text-overflow:ellipsis; font-size:var(--fs-body); font-family:var(--sans); font-weight:700; pointer-events:none; }
+  .sheet-head h3 + * { margin-left:auto; }
+  .sheet-head .sh-next { margin-left:0 !important; }
+  .sheet-head .sh-ttl { opacity:0; transition:opacity .15s; } .sheet-head .sh-ttl.show { opacity:1; }
   .saved { font-size:var(--fs-sub); color:var(--muted); }
   .form { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:16px; }
   .form label, .lbl { display:block; font-size:var(--fs-cap); letter-spacing:.06em; text-transform:uppercase; color:var(--muted); font-weight:600; margin:16px 0 8px; }
@@ -295,8 +304,11 @@
   input[type=date]::-webkit-date-and-time-value { text-align:left; }
   .chips { display:flex; flex-wrap:wrap; gap:8px; }
   .chips button { border:1px solid var(--line); background:var(--field); border-radius:999px; padding:8px 12px; font-size:var(--fs-sub); font-weight:600; }
+  .chips .lock { width:1em; height:1em; vertical-align:-.12em; margin-right:6px; }   /* Critique 4 layout #1 */
   .chips button.on { background:var(--primary); border-color:var(--primary); color:var(--primary-ink); }
   .err { color:var(--red); font-size:var(--fs-sub); margin-top:12px; }
+  .hist-link { margin-top:12px; }
+  .empty.empty-mid { margin-top:18vh; }
   .danger-row { display:flex; justify-content:flex-end; margin-top:16px; padding-top:12px; border-top:1px solid var(--line-soft); }
   .linkbtn.danger { color:var(--red); font-weight:600; text-decoration:none; }
   .thread { margin-top:12px; }
@@ -437,7 +449,7 @@
   .cbox .send svg { width:18px; height:18px; }
   .mention-sugg { display:flex; gap:6px; flex-wrap:wrap; margin-top:10px; }
   .mention-sugg button { border:1px solid var(--line); background:var(--card); color:var(--heading); border-radius:999px; padding:8px 12px; min-height:36px; font-weight:600; font-size:var(--fs-sub); }
-  .rp-seg { margin:10px auto 0; max-width:420px; }
+  .rp-seg { margin:10px 16px 0; max-width:420px; } @media (min-width:452px) { .rp-seg { margin:10px auto 0; } }
   .rp-ones { max-width:820px; margin:16px auto; padding:0 16px calc(24px + env(safe-area-inset-bottom, 0px)); }
   /* Phones: the title row is tree, large title, the page's own icons, then your initials (#1, #7). */
   .head-row.ptitle { align-items:center !important; flex-wrap:nowrap !important; gap:4px; margin-bottom:12px; }
@@ -462,6 +474,7 @@
       background:var(--page); background:color-mix(in srgb, var(--page) 82%, transparent);
       border-bottom:1px solid var(--line-soft); opacity:var(--tp,0); visibility:hidden; pointer-events:none; }
     .tbar.part { visibility:visible; }
+    .tbar.under-live { padding-top:6px; height:56px; }
     .tbar.show { pointer-events:auto; -webkit-backdrop-filter:blur(18px) saturate(180%); backdrop-filter:blur(18px) saturate(180%); }
     #tglide { position:fixed; left:0; top:0; z-index:22; transform-origin:left center; white-space:nowrap; pointer-events:none; will-change:transform; }
     #tglide[hidden] { display:none; }
@@ -469,7 +482,9 @@
     .tbar .tb-l { justify-self:start; display:flex; align-items:center; } .tbar .tb-r { justify-self:end; }
     .tbar svg.tree { height:22px; }
     .tbar .back { margin:0; padding:10px 0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:100%; }
-    .tbar .tb-l { min-width:0; } .tbar .tb-r { display:flex; align-items:center; }
+    .tbar .tb-l { min-width:0; } .tbar .tb-r { display:flex; align-items:center; gap:2px; }
+    .tbar .tb-l, .tbar .tb-r { opacity:0; transition:opacity .12s; } .tbar.show .tb-l, .tbar.show .tb-r { opacity:1; }
+    .tbar .tb-r .tool-ico { width:40px; height:40px; } .tbar .tb-r .mebtn { margin-left:4px; }
     .tbar .mebtn { margin:0; padding:4px; }
     .tbar .mebtn .avatar { width:32px; height:32px; }
     body.v-live .tbar { display:none; }
@@ -517,6 +532,18 @@
   .livebar .join { font-weight:600; }
   .live-top { display:flex; align-items:center; gap:8px; margin-bottom:12px; }
   .live-head { display:grid; grid-template-columns:auto 1fr 44px; align-items:center; gap:8px; margin-bottom:12px; }
+  /* Critique 4 layout #5: the meeting's top line stays put while the agenda scrolls; the band above it covers the clock area. */
+  @media (max-width:699px) {
+    .live-head { position:sticky; top:var(--top-safe); z-index:15; background:var(--page); margin:0 -16px 12px; padding:4px 16px 6px; border-bottom:1px solid var(--line-soft); }
+    .live-head::before { content:''; position:absolute; left:0; right:0; bottom:100%; height:var(--top-safe); background:var(--page); }
+  }
+  .step-note { margin:8px 0 0; color:var(--ink); }
+  .agenda-fold { padding:0; margin-top:16px; }
+  .agenda-fold summary { list-style:none; display:flex; align-items:center; gap:12px; padding:14px 16px; cursor:pointer; font-weight:600; color:var(--heading); }
+  .agenda-fold summary::-webkit-details-marker { display:none; }
+  .agenda-fold summary .muted { margin-left:auto; font-weight:400; }
+  .agenda-fold summary .chev { color:var(--muted); transition:transform .2s; } .agenda-fold[open] summary .chev { transform:rotate(90deg); }
+  .agenda-fold .outline { padding:0 16px 12px; }
   .live-head .back { margin:0; }
   .live-head .lh-mid { text-align:center; font-weight:600; color:var(--muted); font-size:var(--fs-sub); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; font-variant-numeric:tabular-nums; }
   .live-head .lh-more { width:44px; height:44px; display:grid; place-items:center; border:none; background:none; color:var(--heading); border-radius:50%; }
@@ -529,7 +556,27 @@
   .full-sum[open] > summary { color:var(--muted); }
   .mtg-menu { margin:8px 0 16px; }
   .mbar { display:flex; align-items:center; gap:8px; margin:12px 0 16px; }
+  .mg-head { display:flex; align-items:flex-end; justify-content:space-between; gap:8px; }
+  .mg-head.mg-only { justify-content:flex-end; margin:4px 0 8px; }
+  .capsule { position:relative; flex:none; border:1px solid var(--gold); border-radius:999px; background:none; color:var(--heading); font-weight:600; font-size:var(--fs-sub);
+    padding:6px 12px; margin:0 2px 8px; white-space:nowrap; }
+  .capsule::after { content:""; position:absolute; inset:-6px -2px; }
+  .set-row.drow { display:flex; align-items:flex-start; padding:12px 16px; gap:16px; } .drow .chev { align-self:center; }
+  .dr-b { display:block; flex:1; min-width:0; } .dr-t { display:block; color:var(--heading); line-height:1.3; }
+  .dr-sub { display:block; font-weight:400; color:var(--ink); font-size:var(--fs-sub); margin-top:4px; line-height:1.4; }
+  .drow .tags { display:flex; flex-wrap:wrap; gap:6px; margin-top:8px; }
+  .drow.dim { opacity:.6; }
   .focus-card { position:relative; margin-bottom:8px; padding:16px; display:block; }
+  .focus-card summary { list-style:none; display:grid; grid-template-columns:1fr auto; align-items:center; column-gap:12px; cursor:pointer; }
+  .focus-card summary::-webkit-details-marker { display:none; }
+  .focus-card summary .sec { grid-column:1; margin:0; } .focus-card summary .rally { grid-column:1; }
+  .focus-card summary .chev { grid-column:2; grid-row:1 / span 2; color:var(--muted); font-size:1.3em; transition:transform .2s; }
+  .focus-card[open] summary .chev { transform:rotate(90deg); }
+  .focus-card .focus-more { padding-top:2px; }
+  .focus-card .focus-more .focus-edit { position:static; margin-top:12px; }
+  @keyframes rowpulse { 0%,100% { background:transparent; } 30% { background:var(--bubble); } }
+  article.task.pulse { animation:rowpulse 1.3s ease; }
+  @media (min-width:700px) { .home-title { display:none; } }   /* #15: computers already say Huddle in the header */
   .focus-card .sec { margin-top:14px; } .focus-card .focus-top .sec { margin-top:0; }
   .focus-top { display:flex; align-items:center; justify-content:space-between; gap:12px; }
   .focus-card .rally { font-family:var(--serif); font-weight:600; font-size:var(--fs-title); color:var(--heading); line-height:1.25; margin-top:4px; }
@@ -537,6 +584,8 @@
   .focus-list li { margin:2px 0; }
   .focus-edit { flex:none; }
   .next-tac .go { color:var(--muted); }
+  .start-card.next-tac { grid-template-columns:1fr; margin-top:12px; }   /* Critique 4 (#28): one column, a gap after For You */
+  .start-card.next-tac .go { grid-column:1; grid-row:auto; }
   .dec-row > span:first-child { line-height:1.35; }
   .pulse { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; }
   .pulse .stat { background:var(--card); border:1px solid var(--line-soft); border-radius:12px; padding:12px; display:flex; flex-direction:column; gap:4px; }
@@ -558,8 +607,8 @@
   .act-dot { width:9px; height:9px; border-radius:50%; background:var(--gold); margin-top:6px; }
   nav.bottom [data-view="home"] { position:relative; }
   nav.bottom [data-view="home"] .count { position:absolute; top:4px; left:calc(50% + 6px); }
-  .card.clamped { max-height:168px; overflow:hidden; position:relative; }
-  .card.clamped::after { content:''; position:absolute; left:0; right:0; bottom:0; height:64px; background:linear-gradient(to bottom, transparent, var(--card) 70%); pointer-events:none; }
+  .clamped { max-height:168px; overflow:hidden; position:relative; }
+  .clamped::after { content:''; position:absolute; left:0; right:0; bottom:0; height:64px; background:linear-gradient(to bottom, transparent, var(--card) 70%); pointer-events:none; }
   .card-more { position:absolute; right:12px; bottom:6px; z-index:1; font-weight:600; font-size:var(--fs-sub); color:var(--link); padding:10px 8px; }
   .mbar .search { flex:1; min-width:0; margin:0; }
   .mbar .mbar-act.wide { flex:1; width:auto; }
@@ -604,7 +653,10 @@
   .tv-items { list-style:none; margin:16px auto 0; padding:0; max-width:900px; width:100%; display:grid; gap:8px; font-size:clamp(18px, 2.2vw, 28px); }
   .tv-items li { display:flex; justify-content:space-between; gap:24px; border-bottom:1px solid rgba(255,255,255,.15); padding:8px 0; }
   .tv-items b { white-space:nowrap; font-weight:600; }
-  .live-ctl .hat-btn { flex:0 0 44px; width:44px; padding:0; display:grid; place-items:center; }
+  .live-ctl .hat-btn { flex:0 0 44px; width:44px; height:44px; min-height:44px; padding:0; display:grid; place-items:center; border-radius:50% !important;
+    background:rgba(255,255,255,.40) !important; border:1px solid rgba(198,168,92,.75) !important; color:#0A345A !important; box-shadow:0 4px 12px rgba(0,0,0,.10), inset 0 1px 2px rgba(255,255,255,.85) !important; }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .live-ctl .hat-btn { background:rgba(31,82,133,.36) !important; border-color:rgba(255,255,255,.45) !important; color:#fff !important; } }
+  :root[data-theme="dark"] .live-ctl .hat-btn { background:rgba(31,82,133,.36) !important; border-color:rgba(255,255,255,.45) !important; color:#fff !important; }
   .live-ctl .hat-btn svg { width:24px; height:24px; }
   .chg-dot { display:inline-block; width:8px; height:8px; border-radius:50%; background:var(--gold); margin-right:8px; vertical-align:middle; }
   .prep-item.ok { opacity:.7; }
@@ -675,7 +727,7 @@
   body.tv { background:#0A345A; }
   body.tv main { max-width:none; padding:0; }
   .tv-wrap { min-height:100vh; color:#fff; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; gap:1.2vh; padding:clamp(70px,12vh,110px) 24px 40px; position:relative; }
-  .tv-head { position:absolute; top:16px; left:20px; right:20px; display:flex; align-items:center; gap:16px; font-size:clamp(14px,1.6vw,22px); color:#C4C8CC; }
+  .tv-head { position:absolute; top:max(16px, var(--top-safe)); left:20px; right:20px; display:flex; align-items:center; gap:16px; font-size:clamp(14px,1.6vw,22px); color:#C4C8CC; }
   .tv-head .logo { height:clamp(28px,4vw,52px); }
   .tv-exit { margin-left:auto; border:1px solid rgba(255,255,255,.35); background:none; color:#fff; border-radius:12px; padding:8px 12px; font-size:var(--fs-sub); }
   .tv-sec { font-size:clamp(14px,1.8vw,26px); letter-spacing:.12em; text-transform:uppercase; color:#C6A85C; font-weight:600; }
@@ -756,15 +808,15 @@
      Light mode: clear glass (barely tinted white) with a thin gold rim and navy icons, so it adds no new color.
      Dark mode: the navy glass with a light rim and white icons. Without backdrop-filter, or with Reduce Transparency,
      they turn solid (white in light mode, navy in dark mode). */
-  .fab, .alf-fab { background:rgba(255,255,255,.26); border:1px solid rgba(198,168,92,.75); color:#0A345A;
-    -webkit-backdrop-filter:blur(8px) saturate(170%); backdrop-filter:blur(8px) saturate(170%);
+  .fab, .alf-fab { background:rgba(255,255,255,.42); border:1px solid rgba(198,168,92,.8); color:#0A345A;
+    -webkit-backdrop-filter:blur(18px) saturate(170%); backdrop-filter:blur(18px) saturate(170%);
     box-shadow:0 6px 18px rgba(0,0,0,.10), inset 0 1px 2px rgba(255,255,255,.85), inset 0 -1px 2px rgba(0,0,0,.06); overflow:hidden; }
-  .fab svg, .alf-fab svg { filter:none; }
-  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .fab, :root:not([data-theme="light"]) .alf-fab { background:rgba(31,82,133,.36); border-color:rgba(255,255,255,.30); color:#fff;
+  .fab svg, .alf-fab svg { filter:drop-shadow(0 0 1px #fff) drop-shadow(0 0 1px #fff); }   /* layout #13: the navy icon keeps a white halo over navy */
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .fab, :root:not([data-theme="light"]) .alf-fab { background:rgba(31,82,133,.36); border-color:rgba(255,255,255,.46); color:#fff;
       -webkit-backdrop-filter:blur(10px) saturate(190%); backdrop-filter:blur(10px) saturate(190%);
       box-shadow:0 8px 22px rgba(0,0,0,.45), inset 0 1px 1px rgba(255,255,255,.35), inset 0 -2px 6px rgba(0,0,0,.25); }
     :root:not([data-theme="light"]) .fab svg, :root:not([data-theme="light"]) .alf-fab svg { filter:drop-shadow(0 1px 1.5px rgba(0,0,0,.35)); } }
-  :root[data-theme="dark"] .fab, :root[data-theme="dark"] .alf-fab { background:rgba(31,82,133,.36); border-color:rgba(255,255,255,.30); color:#fff;
+  :root[data-theme="dark"] .fab, :root[data-theme="dark"] .alf-fab { background:rgba(31,82,133,.36); border-color:rgba(255,255,255,.46); color:#fff;
     -webkit-backdrop-filter:blur(10px) saturate(190%); backdrop-filter:blur(10px) saturate(190%);
     box-shadow:0 8px 22px rgba(0,0,0,.45), inset 0 1px 1px rgba(255,255,255,.35), inset 0 -2px 6px rgba(0,0,0,.25); }
   :root[data-theme="dark"] .fab svg, :root[data-theme="dark"] .alf-fab svg { filter:drop-shadow(0 1px 1.5px rgba(0,0,0,.35)); }
@@ -778,6 +830,8 @@
   @media (prefers-reduced-transparency: reduce) and (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .fab, :root:not([data-theme="light"]) .alf-fab { background:var(--primary); -webkit-backdrop-filter:none; backdrop-filter:none; } }
   @supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))) { @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .fab, :root:not([data-theme="light"]) .alf-fab { background:var(--primary); } } }
 
+  #sheetWrap .sheet { margin-bottom:var(--kb, 0px); max-height:calc(100% - var(--top-safe) - 8px - var(--kb, 0px)); }
+  .alf-wrap { padding-bottom:var(--kb, 0px); }
   .alf-wrap { position:fixed; inset:0; z-index:45; display:flex; align-items:flex-end; justify-content:center; }
   .alf-panel { position:relative; width:100%; max-width:640px; min-width:0; height:min(88vh, 860px, calc(100vh - var(--top-safe) - 8px)); display:flex; flex-direction:column; background:var(--page);
     border-radius:18px 18px 0 0; box-shadow:0 -8px 30px var(--shadow); overflow:hidden; }
@@ -793,7 +847,9 @@
   .alf-head .t { flex:1; min-width:0; }
   .alf-head b { display:block; font-family:var(--serif); font-size:var(--fs-title); line-height:1.15; }
   .alf-head small { display:block; color:var(--header-muted); font-size:var(--fs-sub); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-  .alf-head button { border:1px solid rgba(255,255,255,.3); background:none; color:var(--header-ink); border-radius:12px; padding:8px 12px; font-size:var(--fs-sub); font-weight:600; flex:none; }
+  .alf-head button { border:none; background:none; color:var(--header-ink); border-radius:12px; padding:8px 4px; font-size:17px; font-weight:400; flex:none; }
+  .alf-head [data-act="alf-close"] { font-weight:700; }
+  .alf-head .alf-clock { width:40px; height:40px; padding:0; display:grid; place-items:center; } .alf-head .alf-clock svg { width:22px; height:22px; }
   .alf-msgs { flex:1; min-height:0; overflow-y:auto; overscroll-behavior:contain; padding:16px 16px 8px; display:flex; flex-direction:column; gap:12px; }
   .alf-msg { max-width:88%; min-width:0; padding:8px 12px; border-radius:12px; font-size:var(--fs-body); line-height:1.45; overflow-wrap:anywhere; }
   .me { margin-left:auto; flex:none; }
@@ -822,6 +878,9 @@
   .alf-tools .chipbtn { padding:4px 12px; font-size:var(--fs-sub); }
   .alf-tools .note { font-size:var(--fs-cap); color:var(--muted); min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; flex:1; }
   .alf-input { display:flex; align-items:flex-end; gap:8px; }
+  .alf-input.cbox { margin-top:0; gap:4px; padding:4px 6px 4px 14px; } .alf-input.cbox .alf-pickbtn { order:2; } .alf-input.cbox .send { order:3; margin-bottom:5px; }
+  .alf-input.cbox .alf-pickbtn { margin-bottom:0; }
+  .alf-input.cbox textarea { border:none !important; background:none !important; padding:8px 0 !important; box-shadow:none !important; }
   .alf-input textarea { flex:1; min-width:0; resize:none; max-height:140px; overflow-y:hidden; border:1px solid var(--line); border-radius:12px; padding:8px 12px; background:var(--field); font-size:var(--fs-body); line-height:1.35; }
   .alf-input .btn { flex:none; border-radius:12px; }
   .alf-draft { align-self:stretch; background:var(--card); border:1px solid var(--gold); border-radius:12px; padding:12px; display:grid; gap:8px; min-width:0; }
@@ -992,7 +1051,7 @@
   .mtab { display:flex; width:100%; margin:0 0 16px; }
   .mtab button { flex:1; }
   @media (min-width:700px) { .mtab { max-width:360px; } }
-  button.decision { width:100%; text-align:left; font:inherit; color:inherit; cursor:pointer; padding:16px; display:grid; gap:4px; }
+  button.card.decision { width:100%; text-align:left; font:inherit; color:inherit; cursor:pointer; padding:16px; display:grid; gap:4px; }
   .decision .t { font-weight:600; font-size:var(--fs-body); line-height:1.35; }
   .decision .sub { font-size:var(--fs-sub); color:var(--ink); line-height:1.35; }
   .decision .meta { font-size:var(--fs-sub); color:var(--muted); }
@@ -1066,7 +1125,10 @@
   article.task:active:not(.swiping) { background-color:var(--line-soft); }
   /* AC-1: chips, tabs, back links and banners keep their look but get a 44pt tap area. */
   .chips button, .quick-dates button, .mtab button, .back, .chipbtn, .rv-banner { position:relative; }
-  .chips button::after, .quick-dates button::after, .mtab button::after, .chipbtn::after, .rv-banner::after { content:""; position:absolute; inset:-4px 0; }
+  .chips button::after, .quick-dates button::after, .chipbtn::after, .rv-banner::after { content:""; position:absolute; inset:-4px 0; }
+  .mtab button::after { content:""; position:absolute; inset:-5px 0; }   /* layout #19 */
+  .alf-sugg button, .alf-pickbtn { position:relative; } .alf-sugg button::after { content:""; position:absolute; inset:-4px 0; }
+  .alf-pickbtn { width:44px; height:44px; }   /* layout #20 */
   .back::after { content:""; position:absolute; inset:-8px -6px; }
   @media (max-width:699px) { .head-tools .tool-ico { width:44px; height:44px; } }
   /* AC-3: page titles use the title line height. */
@@ -1093,9 +1155,9 @@
   .toast.show { transform:none; transition:opacity .2s ease, transform .5s cubic-bezier(.34,1.45,.64,1); }
   @media (prefers-reduced-motion: reduce) { .toast, .toast.show { transform:none; transition:opacity .2s; } }
   /* Nov 16 (#47): with a panel open, messages appear at the top of the screen instead of over the panel's buttons. */
-  body.sheet-on .toast { bottom:auto; top:var(--top-safe); transform:translateY(-28px) scale(.92); }
-  body.sheet-on .toast.show { transform:none; }
-  @media (prefers-reduced-motion: reduce) { body.sheet-on .toast { transform:none; } }
+  /* Critique 4 layout #6: panel buttons live in the header, so a message over a panel sits at the bottom, not over the title. */
+  body.sheet-on .toast { top:auto; bottom:calc(16px + env(safe-area-inset-bottom, 0px)); }
+  @media (max-width:699px) { body.has-fab:not(.sheet-on):not(.live-on) .toast { bottom:calc(88px + 54px + 14px + var(--nav-under)); } }   /* layout #11 */
   /* Opened sections (details, expanded requests) ease in. */
   @keyframes openIn { from { opacity:0; transform:translateY(-4px); } }
   details[open] > :not(summary), .req.open > :not(.req-line) { animation:openIn .25s cubic-bezier(.2,.8,.2,1); }
@@ -1256,7 +1318,8 @@
   [data-theme=dark] { --coral:#F48477; --coral-ink:#2A0B07; --bubble:#E9EDF1; --bubble-ink:#0A345A; --bubble-line:#E9EDF1; }
   @media (prefers-color-scheme: dark) { :root:not([data-theme=light]) { --coral:#F48477; --coral-ink:#2A0B07; --bubble:#E9EDF1; --bubble-ink:#0A345A; --bubble-line:#E9EDF1; } }
   .people.faces { display:grid; grid-template-columns:repeat(auto-fit, minmax(52px, 1fr)); gap:4px; overflow:visible; padding:6px 0 0; }
-  .face { background:none; border:none; padding:4px 0; display:flex; flex-direction:column; align-items:center; gap:6px; color:inherit; }
+  .face { background:none; border:none; padding:4px 0; display:flex; flex-direction:column; align-items:center; gap:6px; color:inherit; min-width:0; }
+  .face .face-name { max-width:64px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
   .face-av { position:relative; display:block; border-radius:50%; transition:box-shadow .25s; }
   .face.on .face-av { box-shadow:0 0 0 2px var(--page), 0 0 0 4px var(--gold); }
   .face:active .face-av { transform:scale(.94); }
@@ -1308,11 +1371,12 @@
   .row-a.done .pbar { opacity:.35; }
   .rows-stack article.task { align-items:center; }
   .rows-stack .circ { margin:-10px 0; }
+  .card.rv { position:relative; overflow:hidden; } .card.rv .pbar { position:absolute; left:0; top:0; bottom:0; width:4px; }
   .row-a .side { align-self:center; margin:0 0 0 8px; display:flex; }
   .row-date { margin-top:2px; }
   .ostack { display:flex; flex-direction:column; align-items:center; flex:none; }
   .ostack .avatar { position:relative; }
-  .ostack .avatar + .avatar, .task .side .ostack .avatar + .avatar { margin-top:-6px; margin-left:0; }   /* no sideways shift from the older side-by-side rule */
+  .ostack .avatar + .avatar, .task .side .ostack .avatar + .avatar { margin-top:2px; margin-left:0; }   /* no sideways shift from the older side-by-side rule */
   .ostack .avatar:nth-child(1) { z-index:3; } .ostack .avatar:nth-child(2) { z-index:2; } .ostack .avatar:nth-child(3) { z-index:1; }
   .due.late { font-style:italic; }
 
@@ -1453,9 +1517,10 @@
 <div class="preview" id="preview" hidden>Sample data preview. Nothing here is saved.</div>
 <div id="ptr" aria-live="polite"><i class="spin ptr-spin" aria-hidden="true"></i><span class="sr-only">Pull to refresh</span></div>
 <main class="wrap" id="main">
+  <div class="head-row home-title"><h2>Huddle</h2></div>
   <div class="list"><div class="skel" style="height:92px"></div><div class="skel" style="height:92px"></div><div class="skel" style="height:92px"></div></div>
 </main>
-<button class="fab" id="fab" type="button" data-act="new" aria-label="New task"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></button>
+<button class="fab" id="fab" type="button" data-act="new" aria-label="New task" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></button>
 <div class="live-ctl" id="liveCtl" hidden></div>
 <nav class="bottom" id="navBottom"></nav>
 <div class="sheet-wrap" id="sheetWrap" hidden><div class="backdrop" data-act="close-sheet"></div><section class="sheet" id="sheet" role="dialog" aria-modal="true" tabindex="-1"></section></div>
@@ -1465,11 +1530,12 @@
   <section class="alf-panel" id="alfPanel" role="dialog" aria-modal="true" aria-label="Alfred chat" tabindex="-1">
     <div class="alf-head"><button type="button" data-act="alf-new" title="Start a new conversation">New</button><span class="hat"><svg viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><rect x="8" y="6.7" width="16" height="14.6" rx="1"/><rect x="8" y="15.9" width="16" height="3" class="hat-band"/><path d="M5 19.7Q16 21.7 27 19.7L27 21.68Q16 26.92 5 21.68Z"/></svg></span>
       <span class="t"><b>Alfred</b></span>
+      <button type="button" class="alf-clock" data-act="alf-history" aria-label="Past Chats and Your Requests" title="Past Chats and Your Requests"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></button>
       <button type="button" data-act="alf-close" aria-label="Done, close the chat">Done</button></div>
     <div class="alf-msgs" id="alfMsgs" aria-live="polite"></div>
     <div class="alf-foot">
       <div class="alf-tools"><span class="note" id="alfNote"></span></div>
-      <div class="alf-input"><button type="button" class="alf-pickbtn" data-act="alf-pick" aria-label="Point at something on the screen" title="Point at something on the screen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 11V5.5a1.5 1.5 0 0 1 3 0V11m0-1.5a1.5 1.5 0 0 1 3 0V11m0-.5a1.5 1.5 0 0 1 3 0V15a6 6 0 0 1-6 6h-.5a6 6 0 0 1-4.9-2.5L4.3 15.2a1.5 1.5 0 0 1 2.4-1.8L9 15"/></svg></button><textarea id="alfInput" rows="1" placeholder="Ask Alfred…" aria-label="Message Alfred"></textarea><button type="button" class="btn primary sm" data-act="alf-send">Send</button></div>
+      <div class="alf-input cbox"><button type="button" class="alf-pickbtn" data-act="alf-pick" aria-label="Point at something on the screen" title="Point at something on the screen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 11V5.5a1.5 1.5 0 0 1 3 0V11m0-1.5a1.5 1.5 0 0 1 3 0V11m0-.5a1.5 1.5 0 0 1 3 0V15a6 6 0 0 1-6 6h-.5a6 6 0 0 1-4.9-2.5L4.3 15.2a1.5 1.5 0 0 1 2.4-1.8L9 15"/></svg></button><textarea id="alfInput" rows="1" placeholder="Ask Alfred…" aria-label="Message Alfred"></textarea><button type="button" class="send" data-act="alf-send" aria-label="Send"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"/></svg></button></div>
     </div>
   </section></div>
 <div class="alf-pick-hint" id="alfPick" hidden>Tap the thing you mean <button type="button" data-act="alf-pick-cancel">Cancel</button></div>
@@ -1802,7 +1868,21 @@ async function paintBoot(){
   if (!load.painted) { load.painted=true; const v=await startParam(); if (v) S.view=v; }
   render();
 }
+// Critique 4 layout #9: while the iPhone keyboard is up, panels and Alfred end above it (--kb) and the field in use scrolls into view.
+(function(){
+  const vv=window.visualViewport; if (!vv) return;
+  const fit=()=>{ const kb=Math.max(0, Math.round(window.innerHeight-vv.height-vv.offsetTop)); document.documentElement.style.setProperty('--kb', (kb>80?kb:0)+'px');
+    const a=document.activeElement; if (kb>80 && a && a.matches && a.matches('textarea, input') && a.closest('#sheet, #alfPanel')) setTimeout(()=>{ try { a.scrollIntoView({ block:'nearest' }); } catch(e){} }, 50); };
+  vv.addEventListener('resize', fit); vv.addEventListener('scroll', fit);
+})();
+// Critique 4 (#27): before anything loads, the tab bar is drawn (Huddle lit), so the app opens on its own frame.
+function paintFrame(){
+  const nb=document.getElementById('navBottom'); if (!nb || nb.querySelector('.tabs')) return;
+  const BT=[['home','Huddle'],['mine','My Tasks'],['team','Team Tasks'],['meetings','Meetings']];
+  nb.innerHTML='<div class="tabs"><span class="ind" aria-hidden="true"></span>'+BT.map(([k,l])=>'<button type="button" data-act="go" data-view="'+k+'"'+(k==='home'?' class="on" aria-current="page"':'')+'>'+ICON[k]+'<span>'+l+'</span></button>').join('')+'</div>';
+}
 async function load(){
+  paintFrame();
   document.getElementById('preview').hidden = !MOCK;
   try { S.outbox = JSON.parse(localStorage.getItem('lt-outbox')||'[]') || []; } catch(e){ S.outbox=[]; }
   updateOffline();
@@ -1882,7 +1962,8 @@ const COACH=[
   { view:'mine', sel:'article.task .circ', h:'Your Tasks', b:'<p>Tap the box when a task is done. Hold it for In Progress or Blocked. Tap <b>+</b> to add a task.</p>' },
   { view:'team', sel:'.people', h:'Team Tasks', b:'<p>Everyone\'s tasks in one place. Tap a person to see just theirs. The printer opens the Accountability Report and One-on-Ones.</p>' },
   { view:'meetings', sel:'.mbar, .mtab', h:'Meetings', b:'<p>Start the weekly tactical here, and read any meeting\'s summary, decisions and Parking Lot.</p>' },
-  { view:'home', sel:'.alf-fab, .ptitle .mebtn, #me .mebtn', h:'Alfred and Your Account', b:'<p>The hat is <b>Alfred</b>: ask about meetings and tasks, or report a problem.</p><p>Your initials open notifications, appearance and Sign Out.</p>' }
+  { view:'home', sel:'.alf-fab', h:'Alfred', b:'<p>The hat is <b>Alfred</b>: ask about meetings and tasks, or report a problem. Drag him anywhere.</p>' },
+  { view:'home', sel:'.ptitle .mebtn, #me .mebtn', h:'Your Account', b:'<p>Your initials open notifications, appearance and Sign Out.</p>' }
 ];
 function startCoach(){
   closeSheet(true); document.body.classList.remove('fabs-away');
@@ -1926,7 +2007,8 @@ function placeCoach(){
     const r0=el.getBoundingClientRect(); if (r0.top<topSafe()+70 || r0.bottom>H-160) { window.scrollTo(0, window.scrollY + r0.top - H*0.3); el=coachTarget(st); }
   }
   const r=el && el.getBoundingClientRect();
-  if (r) { const big=r.width>W*0.6; Object.assign(spot.style, { left:(r.left-pad)+'px', top:(r.top-pad)+'px', width:(r.width+pad*2)+'px', height:(r.height+pad*2)+'px',
+  // Critique 4 layout #15: the ring never starts in the faded strip under the clock.
+  if (r) { const big=r.width>W*0.6, sTop=Math.max(topSafe(), r.top-pad); Object.assign(spot.style, { left:(r.left-pad)+'px', top:sTop+'px', width:(r.width+pad*2)+'px', height:(r.bottom+pad-sTop)+'px',
       borderRadius:(el.matches('.circ, .alf-fab, #fab, .print-btn, .pdot')?'999px':big?'14px':'12px'), opacity:'1' }); }
   else Object.assign(spot.style, { left:(W/2)+'px', top:(H/2)+'px', width:'0px', height:'0px', opacity:'1' });
   const bw=Math.min(340, W-32), bh=bub.offsetHeight; bub.style.width=bw+'px';
@@ -2050,7 +2132,7 @@ function renderNav(){
   // LB-11: on a computer, Change Requests, Recently Deleted, Settings and Account live in one labeled More menu.
   if (BOTTOM_TABS[S.view]) S.lastTab=S.view;   // Critique 4 (bug #19): Review isn't a bottom tab
   const tabOn=k=>S.view===k||(k==='meetings'&&S.view==='live')||(!TAB_VIEWS[S.view] && S.view!=='live' && S.lastTab===k);
-  document.getElementById('navTop').innerHTML = TABS.filter(([k])=>k!=='review' || S.data.isApprover).map(([k,l])=>'<button type="button" class="'+(tabOn(k)?'on':'')+'" data-act="go" data-view="'+k+'">'+l+(k==='review'?badgeFor('top-review'):'')+'</button>').join('');
+  document.getElementById('navTop').innerHTML = TABS.filter(([k])=>k!=='review').map(([k,l])=>'<button type="button" class="'+(tabOn(k)?'on':'')+'" data-act="go" data-view="'+k+'">'+l+(k==='review'?badgeFor('top-review'):'')+'</button>').join('');
   renderLivebar();
   const inMeet = S.view==='meetings' || S.view==='live';
   // The tab bar is drawn once; after that only the highlight moves, so nothing flashes and the highlight slides.
@@ -2128,6 +2210,7 @@ function go(v, back){
   const keepY=0;   // Nov 16 (Brayden): every tab and screen opens at the top
   if (!S.popping) { if (back) (S.backFrom=S.backFrom||[]).push({ view:S.view, back:S.back }); else S.backFrom=[]; }
   if (S.view==='home' && v!=='home') S.actSeenShown=null;
+  if (v==='review' && S.view!=='review') { try { localStorage.setItem('lt-rv-hint', String(Number(localStorage.getItem('lt-rv-hint')||0)+1)); } catch(e){} }   // #12
   S.view=v; S.back=back||null; S.quick=''; closeSheet(true); render(); window.scrollTo(0,keepY);
   requestAnimationFrame(()=>{ S.lastNav={ view:v, ms:Math.round(performance.now()-t0) }; });
 }
@@ -2220,7 +2303,7 @@ function decorateTitle(){
   if (!h.querySelector('.ttext')) { const words=[...h.childNodes].filter(n=>n.nodeType===3 && n.textContent.trim()); if (words.length) { const sp=document.createElement('span'); sp.className='ttext'; words[0].parentNode.insertBefore(sp, words[0]); words.forEach(n=>sp.appendChild(n)); } }
   let tools=row.querySelector('.ptools'); if (!tools) { tools=document.createElement('span'); tools.className='ptools'; row.appendChild(tools); }
   [...row.children].forEach(ch=>{ if (ch!==h && ch!==tools) tools.appendChild(ch); });
-  if (!tools.querySelector('.mebtn') && S.view!=='more') tools.insertAdjacentHTML('beforeend', meBtn(S.meRc||0));
+  if (!tools.querySelector('.mebtn') && S.view!=='more' && S.back!=='Account') tools.insertAdjacentHTML('beforeend', meBtn(S.meRc||0));   // Critique 4 (#9)
   S.titleEl=h; syncTbar();
 }
 // Nov 16 (Brayden's pick, "Glide to Center"): from the first point of scrolling, the big title shrinks and slides into the
@@ -2238,44 +2321,55 @@ function syncTbar(){
     document.querySelectorAll('#main .ptitle .ttext, #main .head-row .ttext').forEach(el=>{ el.style.visibility=''; });
     document.querySelectorAll('#main .ptools, #main svg.tree').forEach(el=>{ el.style.opacity=''; });
     return; }
-  const key=words.textContent.trim()+'|'+(S.back||'')+'|'+(S.meRc||0)+'|'+S.view;
+  // Critique 4 (#17): the bar's right side is the page's own buttons (search, filter, initials), the same data-act; no tree.
+  const row0=words.closest('.head-row'), ptools=row0 && row0.querySelector('.ptools'), toolsHtml=ptools ? ptools.innerHTML : '';
+  const key=words.textContent.trim()+'|'+(S.back||'')+'|'+(S.meRc||0)+'|'+S.view+'|'+toolsHtml;
   if (bar.dataset.t!==key) {
     bar.dataset.t=key;
-    bar.querySelector('.tb-l').innerHTML=S.back ? backLink() : TREE_SVG;
+    bar.querySelector('.tb-l').innerHTML=S.back ? backLink() : '';
     bar.querySelector('.tb-t').textContent='';
-    bar.querySelector('.tb-r').innerHTML=S.view==='more' ? '' : meBtn(S.meRc||0);
+    bar.querySelector('.tb-r').innerHTML=toolsHtml;
     const cs=getComputedStyle(words); g.textContent=words.textContent.trim();
     Object.assign(g.style, { fontFamily:cs.fontFamily, fontWeight:cs.fontWeight, fontSize:cs.fontSize, lineHeight:'1' });
   }
   g.style.color=getComputedStyle(words).color;   // Critique 4 (bug #20): follows a light/dark switch
   const lb=document.getElementById('livebar'), barTop=lb && !lb.hidden ? Math.max(0, lb.getBoundingClientRect().bottom) : 0;
-  bar.style.top=barTop+'px';
-  const raw=Math.max(0, Math.min(1, window.scrollY/GLIDE_DIST)), t=REDUCED ? (words.getBoundingClientRect().bottom < topSafe() ? 1 : 0) : raw;
+  bar.style.top=barTop+'px'; bar.classList.toggle('under-live', barTop>0);   // Critique 4 layout #2
+  // Layout #10: on a page that scrolls less than 60pt, the glide finishes within what it can scroll.
+  const dist=glideDist(), raw=Math.max(0, Math.min(1, window.scrollY/dist)), t=REDUCED ? (words.getBoundingClientRect().bottom < topSafe() ? 1 : 0) : raw;
   bar.style.setProperty('--tp', t);
   bar.classList.toggle('part', t>0); bar.classList.toggle('show', t>=0.98); bar.setAttribute('aria-hidden', t>=0.98 ? 'false' : 'true');
-  // The page's own tree and icons fade out as the bar's fade in, so only one set shows at a time.
-  const row=words.closest('.head-row'), fadeOut=row ? [...row.querySelectorAll('.ptools, svg.tree')] : [];
-  fadeOut.forEach(el=>{ el.style.opacity=t>0 ? String(Math.max(0, 1-t*1.6)) : ''; });
+  // Critique 4 (#18): the page's own tree and icons simply scroll away with their row; the bar's buttons appear only once the
+  // bar is in place (.show), so there are never two sets at once.
   if (t<=0) { g.hidden=true; words.style.visibility=''; return; }
   // Start: where the title is right now. End: centered in the bar at GLIDE_SIZE.
   const r=words.getBoundingClientRect(), start=parseFloat(g.style.fontSize)||26, s=1+(GLIDE_SIZE/start-1)*t;
   const W=document.documentElement.clientWidth, endX=W/2-(r.width*GLIDE_SIZE/start)/2;
-  const barMid=barTop+topSafe()+25, x=r.left+(endX-r.left)*t, yc=(r.top+r.height/2)+(barMid-(r.top+r.height/2))*t;
+  const barMid=barTop+(barTop>0?6:topSafe())+25, x=r.left+(endX-r.left)*t, yc=(r.top+r.height/2)+(barMid-(r.top+r.height/2))*t;
   g.hidden=false; words.style.visibility='hidden';
-  g.style.transform='translate('+x.toFixed(1)+'px,'+(yc-r.height/2).toFixed(1)+'px) scale('+s.toFixed(3)+')';
+  const yTop=Math.max(barTop>0 ? barTop : topSafe(), yc-r.height/2);   // layout #3: never in the faded strip under the clock
+  g.style.transform='translate('+x.toFixed(1)+'px,'+yTop.toFixed(1)+'px) scale('+s.toFixed(3)+')';
 }
+function glideDist(){ const maxS=document.documentElement.scrollHeight-window.innerHeight; return Math.max(1, Math.min(GLIDE_DIST, maxS>0 ? maxS : GLIDE_DIST)); }
+// Layout #10: like iPhone large titles, a glide never rests half-way: when scrolling stops inside it, it finishes the nearer way.
+let glideSnapT=0;
+window.addEventListener('scroll', ()=>{ clearTimeout(glideSnapT); glideSnapT=setTimeout(()=>{
+  if (REDUCED || S.touching || !S.titleEl || !isPhone()) return; const y=window.scrollY, d=glideDist();
+  if (y>0 && y<d) window.scrollTo({ top:y<d/2 ? 0 : d, behavior:'smooth' }); }, 160); }, { passive:true });
+document.addEventListener('touchend', ()=>{ if (!S.titleEl) return; clearTimeout(glideSnapT); glideSnapT=setTimeout(()=>window.dispatchEvent(new Event('scroll')), 200); }, { passive:true });
 let tbarRaf=0;
 // Critique 4 (bug #8, #22): after a rotation or resize, the title row is rebuilt and long cards are measured again.
 let rszRaf=0;
 window.addEventListener('resize', ()=>{ if (rszRaf) return; rszRaf=requestAnimationFrame(()=>{ rszRaf=0; if (!S.data) return; decorateTitle();
   ['decResults','tpResults'].forEach(id=>{ const box=document.getElementById(id); if (!box) return;
-    box.querySelectorAll('.card.clamped').forEach(cd=>{ cd.classList.remove('clamped'); const mo=cd.querySelector('.card-more'); if (mo) mo.remove(); }); clampCards(box); }); }); });
+    box.querySelectorAll('.clamped').forEach(cd=>{ cd.classList.remove('clamped'); const mo=cd.querySelector('.card-more'); if (mo) mo.remove(); }); clampCards(box); }); }); });
 window.addEventListener('scroll', ()=>{ if (!S.titleEl && !document.getElementById('tglide')) return; if (tbarRaf) return; tbarRaf=requestAnimationFrame(()=>{ tbarRaf=0; syncTbar(); }); }, { passive:true });
 function renderPage(){
   renderNav();
   // The same wide + button starts a task on task screens and a meeting on the Meetings tab.
   const fab=document.getElementById('fab'), onMeetings=S.view==='meetings';
   fab.hidden = !(S.view==='mine'||S.view==='team');   // #16: + always means a new task; Meetings has a Start a Meeting row
+  document.body.classList.toggle('has-fab', !fab.hidden);
   fab.dataset.act = 'new';
   fab.setAttribute('aria-label', 'New task');
   fab.title = isPhone() ? '' : 'New Task (N)';   // WD-7: the keyboard shortcut, on computers
@@ -2329,13 +2423,18 @@ function agoText(at){
   return mins<1?'Just now':mins<60?mins+' min ago':mins<1440?Math.round(mins/60)+' hr ago':fmtDate(String(at).slice(0,10),{weekday:'short'});
 }
 // Nov 16 (Brayden): the Rally Cry, Defining Objectives and Strategic Anchors at the top of Home. Approvers can edit them.
+// Critique 4 (#1, #2): the Rally Cry is one line; a tap opens the Strategic Anchors and Defining Objectives in place. Empty
+// sections are left out (approvers see one "Add Your Rally Cry" row when nothing is set). It opens by itself the first time
+// after it changes (lt-rally-seen).
 function focusCard(){
   const f=S.data.focus; if (!f) return '';
-  const list=a=>a && a.length ? '<ul class="focus-list">'+a.map(x=>'<li>'+esc(x)+'</li>').join('')+'</ul>' : '<p class="none">'+(S.data.isApprover?'Tap Edit to add them.':'Not set yet.')+'</p>';
-  return '<div class="card focus-card">'
-    +'<div class="focus-top"><div class="sec">Rally Cry</div>'+(S.data.isApprover?'<button type="button" class="linkbtn focus-edit" data-act="focus-edit">Edit</button>':'')+'</div><div class="rally">'+(f.rally?esc(f.rally):'<span class="none">Not set yet.</span>')+'</div>'
-    +'<div class="sec">Strategic Anchors</div>'+list(f.anchors)
-    +'<div class="sec">Defining Objectives</div>'+list(f.objectives)+'</div>';
+  const has=a=>a && a.length, list=(h,a)=>has(a) ? '<div class="sec">'+h+'</div><ul class="focus-list">'+a.map(x=>'<li>'+esc(x)+'</li>').join('')+'</ul>' : '';
+  if (!f.rally && !has(f.anchors) && !has(f.objectives)) return S.data.isApprover ? '<div class="set-card"><button type="button" class="set-row" data-act="focus-edit"><span>Add Your Rally Cry</span><span class="chev" aria-hidden="true">›</span></button></div>' : '';
+  const key=JSON.stringify([f.rally,f.anchors,f.objectives]); let open=false;
+  try { if (localStorage.getItem('lt-rally-seen')!==key) { open=!!localStorage.getItem('lt-rally-seen'); localStorage.setItem('lt-rally-seen', key); } } catch(e){}
+  const more=list('Strategic Anchors', f.anchors)+list('Defining Objectives', f.objectives)+(S.data.isApprover?'<button type="button" class="linkbtn focus-edit" data-act="focus-edit">Edit</button>':'');
+  return '<details class="card focus-card"'+(open?' open':'')+'><summary><span class="sec">Rally Cry</span><span class="rally">'+esc(f.rally||'Rally Cry')+'</span><span class="chev" aria-hidden="true">›</span></summary>'
+    +'<div class="focus-more">'+more+'</div></details>';
 }
 // Nov 16 (Brayden): Home (titled Huddle), top to bottom: Team Scorecard (a placeholder until Brayden sends the details), the
 // Rally Cry card, For You, then the meeting card (Live Now, Start Weekly Tactical, or Next Tactical all week).
@@ -2355,12 +2454,13 @@ function renderHome(m){
   const waiting=S.data.tasks.filter(t=>t.status==='Blocked' && t.waiting_on===me), rc=reviewCount();
   const row=(attrs,label,n,tone)=>'<button type="button" class="set-row home-row" '+attrs+'><span>'+label+'</span><span class="hcount'+(tone?' '+tone:'')+'">'+n+'</span><span class="chev" aria-hidden="true">›</span></button>';
   const rows=(late?row('data-act="go" data-view="mine"','Overdue',late,'late'):'')
-    +(today?row('data-act="go" data-view="mine"','Due Today',today,''):'')
+    +(today?row('data-act="go-today"','Due Today',today,''):'')
     +(waiting.length?row('data-act="home-waiting"','Waiting on You',waiting.length,'gold'):'')
     +(rc?row('data-act="go" data-view="review" data-back="Huddle"','To Review',rc,'gold'):'');
-  m.innerHTML='<div class="head-row"><h2>Huddle</h2></div>'   // Nov 16 (Brayden): the Home tab's page is titled Huddle
+  m.innerHTML='<div class="head-row home-title"><h2>Huddle</h2></div>'   // Nov 16 (Brayden): the Home tab's page is titled Huddle
     // Nov 16 (Brayden): Scorecard first, then the Rally Cry card, then For You, then the meeting card.
-    +'<h3 class="set-sec">Team Scorecard</h3><div class="card scorecard"><p class="none">Coming soon.</p></div>'
+    // Critique 4 (#1): the Scorecard shows once it has numbers (S.data.scorecard).
+    +(S.data.scorecard && S.data.scorecard.length ? '<h3 class="set-sec">Team Scorecard</h3><div class="card scorecard"></div>' : '')
     +focusCard()
     +'<h3 class="set-sec">For You</h3>'+(rows?'<div class="set-card">'+rows+'</div>':'<p class="none">You\'re all caught up.</p>')
     +nextTacticalCard();
@@ -2408,7 +2508,7 @@ function renderTasks(m){
   const printBtn='<button type="button" class="print-btn" data-act="report-open" aria-label="Print Accountability Report" title="Print Accountability Report">'+ICON.print+'</button>';
   const nf0=activeFilters();
   // Nov 16 (Brayden): the printer comes first, so search and sort sit in the same spot on every tab.
-  const icons=(mine?'':printBtn)+(phone?'<button type="button" class="tool-ico" data-act="search-open" aria-label="Search tasks">'+ICON.search+'</button>'
+  const icons=(mine||phone?'':printBtn)+(phone?'<button type="button" class="tool-ico" data-act="search-open" aria-label="Search tasks">'+ICON.search+'</button>'
       +'<button type="button" class="tool-ico sort-ico" data-act="sortfilter" aria-haspopup="dialog" aria-label="Sort and filter'+(nf0?', '+nf0+' on':'')+'">'+ICON.sort+(nf0?'<span class="rdot" aria-hidden="true"></span>':'')+'</button>':'');
   html+='<div class="head-row team-head"><h2>'+(mine ? 'My Tasks' : 'Team Tasks')+'</h2>'+icons+'</div><span class="synced compact-sync" id="synced"></span>';
   if (mine) {
@@ -2525,7 +2625,8 @@ function renderResults(){
   const doneWeek=(S.view==='team' && S.person && S.status==='open' && !S.quick && S.sort==='due') ? sortTasks(tasks.filter(doneRecently)) : [];
   if (!S.quick) { if (S.status==='open') tasks=tasks.filter(isOpen); else if (S.status) tasks=tasks.filter(t=>t.status===S.status); }
   if (!tasks.length && !doneWeek.length) {
-    box.innerHTML = '<div class="empty"><b>'+(S.q?'No Matches':S.view==='mine'?'You\'re All Caught Up':'Nothing Matches')+'</b>'+(S.q?'Try a different word.':S.view==='mine'?'No open tasks right now.':'Try a different filter.')+'</div>';
+    box.innerHTML = '<div class="empty'+(!S.q && S.view==='mine'?' empty-mid':'')+'"><b>'+(S.q?'No Matches':S.view==='mine'?'You\'re All Caught Up':'Nothing Matches')+'</b>'+(S.q?'Try a different word.':S.view==='mine'?'No open tasks right now.':'Try a different filter.')
+      +(!S.q && S.view==='mine'?'<div class="empty-acts"><button type="button" class="btn primary" data-act="new">Add a Task</button></div>':'')+'</div>';   // layout #22
     return;
   }
   if (S.sort!=='due') { box.innerHTML=taskRows(tasks); return; }
@@ -2551,7 +2652,7 @@ function meetingName(t){ const mt=t.meeting_id && S.data.meetings && S.data.meet
 // AP-2: one gray line under the title: "Due Thu, Nov 13 · !! · In Progress · From Weekly Tactical".
 function metaLine(t){
   const bits=[dueText(t)];
-  if (MARKS[t.priority]) bits.push('<span class="pm" title="'+esc(t.priority)+' priority" aria-label="'+esc(t.priority)+' priority">'+MARKS[t.priority]+'</span>');
+  if (MARKS[t.priority] && S.view!=='review') bits.push('<span class="pm" title="'+esc(t.priority)+' priority" aria-label="'+esc(t.priority)+' priority">'+MARKS[t.priority]+'</span>');
   if (t.status==='In Progress') bits.push('<span class="tag prog">In Progress</span>');
   if (t.status==='Blocked') bits.push('<span class="tag blk">Blocked</span>');
   if (t.status==='Needs Review') bits.push('<span>For '+esc(listNames(owners(t).map(firstName))||'no one yet')+'</span>');
@@ -2602,8 +2703,9 @@ function taskRow(t, mode){
 function dateLine(t){
   if (t.status==='Done') return '<span class="due plain">Done'+(t.completed_at?' '+esc(short(t.completed_at)):'')+'</span>';
   if (!t.due) return '';
-  if (isLate(t)) return '<span class="due late" aria-label="Overdue, was due '+esc(short(t.due))+'">'+esc(short(t.due))+'</span>';
-  return '<span class="due">'+esc(isThisWeek(t) ? fmtDate(t.due,{weekday:'short'}) : short(t.due))+'</span>';
+  const rel=t.due===S.data.today?'Today':t.due===addDays(S.data.today,1)?'Tomorrow':t.due===addDays(S.data.today,-1)?'Yesterday':'';   // Critique 4 (#31)
+  if (isLate(t)) return '<span class="due late" aria-label="Overdue, was due '+esc(short(t.due))+'">'+esc(rel||short(t.due))+'</span>';
+  return '<span class="due">'+esc(rel || (isThisWeek(t) ? fmtDate(t.due,{weekday:'short'}) : short(t.due)))+'</span>';
 }
 // Owners' initials stacked top to bottom: the first owner on top, each one below tucked slightly under the one above.
 // Up to three; four or more show two and "+N"; the whole team shows one "All" bubble.
@@ -2612,7 +2714,7 @@ function ownerStack(list){
   const chip=txt=>{ const fs=txt.length>2?9:10; return '<svg class="avatar more" width="26" height="26" viewBox="0 0 26 26" aria-hidden="true"><circle cx="13" cy="13" r="12" stroke-width="2"/><text x="13" y="'+(13+fs*0.368).toFixed(1)+'" text-anchor="middle" font-size="'+fs+'">'+txt+'</text></svg>'; };
   const names=list.map(nameOf).join(', ');
   if (list.length>1 && list.length>=S.data.people.length) return '<span class="ostack" role="img" aria-label="Everyone">'+chip('All')+'</span>';
-  const shown=list.length<=3 ? list : list.slice(0,2), extra=list.length-shown.length;
+  const shown=list.length<=2 ? list : list.slice(0,1), extra=list.length-shown.length;   // layout #12: nothing hides under another circle
   return '<span class="ostack" role="img" aria-label="'+esc(names)+'">'+shown.map(o=>avatar(o,26)).join('')+(extra?chip('+'+extra):'')+'</span>';
 }
 // Meeting summaries: the title gets the full width; status, priority and date, and the owners share one line under it.
@@ -2696,16 +2798,18 @@ function renderReview(m){
   const all=sortTasks(S.data.tasks.filter(t=>t.status==='Needs Review')), ok=S.data.isApprover, auto=!S.team || S.team.auto_approve!=='off';
   const unsure=all.filter(uncertainOf), sure=all.filter(t=>!uncertainOf(t));
   const card=t=>{ const r=uncertainOf(t), when=!r && auto && t.meeting_id ? autoApproveAt(t) : '';
-    return '<article class="card rv'+(r?' unsure':'')+'" data-act="task" data-id="'+t.id+'">'
+    return '<article class="card rv pr-'+(String(t.priority||'').toLowerCase()||'none')+(r?' unsure':'')+'" data-act="task" data-id="'+t.id+'"><i class="pbar" aria-hidden="true"></i>'   // #24: the same priority bar as rows
       +'<div class="rv-top">'+cardTitle(t)+(r?'<span class="tag gold">'+reasonTag(r)+'</span>':'')+'</div>'+metaLine(t)
       +(r?'<div class="rv-why"><b>Why:</b> '+esc(r)+'</div>':'')
-      +(t.details?'<div class="small muted">'+esc(t.details)+'</div>':'')
+      +((r ? String(t.details||'').replace(/\s*\[[^\]]*\]\s*$/,'') : t.details)?'<div class="small muted">'+esc(r ? String(t.details||'').replace(/\s*\[[^\]]*\]\s*$/,'') : t.details)+'</div>':'')   // #11: the reason once
       +(when?'<div class="small muted">Alfred approves it '+esc(when)+' if nobody does first.</div>':'')
       +(ok && r?'<div class="acts"><button type="button" class="btn approve sm" data-act="approve" data-id="'+t.id+'">Approve</button><button type="button" class="btn ghost sm" data-act="reject" data-id="'+t.id+'">Reject</button></div>':'')
       +'</article>'; };
   // #21 (Nov 16): one line; cards that look fine are approved with a swipe right (left rejects); buttons only where a look is needed.
+  // Critique 4 (#12): the swipe hint shows on the first two visits only.
+  let hint=0; try { hint=Number(localStorage.getItem('lt-rv-hint')||0)-1; } catch(e){}   // counted in go()
   let html=backLink()+'<h2>Review</h2><p class="lead">'+(all.length ? (unsure.length ? unsure.length+' need'+(unsure.length===1?'s':'')+' a look. ' : '')
-      +(ok ? (auto ? 'Alfred approves the rest after 24 hours.' : '') + (sure.length ? ' Swipe right to approve, left to reject.' : '') : 'Brayden or Jared approves them.') : '')+'</p>';
+      +(ok ? (auto ? 'Alfred approves the rest after 24 hours.' : '') + (sure.length && hint<2 ? ' Swipe right to approve, left to reject.' : '') : 'Brayden or Jared approves them.') : '')+'</p>';
   if (ok && all.length>1) html+='<div class="acts top"><button type="button" class="btn approve sm" data-act="approve-all">Approve All '+all.length+'</button></div>';
   if (!all.length) html+='<div class="empty"><b>Nothing to Review</b>New meeting tasks will show up here.</div>';
   if (unsure.length) html+='<h3 class="sec-h">Needs a Look · '+unsure.length+'</h3><div class="list">'+unsure.map(card).join('')+'</div>';
@@ -2761,9 +2865,17 @@ function markSeen(id, list){
   const keys=Object.keys(m); if (keys.length>300) keys.slice(0, keys.length-300).forEach(k=>delete m[k]);
   try { localStorage.setItem('lt-seen', JSON.stringify(m)); } catch(e){}
 }
+// Critique 4 (#7): the task's title shows small in the panel header once the big title has scrolled under it.
+function syncSheetTitle(){
+  const h=document.getElementById('shTtl'), big=document.getElementById('f-title'), sh=document.getElementById('sheet'); if (!h || !big || !sh) return;
+  const head=sh.querySelector('.sheet-head'); h.textContent=big.value||'';
+  h.classList.toggle('show', big.getBoundingClientRect().bottom < head.getBoundingClientRect().bottom+2);
+}
+document.addEventListener('scroll', e=>{ if (e.target && e.target.id==='sheet') syncSheetTitle(); }, true);
 function scrollToComments(){
   const sh=document.getElementById('sheet'), c=document.getElementById('f-comments'), head=sh && sh.querySelector('.sheet-head');
   if (sh && c) sh.scrollTop=Math.max(0, c.offsetTop-(head?head.offsetHeight:0)-8);   // instant: a smooth scroll gets cut off by the panel's own animation
+  syncSheetTitle();
 }
 function newTask(owner){
   S.edit={ task:{ title:'', details:'', owners:owner||(S.view==='team'&&S.person?S.person:S.data.me), status:'Not Done', priority:'Medium', due:S.data.defaultDue }, isNew:true };
@@ -2863,7 +2975,7 @@ function renderSheetBody(){
     return;
   }
   if (S.sheet==='newmeeting') {
-    el.innerHTML='<div class="grab"></div><div class="sheet-head"><button type="button" class="btn ghost sm" data-act="close-sheet">Cancel</button><h3>Start a Meeting</h3></div><div class="set-card">'
+    el.innerHTML='<div class="grab"></div><div class="sheet-head"><button type="button" class="btn ghost sm" data-act="close-sheet">Cancel</button><h3>Start Meeting</h3></div><div class="set-card">'
       +[['tactical','Weekly Tactical','90 minutes'],['strategic','Monthly Strategic','About 2 hours']]
         .map(([k,l,d])=>'<div class="set-row nm-row'+(S.pendingType===k?' pre':'')+'"><span>'+l+'<small>'+d+' · Start Otter first, titled “'+esc(TEMPLATES[k].title)+'”.</small></span><button type="button" class="btn primary sm" data-act="lv-begin" data-val="'+k+'">Start</button></div>').join('')
       +'</div><p class="small muted">Everyone with the app open will see the meeting and the same timers.</p>';
@@ -2936,7 +3048,7 @@ function renderSheetBody(){
   }
   if (S.sheet==='statusmenu') {
     const t=find(S.smId); if (!t) { el.innerHTML=''; return; }
-    el.innerHTML='<div class="grab"></div><div class="sheet-head"><h3>Status</h3><button type="button" class="btn ghost sm" data-act="close-sheet">Cancel</button></div>'
+    el.innerHTML='<div class="grab"></div><div class="sheet-head"><button type="button" class="btn ghost sm" data-act="close-sheet">Cancel</button><h3>Status</h3></div>'
       +'<p class="small muted sheet-sub">'+esc(t.title)+'</p><div class="menu">'
       +[['Done','Done'],['In Progress','In Progress'],['Blocked','Blocked'],['Not Done','Not Started']].map(([v,l])=>'<button type="button" data-act="sm-set" data-val="'+v+'"'+(t.status===v?' aria-current="true"':'')+'><span class="grow">'+l+'</span>'+(t.status===v?'<span class="chk" aria-hidden="true">✓</span>':'')+'</button>').join('')+'</div>';
     return;
@@ -2964,7 +3076,7 @@ function renderSheetBody(){
     +'<input type="text" class="box mt-s" data-input="waiting_on" placeholder="Or type who or what (a vendor, a part…)" value="'+esc(t.waiting_on && t.waiting_on.indexOf('@')<0 ? t.waiting_on : '')+'">';
   let html='<div class="grab"></div><div class="sheet-head">'
     +(isNew ? '<button type="button" class="btn ghost sm" data-act="close-sheet">Cancel</button><h3>New Task</h3><button type="button" class="btn primary sm" data-act="add-task"'+(t.title.trim()?'':' disabled')+'>Add</button>'
-      : '<h3>Task Details</h3><span class="saved" id="saveState" role="status"></span><button type="button" class="btn ghost sm" data-act="close-sheet">Done</button>')
+      : '<h3 class="sh-ttl" id="shTtl">'+esc(t.title)+'</h3><span class="saved" id="saveState" role="status"></span><button type="button" class="btn ghost sm" data-act="close-sheet">Done</button>')
     +'</div><div class="err" id="f-err" role="alert"></div>';
   if (isNew) {
     // A new task keeps the short form: title, details, owners (with Only Me), priority, date.
@@ -2973,7 +3085,7 @@ function renderSheetBody(){
       +(!E.showDetails && !t.details ? '<button type="button" class="linkbtn mt-s" data-act="add-details">Add Details</button>'
         : '<label for="f-details">Details</label><textarea id="f-details" data-input="details" rows="3" placeholder="Context, links, notes">'+esc(t.details)+'</textarea>')
       +(E.live?'<p class="small muted live-link">This task is part of the '+esc(S.live?S.live.title:'meeting')+'.</p>':'')
-      +'<div class="owners-box"><label>Owners</label>'+ownerChips+'</div>'
+      +'<div class="owners-box mt-m"><label>Owners</label>'+ownerChips+'</div>'
       +'<label>Priority</label>'+seg('priority',['High','Medium','Low'])
       +'<label>Due Date</label>'+dates+'</div>';
     el.innerHTML=html; el.scrollTop=top; return;
@@ -3002,7 +3114,7 @@ function renderSheetBody(){
     +(sugg && sugg.length ? '<div class="mention-sugg" role="listbox" aria-label="Mention someone">'+sugg.map(p=>'<button type="button" data-act="mention-pick" data-name="'+esc(firstName(p.email))+'">@'+esc(firstName(p.email))+'</button>').join('')+'</div>' : '')
     +'<div class="cbox"><textarea id="f-comment" rows="1" placeholder="'+(isPriv(t)?'Add a note for yourself':'Add a comment (type @ to mention)')+'">'+esc(commentDraft(t.id))+'</textarea>'
     +'<button type="button" class="send" data-act="post" aria-label="Post comment"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"/></svg></button></div></div>'
-    +'<div class="form thread">'+(E.showHist
+    +(E.showHist?'<div class="form thread">':'<div class="hist-link">')+(E.showHist
       ? '<h3 class="sec-h">History</h3><div class="log">'+(d ? d.history.slice().reverse().map(h=>'<span>'+esc(short(h.at))+'</span><span>'+esc(nameOf(h.user))+' '+(h.field==='created'?'created the task':h.field==='private'?(h.new_value==='yes'?'made it private':'shared it with the team'):'changed '+esc(h.field)+' to “'+esc(h.field==='status'?label(h.new_value):h.new_value)+'”')+'</span>').join('') : '')+'</div>'
       : '<button type="button" class="linkbtn" data-act="show-history">Show History</button>')+'</div>'
     +'<div class="danger-row"><button type="button" class="linkbtn danger" data-act="task-delete">'+(S.confirmDel?'Tap again to delete':'Delete Task')+'</button></div>';
@@ -3015,6 +3127,8 @@ function sortFilterSheet(){
   return '<div class="grab" data-act="close-sheet"></div><div class="sheet-head"><h3>Sort &amp; Filter</h3>'+(activeFilters()?'<button type="button" class="linkbtn" data-act="reset-filters">Reset</button>':'')
     +'<button type="button" class="btn ghost sm" data-act="close-sheet">Done</button></div>'
     // #12 (Nov 16): just Sort (Due Date, Priority), Blocked Only and Show Done. Search covers titles and meetings.
+    // Critique 4 (#3): on Team Tasks the report (and One-on-Ones) is the first row.
+    +(S.view==='team'?'<div class="set-card"><button type="button" class="set-row" data-act="report-from-sf"><span>Report &amp; One-on-Ones</span><span class="chev" aria-hidden="true">›</span></button></div>':'')
     +'<h4 class="set-sec">Sort By</h4><div class="set-card" role="menu">'+opt('sort','due','Due Date')+opt('sort','priority','Priority')+'</div>'
     +'<div class="set-card mt-m">'+switchRow('sf-blocked', S.status==='Blocked', 'Blocked Only', '')+switchRow('sf-done', S.status==='', 'Show Done', '')+'</div>';
 }
@@ -3284,8 +3398,10 @@ function openMeeting(id){
 }
 function meetingSheet(){
   const g=S.mtg, x=(S.meetings||[]).find(m=>m.id===g.id)||(g.data&&g.data.meeting)||(S.data.meetings||{})[g.id]||{};
-  let h='<div class="grab" data-act="close-sheet"></div><div class="sheet-head">'+(g.data && !g.err ? '<button type="button" class="btn ghost sm" data-act="mtg-mode" data-val="'+(g.mode?'':'menu')+'">'+(g.mode?'Cancel':'Edit')+'</button>' : '')
-    +'<h3>'+esc(x.title||x.type||'Meeting')+'</h3><button type="button" class="btn ghost sm" data-act="close-sheet">Done</button></div>'
+  const canEdit=g.data && !g.err;
+  let h='<div class="grab" data-act="close-sheet"></div><div class="sheet-head">'+(canEdit && g.mode ? '<button type="button" class="btn ghost sm" data-act="mtg-mode" data-val="">Cancel</button>' : '')
+    +'<h3>'+esc(x.title||x.type||'Meeting')+'</h3>'+(canEdit && !g.mode ? '<button type="button" class="btn ghost sm" data-act="mtg-mode" data-val="menu">Edit</button>' : '')
+    +'<button type="button" class="btn ghost sm'+(canEdit && !g.mode?' sh-next':'')+'" data-act="close-sheet">Done</button></div>'
     +'<p class="small muted sheet-sub">'+esc(fmtDate(x.date))+(x.title&&x.type&&x.title!==x.type?' · '+esc(x.type):'')+'</p>'
     +(g.mode ? meetingEditHtml(x) : '');
   const tasks=S.data.tasks.filter(t=>t.meeting_id===g.id && t.kind!=='cascade'), tell=S.data.tasks.filter(t=>t.meeting_id===g.id && t.kind==='cascade');
@@ -3299,8 +3415,8 @@ function meetingSheet(){
   let decisions='', inDec=false;
   blocks.forEach(b=>{ if (b.t==='h2') { inDec=/^decisions?\b/i.test(b.text); return; } if (inDec && (b.t==='li' || b.t==='p')) decisions+='<li>'+esc(b.text)+'</li>'; });
   const mineT=tasks.filter(t=>owners(t).indexOf(S.data.me)>=0);
-  const top=(decisions?'<h3 class="sum-h2">Decisions</h3><ul class="sum-list">'+decisions+'</ul>':'')
-    +(mineT.length?'<h3 class="sum-h2">Your Tasks</h3>'+taskRows(mineT,'stack'):'');
+  const top=(decisions?'<div class="form summary"><h3 class="sum-h2">Decisions</h3><ul class="sum-list">'+decisions+'</ul></div>':'')
+    +(mineT.length?'<h3 class="sec-h">Your Tasks</h3>'+taskRows(mineT,'stack'):'');
   let body='', list=false, skip=false, placed=false, tellPlaced=!tellBlock;
   const close=()=>{ if (list) { body+='</ul>'; list=false; } };
   blocks.forEach((b,i)=>{
@@ -3319,7 +3435,7 @@ function meetingSheet(){
   if (!placed) body+=taskBlock;
   if (!tellPlaced) body+=tellBlock;
   const links=(docUrl(x.summary_url)?'<a class="doc" href="'+esc(docUrl(x.summary_url))+'" target="_blank" rel="noopener">Open in Google Docs</a>':'')+(docUrl(x.transcript_url)?'<a class="doc" href="'+esc(docUrl(x.transcript_url))+'" target="_blank" rel="noopener">Transcript</a>':'');
-  return h+(top?'<div class="form summary">'+top+'</div>':'')
+  return h+top
     +'<details class="full-sum"'+(top?'':' open')+'><summary>Full Summary</summary><div class="form summary">'+body+reviewSection(g.data.review)+'</div>'+(links?'<div class="sum-links">'+links+'</div>':'')+'</details>';
 }
 // Edit a meeting from the app: add context (Alfred can rewrite the summary with it), fix its details, or delete it.
@@ -3604,7 +3720,7 @@ async function renderTopics(m){
 const CARD_MAX=168;
 function clampCards(box){
   if (!box) return; S.cardOpen=S.cardOpen||{};
-  box.querySelectorAll('.card.decision, .card.topic').forEach(card=>{
+  box.querySelectorAll('.clampable').forEach(card=>{
     const k=card.dataset.k||card.dataset.id; if (S.cardOpen[k] || card.scrollHeight<=CARD_MAX+24) return;
     card.classList.add('clamped'); card.insertAdjacentHTML('beforeend','<span class="card-more" data-act="card-more" role="button" tabindex="0">More</span>');
   });
@@ -3615,15 +3731,18 @@ function renderTopicResults(){
   const since=sinceDate();
   const topics=S.topics.filter(t=>(!since || String(t.date||'')>=since) && words.every(w=>(t.topic+' '+(t.context||'')+' '+(t.outcome||'')+' '+(t.raised_by||'')).toLowerCase().indexOf(w)>=0))
     .sort((a,b)=>order[a.status]-order[b.status]||(b.date||'').localeCompare(a.date||''));
-  const tag=st=>'<span class="tag'+(st==='Scheduled'?' gold':st==='Discussed'?' done':'')+'">'+esc(st)+'</span>';
-  box.innerHTML='<div class="list">'
-    +(topics.length?topics.map(t=>{ const age=t.status==='Open' && t.date ? Math.round((new Date(S.data.today+'T12:00:00')-new Date(t.date+'T12:00:00'))/864e5) : 0;
-      return '<button type="button" class="card topic'+(t.status==='Dropped'?' dim':'')+'" data-act="topic-open" data-id="'+t.id+'"><div class="t">'+esc(t.topic)+'</div>'
-      +'<div class="meta">'+esc(fmtDate(t.date))+(t.raised_by?' · Raised by '+esc(t.raised_by):'')+(t.owner?' · Owner: '+esc(firstName(t.owner)):'')+'</div>'
-      +(t.context?'<div class="sub">'+esc(t.context)+'</div>':'')
-      +(t.outcome?'<div class="sub"><b>Outcome:</b> '+esc(t.outcome)+'</div>':'')
-      +'<div class="tags mt-s">'+tag(t.status)+(t.scheduled_for?'<span class="tag">For '+esc(fmtDate(t.scheduled_for))+'</span>':'')+(age>30?'<span class="tag late">Open '+age+' Days</span>':'')+'</div></button>'; }).join('')
-      : S.topics.length ? '<div class="empty"><b>No Matches</b>Try a different word.</div>' : '<div class="empty"><b>The Parking Lot Is Empty</b>Alfred adds topics from meetings, or tap Add Topic.</div>')+'</div>';
+  // Critique 4 (#5): one tag per topic: "Open", "Open · 40 Days" in gold after 30 days, "Scheduled · Nov 25", Discussed, Dropped.
+  const tag=t=>{ const age=t.status==='Open' && t.date ? Math.round((new Date(S.data.today+'T12:00:00')-new Date(t.date+'T12:00:00'))/864e5) : 0;
+    const txt=t.status==='Open' && age>30 ? 'Open · '+age+' Days' : t.status==='Scheduled' && t.scheduled_for ? 'Scheduled · '+fmtDate(t.scheduled_for) : t.status;
+    return '<span class="tag'+(t.status==='Scheduled' || age>30?' gold':t.status==='Discussed'?' done':'')+'">'+esc(txt)+'</span>'; };
+  // Critique 4 (#20): grouped rows like Meetings; grouped by status (Open first) because a topic's month matters less than whether it's open.
+  const groups=[]; ['Open','Scheduled','Discussed','Dropped'].forEach(st=>{ const items=topics.filter(t=>t.status===st); if (items.length) groups.push({ label:st, items:items }); });
+  box.innerHTML=topics.length ? rowGroups(groups, t=>'<button type="button" class="set-row drow clampable topic'+(t.status==='Dropped'?' dim':'')+'" data-act="topic-open" data-id="'+t.id+'"><span class="dr-b">'
+      +'<span class="dr-t">'+esc(t.topic)+'</span>'+(t.context?'<span class="dr-sub">'+esc(t.context)+'</span>':'')
+      +(t.outcome?'<span class="dr-sub"><b>Outcome:</b> '+esc(t.outcome)+'</span>':'')
+      +'<small>'+esc(fmtDate(t.date))+(t.raised_by?' · Raised by '+esc(t.raised_by):'')+(t.owner?' · Owner: '+esc(firstName(t.owner)):'')+'</small>'
+      +'<span class="tags">'+tag(t)+'</span></span><span class="chev" aria-hidden="true">›</span></button>')
+    : (S.topics.length ? '<div class="empty"><b>No Matches</b>Try a different word.</div>' : rowGroups([], null)+'<div class="empty"><b>The Parking Lot Is Empty</b>Alfred adds topics from meetings, or tap Add Topic.</div>');
   clampCards(box);
 }
 // NF-2: Meetings | Decisions. Decisions are every decision Alfred recorded, newest first, with search.
@@ -3644,11 +3763,22 @@ function mHead(){
     +meetingsSeg()
     +(open?'<div class="search-row msearch"><label class="search">'+ICON.search+'<input type="search" id="'+q[0]+'" data-input="'+q[0]+'" placeholder="'+q[1]+'" value="'+esc(S[q[0]]||'')+'" aria-label="'+q[1]+'">'
       +'<button type="button" class="search-x" data-act="m-search-close" aria-label="Close search">'+ICON.x+'</button></label></div>':'')
-    +'<div class="mbar"><button type="button" class="btn primary sm mbar-act wide" data-act="'+act[0]+'">'+act[1]+'</button></div>'
-    +tacticalCard();
+    +(tab==='meetings'?'<div class="mbar"><button type="button" class="btn primary sm mbar-act wide" data-act="'+act[0]+'">'+act[1]+'</button></div>':'')
+    +(tab==='meetings'?tacticalCard():'');
 }
-function meetingsSeg(){ const tab=S.mtab||'meetings';
-  return '<div class="seg mtab" role="group" aria-label="Show">'+[['meetings','Meetings'],['decisions','Decisions'],['topics','Parking Lot']].map(([k,l])=>'<button type="button" class="'+(tab===k?'on':'')+'" data-act="mtab" data-val="'+k+'" aria-pressed="'+(tab===k)+'">'+l+'</button>').join('')+'</div>'; }
+// Critique 4 (#4): Decisions and Parking Lot add with a small gold-rim capsule on the first month line.
+function addCapsule(){ const tab=S.mtab; return tab==='decisions' ? '<button type="button" class="capsule" data-act="dec-new">＋ Add Decision</button>' : tab==='topics' ? '<button type="button" class="capsule" data-act="topic-new">＋ Add Topic</button>' : ''; }
+// Critique 4 (#20): Meetings, Decisions and Parking Lot share one grouped list. Groups of rows under a heading; the first
+// heading carries the Add capsule.
+function monthLabel(k){ return k ? new Date(k+'-15T12:00:00').toLocaleDateString('en-US', k.slice(0,4)===String(S.data.today).slice(0,4) ? { month:'long' } : { month:'long', year:'numeric' }) : 'No Date'; }
+function rowGroups(groups, rowFn){
+  const cap=addCapsule();
+  if (!groups.length) return cap ? '<div class="mg-head mg-only">'+cap+'</div>' : '';
+  return groups.map((g,i)=>'<div class="mg-head"><h3 class="set-sec">'+esc(g.label)+'</h3>'+(i===0?cap:'')+'</div><div class="set-card mrows">'+g.items.map(rowFn).join('')+'</div>').join('');
+}
+function byMonth(items, dateOf){ const groups=[]; items.forEach(it=>{ const k=String(dateOf(it)||'').slice(0,7); let g=groups[groups.length-1]; if (!g || g.k!==k) groups.push(g={ k:k, label:monthLabel(k), items:[] }); g.items.push(it); }); return groups; }
+function meetingsSeg(){ const tab=S.mtab||'meetings', big=document.documentElement.classList.contains('ts-big') && window.innerWidth<430;
+  return '<div class="seg mtab" role="group" aria-label="Show">'+[['meetings','Meetings'],['decisions','Decisions'],['topics',big?'Parking':'Parking Lot']].map(([k,l])=>'<button type="button" class="'+(tab===k?'on':'')+'" data-act="mtab" data-val="'+k+'" aria-pressed="'+(tab===k)+'">'+l+'</button>').join('')+'</div>'; }
 async function renderDecisions(m){
   const head=mHead();
   if (!S.decisions) {
@@ -3664,14 +3794,14 @@ function renderDecisionResults(){
   const words=String(S.dq||'').toLowerCase().split(/\s+/).filter(Boolean);
   const since=sinceDate();
   const list=S.decisions.filter(d=>(!since || String(d.date)>=since) && words.every(w=>(d.decision+' '+(d.context||'')+' '+(d.topic||'')+' '+(d.meeting_title||'')+' '+(d.raised_by||'')).toLowerCase().indexOf(w)>=0));
-  if (!S.decisions.length) { box.innerHTML='<div class="empty"><b>No Decisions Yet</b>Alfred adds them from each recorded meeting, or tap Add Decision.</div>'; return; }
+  if (!S.decisions.length) { box.innerHTML=rowGroups([], null)+'<div class="empty"><b>No Decisions Yet</b>Alfred adds them from each recorded meeting, or tap Add Decision.</div>'; return; }
   if (!list.length) { box.innerHTML='<div class="empty"><b>No Matches</b>Try a different word.</div>'; return; }
   // Critique 4 (Sec #14): a decision added by hand opens to be fixed or deleted (by whoever added it, or an approver).
-  box.innerHTML='<div class="list">'+list.map(d=>'<button type="button" class="card decision" data-act="'+(d.meeting_id?'meeting-open':d.editable?'dec-edit':'noop')+'" data-id="'+esc(d.meeting_id||'')+'" data-k="'+esc(d.id)+'">'
-    +'<div class="t">'+esc(d.decision)+'</div>'
-    +(d.context?'<div class="sub">'+esc(d.context)+'</div>':'')
-    +'<div class="meta">'+esc([d.meeting_title, fmtDate(d.date), d.raised_by?'Raised by '+d.raised_by:''].filter(Boolean).join(' · '))+'</div>'
-    +(d.topic?'<div class="tags"><span class="tag gold">'+esc(d.topic)+'</span></div>':'')+'</button>').join('')+'</div>';
+  box.innerHTML=rowGroups(byMonth(list, d=>d.date), d=>{ const act=d.meeting_id?'meeting-open':d.editable?'dec-edit':'noop';
+    return '<button type="button" class="set-row drow clampable decision" data-act="'+act+'" data-id="'+esc(d.meeting_id||'')+'" data-k="'+esc(d.id)+'"><span class="dr-b">'
+      +'<span class="dr-t">'+esc(d.decision)+'</span>'+(d.context?'<span class="dr-sub">'+esc(d.context)+'</span>':'')
+      +'<small>'+esc([d.meeting_title, fmtDate(d.date), d.raised_by?'Raised by '+d.raised_by:''].filter(Boolean).join(' · '))+'</small>'
+      +(d.topic?'<span class="tags"><span class="tag gold">'+esc(d.topic)+'</span></span>':'')+'</span>'+(act!=='noop'?'<span class="chev" aria-hidden="true">›</span>':'')+'</button>'; });
   clampCards(box);
 }
 // Nov 10: a meeting or timer log deleted on this phone stays off the list even if a list download that started before the
@@ -3723,7 +3853,7 @@ function meetingGroups(items, hits){
         return '<button type="button" class="set-row" data-act="log-open" data-id="'+esc(l.id)+'"><span>'+esc(l.title)+'<small>'+esc(fmtDate(l.date))+' · Timer log · summary coming</small></span><span class="chev" aria-hidden="true">›</span></button>'; }
       const x=it.x, n=S.data.tasks.filter(t=>t.meeting_id===x.id && t.kind!=='cascade').length, where=hits && hits[x.id] ? hits[x.id] : [];
       const found=where.filter(w=>w!=='title').map(w=>w==='summary'?'found in summary':'found in transcript');
-      return '<button type="button" class="set-row" data-act="meeting-open" data-id="'+x.id+'"><span>'+esc(x.title||x.type)+'<small>'+esc(fmtDate(x.date))+(x.title&&x.title!==x.type?' · '+esc(x.type):'')+(n?' · '+n+' task'+(n===1?'':'s'):'')+(found.length?' · '+found.join(', '):'')+'</small></span><span class="chev" aria-hidden="true">›</span></button>';
+      return '<button type="button" class="set-row" data-act="meeting-open" data-id="'+x.id+'"><span>'+esc(x.title||x.type)+'<small>'+esc(fmtDate(x.date))+(x.title && !String(x.type||'').toLowerCase().split(/\s+/).some(w=>w.length>3 && String(x.title).toLowerCase().indexOf(w)>=0)?' · '+esc(x.type):'')+(n?' · '+n+' task'+(n===1?'':'s'):'')+(found.length?' · '+found.join(', '):'')+'</small></span><span class="chev" aria-hidden="true">›</span></button>';
     }).join('')+'</div>').join('');
 }
 let mqT=null;
@@ -4010,7 +4140,7 @@ function liveNextBtn(st){
   if (st.phase==='done') return { act:'lv-end-ask', label:'End Meeting' };
   if (step.kind==='discuss' && st.topic) return { act:'lv-topic-done', label:'Finish Topic ›' };
   if (perPerson(st)) { const P=stepPeople(st), i=st.person||0; if (i<P.length-1) return { act:'lv-next', label:'Next: '+firstName(P[i+1].email)+' ›' }; return { act:'lv-next', label:st.i<st.steps.length-1?'Next Step ›':'Wrap Up ›' }; }
-  return { act:'lv-next', label:st.i>=st.steps.length-1?'Wrap Up ›':step.kind==='discuss'?'Next Step ›':'Next ›' };
+  return { act:'lv-next', label:st.i>=st.steps.length-1?'Wrap Up ›':'Next ›' };
 }
 function liveBackOff(st){ return st.phase==='running' && st.i===0 && !(perPerson(st) && (st.person||0)>0); }
 // Wrap Up (MD-4, BUG-10): log the step you're on with its real time and go to the wrap-up. Back returns to that same
@@ -4205,11 +4335,13 @@ function renderLive(m){
   const plus='';   // #4: Add 5 Minutes is in the ••• menu
   let html=liveHead('Step '+(st.i+1)+' of '+st.steps.length+' · <span id="lvTotal"></span>')
     +'<div class="card step-card live-slide'+(compact?' compact':'')+'">'+(st.pausedAt?'<div class="sec paused">Paused</div>':'')+'<div class="step-title">'+esc(step.title)+'</div>'
-    +(compact?'<div class="step-line"><span>Step: <span id="lvStep" data-line="1">'+fmtClock(stepLeft(st)).replace('+','')+'</span></span>'+plus+'</div>'
+    // Critique 4 (#6): the step's instruction sits in this card, and there is one step clock ("1:53 left in step").
+    +(step.kind==='note'?'<p class="step-note">'+esc(step.note)+'</p>':'')
+    +(compact?'<div class="step-line"><span><span id="lvStep" data-line="1">'+fmtClock(stepLeft(st)).replace('+','')+'</span> left in step'+(next?' · Up next: '+esc(next.title):'')+'</span>'+plus+'</div>'
       :'<div class="timer-row"><div class="bigtimer" id="lvStep">'+fmtClock(stepLeft(st))+'</div>'+plus+'</div>')
-    +(next && !compact?'<div class="small muted up-next">Up next: '+esc(next.title)+' · '+next.mins+' min</div>':'')+'</div>';   // compact: the pinned Next says what's next
-  html += '<div class="step-body live-slide">'+liveBody(st, step)+'</div>';
-  html += '<h3 class="sec-h">Agenda</h3>'+outline;
+    +(next && !compact?'<div class="small muted up-next">Up next: '+esc(next.title)+' · '+next.mins+' min</div>':'')+'</div>';
+  if (step.kind!=='note') html += '<div class="step-body live-slide">'+liveBody(st, step)+'</div>';
+  html += '<details class="card agenda-fold"><summary><span>Agenda</span><span class="muted">Step '+(st.i+1)+' of '+st.steps.length+'</span><span class="chev" aria-hidden="true">›</span></summary>'+outline.replace('class="card outline"','class="outline"')+'</details>';
   m.innerHTML=html; liveTick();
 }
 
@@ -4358,10 +4490,11 @@ function liveHead(mid){
 function liveMenuSheet(){
   const st=S.live; if (!st) return '';
   const host=isHost(st), run=st.phase==='running', item=(act,l,cls)=>'<button type="button" class="'+(cls||'')+'" data-act="lvm" data-do="'+act+'"><span class="grow">'+l+'</span></button>';
-  return '<div class="grab"></div><div class="sheet-head"><h3>'+esc(st.title)+'</h3><button type="button" class="btn ghost sm" data-act="close-sheet">Cancel</button></div><div class="menu">'
+  const tv=window.innerWidth>=700 ? item('lv-tv','TV Mode') : '';   // Critique 4 (#10): TV Mode is for computers and tablets
+  return '<div class="grab"></div><div class="sheet-head"><h3>'+esc(st.title)+'</h3><button type="button" class="btn ghost sm" data-act="close-sheet">Done</button></div><div class="menu">'
     +(host ? (run ? item('lv-pause', st.pausedAt?'Resume Timer':'Pause Timer') + (!st.topic ? item('lv-plus','Add 5 Minutes') : '') + item('lv-wrap-ask','Wrap Up Early') : '')
-        + item('lv-tv','TV Mode') + item('lv-chime', pref('lt-chime','on')==='off'?'Turn the Chime On':'Mute the Chime')
-      : item('lv-takeover-ask','Take Over as Host') + item('lv-tv','TV Mode'))
+        + tv + item('lv-chime', pref('lt-chime','on')==='off'?'Turn the Chime On':'Mute the Chime')
+      : item('lv-takeover-ask','Take Over as Host') + tv)
     +'</div>'+(host ? '<div class="menu mt-l">'+item('lv-cancel-ask','Cancel Meeting','danger-row-btn')+'</div>' : '');
 }
 function cancelCard(host){
@@ -4432,7 +4565,7 @@ async function liveAddItem(el){
 /* ---------- Alfred chat bubble ---------- */
 // The conversation lives only in this page (S.alf) and is gone after a reload. Every message carries the screen
 // context below, and the screenshot taken when the bubble was tapped, so nobody has to describe where they were.
-const APP_VERSION = '2026.11.16-c4fix';
+const APP_VERSION = '2026.11.16-c4design';
 const H2C_URL = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
 const DIAG = { errors:[], actions:[] };   // last 10 of each, for bug reports
 function pushDiag(list, item){ list.push(item); if (list.length>10) list.shift(); }
@@ -4470,8 +4603,8 @@ function alfBounds(side){
   if (plus && !plus.hidden) pr={ top:plus.offsetTop, height:plus.offsetHeight };   // Nov 12: the +'s own spot, not its animated (shrunk) box
   else if (plus && nav && getComputedStyle(nav).display!=='none') { plus.style.visibility='hidden'; plus.hidden=false; pr={ top:plus.offsetTop, height:plus.offsetHeight }; plus.hidden=true; plus.style.visibility=''; ghost=true; }
   if (pr) {
-    // Left side: the lowest spot is level with the + . Right side: it stays above the + (or level with its spot when there's none).
-    maxTop = side==='right' && !ghost ? Math.min(maxTop, pr.top-size-gap) : Math.min(maxTop, Math.round(pr.top+(pr.height-size)/2));
+    // Right side (opposite the +): the lowest spot is level with the + . Left side: it stays above the + (or level with its spot when there's none).
+    maxTop = side==='left' && !ghost ? Math.min(maxTop, pr.top-size-gap) : Math.min(maxTop, Math.round(pr.top+(pr.height-size)/2));
   }
   return { size, minTop, maxTop:Math.max(minTop, maxTop), left:edge, right:W-size-edge };
 }
@@ -4482,10 +4615,10 @@ function alfViewportBottom(){
   if (nav && getComputedStyle(nav).display!=='none') return nav.getBoundingClientRect().bottom;
   return document.documentElement.clientHeight;
 }
-function alfSaved(){ try { const p=JSON.parse(localStorage.getItem('lt-alf-pos')||'null'); if (p && (p.side==='left'||p.side==='right')) return p; } catch(e){} return null; }
+function alfSaved(){ try { const p=JSON.parse(localStorage.getItem('lt-alf-pos2')||'null'); if (p && (p.side==='left'||p.side==='right')) return p; } catch(e){} return null; }
 function placeAlfred(save, p){
   const fab=document.getElementById('alfFab'); if (!fab || fab.hidden) return;
-  p=p||alfSaved()||{ side:'left', y:1 };   // first time: bottom left, opposite the +
+  p=p||alfSaved()||{ side:'right', y:1 };   // first time: bottom right, opposite the + (Brayden, Nov 16)
   const b=alfBounds(p.side);
   const top=Math.round(b.minTop+(b.maxTop-b.minTop)*Math.min(1, Math.max(0, p.y)));
   const first=!fab.dataset.placed;
@@ -4494,7 +4627,7 @@ function placeAlfred(save, p){
   // both buttons move together instead of drifting a hair apart.
   fab.style.left=(p.side==='left' ? b.left : b.right)+'px'; fab.style.top='auto'; fab.style.bottom=Math.round(alfViewportBottom()-top-b.size)+'px';
   if (first) { void fab.offsetWidth; fab.style.transition=''; fab.dataset.placed='1'; }
-  if (save) { try { localStorage.setItem('lt-alf-pos', JSON.stringify(p)); } catch(e){} }
+  if (save) { try { localStorage.setItem('lt-alf-pos2', JSON.stringify(p)); } catch(e){} }
 }
 (function(){
   let d=null;
@@ -4770,13 +4903,14 @@ function renderAlfred(){
   if (S.data && S.data.alfred && !S.data.alfred.ready) html+='<div class="alf-msg err">Alfred isn\'t available yet. Brayden is setting it up.</div>';
   if (A.view==='history') {
     const list=alfHistory();
-    box.innerHTML='<button type="button" class="back" data-act="alf-hist-back">‹ New Chat</button><h3 class="alf-hist-h">Past Chats</h3>'
+    // Critique 4 (#8): the clock opens this view: Your Requests first, then Past Chats.
+    box.innerHTML='<button type="button" class="back" data-act="alf-hist-back">‹ New Chat</button>'
+      +'<div class="set-card mt-s"><button type="button" class="set-row" data-act="alf-requests"><span>Your Requests<small>Problems and ideas you sent, and where each one stands</small></span><span class="chev" aria-hidden="true">›</span></button></div>'
+      +'<h3 class="alf-hist-h">Past Chats</h3>'
       +(list.length?'<div class="set-card">'+list.map(x=>'<button type="button" class="set-row" data-act="alf-past" data-id="'+esc(x.id)+'"><span>'+esc(x.title)+'<small>'+esc(fmtDate(x.at.slice(0,10)))+' · '+x.msgs.filter(m=>m.role==='user').length+' question'+(x.msgs.filter(m=>m.role==='user').length===1?'':'s')+'</small></span><span class="chev" aria-hidden="true">›</span></button>').join('')+'</div>'
         +'<p class="small muted mt-m">Kept on this device: your last 20 chats.</p>' : '<p class="none">No past chats yet.</p>');
     return;
   }
-  if (!A.msgs.length) html+='<button type="button" class="alf-reqs" data-act="alf-requests" data-k="reqs">Your Requests<span class="chev" aria-hidden="true">›</span></button>'
-    +(alfHistory().length?'<button type="button" class="alf-reqs" data-act="alf-history" data-k="hist">Past Chats<span class="chev" aria-hidden="true">›</span></button>':'');
   if (!A.msgs.length) html+='<div class="alf-hello" data-k="hello"><b>Good '+partOfDay()+', '+esc(firstName(S.data.me))+'</b>Ask about meetings and tasks, or tell me about a problem. I can see the screen you\'re on.'
     +'<div class="alf-sugg">'+ALF_SUGGEST.map(q=>'<button type="button" data-act="alf-suggest" data-val="'+esc(q)+'">'+esc(q)+'</button>').join('')+'</div></div>';
   A.msgs.forEach((m,i)=>{
@@ -5130,6 +5264,9 @@ function actClick(e, el){
   if (alfredClick(a, el) || requestClick(a, el)) return;
   if (a==='go') go(el.dataset.view, el.dataset.back);
   else if (a==='back') goBack();
+  // Critique 4 (#32): Due Today opens My Tasks at today's tasks, with a short highlight.
+  else if (a==='go-today') { go('mine'); requestAnimationFrame(()=>{ const r=[...document.querySelectorAll('#main article.task')].find(x=>{ const t=find(x.dataset.id); return t && t.due===S.data.today; });
+    if (!r) return; const y=r.getBoundingClientRect().top+window.scrollY-topSafe()-80; window.scrollTo(0, Math.max(0,y)); if (!REDUCED) { r.classList.add('pulse'); setTimeout(()=>r.classList.remove('pulse'), 1400); } }); }
   // #36 (Nov 16): one tap finishes a task (with Undo). Holding the box offers In Progress, Blocked and Not Started.
   else if (a==='circle') { if (Date.now()-(S.held||0)<800) return; const t=find(id); if (!t) return;
     if (t.status==='Done') { toast('Already done. Hold the box to change it.'); return; }
@@ -5137,6 +5274,7 @@ function actClick(e, el){
     const next='Done';
     mineOrConfirm(t, next, ()=>{ haptic(); setStatus(id, next, { quiet:true }); }); }
   else if (a==='sortfilter') { S.sheet='sortfilter'; showSheet(); }
+  else if (a==='report-from-sf') { closeSheet(true); openReport(); }
   else if (a==='sf') { S[el.dataset.key]=v; closeSheet(); }
   else if (a==='search-open') { S.searchOpen=true; render(); const q=document.getElementById('q'); if (q) { q.focus();
     const lab=q.closest('label'); if (lab && lab.animate && !REDUCED) { const h=lab.offsetHeight; lab.animate([{ height:'0px', opacity:0, overflow:'hidden' }, { height:h+'px', opacity:1, overflow:'hidden' }], { duration:250, easing:'cubic-bezier(.2,.8,.2,1)' }); } } }
@@ -5273,7 +5411,7 @@ function actClick(e, el){
   else if (a==='mm-status') setStatus(id, v);
   else if (a==='topic-add') { const i=document.getElementById('tp-new'), d=document.getElementById('tp-desc'), text=i.value.trim();
     const cid=newCid(); if (text) saving(el, 'Adding…', ()=>call('apiAddTopic', text, d?d.value.trim():'', cid)).then(r=>{ if (!r) return; S.topics=null; closeSheet(); render(); }); }
-  else if (a==='card-more') { const card=el.closest('.card'); if (card) { const h=card.offsetHeight; card.classList.remove('clamped'); el.remove(); (S.cardOpen=S.cardOpen||{})[card.dataset.k||card.dataset.id]=1;
+  else if (a==='card-more') { const card=el.closest('.clampable, .card'); if (card) { const h=card.offsetHeight; card.classList.remove('clamped'); el.remove(); (S.cardOpen=S.cardOpen||{})[card.dataset.k||card.dataset.id]=1;
       if (!REDUCED && card.animate && !document.hidden) { const an=card.animate([{ height:h+'px', overflow:'hidden' }, { height:card.offsetHeight+'px', overflow:'hidden' }], { duration:260, easing:'cubic-bezier(.2,.8,.2,1)' }); afterAnim(an, 260, ()=>an.cancel()); } } }
   else if (a==='m-search') { S.mSearch=true; render(); const i=document.querySelector('.msearch input'); if (i) i.focus(); }
   else if (a==='m-search-close') { S.mSearch=false; S.mq=''; S.dq=''; S.tq=''; S.mhits=null; render(); }
