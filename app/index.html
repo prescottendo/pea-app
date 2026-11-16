@@ -19,7 +19,7 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" type="image/png" href="icon-192.png">
-<script>window.HUDDLE_WEB={"api":"https://script.google.com/macros/s/AKfycbzM8K_-XRMDdOJYJ3THn_FhyZkRreMddHIBAOFCFVoq5S_Y7MnsfFLsl7ac_fyDPrch/exec","clientId":"473377418367-cqmmnfum4kshq16973m4sj2jqqfa55p0.apps.googleusercontent.com","build":"3743fe9","push":{"config":{"apiKey":"AIzaSyBON-0KvTXPD_MV6ykhYvCoBRiECEHyE9c","authDomain":"huddle-e2548.firebaseapp.com","projectId":"huddle-e2548","storageBucket":"huddle-e2548.firebasestorage.app","messagingSenderId":"554653922065","appId":"1:554653922065:web:87de53b4cb11b36835d2b0"},"vapidKey":"BHKeDoBmW7vL-qAT3ocyTaMaZ27Ca66jvQtTes2NC4CPoWFiPBJcga7wVd-RD1IuyhBki0oKXwPBGSNq002s8o8"}};document.documentElement.classList.add('web');</script>
+<script>window.HUDDLE_WEB={"api":"https://script.google.com/macros/s/AKfycbzM8K_-XRMDdOJYJ3THn_FhyZkRreMddHIBAOFCFVoq5S_Y7MnsfFLsl7ac_fyDPrch/exec","clientId":"473377418367-cqmmnfum4kshq16973m4sj2jqqfa55p0.apps.googleusercontent.com","build":"03bf4df","push":{"config":{"apiKey":"AIzaSyBON-0KvTXPD_MV6ykhYvCoBRiECEHyE9c","authDomain":"huddle-e2548.firebaseapp.com","projectId":"huddle-e2548","storageBucket":"huddle-e2548.firebasestorage.app","messagingSenderId":"554653922065","appId":"1:554653922065:web:87de53b4cb11b36835d2b0"},"vapidKey":"BHKeDoBmW7vL-qAT3ocyTaMaZ27Ca66jvQtTes2NC4CPoWFiPBJcga7wVd-RD1IuyhBki0oKXwPBGSNq002s8o8"}};document.documentElement.classList.add('web');</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <!-- The fonts load without holding up the first paint; the page shows in the phone's own font for a moment if needed. -->
@@ -1761,7 +1761,7 @@ function startCoach(){
     }); }
   ov.hidden=false; document.body.classList.add('coach-on'); S.coach=0; showCoach();
 }
-function endCoach(){ const ov=document.getElementById('coach'); if (ov) ov.hidden=true; document.body.classList.remove('coach-on'); S.coach=null; if (S.view!=='mine') go('mine'); }
+function endCoach(){ const ov=document.getElementById('coach'); if (ov) ov.hidden=true; document.body.classList.remove('coach-on'); S.coach=null; if (S.view!=='mine') go('mine'); setTimeout(maybePushAsk, 600); }
 function showCoach(){
   const st=COACH[S.coach]; if (!st) return endCoach();
   if (st.view && S.view!==st.view) go(st.view);
@@ -1963,7 +1963,7 @@ function go(v, back){
   // Each visit to a screen starts with no filters, so a person or priority picked on Team Tasks doesn't follow you around (BUG-12).
   if (v!==S.view) { S.q=''; S.status='open'; S.priority=''; S.meeting=''; S.sort='due'; S.person=''; S.searchOpen=false; }
   const t0=performance.now();
-  if (v==='live' && S.view!=='live') S.liveAt=Date.now();
+  if (v==='live' && S.view!=='live') { S.liveAt=Date.now(); if (S.live && !isHost(S.live)) setTimeout(maybePushAsk, 2500); }
   // Each tab remembers where you'd scrolled (AP-6); screens you push into start at the top.
   const TABV={ mine:1, team:1, meetings:1 }; S.scrollMem=S.scrollMem||{};
   if (TABV[S.view] && !S.back) S.scrollMem[S.view]=window.scrollY;
@@ -2629,6 +2629,15 @@ function renderSheetBody(){
   }
   if (S.sheet==='meeting') { el.innerHTML=meetingSheet(); return; }
   if (S.sheet==='livelog') { el.innerHTML=liveLogSheet(); return; }
+  if (S.sheet==='pushask') {
+    const inst=pushState()==='install';
+    el.innerHTML='<div class="grab"></div><div class="sheet-head"><h3>Get a Tap on Your Phone?</h3></div>'
+      +'<p class="small">'+(inst ? 'Huddle can let you know when a meeting starts, someone mentions you or you get a new task. It works in the Huddle app on your Home Screen: in Safari, tap Share, then Add to Home Screen.'
+        : 'Huddle can let you know when a meeting starts, someone mentions you or you get a new task. You can change this any time under your initials.')+'</p>'
+      +'<div class="ask-acts mt-l">'+(inst ? '<button type="button" class="btn primary" data-act="close-sheet">OK</button>'
+        : '<button type="button" class="btn ghost" data-act="close-sheet">Not Now</button><button type="button" class="btn primary" data-act="push-ask-on">Turn On</button>')+'</div>';
+    return;
+  }
   if (S.sheet==='statusmenu') {
     const t=find(S.smId); if (!t) { el.innerHTML=''; return; }
     el.innerHTML='<div class="grab"></div><div class="sheet-head"><h3>Status</h3><button type="button" class="btn ghost sm" data-act="close-sheet">Cancel</button></div>'
@@ -2776,12 +2785,11 @@ async function restoreTopic(id, el){
 // Emails are saved for the signed-in person in the People tab; text size and appearance are saved on this device.
 // NN-3: at most one morning email a day. The report and Your Week replace that day's reminder; nothing goes out on the
 // tactical day or the day before. Day names follow Team Settings (dayName).
+// #3 (Nov 16): one switch per kind of news. Each goes to your phone when Huddle notifications are on, otherwise by email.
+const NOTIFY_OPTS = [['assigned','New Tasks'],['mentions','Mentions'],['meeting','Meeting Started'],['waiting','Waiting on You'],['reminders','Overdue Tasks']];
 const EMAIL_OPTS = [
-  ['summary','Meeting Summaries','The full summary after each meeting. Off unless you turn it on; it\'s also posted in Connecteam'],
-  ['assigned','New Tasks for Me','One email per meeting with your new tasks, and when someone gives you a task'],
-  ['mentions','Mentions','When someone @mentions you in a comment'],
-  ['reminders','Overdue Reminders','Other weekday mornings, only when a task of yours has just gone overdue (twice at most per task)'],
-  ['digest','Monday "Your Week"','Your week at a glance, the Accountability Report before the tactical, and comments that mentioned you']
+  ['digest','Monday “Your Week”','Your week at a glance and the Accountability Report before the tactical'],
+  ['summary','Meeting Summaries','The full summary after each meeting (it\'s also posted in Connecteam)']
 ];
 const DAY_NAMES=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
 function dayName(v){ return v!=='' && v!=null && DAY_NAMES[Number(v)] ? DAY_NAMES[Number(v)] : ''; }
@@ -2827,6 +2835,7 @@ const ADMIN_TOOLS = [
   ['process','apiAdminProcessInbox','Process New Meetings Now','Turn meetings Alfred has sent into summaries and tasks now, instead of waiting up to 5 minutes','Run'],
   ['triggers','apiAdminResetTriggers','Repair Scheduled Jobs','Set up meeting processing and the morning emails again if they stopped','Repair'],
   ['email','apiAdminTestEmail','Send Me a Test Email','A short email to you, to check that email is working','Send'],
+  ['pushtest','apiPushTest','Send Me a Test Notification','To every device where you turned notifications on','Send'],
   ['problems','apiAdminProblems','Status','Recent problems, meetings that could not be processed, and this month\'s Alfred chat use and cost','Show'],
   ['sample-add','apiAdminAddSample','Load Sample Data','Demo meetings, tasks and topics marked [Sample], for showing the app','Load','demo'],
   ['sample-remove','apiAdminRemoveSample','Remove Sample Data','Deletes everything marked [Sample]. Real tasks are not touched','Remove','demo']
@@ -2865,7 +2874,7 @@ async function runAdmin(k){
   A.armed=false; A.busy=k; delete A.out[k]; render();
   try {
     const r=await call(t[1]);
-    A.out[k]=k==='problems' ? {data:r} : {text:r};
+    A.out[k]=k==='problems' ? {data:r} : {text:r && typeof r==='object' && r.sent ? 'Sent to '+r.sent+' device'+(r.sent===1?'':'s')+'.' : r};
     if (k==='problems') { try { A.out[k].data.usage=await call('apiAdminAlfredUsage'); } catch(e){} }
     if (k==='signout-all') { A.busy=null; render(); setTimeout(()=>webSignedOut('Everyone was signed out, you too. Sign in again to keep going.'), 1500); return; }
     // Meetings and sample data change tasks, meetings and topics, so reload them.
@@ -2878,14 +2887,25 @@ function renderTeamSettings(m){
   m.innerHTML='<div class="settings">'+backLink()+'<h2>Team Settings</h2>'+teamSettingsHtml().replace('<h3 class="set-sec">Team Settings</h3>','')+'</div>';
 }
 function renderSettings(m){
-  const em=S.data.emails||{};
+  const em=S.data.emails||{}, st=pushState(), dev=isIPhone() ? 'iPhone' : isPhone() ? 'Phone' : 'Computer';
+  let allow='';
+  if (st==='install') allow='<div class="set-card set-pad"><p class="small">On an iPhone, notifications work in the Huddle app on your Home Screen, not in a Safari tab. In Safari, tap Share, then Add to Home Screen, and open Huddle from there.</p></div>';
+  else if (st==='denied') allow='<div class="set-card set-pad"><p class="small">Notifications are off for Huddle in your phone\'s Settings. Open Settings, then Notifications, then Huddle, and turn on Allow Notifications.</p></div>';
+  else if (st!=='none') allow='<div class="set-card">'+switchRow('push-allow', st==='on', 'Allow on This '+dev, S.pushBusy?'Turning on…':'', S.pushBusy?'disabled':'')+'</div>';
   m.innerHTML='<div class="settings">'+backLink()+'<h2>Notifications</h2>'
-    +pushSettingsHtml()
-    +'<h3 class="set-sec">Email Notifications</h3><div class="set-card">'
-    +EMAIL_OPTS.map(([k,l,d])=>switchRow('email-toggle', em[k]!==false, k==='report' && dayName(S.data.tacticalWeekday) ? '"Before '+dayName(S.data.tacticalWeekday)+'\'s Tactical" Report' : l,
-      d.replace('{report}', dayName(S.data.reportWeekday)||'Report day'), 'data-kind="'+k+'"')).join('')
-    +'</div><p class="set-note">You get at most one morning email a day, and none on the tactical day or the day before.</p>'
-    +'</div>';
+    +allow
+    +'<h3 class="set-sec">Notify Me About</h3><div class="set-card">'
+    +NOTIFY_OPTS.map(([k,l])=>switchRow('email-toggle', em[k]!==false, l, '', 'data-kind="'+k+'"')).join('')
+    +'</div><p class="set-note">'+(st==='on' ? 'Sent to this '+(dev==='iPhone'?dev:dev.toLowerCase())+'.' : 'Sent by email until you allow notifications on your phone.')+' Meeting Started is only a phone notification.</p>'
+    +'<h3 class="set-sec">Emails</h3><div class="set-card">'
+    +EMAIL_OPTS.map(([k,l,d])=>switchRow('email-toggle', em[k]!==false, l, d, 'data-kind="'+k+'"')).join('')
+    +'</div></div>';
+}
+// #44 (Nov 16): offer notifications once, when they're useful: after the welcome tour, and when you join a meeting.
+function maybePushAsk(){
+  const st=pushState(); if (st!=='off' && st!=='install') return;
+  if (pref('lt-push-asked','')==='1' || S.sheet || S.coach!=null) return;
+  setPref('lt-push-asked','1'); S.sheet='pushask'; showSheet();
 }
 
 async function renderDeleted(m){
@@ -3154,7 +3174,7 @@ async function postComment(el){
   if (!c) return;
   commentDraft(id, '');
   if (S.edit && S.edit.task.id===id) { if (S.edit.detail) S.edit.detail.comments.push(c); renderSheet(); }
-  toast(c.notified && c.notified.length ? 'Posted. Emailed '+c.notified.join(' and ') : 'Comment posted');
+  if (c.notified && c.notified.length) toast(c.notified.join(' and ')+' will be notified.');
 }
 
 /* ---------- the Accountability review (the Weekly Tactical's Accountability step, Nov 10) ---------- */
@@ -4028,7 +4048,7 @@ async function liveAddItem(el){
 /* ---------- Alfred chat bubble ---------- */
 // The conversation lives only in this page (S.alf) and is gone after a reload. Every message carries the screen
 // context below, and the screenshot taken when the bubble was tapped, so nobody has to describe where they were.
-const APP_VERSION = '2026.11.16-title';
+const APP_VERSION = '2026.11.16-notify';
 const H2C_URL = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
 const DIAG = { errors:[], actions:[] };   // last 10 of each, for bug reports
 function pushDiag(list, item){ list.push(item); if (list.length>10) list.shift(); }
@@ -4789,6 +4809,7 @@ function actClick(e, el){
   else if (a==='admin') runAdmin(el.dataset.key);
   else if (a==='text-size') { setTextSize(v); render(); }
   else if (a==='push-on') pushOn();
+  else if (a==='push-ask-on') { pushOn(); closeSheet(); }
   else if (a==='push-off') pushOff();
   else if (a==='push-test') call('apiPushTest').then(()=>toast('Test Sent. It should arrive in a few seconds.')).catch(e=>toast(errText(e)));
   else if (a==='theme-set') { setTheme(el.dataset.val); render(); }
@@ -4965,9 +4986,9 @@ function switchChanged(a, el){
   if (a==='private-toggle') togglePrivate();
   else if (a==='sf-done') { S.status = S.status==='' ? 'open' : ''; closeSheet(); }
   else if (a==='email-toggle') { const k=el.dataset.kind, em=S.data.emails=S.data.emails||{}, on=em[k]===false; em[k]=on; render();
-    const name=EMAIL_OPTS.find(o=>o[0]===k)[1]; toast(name+(on?' On':' Off'));
     call('apiSetMyEmail', k, on).catch(()=>{ em[k]=!on; render(); toast('Couldn\'t save. Try again.'); }); }
   else if (a==='push-kind') pushKind(el.dataset.kind);
+  else if (a==='push-allow') { if (el.checked) pushOn(); else pushOff(); }
   else if (a==='pref-toggle') { const k=el.dataset.key, on=pref(k,'on')==='off'; setPref(k, on?'on':'off'); render(); }
   else if (a==='team-toggle') saveTeam(el.dataset.key, S.team[el.dataset.key]===el.dataset.on ? el.dataset.off : el.dataset.on);
 }
@@ -5227,13 +5248,12 @@ function pushOn(){
   S.pushBusy=true; render();
   ask.then(p=>{ if (p!=='granted') throw new Error(p==='denied' ? 'push-denied' : 'Notifications weren\'t turned on.'); return pushToken(); })
     .then(tok=>call('apiPushRegister', tok, PUSH_OPTS.map(o=>o[0]), navigator.userAgent).then(r=>{ pushSaved({ token:tok, kinds:r.kinds, me:S.data.me, at:Date.now() }); }))
-    .then(()=>toast('Notifications On'))
     .catch(e=>toast(e && e.message==='push-denied' ? 'Notifications are off for Huddle in your phone\'s Settings.' : errText(e)))
     .finally(()=>{ S.pushBusy=false; if (S.view==='settings') render(); });
 }
 function pushOff(){
   const s=pushSaved(); if (!s) return;
-  pushSaved(null); render(); toast('Notifications Off on This Device');
+  pushSaved(null); render();
   call('apiPushUnregister', s.token).catch(()=>{});
   if (!MOCK) pushMessaging().then(m=>m.deleteToken()).catch(()=>{});
 }
