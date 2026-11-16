@@ -8,7 +8,7 @@
 <head>
 <base target="_top">
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://accounts.google.com/gsi/client https://cdnjs.cloudflare.com/ajax/libs/html2canvas/ https://www.gstatic.com/firebasejs/; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://accounts.google.com/gsi/style; font-src https://fonts.gstatic.com; img-src 'self' data: blob: https://*.googleusercontent.com https://*.gstatic.com; connect-src 'self' https://script.google.com https://script.googleusercontent.com https://accounts.google.com/gsi/ https://firebaseinstallations.googleapis.com https://fcmregistrations.googleapis.com; frame-src https://accounts.google.com/gsi/; worker-src 'self'; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://accounts.google.com/gsi/client https://cdnjs.cloudflare.com/ajax/libs/html2canvas/ https://www.gstatic.com/firebasejs/; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://accounts.google.com/gsi/style; font-src https://fonts.gstatic.com; img-src 'self' data: blob: https://*.googleusercontent.com https://*.gstatic.com; connect-src 'self' https://script.google.com/macros/s/AKfycbzM8K_-XRMDdOJYJ3THn_FhyZkRreMddHIBAOFCFVoq5S_Y7MnsfFLsl7ac_fyDPrch/exec https://script.googleusercontent.com/macros/echo https://accounts.google.com/gsi/ https://firebaseinstallations.googleapis.com https://fcmregistrations.googleapis.com; frame-src https://accounts.google.com/gsi/; worker-src 'self'; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'none'">
 <title>Huddle</title>
 <meta name="robots" content="noindex">
 <meta name="theme-color" content="#EBE6D9">
@@ -19,7 +19,7 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" type="image/png" href="icon-192.png">
-<script>window.HUDDLE_WEB={"api":"https://script.google.com/macros/s/AKfycbzM8K_-XRMDdOJYJ3THn_FhyZkRreMddHIBAOFCFVoq5S_Y7MnsfFLsl7ac_fyDPrch/exec","clientId":"473377418367-cqmmnfum4kshq16973m4sj2jqqfa55p0.apps.googleusercontent.com","build":"225680f","push":{"config":{"apiKey":"AIzaSyBON-0KvTXPD_MV6ykhYvCoBRiECEHyE9c","authDomain":"huddle-e2548.firebaseapp.com","projectId":"huddle-e2548","storageBucket":"huddle-e2548.firebasestorage.app","messagingSenderId":"554653922065","appId":"1:554653922065:web:87de53b4cb11b36835d2b0"},"vapidKey":"BHKeDoBmW7vL-qAT3ocyTaMaZ27Ca66jvQtTes2NC4CPoWFiPBJcga7wVd-RD1IuyhBki0oKXwPBGSNq002s8o8"}};document.documentElement.classList.add('web');</script>
+<script>window.HUDDLE_WEB={"api":"https://script.google.com/macros/s/AKfycbzM8K_-XRMDdOJYJ3THn_FhyZkRreMddHIBAOFCFVoq5S_Y7MnsfFLsl7ac_fyDPrch/exec","clientId":"473377418367-cqmmnfum4kshq16973m4sj2jqqfa55p0.apps.googleusercontent.com","build":"09fca0b","push":{"config":{"apiKey":"AIzaSyBON-0KvTXPD_MV6ykhYvCoBRiECEHyE9c","authDomain":"huddle-e2548.firebaseapp.com","projectId":"huddle-e2548","storageBucket":"huddle-e2548.firebasestorage.app","messagingSenderId":"554653922065","appId":"1:554653922065:web:87de53b4cb11b36835d2b0"},"vapidKey":"BHKeDoBmW7vL-qAT3ocyTaMaZ27Ca66jvQtTes2NC4CPoWFiPBJcga7wVd-RD1IuyhBki0oKXwPBGSNq002s8o8"}};document.documentElement.classList.add('web');</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <!-- The fonts load without holding up the first paint; the page shows in the phone's own font for a moment if needed. -->
@@ -459,7 +459,7 @@
   @media (max-width:699px) {
     .tbar { display:grid; grid-template-columns:minmax(0,1fr) auto minmax(0,1fr); column-gap:8px; align-items:center; position:fixed; left:0; right:0; top:0; z-index:21;
       padding:var(--top-safe) 16px 6px; height:calc(var(--top-safe) + 50px); box-sizing:border-box;
-      background:color-mix(in srgb, var(--page) 82%, transparent);
+      background:var(--page); background:color-mix(in srgb, var(--page) 82%, transparent);
       border-bottom:1px solid var(--line-soft); opacity:var(--tp,0); visibility:hidden; pointer-events:none; }
     .tbar.part { visibility:visible; }
     .tbar.show { pointer-events:auto; -webkit-backdrop-filter:blur(18px) saturate(180%); backdrop-filter:blur(18px) saturate(180%); }
@@ -775,6 +775,8 @@
     :root[data-theme="dark"] .fab, :root[data-theme="dark"] .alf-fab { background:var(--primary); } }
   @media (prefers-reduced-transparency: reduce) { .fab, .alf-fab { background:rgba(255,255,255,.96); -webkit-backdrop-filter:none; backdrop-filter:none; }
     :root[data-theme="dark"] .fab, :root[data-theme="dark"] .alf-fab { background:var(--primary); } }
+  @media (prefers-reduced-transparency: reduce) and (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .fab, :root:not([data-theme="light"]) .alf-fab { background:var(--primary); -webkit-backdrop-filter:none; backdrop-filter:none; } }
+  @supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))) { @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .fab, :root:not([data-theme="light"]) .alf-fab { background:var(--primary); } } }
 
   .alf-wrap { position:fixed; inset:0; z-index:45; display:flex; align-items:flex-end; justify-content:center; }
   .alf-panel { position:relative; width:100%; max-width:640px; min-width:0; height:min(88vh, 860px, calc(100vh - var(--top-safe) - 8px)); display:flex; flex-direction:column; background:var(--page);
@@ -1809,7 +1811,7 @@ async function load(){
   if (!load.started && !MOCK) { try { saved=JSON.parse(localStorage.getItem('lt-boot')||'null'); } catch(e){} }
   if (saved && saved.v===BOOT_V && saved.data && saved.data.me) { S.data=saved.data; S.stale=true; restorePrefs(S.data.prefs); restoreLists(); await paintBoot(); }
   try { S.data = await call('apiBootstrap'); }
-  catch(e){ if (S.stale) { toast('Showing your saved list. '+errText(e)); return; } bootFailed(e); return; }
+  catch(e){ if (S.stale) { toast('Showing your saved list. '+errText(e)); startLoops(); return; } bootFailed(e); return; }
   S.stale=false; restorePrefs(S.data.prefs); saveBoot();
   try { if (S.data.appUrl && S.data.appUrl!=='#') localStorage.setItem('lt-app-url', S.data.appUrl); } catch(e){}
   S.lastSync = Date.now();
@@ -1820,10 +1822,16 @@ async function load(){
   flushOutbox();
   if (WEB) setTimeout(pushRefresh, 6000);
   restoreLists(); setTimeout(prefetchLists, 400);   // every tab's list is fresh before you tap it
+  if (WEB && !MOCK && pushSaved() && 'Notification' in window && Notification.permission!=='granted') pushOff();   // Critique 4 (Sec #9): turned off in iPhone Settings, so email takes over
+  if (load.started) return;
+  startLoops(); maybeWelcome();
+}
+// Critique 4 (bug #1): the timers and listeners start whether the first load worked or the app opened from its saved copy
+// with no signal. While it's showing the saved copy (S.stale), coming back online or reopening the app tries again.
+function startLoops(){
   if (load.started) return;
   load.started = true;
   document.addEventListener('visibilitychange', ()=>{ if (!document.hidden && Date.now()-(S.listsAt||0)>120000) prefetchLists(); });
-  maybeWelcome();
   setInterval(tick, 250);
   setInterval(livePoll, 2500); livePoll();
   setInterval(refresh, 20000);
@@ -1831,6 +1839,7 @@ async function load(){
   // ER-6: fetch the screenshot tool in the background, so the first tap on Alfred opens quickly.
   setTimeout(()=>{ if (alfredEnabled()) loadH2C().catch(()=>{}); }, 4000);
 }
+function retryStale(){ if (S.stale && navigator.onLine && !retryStale.busy) { retryStale.busy=true; load().finally(()=>{ retryStale.busy=false; }); } }
 // ER-5: the very first load failed. Offer Try Again, and Sign In Again when it's about the Google sign-in.
 function bootFailed(e){
   if (WEB && e && e.auth) return;   // the sign-in screen is already showing
@@ -1869,7 +1878,7 @@ function maybeWelcome(){ if (pref('lt-tour','')==='5' || S.view==='live' || S.sh
 const BOX={ todo:'<i class="tbox"></i>', prog:'<i class="tbox prog"></i>', blk:'<i class="tbox blk"></i>', done:'<i class="tbox on">'+'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></i>' };
 // #5 (Nov 16): five short steps. Everything else is learned where it happens; the team guide and Alfred hold the rest.
 const COACH=[
-  { view:'home', sel:'#main .set-card', h:'Home', b:'<p>What needs you today: the team\'s Rally Cry, the meeting, and anything overdue or waiting on you.</p>' },
+  { view:'home', sel:'#main .focus-card, #main .set-card', h:'Huddle', b:'<p>What needs you today: the team\'s Rally Cry, anything overdue or waiting on you, and the next meeting.</p>' },
   { view:'mine', sel:'article.task .circ', h:'Your Tasks', b:'<p>Tap the box when a task is done. Hold it for In Progress or Blocked. Tap <b>+</b> to add a task.</p>' },
   { view:'team', sel:'.people', h:'Team Tasks', b:'<p>Everyone\'s tasks in one place. Tap a person to see just theirs. The printer opens the Accountability Report and One-on-Ones.</p>' },
   { view:'meetings', sel:'.mbar, .mtab', h:'Meetings', b:'<p>Start the weekly tactical here, and read any meeting\'s summary, decisions and Parking Lot.</p>' },
@@ -1939,6 +1948,8 @@ function busy(){
 }
 async function refresh(){
   if (!S.data) return;
+  if (S.stale) { retryStale(); return; }   // bug #1
+  if (S.touching) return;   // bug #3: never redraw the list under a finger that's mid-swipe
   if (S.outbox.length) { flushOutbox(); return; }   // send waiting changes first, so the list doesn't flip back
   if (busy() || !navigator.onLine) return;
   try {
@@ -2017,7 +2028,7 @@ async function flushOutbox(){
   if (sent) { toast(sent===1?'Your offline change was saved':'Your '+sent+' offline changes were saved'); render(); }
 }
 window.addEventListener('offline', updateOffline);
-window.addEventListener('online', ()=>{ updateOffline(); flushOutbox(); });
+window.addEventListener('online', ()=>{ updateOffline(); flushOutbox(); retryStale(); });
 
 function updateSynced(){
   const el=document.getElementById('synced'); if (!el || !S.lastSync) return;
@@ -2037,7 +2048,7 @@ function renderNav(){
   const badgeFor = k=>rc && S.data.isApprover ? '<span class="count" data-num="'+k+'">'+rc+'</span>' : '';
   renderMe(rc && S.data.isApprover ? rc : 0);
   // LB-11: on a computer, Change Requests, Recently Deleted, Settings and Account live in one labeled More menu.
-  if (TAB_VIEWS[S.view]) S.lastTab=S.view;
+  if (BOTTOM_TABS[S.view]) S.lastTab=S.view;   // Critique 4 (bug #19): Review isn't a bottom tab
   const tabOn=k=>S.view===k||(k==='meetings'&&S.view==='live')||(!TAB_VIEWS[S.view] && S.view!=='live' && S.lastTab===k);
   document.getElementById('navTop').innerHTML = TABS.filter(([k])=>k!=='review' || S.data.isApprover).map(([k,l])=>'<button type="button" class="'+(tabOn(k)?'on':'')+'" data-act="go" data-view="'+k+'">'+l+(k==='review'?badgeFor('top-review'):'')+'</button>').join('');
   renderLivebar();
@@ -2051,7 +2062,7 @@ function renderNav(){
   }
   let at=-1;
   BT.forEach(([k],i)=>{
-    const b=tabs.querySelector('[data-view="'+k+'"]'), on=S.view===k||(k==='meetings'&&inMeet)||(!TAB_VIEWS[S.view] && S.view!=='live' && S.lastTab===k);
+    const b=tabs.querySelector('[data-view="'+k+'"]'), on=S.view===k||(k==='meetings'&&inMeet)||(!BOTTOM_TABS[S.view] && S.view!=='live' && S.lastTab===k);
     b.classList.toggle('on', on); if (on) { at=i; b.setAttribute('aria-current','page'); } else b.removeAttribute('aria-current');
     if (k==='home') { const old=b.querySelector('.count'); if (old) old.remove(); const n=unreadActivity(); if (n) b.insertAdjacentHTML('beforeend','<span class="count" data-num="tab-home">'+n+'</span>'); }
   });
@@ -2084,6 +2095,7 @@ function morph(fn, kind){
 }
 // Where a screen sits, left to right, so a tab change knows which way to slide.
 const NAV_ORDER={ home:-1, mine:0, team:1, review:2, meetings:3, live:3, more:4, requests:4, deleted:4, settings:4, teamset:4, admin:4 };
+const BOTTOM_TABS={ home:1, mine:1, team:1, meetings:1 };
 const TAB_VIEWS={ home:'Huddle', mine:'My Tasks', team:'Team Tasks', meetings:'Meetings', review:'Review' };
 // Your initials (header on computers, title row on phones) open your page; a gold dot means meeting tasks wait in Review.
 function meBtn(rc){ return '<button type="button" class="mebtn" data-act="me-open" aria-label="Your account'+(rc?', '+rc+' to review':'')+'" title="Account">'+avatar(S.data.me, 32)+(rc?'<span class="rdot" aria-hidden="true"></span>':'')+'</button>'; }
@@ -2103,7 +2115,8 @@ function go(v, back){
   if (v==='topics') { v='meetings'; S.mtab='topics'; back=null; }
   if (S.tv && v!=='live') { S.tv=false; document.body.classList.remove('tv'); }
   // Each visit to a screen starts with no filters, so a person or priority picked on Team Tasks doesn't follow you around (BUG-12).
-  if (v!==S.view) { S.q=''; S.status='open'; S.priority=''; S.meeting=''; S.sort='due'; S.person=''; S.searchOpen=false; S.mSearch=false; }
+  if (v!==S.view) { S.q=''; S.status='open'; S.priority=''; S.meeting=''; S.sort='due'; S.person=''; S.searchOpen=false; S.mSearch=false;
+    S.mq=''; S.dq=''; S.tq=''; S.mhits=null; S.mfType=''; S.mfRange=''; }   // Critique 4 (bug #18)
   const t0=performance.now();
   if (v==='live' && S.view!=='live') { S.liveAt=Date.now(); if (S.live && !isHost(S.live)) setTimeout(maybePushAsk, 2500); }
   // Each tab remembers where you'd scrolled (AP-6); screens you push into start at the top.
@@ -2220,7 +2233,11 @@ function syncTbar(){
   let g=document.getElementById('tglide');
   if (!g) { g=document.createElement('div'); g.id='tglide'; g.setAttribute('aria-hidden','true'); g.hidden=true; document.body.appendChild(g); }
   const h=S.titleEl, words=h && h.isConnected && isPhone() ? (h.querySelector('.ttext')||h) : null;
-  if (!words) { bar.style.setProperty('--tp', 0); bar.classList.remove('show','part'); g.hidden=true; return; }
+  if (!words) { bar.style.setProperty('--tp', 0); bar.classList.remove('show','part'); g.hidden=true;
+    // Critique 4 (bug #8): after a rotation the page's own title and icons come back.
+    document.querySelectorAll('#main .ptitle .ttext, #main .head-row .ttext').forEach(el=>{ el.style.visibility=''; });
+    document.querySelectorAll('#main .ptools, #main svg.tree').forEach(el=>{ el.style.opacity=''; });
+    return; }
   const key=words.textContent.trim()+'|'+(S.back||'')+'|'+(S.meRc||0)+'|'+S.view;
   if (bar.dataset.t!==key) {
     bar.dataset.t=key;
@@ -2228,8 +2245,9 @@ function syncTbar(){
     bar.querySelector('.tb-t').textContent='';
     bar.querySelector('.tb-r').innerHTML=S.view==='more' ? '' : meBtn(S.meRc||0);
     const cs=getComputedStyle(words); g.textContent=words.textContent.trim();
-    Object.assign(g.style, { fontFamily:cs.fontFamily, fontWeight:cs.fontWeight, fontSize:cs.fontSize, color:cs.color, lineHeight:'1' });
+    Object.assign(g.style, { fontFamily:cs.fontFamily, fontWeight:cs.fontWeight, fontSize:cs.fontSize, lineHeight:'1' });
   }
+  g.style.color=getComputedStyle(words).color;   // Critique 4 (bug #20): follows a light/dark switch
   const lb=document.getElementById('livebar'), barTop=lb && !lb.hidden ? Math.max(0, lb.getBoundingClientRect().bottom) : 0;
   bar.style.top=barTop+'px';
   const raw=Math.max(0, Math.min(1, window.scrollY/GLIDE_DIST)), t=REDUCED ? (words.getBoundingClientRect().bottom < topSafe() ? 1 : 0) : raw;
@@ -2247,6 +2265,11 @@ function syncTbar(){
   g.style.transform='translate('+x.toFixed(1)+'px,'+(yc-r.height/2).toFixed(1)+'px) scale('+s.toFixed(3)+')';
 }
 let tbarRaf=0;
+// Critique 4 (bug #8, #22): after a rotation or resize, the title row is rebuilt and long cards are measured again.
+let rszRaf=0;
+window.addEventListener('resize', ()=>{ if (rszRaf) return; rszRaf=requestAnimationFrame(()=>{ rszRaf=0; if (!S.data) return; decorateTitle();
+  ['decResults','tpResults'].forEach(id=>{ const box=document.getElementById(id); if (!box) return;
+    box.querySelectorAll('.card.clamped').forEach(cd=>{ cd.classList.remove('clamped'); const mo=cd.querySelector('.card-more'); if (mo) mo.remove(); }); clampCards(box); }); }); });
 window.addEventListener('scroll', ()=>{ if (!S.titleEl && !document.getElementById('tglide')) return; if (tbarRaf) return; tbarRaf=requestAnimationFrame(()=>{ tbarRaf=0; syncTbar(); }); }, { passive:true });
 function renderPage(){
   renderNav();
@@ -2570,8 +2593,8 @@ function taskRow(t, mode){
   const line=[blk?'<span>Blocked'+(t.waiting_on?' · Waiting on '+esc(waitName(t.waiting_on)):'')+'</span>':'', date, review].filter(Boolean).join(' · ');
   return '<article class="task row-a pr-'+(pr||'none')+(done?' done':'')+'" data-act="task" data-id="'+t.id+'">'
     +'<i class="pbar" aria-hidden="true"></i>'
-    +'<button type="button" class="circ box'+(done?' on':prog?' prog':blk?' blk':'')+'" data-act="circle" data-id="'+t.id+'" aria-label="'+(done?'Done. Hold to start over: ':prog?'In progress. Mark done: ':blk?'Blocked. Mark in progress: ':'Mark in progress: ')+esc(t.title)+(t.priority?', '+esc(t.priority)+' priority':'')+'"'
-    +(isPhone()?'':' title="'+(done?'Done (hold to start over)':prog?'Mark done (hold to start over)':blk?'Blocked: mark in progress (hold to start over)':'Mark in progress')+'"')+'><i>'+ICON.check+'</i></button>'
+    +'<button type="button" class="circ box'+(done?' on':prog?' prog':blk?' blk':'')+'" data-act="circle" data-id="'+t.id+'" aria-label="'+(done?'Done. Hold to change: ':prog?'In progress. Mark done, or hold for other statuses: ':blk?'Blocked. Mark done, or hold for other statuses: ':'Mark done, or hold for other statuses: ')+esc(t.title)+(t.priority?', '+esc(t.priority)+' priority':'')+'"'
+    +(isPhone()?'':' title="'+(done?'Done (hold to change)':'Mark done (hold for more)')+'"')+'><i>'+ICON.check+'</i></button>'
     +'<div class="body">'+cardTitle(t, S.view==='team' && changedForMe(t))+(line?'<div class="meta row-date">'+line+'</div>':'')+'</div>'
     +'<span class="side">'+ownerStack(shown)+'</span></article>';
 }
@@ -2652,6 +2675,10 @@ function finishRow(row){
   document.addEventListener('pointerdown', e=>{
     const c=e.target.closest && e.target.closest('.circ'); if (!c) return;
     stop(); t=setTimeout(()=>{ t=null; const k=find(c.dataset.id); if (!k) return; S.held=Date.now(); buzz(10);
+      if (k.status==='Needs Review') { toast('This task is waiting in Review. Approve it there first.'); return; }   // Critique 4 (bug #12)
+      // Critique 4 (bug #11): held inside a panel (a meeting summary, Waiting on You), the menu comes back to that panel.
+      const sh=document.getElementById('sheet');
+      S.smBack=S.sheet && S.sheet!=='statusmenu' ? { sheet:S.sheet, y:sh ? sh.scrollTop : 0, open:sh ? [...sh.querySelectorAll('details')].map(d=>d.open) : [] } : null;
       S.smId=k.id; S.sheet='statusmenu'; showSheet(); }, 500);
   });
   ['pointerup','pointercancel','scroll'].forEach(ev=>document.addEventListener(ev, stop, true));
@@ -2760,10 +2787,16 @@ function showSheet(){
   }
 }
 function closeSheet(silent){
+  if (S.sheet==='statusmenu' && S.smBack && !silent) {   // bug #11: back to the panel it was opened from, where you were
+    const b=S.smBack; S.smBack=null; S.sheet=b.sheet; renderSheet();
+    const sh=document.getElementById('sheet'); if (sh) { sh.querySelectorAll('details').forEach((d,i)=>{ if (b.open[i]) d.open=true; }); sh.scrollTop=b.y; }
+    return;
+  }
+  S.smBack=null;
   if (S.sheet==='task' && S.edit && !S.edit.isNew && (S.saveTimer || S.edit.unsaved)) flushSave();
-  const draftId=S.sheet==='task' && S.edit && !S.edit.isNew && commentDraft(S.edit.task.id) ? S.edit.task.id : null;
+  const draftId=S.sheet==='task' && S.edit && !S.edit.isNew && commentDraft(S.edit.task.id) && !(S.posting && S.posting[S.edit.task.id]) && find(S.edit.task.id) ? S.edit.task.id : null;
   if (S.sheet==='topic' && (S.topicTimer || (S.topicEdit && S.topicEdit.unsaved))) flushTopic();
-  S.sheet=null; S.edit=null; S.topicEdit=null; S.confirmDel=false;
+  S.sheet=null; S.edit=null; S.topicEdit=null; S.confirmDel=false; S.decEdit=null;
   document.body.style.overflow=''; document.body.classList.remove('sheet-on');
   const w=document.getElementById('sheetWrap'), sh=document.getElementById('sheet');
   if (!w.hidden) {
@@ -2877,10 +2910,13 @@ function renderSheetBody(){
     return;
   }
   if (S.sheet==='newdecision') {
-    el.innerHTML='<div class="grab"></div><div class="sheet-head"><button type="button" class="btn ghost sm" data-act="close-sheet">Cancel</button><h3>New Decision</h3><button type="button" class="btn primary sm" data-act="dec-add" disabled>Add</button></div>'
-      +'<div class="err" id="f-err" role="alert"></div><div class="form"><label for="dc-text">Decision</label><textarea id="dc-text" rows="3" placeholder="What did we decide?"></textarea>'
-      +'<label for="dc-ctx">Why (optional)</label><textarea id="dc-ctx" rows="2" placeholder="The reasoning, or what it replaces"></textarea>'
-      +'<label for="dc-date">Date</label><input type="date" id="dc-date" value="'+esc(S.data.today)+'"></div>';
+    const de=S.decEdit;
+    el.innerHTML='<div class="grab"></div><div class="sheet-head"><button type="button" class="btn ghost sm" data-act="close-sheet">Cancel</button><h3>'+(de?'Edit Decision':'New Decision')+'</h3>'
+      +(de?'<button type="button" class="btn primary sm" data-act="dec-save">Save</button>':'<button type="button" class="btn primary sm" data-act="dec-add" disabled>Add</button>')+'</div>'
+      +'<div class="err" id="f-err" role="alert"></div><div class="form"><label for="dc-text">Decision</label><textarea id="dc-text" rows="3" placeholder="What did we decide?">'+(de?esc(de.decision):'')+'</textarea>'
+      +'<label for="dc-ctx">Why (optional)</label><textarea id="dc-ctx" rows="2" placeholder="The reasoning, or what it replaces">'+(de?esc(de.context||''):'')+'</textarea>'
+      +'<label for="dc-date">Date</label><input type="date" id="dc-date" value="'+esc(de?de.date:S.data.today)+'"></div>'
+      +(de?'<div class="set-card mt-l"><button type="button" class="set-row del-row" data-act="dec-del"><span>Delete Decision<small>It waits in Recently Deleted, where it can be restored.</small></span></button></div>':'');
     return;
   }
   if (S.sheet==='newtopic') {
@@ -3032,6 +3068,7 @@ function saveTopic(id, copy){
 function armDelete(){ S.confirmDel=true; renderSheet(); clearTimeout(S.delT); S.delT=setTimeout(()=>{ if (S.confirmDel) { S.confirmDel=false; if (S.sheet) renderSheet(); } }, 3500); }
 function deleteTask(){
   const id=S.edit.task.id;
+  commentDraft(id, '');   // Critique 4 (bug #5): a half-typed comment on a deleted task goes with it, and Undo stays on screen
   closeSheet();
   const t=find(id); if (t) { S.data.tasks.splice(S.data.tasks.indexOf(t),1); render(); }
   call('apiDeleteTask', id).then(()=>{ S.deleted=null; }).catch(e=>{ if (t) { replaceTask(t); render(); } toast('Couldn\'t delete. '+errText(e)); });
@@ -3114,6 +3151,13 @@ const ADMIN_TOOLS = [
   ['sample-remove','apiAdminRemoveSample','Remove Sample Data','Deletes everything marked [Sample]. Real tasks are not touched','Remove','demo']
 ].concat(WEB ? [['signout-all','apiSignOutEveryone','Sign Out Everyone','Ends every Huddle sign-in on every phone and computer, yours too. Use it if a phone is lost; everyone signs in with Google again','Sign Out']] : []);
 const ADMIN_ARM = ['sample-remove','signout-all'];   // these need a second tap
+// Critique 4 (Sec #18): open tasks whose owners are all off the team (People tab active = no) drop off the report and the
+// reminders, so Admin Tools lists them to hand off or close.
+function orphanTasksHtml(){
+  const active={}; (S.data.people||[]).forEach(p=>{ active[p.email]=1; });
+  const list=S.data.tasks.filter(t=>isOpen(t) && t.status!=='Needs Review' && !isPriv(t) && owners(t).length && !owners(t).some(o=>active[o]));
+  return list.length ? '<h3 class="set-sec">Tasks Without an Active Owner</h3>'+taskRows(list,'stack')+'<p class="set-note">Their owners are off the team for now. Open one to give it to someone else, or close it.</p>' : '';
+}
 function adminToolsHtml(){
   const A=S.admin=S.admin||{out:{}};
   return '<div class="set-card"><button type="button" class="set-row" data-act="go" data-view="requests" data-back="Admin Tools"><span>Change Requests<small>Everyone\'s feature requests and bug reports</small></span><span class="chev" aria-hidden="true">›</span></button></div>'
@@ -3123,7 +3167,7 @@ function adminToolsHtml(){
       +'<button type="button" class="btn sm '+(arm?'danger-btn':'ghost')+'" data-act="admin" data-key="'+k+'"'+(A.busy?' disabled':'')+'>'+(A.busy===k?'Working…':arm?(k==='signout-all'?'Tap again to sign out':'Tap again to remove'):b)+'</button></div>'
       +(o?'<div class="admin-out'+(o.err?' err':'')+'" role="status">'+(o.data?problemsHtml(o.data):esc(o.text))+'</div>':'');
   }).join('')+(A.demo?'':'<button type="button" class="set-row" data-act="admin-demo"><span>Demo Data<small>Load or remove the sample tasks and meetings</small></span><span class="chev" aria-hidden="true">›</span></button>')
-    +'</div><p class="set-note">Only approvers see these. Every action is recorded in the AdminLog tab of the Google Sheet.</p>'
+    +'</div><p class="set-note">Only approvers see these. Every action is recorded in the AdminLog tab of the Google Sheet.</p>'+orphanTasksHtml()
     +'<p class="set-note">Huddle '+esc(APP_VERSION)+(WEB && WEB.build ? ' ('+esc(WEB.build)+')' : '')+'</p>';
 }
 // LB-11: Admin Tools is its own screen behind one row in Settings.
@@ -3192,9 +3236,10 @@ async function renderDeleted(m){
   const row=(title,sub,act,id)=>'<div class="card del"><div><div class="t">'+esc(title)+'</div><div class="small muted">'+sub+'</div></div><button type="button" class="btn ghost sm" data-act="'+act+'" data-id="'+id+'">Restore</button></div>';
   // #22 (Nov 16): only the sections that have something, and one line of help at the bottom.
   const lead=backLink()+'<h2>Recently Deleted</h2>', foot='<p class="set-note mt-l">Restore puts it back where it was. Meeting tasks rejected in Review stay here for 30 days.</p>';
-  if (!d.tasks.length && !d.topics.length && !(d.meetings||[]).length) { m.innerHTML=lead+'<div class="empty"><b>Nothing Deleted</b>Deleted tasks, Parking Lot topics and meetings wait here so you can restore them.</div>'; return; }
+  if (!d.tasks.length && !d.topics.length && !(d.meetings||[]).length && !(d.decisions||[]).length) { m.innerHTML=lead+'<div class="empty"><b>Nothing Deleted</b>Deleted tasks, Parking Lot topics and meetings wait here so you can restore them.</div>'; return; }
   m.innerHTML=lead
     +(d.tasks.length?'<h3 class="set-sec">Tasks</h3><div class="list">'+d.tasks.map(t=>row(t.title,(t.rejected?'Rejected in Review ':'Deleted ')+esc(fmtDate(t.deleted_at))+(t.deleted_by?' by '+esc(who(t.deleted_by)):'')+' · '+esc(owners(t).map(firstName).join(', ')),'restore-task',t.id)).join('')+'</div>':'')
+    +((d.decisions||[]).length?'<h3 class="set-sec">Decisions</h3><div class="list">'+d.decisions.map(x=>row(x.decision,'Deleted '+esc(fmtDate(x.deleted_at))+(x.deleted_by?' by '+esc(who(x.deleted_by)):''),'restore-decision',x.id)).join('')+'</div>':'')
     +(d.topics.length?'<h3 class="set-sec">Parking Lot</h3><div class="list">'+d.topics.map(t=>row(t.topic,'Deleted '+esc(fmtDate(t.deleted_at))+(t.deleted_by?' by '+esc(who(t.deleted_by)):''),'restore-topic',t.id)).join('')+'</div>':'')
     +((d.meetings||[]).length?'<h3 class="set-sec">Meetings</h3><div class="list">'+d.meetings.map(x=>row(x.title||x.type, esc(fmtDate(x.date))+(x.live?' · Guided meeting':'')+' · Deleted '+esc(fmtDate(x.deleted_at))+(x.deleted_by?' by '+esc(who(x.deleted_by)):''),x.live?'restore-log':'restore-meeting',x.id)).join('')+'</div>':'')
     +foot;
@@ -3451,7 +3496,10 @@ async function postComment(el){
   const offlineNote=()=>{ queueComment(id, box.value, S.edit && S.edit.task.title, cid); box.value=''; commentDraft(id, ''); toast('Comment saved on this phone. It will post when you\'re back online.'); };
   if (!navigator.onLine || isTmp(id) || S.outbox.length) { offlineNote(); return; }
   let netDown=false;
-  const c=await saving(el, 'Posting…', ()=>call('apiAddComment', id, box.value, cid).catch(e=>{ if (isNetErr(e)) { netDown=true; return null; } throw e; }));
+  // Critique 4 (bug #4): while it's on its way, closing the task doesn't say "wasn't posted".
+  S.posting=S.posting||{}; S.posting[id]=true;
+  const c=await saving(el, 'Posting…', ()=>call('apiAddComment', id, box.value, cid).catch(e=>{ if (isNetErr(e)) { netDown=true; return null; } throw e; }))
+    .finally(()=>{ delete S.posting[id]; });
   if (netDown) { offlineNote(); return; }
   if (!c) return;
   commentDraft(id, '');
@@ -3618,7 +3666,8 @@ function renderDecisionResults(){
   const list=S.decisions.filter(d=>(!since || String(d.date)>=since) && words.every(w=>(d.decision+' '+(d.context||'')+' '+(d.topic||'')+' '+(d.meeting_title||'')+' '+(d.raised_by||'')).toLowerCase().indexOf(w)>=0));
   if (!S.decisions.length) { box.innerHTML='<div class="empty"><b>No Decisions Yet</b>Alfred adds them from each recorded meeting, or tap Add Decision.</div>'; return; }
   if (!list.length) { box.innerHTML='<div class="empty"><b>No Matches</b>Try a different word.</div>'; return; }
-  box.innerHTML='<div class="list">'+list.map(d=>'<button type="button" class="card decision" data-act="'+(d.meeting_id?'meeting-open':'noop')+'" data-id="'+esc(d.meeting_id||'')+'" data-k="'+esc(d.id)+'">'
+  // Critique 4 (Sec #14): a decision added by hand opens to be fixed or deleted (by whoever added it, or an approver).
+  box.innerHTML='<div class="list">'+list.map(d=>'<button type="button" class="card decision" data-act="'+(d.meeting_id?'meeting-open':d.editable?'dec-edit':'noop')+'" data-id="'+esc(d.meeting_id||'')+'" data-k="'+esc(d.id)+'">'
     +'<div class="t">'+esc(d.decision)+'</div>'
     +(d.context?'<div class="sub">'+esc(d.context)+'</div>':'')
     +'<div class="meta">'+esc([d.meeting_title, fmtDate(d.date), d.raised_by?'Raised by '+d.raised_by:''].filter(Boolean).join(' · '))+'</div>'
@@ -3682,8 +3731,10 @@ function searchMeetings(){
   clearTimeout(mqT);
   const q=String(S.mq||'').trim().toLowerCase();
   if (q.length<2) { renderMeetingResults(); return; }
-  mqT=setTimeout(()=>{ call('apiSearchMeetings', q).then(list=>{ const map={}; (list||[]).forEach(h=>map[h.id]=h.in); S.mhits={ q:q, map:map }; renderMeetingResults(); })
-    .catch(()=>{ S.mhits={ q:q, map:{} }; renderMeetingResults(); }); }, 450);
+  // Critique 4 (bug #7): an answer for an older search (the box has changed since) is ignored.
+  const now=()=>String(S.mq||'').trim().toLowerCase();
+  mqT=setTimeout(()=>{ call('apiSearchMeetings', q).then(list=>{ if (now()!==q) return; const map={}; (list||[]).forEach(h=>map[h.id]=h.in); S.mhits={ q:q, map:map }; renderMeetingResults(); })
+    .catch(()=>{ if (now()!==q) return; S.mhits={ q:q, map:{} }; renderMeetingResults(); }); }, 450);
   renderMeetingResults();
 }
 
@@ -3769,6 +3820,7 @@ function applyLive(res){
     S.liveGone=0; liveConn();
     const why = res.canceled && S.live && res.canceled.id===S.live.id ? res.canceled.by+' canceled the meeting' : 'The meeting has ended';
     if (S.startLive) { S.startLive=false; toast('That meeting has already ended.'); }
+    try { sessionStorage.removeItem('lt-was-live'); } catch(e){}   // Critique 4 (bug #10)
     if (S.live) { S.live=null; if (S.view==='live') { S.view='meetings'; toast(why); render(); } else { renderLivebar(); if (res.canceled) toast(why); } }
     return;
   }
@@ -4317,6 +4369,7 @@ function cancelCard(host){
 }
 function cancelLive(){
   const st=S.live; if (!st) return;
+  try { sessionStorage.removeItem('lt-was-live'); } catch(e){}   // bug #10
   S.endedId=st.id; S.live=null; S.tv=false; document.body.classList.remove('tv');
   S.view='meetings'; render(); window.scrollTo(0,0); fadeIn(document.getElementById('main'), 200);   // Batch 3: Cancel Meeting fades
   call('apiLiveCancel').then(()=>{
@@ -4327,6 +4380,7 @@ function cancelLive(){
 // Ending is instant on this phone: the meeting card appears right away and the server catches up in the background.
 function endLive(){
   const st=S.live; if (!st) return;
+  try { sessionStorage.removeItem('lt-was-live'); } catch(e){}   // bug #10
   if (st.startedAt) {
     const r=Object.values(st.ratings||{});
     S.localLogs=(S.localLogs||[]).concat([{ id:st.id, date:S.data.today, title:st.title,
@@ -4378,7 +4432,7 @@ async function liveAddItem(el){
 /* ---------- Alfred chat bubble ---------- */
 // The conversation lives only in this page (S.alf) and is gone after a reload. Every message carries the screen
 // context below, and the screenshot taken when the bubble was tapped, so nobody has to describe where they were.
-const APP_VERSION = '2026.11.16-glide';
+const APP_VERSION = '2026.11.16-c4fix';
 const H2C_URL = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
 const DIAG = { errors:[], actions:[] };   // last 10 of each, for bug reports
 function pushDiag(list, item){ list.push(item); if (list.length>10) list.shift(); }
@@ -4510,7 +4564,10 @@ async function captureScreen(){
     const bg=getComputedStyle(document.body).backgroundColor;
     const canvas=await Promise.race([
       html2canvas(document.body, { x:window.scrollX, y:window.scrollY, width:w, height:h, windowWidth:w, windowHeight:h, scale:scale, useCORS:true, logging:false, backgroundColor:bg,
-        ignoreElements:el=>el.id==='alfFab' || el.id==='alfWrap' || el.id==='alfPick' || el.id==='toast' }),
+        ignoreElements:el=>el.id==='alfFab' || el.id==='alfWrap' || el.id==='alfPick' || el.id==='toast',
+        // Critique 4 (Sec #12): Only Me tasks show as "Only Me task" in the picture.
+        onclone:doc=>{ doc.querySelectorAll('article.task').forEach(r=>{ if (!r.querySelector('.title .lock')) return;
+          const t=r.querySelector('.title'); if (t) t.innerHTML=LOCK+'Only Me task'; r.querySelectorAll('.meta, small').forEach(x=>{ x.textContent=''; }); }); } }),
       new Promise((_,fail)=>setTimeout(()=>fail(new Error('Screenshot took too long')), 9000))]);
     let c=canvas;
     if (c.width>960) { const k=900/c.width, d=document.createElement('canvas'); d.width=900; d.height=Math.round(c.height*k); d.getContext('2d').drawImage(c,0,0,d.width,d.height); c=d; }
@@ -4537,6 +4594,7 @@ function alfOrigin(panel){
   panel.style.transformOrigin = r && r.width ? Math.round(r.left+r.width/2-p.left)+'px '+Math.round(r.top+r.height/2-p.top)+'px' : '50% 100%';
 }
 function showAlfred(){
+  clearTimeout(S.alf.resetT);   // bug #17
   const w=document.getElementById('alfWrap'), panel=document.getElementById('alfPanel'), bd=w.querySelector('.backdrop');
   const opening=w.hidden || !S.alf.open;
   S.alf.open=true; document.body.classList.add('alf-open'); document.body.style.overflow='hidden';
@@ -4567,7 +4625,7 @@ function alfSaveChat(){
   const A=S.alf; if (!S.data || !A.msgs.some(m=>m.role==='assistant' && m.text)) return;
   const first=A.msgs.find(m=>m.role==='user'), id=A.chatId||('c'+Date.now());
   const entry={ id:id, at:new Date().toISOString(), title:String(first ? first.text : 'Chat').slice(0,80),
-    msgs:A.msgs.filter(m=>(m.role==='user' && !m.failed) || (m.role==='assistant' && m.text)).map(m=>({ role:m.role, text:m.text, api:m.api||'' })) };
+    msgs:A.msgs.filter(m=>(m.role==='user' && !m.failed) || (m.role==='assistant' && m.text)).map(m=>({ role:m.role, text:m.text })) };   // Critique 4 (Sec #19): no hidden app context
   alfHistory([entry].concat(alfHistory().filter(x=>x.id!==id)));
 }
 function alfReset(){
@@ -4577,7 +4635,8 @@ function alfReset(){
   alfNote(); renderAlfred();
 }
 function closeAlfred(keep){
-  if (!keep) setTimeout(alfReset, 300);
+  // Critique 4 (bug #17): the fresh start waits until Alfred has really closed; reopening right away keeps what you typed.
+  clearTimeout(S.alf.resetT); if (!keep) S.alf.resetT=setTimeout(()=>{ if (!S.alf.open) alfReset(); }, 300);
   return new Promise(done=>{
     const w=document.getElementById('alfWrap'), panel=document.getElementById('alfPanel'), bd=w.querySelector('.backdrop');
     S.alf.open=false; document.body.classList.remove('alf-open'); if (!S.sheet) document.body.style.overflow='';
@@ -4766,7 +4825,7 @@ function draftCard(d, i, j){
     h+='<div class="tt">'+esc(d.title)+'</div><div class="lbl">'+(d.type==='Bug'?'What\'s Wrong':'What You\'d Like')+'</div><p>'+esc(d.description)+'</p>'
       +(d.acceptance?'<div class="lbl">Done Looks Like</div><p>'+esc(d.acceptance)+'</p>':'');
   }
-  h+= shot ? '<img src="'+S.alf.shot+'" alt="Screenshot of the screen you were on"><div class="shot-line"><span class="small muted">Screenshot included</span><button type="button" class="linkbtn" data-act="alf-d-shot" data-val="removed" '+key+'>Remove</button></div>'
+  h+= shot ? '<img src="'+S.alf.shot+'" alt="Screenshot of the screen you were on"><div class="shot-line"><span class="small muted">Screenshot included. Only Me tasks are hidden.</span><button type="button" class="linkbtn" data-act="alf-d-shot" data-val="removed" '+key+'>Remove</button></div>'
     : '<div class="shot-line"><span class="small muted">No screenshot</span><button type="button" class="linkbtn" data-act="alf-d-retake" '+key+'>Take One</button></div>';
   if (d.error) h+='<div class="err">'+esc(d.error)+'</div>';
   h+='<div class="acts"><button type="button" class="btn primary sm" data-act="alf-d-send" '+key+(d.state==='sending'?' disabled':'')+'>'+(d.state==='sending'?'Sending…':'Send Request')+'</button>'
@@ -4838,6 +4897,7 @@ async function sendAlfred(text, retryIndex){
   // The screenshot is taken while the panel opens (Batch 3); a quick first message waits for it here.
   if (retryIndex==null) {
     if (A.shotP) { try { await A.shotP; } catch(e){} }
+    if ((A.epoch||0)!==epoch) return;   // bug #16
     if (A.shot && !A.shotUsed) { A.msgs.forEach(m=>{ m.shot=false; }); msg.shot=true; A.shotUsed=true; }
   }
   // While Alfred works, ask every 1.5 seconds what it's doing ("Searching meetings…").
@@ -4850,7 +4910,7 @@ async function sendAlfred(text, retryIndex){
     if (r.error) { msg.failed=true; msg.error=r.error; }
     else A.msgs.push({ role:'assistant', text:r.reply||'', drafts:(r.drafts||[]).map(d=>Object.assign({}, d, { state:'draft', shotState:A.shot?'yes':'none', ctx:A.lastCtx })),
       proposals:(r.proposals||[]).map(p=>Object.assign({}, p, { state:'ready' })) });
-  } catch(e) { msg.failed=true; msg.error='Could not reach Alfred: '+errText(e); }
+  } catch(e) { clearInterval(poll); if ((A.epoch||0)!==epoch) return; msg.failed=true; msg.error='Could not reach Alfred: '+errText(e); }   // bug #16: a closed chat's failure leaves the new chat alone
   clearInterval(poll);
   A.sending=false; A.progress=''; A.scrollDown=true; renderAlfred();
 }
@@ -5073,6 +5133,7 @@ function actClick(e, el){
   // #36 (Nov 16): one tap finishes a task (with Undo). Holding the box offers In Progress, Blocked and Not Started.
   else if (a==='circle') { if (Date.now()-(S.held||0)<800) return; const t=find(id); if (!t) return;
     if (t.status==='Done') { toast('Already done. Hold the box to change it.'); return; }
+    if (t.status==='Needs Review') { toast('This task is waiting in Review. Approve it there first.'); return; }   // Critique 4 (bug #12)
     const next='Done';
     mineOrConfirm(t, next, ()=>{ haptic(); setStatus(id, next, { quiet:true }); }); }
   else if (a==='sortfilter') { S.sheet='sortfilter'; showSheet(); }
@@ -5118,6 +5179,7 @@ function actClick(e, el){
   else if (a==='topic-delete') { if (S.confirmDel) deleteTopic(); else armDelete(); }
   else if (a==='restore-task') { restoreTask(id, el); }
   else if (a==='restore-topic') { restoreTopic(id, el); }
+  else if (a==='restore-decision') { saving(el, 'Restoring…', ()=>call('apiRestoreDecision', id)).then(r=>{ if (!r) return; S.decisions=null; S.deleted=null; render(); toast('Decision restored'); }); }
   else if (a==='meeting-open') openMeeting(id);
   else if (a==='mtg-mode') { S.mtg.mode=v; S.mtg.confirmDel=false; renderSheet(); const f=document.getElementById(v==='context'?'mtg-ctx':'mtg-title'); if (f) f.focus(); }
   else if (a==='mtg-save-context') saveMeetingContext(el);
@@ -5219,7 +5281,14 @@ function actClick(e, el){
   else if (a==='mf') { S[el.dataset.key]=el.dataset.val; closeSheet(); }
   else if (a==='mf-reset') { S.mfType=''; S.mfRange=''; closeSheet(); }
   else if (a==='topic-new') { S.sheet='newtopic'; showSheet(); setTimeout(()=>{ const f=document.getElementById('tp-new'); if (f) f.focus(); }, 320); }
-  else if (a==='dec-new') { S.sheet='newdecision'; showSheet(); setTimeout(()=>{ const f=document.getElementById('dc-text'); if (f) f.focus(); }, 320); }
+  else if (a==='dec-edit') { const d=(S.decisions||[]).find(x=>x.id===el.dataset.k); if (!d) return; S.decEdit=d; S.sheet='newdecision'; showSheet(); }
+  else if (a==='dec-save') { const d=S.decEdit; if (!d) return; const text=document.getElementById('dc-text').value.trim(), ctx=document.getElementById('dc-ctx').value.trim(), date=document.getElementById('dc-date').value;
+    if (!text) { const er=document.getElementById('f-err'); if (er) er.textContent='Type the decision first.'; return; }
+    saving(el, 'Saving…', ()=>call('apiUpdateDecision', d.id, text, ctx, date)).then(r=>{ if (!r) return; S.decisions=null; closeSheet(); render(); }); }
+  else if (a==='dec-del') { const d=S.decEdit; if (!d) return;
+    saving(el, 'Deleting…', ()=>call('apiDeleteDecision', d.id)).then(r=>{ if (!r) return; S.decisions=(S.decisions||[]).filter(x=>x.id!==d.id); S.deleted=null; closeSheet(); render();
+      toast('Moved to Recently Deleted', ()=>call('apiRestoreDecision', d.id).then(()=>{ S.decisions=null; S.deleted=null; render(); toast('Decision restored'); }).catch(e=>toast('Couldn\'t restore. '+errText(e))), { label:'Undo' }); }); }
+  else if (a==='dec-new') { S.decEdit=null; S.sheet='newdecision'; showSheet(); setTimeout(()=>{ const f=document.getElementById('dc-text'); if (f) f.focus(); }, 320); }
   else if (a==='dec-add') { const text=document.getElementById('dc-text').value.trim(), ctx=document.getElementById('dc-ctx').value.trim(), date=document.getElementById('dc-date').value, cid=newCid();
     if (text) saving(el, 'Adding…', ()=>call('apiAddDecision', text, ctx, date, cid)).then(r=>{ if (!r) return; S.decisions=null; closeSheet(); render(); }); }
 }
@@ -5242,7 +5311,17 @@ document.addEventListener('keydown', e=>{
   }
   if ((e.key==='Enter' || e.key===' ') && e.target.matches && e.target.matches('article .title[role=button]')) { e.preventDefault(); openTask(e.target.closest('article').dataset.id); }
 });
-let swipe=null;
+let swipe=null, rvSwipe=null, ptr=null;
+// Critique 4 (bug #3): when iOS cancels a touch (a call, Notification Center) or a new touch starts, any swipe or pull still
+// in progress is dropped without acting, so it can't finish on the next tap.
+function gestureReset(){
+  if (swipe) { swipe.card.style.transform=''; swipe.card.classList.remove('swiping','swipe-ready'); swipe=null; }
+  if (rvSwipe) { rvSwipe.card.style.transform=''; rvSwipe.card.classList.remove('rv-yes','rv-no'); rvSwipe=null; }
+  if (ptr) { ptr=null; const el=document.getElementById('ptr'); if (el && !el.classList.contains('busy')) { el.classList.add('settle'); el.style.height='0px'; } }
+}
+document.addEventListener('touchstart', ()=>{ S.touching=true; gestureReset(); }, { passive:true, capture:true });
+document.addEventListener('touchend', ()=>{ S.touching=false; }, { passive:true, capture:true });
+document.addEventListener('touchcancel', ()=>{ S.touching=false; gestureReset(); }, { passive:true, capture:true });
 document.addEventListener('touchstart', e=>{
   const card=e.target.closest && e.target.closest('article.task');
   if (!card || e.target.closest('select, a, button') || pref('lt-swipe','on')==='off' || e.touches[0].clientX<20) return;   // the left edge is the swipe back
@@ -5264,13 +5343,13 @@ document.addEventListener('touchend', ()=>{
   if (!s.on) return;
   S.swiped=true; setTimeout(()=>{ S.swiped=false; }, 400);
   s.card.classList.remove('swiping');
+  if (!s.card.isConnected) return;   // bug #3: the list was redrawn mid-swipe
   if (s.dx<=90 && s.card.animate && !REDUCED) s.card.animate([{ transform:'translateX('+s.dx+'px)' }, { transform:'none' }], { duration:220, easing:'cubic-bezier(.2,.8,.2,1)' });
   s.card.style.transform='';
   if (s.dx>90) { const t=find(s.card.dataset.id), card=s.card; mineOrConfirm(t, 'Done', ()=>{ haptic(); setStatus(card.dataset.id, 'Done', { quiet:true }); }, ()=>card.classList.remove('swipe-ready')); } else s.card.classList.remove('swipe-ready');
 });
 
 // #21: on Review, swipe a card that looks fine right to approve it, or left to reject it (approvers; Undo as with the buttons).
-let rvSwipe=null;
 document.addEventListener('touchstart', e=>{
   const card=S.view==='review' && S.data && S.data.isApprover && e.target.closest && e.target.closest('article.card.rv:not(.unsure)');
   if (!card || e.target.closest('button, a') || e.touches[0].clientX<20) return;
@@ -5288,15 +5367,16 @@ document.addEventListener('touchend', ()=>{
   if (!rvSwipe) return; const s=rvSwipe; rvSwipe=null; if (!s.on) return;
   S.swiped=true; setTimeout(()=>{ S.swiped=false; }, 400);
   s.card.style.transform=''; s.card.classList.remove('rv-yes','rv-no');
+  if (!s.card.isConnected) return;   // bug #3
   if (Math.abs(s.dx)>90) { haptic(); review(s.card.dataset.id, s.dx>0, null); }
 });
 
 // Swipe down on a bottom sheet (More, Start a Meeting, a task) to dismiss it, like iOS.
 // Pull down from the top of any list to reload everything from the server.
-let ptr=null;
 const PTR_AT=56;   // pull height (px) at which letting go refreshes (about 112px of finger travel)
 document.addEventListener('touchstart', e=>{
-  if (S.sheet || S.alf.open || S.refreshing || window.scrollY>0 || S.view==='live' || (e.target.closest && e.target.closest('#sheetWrap, #alfWrap, input, textarea, select'))) return;
+  if (S.sheet || S.alf.open || S.refreshing || window.scrollY>0 || S.view==='live' || (e.target.closest && e.target.closest('#sheetWrap, #alfWrap, #report, #report-leaving, #coach, #signin, input, textarea, select'))) return;
+  if (document.getElementById('report') || document.getElementById('signin')) return;   // Critique 4 (bug #9)
   ptr={ y:e.touches[0].clientY, x:e.touches[0].clientX, h:0, on:false };
 }, { passive:true });
 document.addEventListener('touchmove', e=>{
@@ -5500,7 +5580,7 @@ new MutationObserver(list=>{
 // session is over ({auth:true}), the sign-in screen comes back. Nothing here runs on the old Google address or the preview.
 const WEB_KEYS = { token:'lt-session', me:'lt-me' };
 // Lists saved on this device for the signed-in person. They go when someone signs out or a different person signs in.
-const WEB_PERSONAL = ['lt-boot','lt-lists','lt-seen','lt-alf-history','lt-drafts'];
+const WEB_PERSONAL = ['lt-boot','lt-lists','lt-seen','lt-alf-history','lt-drafts','lt-mtg','lt-push','lt-task-seen','lt-team-seen','lt-act-seen'];   // Critique 4 (Sec #4)
 function webToken(){ try { return localStorage.getItem(WEB_KEYS.token)||''; } catch(e){ return ''; } }
 function webForget(keys){ keys.forEach(k=>{ try { localStorage.removeItem(k); } catch(e){} }); }
 // One POST to the Apps Script web app. text/plain keeps it a "simple" request (no CORS preflight); Google answers with a
@@ -5527,6 +5607,7 @@ function webCall(fn, args){
 // unsent changes in case the same person signs back in, and show the sign-in screen.
 function webSignedOut(msg){
   webForget([WEB_KEYS.token].concat(WEB_PERSONAL));
+  try { navigator.clearAppBadge().catch(()=>{}); } catch(e){}   // Critique 4 (bug #2)
   webSignIn(msg || (S.data ? 'You were signed out. Sign in again to keep going.' : ''), !!S.data);
 }
 // The branded sign-in screen: navy, the Huddle name and Google's own Sign in with Google button.
@@ -5601,8 +5682,11 @@ function webGotCredential(resp){
 function webSignOut(){
   const n=(S.outbox||[]).length;
   askLive('Sign Out?', n ? n+' change'+(n===1?' hasn\'t':'s haven\'t')+' been sent yet and will be lost. Sign out anyway?' : 'You\'ll sign in with Google again next time.', 'Sign Out', ()=>{
-    const done=()=>{ webForget([WEB_KEYS.token, WEB_KEYS.me, 'lt-outbox'].concat(WEB_PERSONAL)); try { google.accounts.id.disableAutoSelect(); } catch(e){} location.reload(); };
-    call('apiSignOut').then(done, done);
+    const done=()=>{ webForget([WEB_KEYS.token, WEB_KEYS.me, 'lt-outbox'].concat(WEB_PERSONAL)); try { google.accounts.id.disableAutoSelect(); } catch(e){}
+      try { navigator.clearAppBadge().catch(()=>{}); } catch(e){} location.reload(); };
+    // Critique 4 (Sec #1): this device's notifications stop too (the server removes its notification address).
+    const s=pushSaved();
+    call('apiSignOut', s ? s.token : '').then(done, done);
   });
 }
 // The app updates itself: sw.js keeps this page on the phone (instant open, works with no signal) and fetches a newer
@@ -5700,14 +5784,15 @@ function pushKind(k){
 function pushRefresh(){
   const s=pushSaved();
   if (MOCK || !s || pushState()!=='on' || Date.now()-(s.at||0)<86400000) return;
-  pushToken().then(tok=>call('apiPushRegister', tok, s.kinds, navigator.userAgent).then(()=>{
-    if (tok!==s.token) call('apiPushUnregister', s.token).catch(()=>{});
+  pushToken().then(tok=>call('apiPushRegister', tok, s.kinds, navigator.userAgent, tok!==s.token ? s.token : '').then(()=>{   // bug #23
     pushSaved(Object.assign(s, { token:tok, at:Date.now() }));
   })).catch(()=>{});
 }
 // A tapped notification (sw.js sends its address when Huddle is already open): go to that task, the meeting or the tab.
 function openFromPush(url){
   let q; try { q=new URL(url, location.href).searchParams; } catch(e){ return; }
+  if (document.getElementById('report')) closeReport();   // Critique 4 (bug #6): nothing covers what the notification opens
+  if (S.alf.open) closeAlfred();
   const task=q.get('task'), v=q.get('view');
   if (task) {
     // Nov 16 (#42): Huddle open in the background doesn't have a brand-new task yet: fetch the list, then open it.
