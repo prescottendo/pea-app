@@ -19,7 +19,7 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" type="image/png" href="icon-192.png">
-<script>window.HUDDLE_WEB={"api":"https://script.google.com/macros/s/AKfycbzM8K_-XRMDdOJYJ3THn_FhyZkRreMddHIBAOFCFVoq5S_Y7MnsfFLsl7ac_fyDPrch/exec","clientId":"473377418367-cqmmnfum4kshq16973m4sj2jqqfa55p0.apps.googleusercontent.com","build":"ae9aafb","push":{"config":{"apiKey":"AIzaSyBON-0KvTXPD_MV6ykhYvCoBRiECEHyE9c","authDomain":"huddle-e2548.firebaseapp.com","projectId":"huddle-e2548","storageBucket":"huddle-e2548.firebasestorage.app","messagingSenderId":"554653922065","appId":"1:554653922065:web:87de53b4cb11b36835d2b0"},"vapidKey":"BHKeDoBmW7vL-qAT3ocyTaMaZ27Ca66jvQtTes2NC4CPoWFiPBJcga7wVd-RD1IuyhBki0oKXwPBGSNq002s8o8"}};document.documentElement.classList.add('web');</script>
+<script>window.HUDDLE_WEB={"api":"https://script.google.com/macros/s/AKfycbzM8K_-XRMDdOJYJ3THn_FhyZkRreMddHIBAOFCFVoq5S_Y7MnsfFLsl7ac_fyDPrch/exec","clientId":"473377418367-cqmmnfum4kshq16973m4sj2jqqfa55p0.apps.googleusercontent.com","build":"310efc1","push":{"config":{"apiKey":"AIzaSyBON-0KvTXPD_MV6ykhYvCoBRiECEHyE9c","authDomain":"huddle-e2548.firebaseapp.com","projectId":"huddle-e2548","storageBucket":"huddle-e2548.firebasestorage.app","messagingSenderId":"554653922065","appId":"1:554653922065:web:87de53b4cb11b36835d2b0"},"vapidKey":"BHKeDoBmW7vL-qAT3ocyTaMaZ27Ca66jvQtTes2NC4CPoWFiPBJcga7wVd-RD1IuyhBki0oKXwPBGSNq002s8o8"}};document.documentElement.classList.add('web');</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <!-- The fonts load without holding up the first paint; the page shows in the phone's own font for a moment if needed. -->
@@ -851,11 +851,16 @@
   .alf-head { display:flex; align-items:center; gap:12px; padding:12px max(14px, env(safe-area-inset-right, 0px)) 10px 14px; background:var(--header); color:var(--header-ink); flex:none; }
   .alf-head .hat { width:36px; height:36px; border-radius:50%; color:var(--header-ink); display:grid; place-items:center; flex:none; }
   .alf-head .hat svg { width:30px; height:30px; }
-  .alf-head { position:relative; } .alf-head .t { position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); text-align:center; pointer-events:none; }
-  .alf-head .alf-done { margin-left:auto; }   /* Nov 16 (Brayden): the clock at the far left, then New (compose); Done on the right */
-  .alf-head .alf-new { width:40px; height:40px; padding:0; display:grid; place-items:center; margin-left:-8px; }   /* Brayden: close to the clock */ .alf-head .alf-new svg { width:22px; height:22px; }
+  /* Nov 16 (Brayden): the grabber at the top center (drag down to close, or tap outside); the hat and Alfred on the left;
+     history and New on the right. No Done button (a Close button stays for screen readers only). */
+  .alf-head { position:relative; padding-top:20px; }
+  .alf-grab { position:absolute; top:7px; left:50%; transform:translateX(-50%); width:38px; height:5px; border-radius:999px; background:rgba(255,255,255,.45); }
+  .alf-head .alf-tools { margin-left:auto; display:flex; align-items:center; gap:2px; }
+  .alf-head .alf-new { width:40px; height:40px; padding:0; display:grid; place-items:center; } .alf-head .alf-new svg { width:22px; height:22px; }
   .alf-head .alf-new.armed { width:auto; padding:8px 4px; }
-  .alf-head .hat { display:none; }   /* Nov 16 (Brayden): no hat in the header; the title is centered */
+  .alf-head .alf-x { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; border:0; }
+  .alf-head .alf-x:focus-visible { position:static; width:auto; height:auto; margin:0; clip:auto; padding:8px 4px; }
+  @media (min-width:700px) { .alf-grab { display:none; } .alf-head { padding-top:12px; } }
   .alf-head b { display:block; font-family:var(--serif); font-size:var(--fs-title); line-height:1.15; }
   .alf-head small { display:block; color:var(--header-muted); font-size:var(--fs-sub); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
   .alf-head button { border:none; background:none; color:var(--header-ink); border-radius:12px; padding:8px 4px; font-size:17px; font-weight:400; flex:none; }
@@ -1539,9 +1544,8 @@
 <button class="alf-fab" id="alfFab" type="button" data-act="alf-open" aria-label="Ask Alfred" title="Ask Alfred (drag to move)" hidden><svg viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><path d="M9 6.7h14a1 1 0 0 1 1 1v8.2H8V7.7a1 1 0 0 1 1-1z"/><rect x="8" y="18.9" width="16" height="2.4"/><path d="M5 19.7Q16 21.7 27 19.7L27 21.68Q16 26.92 5 21.68Z"/></svg></button>
 <div class="alf-wrap" id="alfWrap" hidden><div class="backdrop" data-act="alf-close"></div>
   <section class="alf-panel" id="alfPanel" role="dialog" aria-modal="true" aria-label="Alfred chat" tabindex="-1">
-    <div class="alf-head"><button type="button" class="alf-clock" data-act="alf-history" aria-label="Past Chats and Your Requests" title="Past Chats and Your Requests"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 12a8.5 8.5 0 1 0 2.6-6.1L3.5 8.5"/><path d="M3.5 3.8v4.7h4.7"/><path d="M12 7.5v4.7l3.2 1.9"/></svg></button><button type="button" class="alf-new" data-act="alf-new" aria-label="New chat" title="New chat"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 4.5H6.5a2 2 0 0 0-2 2v11a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V13"/><path d="M17.6 3.6a1.9 1.9 0 0 1 2.8 2.8L12 14.8l-3.6.8.8-3.6z"/></svg></button><span class="hat"><svg viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><rect x="8" y="6.7" width="16" height="14.6" rx="1"/><rect x="8" y="15.9" width="16" height="3" class="hat-band"/><path d="M5 19.7Q16 21.7 27 19.7L27 21.68Q16 26.92 5 21.68Z"/></svg></span>
-      <span class="t"><b>Alfred</b></span>
-      <button type="button" data-act="alf-close" class="alf-done" aria-label="Done, close the chat">Done</button></div>
+    <div class="alf-head"><span class="alf-grab" aria-hidden="true"></span><span class="hat"><svg viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><rect x="8" y="6.7" width="16" height="14.6" rx="1"/><rect x="8" y="15.9" width="16" height="3" class="hat-band"/><path d="M5 19.7Q16 21.7 27 19.7L27 21.68Q16 26.92 5 21.68Z"/></svg></span><span class="t"><b>Alfred</b></span>
+      <span class="alf-tools"><button type="button" class="alf-clock" data-act="alf-history" aria-label="Past Chats and Your Requests" title="Past Chats and Your Requests"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 12a8.5 8.5 0 1 0 2.6-6.1L3.5 8.5"/><path d="M3.5 3.8v4.7h4.7"/><path d="M12 7.5v4.7l3.2 1.9"/></svg></button><button type="button" class="alf-new" data-act="alf-new" aria-label="New chat" title="New chat"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 4.5H6.5a2 2 0 0 0-2 2v11a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V13"/><path d="M17.6 3.6a1.9 1.9 0 0 1 2.8 2.8L12 14.8l-3.6.8.8-3.6z"/></svg></button></span><button type="button" class="alf-x" data-act="alf-close" aria-label="Close Alfred">Close</button></div>
     <div class="alf-msgs" id="alfMsgs" aria-live="polite"></div>
     <div class="alf-foot">
       <div class="alf-tools"><span class="note" id="alfNote"></span></div>
@@ -1875,8 +1879,12 @@ async function prefetchLists(){
 function saveBoot(){ if (MOCK || !S.data) return; try { localStorage.setItem('lt-boot', JSON.stringify({ v:BOOT_V, at:Date.now(), data:S.data })); } catch(e){} }
 async function paintBoot(){
   renderMe(0); resetDeviceChoices();
-  if (!load.painted) { load.painted=true; const v=await startParam(); if (v) S.view=v; }
+  let resume=null;
+  if (!load.painted) { load.painted=true; const v=await startParam(); if (v) S.view=v;
+    else { try { resume=JSON.parse(sessionStorage.getItem('lt-resume')||'null'); sessionStorage.removeItem('lt-resume'); } catch(e){}
+      if (resume && Date.now()-resume.at<60000 && (TAB_VIEWS[resume.view] || resume.view==='more' || resume.view==='settings')) { S.view=resume.view; S.mtab=resume.mtab||S.mtab; S.back=resume.back||null; } else resume=null; } }
   render();
+  if (resume && resume.y) requestAnimationFrame(()=>window.scrollTo(0, resume.y));   // after an automatic update: the same spot
 }
 // Critique 4 layout #9: while the iPhone keyboard is up, panels and Alfred end above it (--kb) and the field in use scrolls into view.
 (function(){
@@ -2222,6 +2230,7 @@ function go(v, back){
   if (S.view==='home' && v!=='home') S.actSeenShown=null;
   if (v==='review' && S.view!=='review') { try { localStorage.setItem('lt-rv-hint', String(Number(localStorage.getItem('lt-rv-hint')||0)+1)); } catch(e){} }   // #12
   S.view=v; S.back=back||null; S.quick=''; closeSheet(true); render(); window.scrollTo(0,keepY);
+  if (S.tryUpdate && TAB_VIEWS[v]) setTimeout(()=>S.tryUpdate('tab'), 400);   // a new version installs on a tab switch
   requestAnimationFrame(()=>{ S.lastNav={ view:v, ms:Math.round(performance.now()-t0) }; });
 }
 function backLink(){ return S.back ? '<button type="button" class="back" data-act="back">‹ '+esc(S.back)+'</button>' : ''; }
@@ -4586,7 +4595,7 @@ async function liveAddItem(el){
 /* ---------- Alfred chat bubble ---------- */
 // The conversation lives only in this page (S.alf) and is gone after a reload. Every message carries the screen
 // context below, and the screenshot taken when the bubble was tapped, so nobody has to describe where they were.
-const APP_VERSION = '2026.11.16-histicon3';
+const APP_VERSION = '2026.11.16-autoupd';
 const H2C_URL = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
 const DIAG = { errors:[], actions:[] };   // last 10 of each, for bug reports
 function pushDiag(list, item){ list.push(item); if (list.length>10) list.shift(); }
@@ -4753,6 +4762,7 @@ function showAlfred(){
   const opening=w.hidden || !S.alf.open;
   S.alf.open=true; document.body.classList.add('alf-open'); document.body.style.overflow='hidden';
   clearTimeout(S.alf.closeT); if (S.alf.anim) { S.alf.anim.cancel(); S.alf.anim=null; } if (S.alf.bdAnim) { S.alf.bdAnim.cancel(); S.alf.bdAnim=null; }
+  panel.style.opacity='';   // reopened mid-close: undo the close's invisible end state
   w.hidden=false; panel.style.transform=''; panel.style.transition=''; bd.style.opacity='';
   S.alf.quiet=true; renderAlfred(); S.alf.quiet=false;   // what was already there doesn't animate again
   if (opening) {
@@ -4801,11 +4811,15 @@ function closeAlfred(keep){
     let a;
     if (dy>0) a=motion(panel, [{ transform:'translateY('+dy+'px)' }, { transform:'translateY(105%)' }], { duration:240, easing:EASE.in, fill:'forwards' }, 'out');
     else { alfOrigin(panel); a=motion(panel, [{ transform:'none', opacity:1 }, { transform:'scale(.3)', opacity:0 }], { duration:260, easing:EASE.in, fill:'forwards' }, 'out'); }
-    panel.style.transform='';
+    // Nov 16 (Brayden: "the window blinks blue after it closes"): underneath the animation the panel is already invisible,
+    // so if the phone drops the last frame nothing flashes back; it's hidden the moment the animation ends.
+    panel.style.transform=''; panel.style.opacity='0';
     const from=getComputedStyle(bd).opacity;
     const b=bd.animate ? bd.animate([{ opacity:from }, { opacity:0 }], { duration:240, easing:'ease', fill:'forwards' }) : null;
     S.alf.anim=a; S.alf.bdAnim=b;
-    S.alf.closeT=setTimeout(()=>{ w.hidden=true; if (a) a.cancel(); if (b) b.cancel(); S.alf.anim=S.alf.bdAnim=null; bd.style.opacity=''; panel.style.transition=''; done(); }, a ? 270 : 0);
+    let fin=false; const hide=()=>{ if (fin) return; fin=true; clearTimeout(S.alf.closeT); w.hidden=true; if (a) a.cancel(); if (b) b.cancel(); S.alf.anim=S.alf.bdAnim=null; bd.style.opacity=''; panel.style.opacity=''; panel.style.transition=''; done(); };
+    if (a && a.finished) a.finished.then(hide, ()=>{});
+    S.alf.closeT=setTimeout(hide, a ? 280 : 0);
   });
 }
 // Retake (and "Tap what you mean"): step out of the way, capture the screen as it is, and come back.
@@ -5857,17 +5871,28 @@ function webSignOut(){
 // offers "Update Ready · Reload" so nobody loses what they're typing.
 function webServiceWorker(){
   if (!('serviceWorker' in navigator) || !/^https:|^http:\/\/localhost/.test(location.href)) return;
+  // Nov 16 (Brayden): updates install themselves, with no message, at the next quiet moment: never while a meeting is in
+  // progress (for anyone), never with a panel, Alfred, the report or the tour open, while typing, mid-swipe or with
+  // unsent changes. A quiet moment is switching tabs, 10 seconds without a tap, or putting the app away. The app comes back
+  // on the same tab and scroll spot (lt-resume).
   const opened=Date.now(); let applying=false, tapped=false;
-  document.addEventListener('pointerdown', ()=>{ tapped=true; }, { once:true, capture:true });
-  const apply=w=>{ applying=true; w.postMessage({ type:'skip-waiting' }); };
+  document.addEventListener('pointerdown', ()=>{ tapped=true; S.lastTapAt=Date.now(); }, { capture:true });
+  const apply=w=>{ if (applying) return; applying=true;
+    try { sessionStorage.setItem('lt-resume', JSON.stringify({ view:S.view, mtab:S.mtab||'', back:S.back||'', y:window.scrollY, at:Date.now() })); } catch(e){}
+    w.postMessage({ type:'skip-waiting' }); };
+  const quiet=()=>{ const a=document.activeElement;
+    return S.data && !S.live && S.view!=='live' && !S.sheet && !S.alf.open && S.coach==null && !document.getElementById('report') && !document.getElementById('signin')
+      && !S.touching && !(S.outbox||[]).length && !S.pending && !S.undo && !(a && a.matches && a.matches('input, textarea, select, [contenteditable]')); };
+  S.tryUpdate=why=>{ const w=S.updateWaiting; if (!w || applying || !quiet()) return;
+    if (why==='tab' || why==='hidden' || Date.now()-(S.lastTapAt||opened)>10000) apply(w); };
   const ready=w=>{
     if (!navigator.serviceWorker.controller) return;   // the very first install: this page is already the newest
-    if (!tapped && Date.now()-opened<4000 && !S.sheet) { apply(w); return; }
-    S.updateWaiting=w;   // applies when the app goes to the background (WEB-3); the toast is for long sessions
-    const offer=()=>{ if (S.updateWaiting!==w) return; if (S.undo || S.sheet) { setTimeout(offer, 3000); return; } toast('An update is ready', ()=>apply(w), { label:'Reload' }); };
-    setTimeout(offer, 1500);
+    S.updateWaiting=w;
+    if (!tapped && Date.now()-opened<4000 && !S.sheet && !S.live) { apply(w); return; }   // just opened: at once
+    S.tryUpdate('ready');
   };
-  document.addEventListener('visibilitychange', ()=>{ if (document.hidden && S.updateWaiting && !S.outbox.length && !S.pending) apply(S.updateWaiting); });
+  setInterval(()=>S.tryUpdate && S.tryUpdate('idle'), 5000);
+  document.addEventListener('visibilitychange', ()=>{ if (document.hidden) S.tryUpdate('hidden'); });
   navigator.serviceWorker.addEventListener('controllerchange', ()=>{ if (applying) location.reload(); });
   navigator.serviceWorker.addEventListener('message', e=>{ const d=e.data||{}; if (d.type==='open-url' && S.data) openFromPush(d.url); });
   navigator.serviceWorker.register('sw.js').then(reg=>{
