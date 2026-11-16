@@ -19,7 +19,7 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" type="image/png" href="icon-192.png">
-<script>window.HUDDLE_WEB={"api":"https://script.google.com/macros/s/AKfycbzM8K_-XRMDdOJYJ3THn_FhyZkRreMddHIBAOFCFVoq5S_Y7MnsfFLsl7ac_fyDPrch/exec","clientId":"473377418367-cqmmnfum4kshq16973m4sj2jqqfa55p0.apps.googleusercontent.com","build":"d6b1b8f","push":{"config":{"apiKey":"AIzaSyBON-0KvTXPD_MV6ykhYvCoBRiECEHyE9c","authDomain":"huddle-e2548.firebaseapp.com","projectId":"huddle-e2548","storageBucket":"huddle-e2548.firebasestorage.app","messagingSenderId":"554653922065","appId":"1:554653922065:web:87de53b4cb11b36835d2b0"},"vapidKey":"BHKeDoBmW7vL-qAT3ocyTaMaZ27Ca66jvQtTes2NC4CPoWFiPBJcga7wVd-RD1IuyhBki0oKXwPBGSNq002s8o8"}};document.documentElement.classList.add('web');</script>
+<script>window.HUDDLE_WEB={"api":"https://script.google.com/macros/s/AKfycbzM8K_-XRMDdOJYJ3THn_FhyZkRreMddHIBAOFCFVoq5S_Y7MnsfFLsl7ac_fyDPrch/exec","clientId":"473377418367-cqmmnfum4kshq16973m4sj2jqqfa55p0.apps.googleusercontent.com","build":"3a9872c","push":{"config":{"apiKey":"AIzaSyBON-0KvTXPD_MV6ykhYvCoBRiECEHyE9c","authDomain":"huddle-e2548.firebaseapp.com","projectId":"huddle-e2548","storageBucket":"huddle-e2548.firebasestorage.app","messagingSenderId":"554653922065","appId":"1:554653922065:web:87de53b4cb11b36835d2b0"},"vapidKey":"BHKeDoBmW7vL-qAT3ocyTaMaZ27Ca66jvQtTes2NC4CPoWFiPBJcga7wVd-RD1IuyhBki0oKXwPBGSNq002s8o8"}};document.documentElement.classList.add('web');</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <!-- The fonts load without holding up the first paint; the page shows in the phone's own font for a moment if needed. -->
@@ -660,7 +660,7 @@
   .tv-items li { display:flex; justify-content:space-between; gap:24px; border-bottom:1px solid rgba(255,255,255,.15); padding:8px 0; }
   .tv-items b { white-space:nowrap; font-weight:600; }
   .live-ctl .hat-btn { flex:0 0 44px; width:44px; height:44px; min-height:44px; padding:0; display:grid; place-items:center; border-radius:50% !important;
-    background:rgba(255,255,255,.12) !important; border:1px solid rgba(198,168,92,.85) !important; -webkit-backdrop-filter:blur(3px) saturate(150%); backdrop-filter:blur(3px) saturate(150%); color:#0A345A !important; box-shadow:0 4px 12px rgba(0,0,0,.10), inset 0 1px 2px rgba(255,255,255,.85) !important; }
+    background:rgba(255,255,255,.55) !important; border:1px solid rgba(198,168,92,.9) !important; -webkit-backdrop-filter:blur(20px) saturate(140%); backdrop-filter:blur(20px) saturate(140%); color:#0A345A !important; box-shadow:0 4px 12px rgba(0,0,0,.10), inset 0 1px 2px rgba(255,255,255,.85) !important; }
   @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .live-ctl .hat-btn { background:rgba(31,82,133,.36) !important; border-color:rgba(255,255,255,.45) !important; color:#fff !important; } }
   :root[data-theme="dark"] .live-ctl .hat-btn { background:rgba(31,82,133,.36) !important; border-color:rgba(255,255,255,.45) !important; color:#fff !important; }
   .live-ctl .hat-btn svg { width:24px; height:24px; }
@@ -814,9 +814,10 @@
      Light mode: clear glass (barely tinted white) with a thin gold rim and navy icons, so it adds no new color.
      Dark mode: the navy glass with a light rim and white icons. Without backdrop-filter, or with Reduce Transparency,
      they turn solid (white in light mode, navy in dark mode). */
-  .fab, .alf-fab { background:rgba(255,255,255,.12); border:1px solid rgba(198,168,92,.85); color:#0A345A;
-    -webkit-backdrop-filter:blur(3px) saturate(150%) brightness(1.05); backdrop-filter:blur(3px) saturate(150%) brightness(1.05);
-    box-shadow:0 8px 20px rgba(0,0,0,.12), inset 0 1px 1.5px rgba(255,255,255,.95), inset 0 -1px 1.5px rgba(255,255,255,.45), inset 0 0 14px rgba(255,255,255,.28); overflow:hidden; }
+  /* Nov 16 (Brayden, option A): light mode is frosted white glass: milky white over a strong blur, with the gold rim. */
+  .fab, .alf-fab { background:rgba(255,255,255,.55); border:1px solid rgba(198,168,92,.9); color:#0A345A;
+    -webkit-backdrop-filter:blur(20px) saturate(140%); backdrop-filter:blur(20px) saturate(140%);
+    box-shadow:0 8px 22px rgba(0,0,0,.14), inset 0 1px 1px rgba(255,255,255,.95); overflow:hidden; }
   .fab svg, .alf-fab svg { filter:drop-shadow(0 0 1px #fff) drop-shadow(0 0 1px #fff); }   /* layout #13: the navy icon keeps a white halo over navy */
   @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .fab, :root:not([data-theme="light"]) .alf-fab { background:rgba(31,82,133,.36); border-color:rgba(255,255,255,.46); color:#fff;
       -webkit-backdrop-filter:blur(10px) saturate(190%); backdrop-filter:blur(10px) saturate(190%);
@@ -4585,7 +4586,7 @@ async function liveAddItem(el){
 /* ---------- Alfred chat bubble ---------- */
 // The conversation lives only in this page (S.alf) and is gone after a reload. Every message carries the screen
 // context below, and the screenshot taken when the bubble was tapped, so nobody has to describe where they were.
-const APP_VERSION = '2026.11.16-histicon';
+const APP_VERSION = '2026.11.16-frost';
 const H2C_URL = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
 const DIAG = { errors:[], actions:[] };   // last 10 of each, for bug reports
 function pushDiag(list, item){ list.push(item); if (list.length>10) list.shift(); }
