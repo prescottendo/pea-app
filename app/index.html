@@ -19,7 +19,7 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" type="image/png" href="icon-192.png">
-<script>window.HUDDLE_WEB={"api":"https://script.google.com/macros/s/AKfycbzM8K_-XRMDdOJYJ3THn_FhyZkRreMddHIBAOFCFVoq5S_Y7MnsfFLsl7ac_fyDPrch/exec","clientId":"473377418367-cqmmnfum4kshq16973m4sj2jqqfa55p0.apps.googleusercontent.com","build":"10a8142","push":{"config":{"apiKey":"AIzaSyBON-0KvTXPD_MV6ykhYvCoBRiECEHyE9c","authDomain":"huddle-e2548.firebaseapp.com","projectId":"huddle-e2548","storageBucket":"huddle-e2548.firebasestorage.app","messagingSenderId":"554653922065","appId":"1:554653922065:web:87de53b4cb11b36835d2b0"},"vapidKey":"BHKeDoBmW7vL-qAT3ocyTaMaZ27Ca66jvQtTes2NC4CPoWFiPBJcga7wVd-RD1IuyhBki0oKXwPBGSNq002s8o8"}};document.documentElement.classList.add('web');</script>
+<script>window.HUDDLE_WEB={"api":"https://script.google.com/macros/s/AKfycbzM8K_-XRMDdOJYJ3THn_FhyZkRreMddHIBAOFCFVoq5S_Y7MnsfFLsl7ac_fyDPrch/exec","clientId":"473377418367-cqmmnfum4kshq16973m4sj2jqqfa55p0.apps.googleusercontent.com","build":"dc43874","push":{"config":{"apiKey":"AIzaSyBON-0KvTXPD_MV6ykhYvCoBRiECEHyE9c","authDomain":"huddle-e2548.firebaseapp.com","projectId":"huddle-e2548","storageBucket":"huddle-e2548.firebasestorage.app","messagingSenderId":"554653922065","appId":"1:554653922065:web:87de53b4cb11b36835d2b0"},"vapidKey":"BHKeDoBmW7vL-qAT3ocyTaMaZ27Ca66jvQtTes2NC4CPoWFiPBJcga7wVd-RD1IuyhBki0oKXwPBGSNq002s8o8"}};document.documentElement.classList.add('web');</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <!-- The fonts load without holding up the first paint; the page shows in the phone's own font for a moment if needed. -->
@@ -697,7 +697,8 @@
   #ptr { height:0; overflow:hidden; display:flex; align-items:center; justify-content:center; gap:8px; color:var(--muted); font-size:var(--fs-sub); font-weight:600; }
   #ptr.settle { transition:height .25s ease; }
   #ptr .spin { width:20px; height:20px; border:2px solid var(--line); border-top-color:var(--heading); border-radius:50%; opacity:0; }
-  #ptr.busy .spin { opacity:1 !important; animation:spin .8s linear infinite; }
+  #ptr.busy .spin { opacity:1 !important; transform:none; animation:ptrspin .8s linear infinite; }
+  @keyframes ptrspin { from { transform:rotate(0deg); } to { transform:rotate(360deg); } }
   .sr-only { position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; }
   @keyframes spin { to { transform:rotate(360deg); } }
   .skel { background:var(--skeleton); border-radius:8px; animation:pulse 1.2s ease-in-out infinite; }
@@ -4323,7 +4324,7 @@ async function liveAddItem(el){
 /* ---------- Alfred chat bubble ---------- */
 // The conversation lives only in this page (S.alf) and is gone after a reload. Every message carries the screen
 // context below, and the screenshot taken when the bubble was tapped, so nobody has to describe where they were.
-const APP_VERSION = '2026.11.16-msearch';
+const APP_VERSION = '2026.11.16-ptrspin';
 const H2C_URL = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
 const DIAG = { errors:[], actions:[] };   // last 10 of each, for bug reports
 function pushDiag(list, item){ list.push(item); if (list.length>10) list.shift(); }
@@ -5261,6 +5262,8 @@ document.addEventListener('touchend', ()=>{
   const p=ptr; ptr=null; if (!p.on) return;
   const el=document.getElementById('ptr'); el.classList.add('settle');
   if (p.h<PTR_AT) { el.style.height='0px'; return; }
+  // The pull leaves the circle turned part way; clear it first, or the spin only runs that last part over and over.
+  { const sp=el.querySelector('.ptr-spin'); if (sp) { sp.style.transform=''; sp.style.opacity=''; } }
   el.style.height='44px'; el.classList.add('busy');
   fullRefresh().finally(()=>{ el.style.height='0px'; setTimeout(()=>{ el.classList.remove('busy'); const sp=el.querySelector('.ptr-spin'); if (sp) { sp.style.opacity=0; sp.style.transform=''; } }, 260); });
 });
