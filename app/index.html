@@ -19,7 +19,7 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" type="image/png" href="icon-192.png">
-<script>window.HUDDLE_WEB={"api":"https://script.google.com/macros/s/AKfycbzM8K_-XRMDdOJYJ3THn_FhyZkRreMddHIBAOFCFVoq5S_Y7MnsfFLsl7ac_fyDPrch/exec","clientId":"473377418367-cqmmnfum4kshq16973m4sj2jqqfa55p0.apps.googleusercontent.com","build":"7d1165d","push":{"config":{"apiKey":"AIzaSyBON-0KvTXPD_MV6ykhYvCoBRiECEHyE9c","authDomain":"huddle-e2548.firebaseapp.com","projectId":"huddle-e2548","storageBucket":"huddle-e2548.firebasestorage.app","messagingSenderId":"554653922065","appId":"1:554653922065:web:87de53b4cb11b36835d2b0"},"vapidKey":"BHKeDoBmW7vL-qAT3ocyTaMaZ27Ca66jvQtTes2NC4CPoWFiPBJcga7wVd-RD1IuyhBki0oKXwPBGSNq002s8o8"}};document.documentElement.classList.add('web');</script>
+<script>window.HUDDLE_WEB={"api":"https://script.google.com/macros/s/AKfycbzM8K_-XRMDdOJYJ3THn_FhyZkRreMddHIBAOFCFVoq5S_Y7MnsfFLsl7ac_fyDPrch/exec","clientId":"473377418367-cqmmnfum4kshq16973m4sj2jqqfa55p0.apps.googleusercontent.com","build":"1515045","push":{"config":{"apiKey":"AIzaSyBON-0KvTXPD_MV6ykhYvCoBRiECEHyE9c","authDomain":"huddle-e2548.firebaseapp.com","projectId":"huddle-e2548","storageBucket":"huddle-e2548.firebasestorage.app","messagingSenderId":"554653922065","appId":"1:554653922065:web:87de53b4cb11b36835d2b0"},"vapidKey":"BHKeDoBmW7vL-qAT3ocyTaMaZ27Ca66jvQtTes2NC4CPoWFiPBJcga7wVd-RD1IuyhBki0oKXwPBGSNq002s8o8"}};document.documentElement.classList.add('web');</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <!-- The fonts load without holding up the first paint; the page shows in the phone's own font for a moment if needed. -->
@@ -703,14 +703,13 @@
   #liveConn.show { opacity:1; transform:translate(-50%,0); }
   /* Nov 16: the + and Alfred's hat are navy Liquid Glass: see-through navy that blurs what scrolls under it, a light rim and a
      soft sheen on top. Without backdrop-filter (or with Reduce Transparency) they stay solid navy. */
-  .fab, .alf-fab { background:rgba(10,52,90,.34); border:1px solid rgba(255,255,255,.42);
+  /* Nov 16 (Brayden): one glass for light and dark mode: the dark mode's lighter navy. */
+  .fab, .alf-fab { background:rgba(31,82,133,.36); border:1px solid rgba(255,255,255,.30);
     -webkit-backdrop-filter:blur(10px) saturate(190%); backdrop-filter:blur(10px) saturate(190%);
-    box-shadow:0 8px 22px rgba(10,52,90,.28), inset 0 1px 1px rgba(255,255,255,.45), inset 0 -2px 6px rgba(0,0,0,.18); overflow:hidden; }
+    box-shadow:0 8px 22px rgba(0,0,0,.30), inset 0 1px 1px rgba(255,255,255,.35), inset 0 -2px 6px rgba(0,0,0,.25); overflow:hidden; }
   .fab::before, .alf-fab::before { content:''; position:absolute; inset:0; border-radius:inherit; pointer-events:none;
     background:radial-gradient(120% 70% at 30% 0%, rgba(255,255,255,.30), rgba(255,255,255,0) 60%); }
   .fab > *, .alf-fab > * { position:relative; }
-  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .fab, :root:not([data-theme="light"]) .alf-fab { background:rgba(31,82,133,.36); border-color:rgba(255,255,255,.30); box-shadow:0 8px 22px rgba(0,0,0,.45), inset 0 1px 1px rgba(255,255,255,.35), inset 0 -2px 6px rgba(0,0,0,.25); } }
-  :root[data-theme="dark"] .fab, :root[data-theme="dark"] .alf-fab { background:rgba(31,82,133,.36); border-color:rgba(255,255,255,.30); box-shadow:0 8px 22px rgba(0,0,0,.45), inset 0 1px 1px rgba(255,255,255,.35), inset 0 -2px 6px rgba(0,0,0,.25); }
   @supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))) { .fab, .alf-fab { background:var(--primary); } }
   @media (prefers-reduced-transparency: reduce) { .fab, .alf-fab { background:var(--primary); -webkit-backdrop-filter:none; backdrop-filter:none; } }
 
@@ -4150,7 +4149,7 @@ async function liveAddItem(el){
 /* ---------- Alfred chat bubble ---------- */
 // The conversation lives only in this page (S.alf) and is gone after a reload. Every message carries the screen
 // context below, and the screenshot taken when the bubble was tapped, so nobody has to describe where they were.
-const APP_VERSION = '2026.11.16-meetings';
+const APP_VERSION = '2026.11.16-glass2';
 const H2C_URL = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
 const DIAG = { errors:[], actions:[] };   // last 10 of each, for bug reports
 function pushDiag(list, item){ list.push(item); if (list.length>10) list.shift(); }
