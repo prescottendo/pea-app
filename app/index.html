@@ -19,7 +19,7 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" type="image/png" href="icon-192.png">
-<script>window.HUDDLE_WEB={"api":"https://script.google.com/macros/s/AKfycbzM8K_-XRMDdOJYJ3THn_FhyZkRreMddHIBAOFCFVoq5S_Y7MnsfFLsl7ac_fyDPrch/exec","clientId":"473377418367-cqmmnfum4kshq16973m4sj2jqqfa55p0.apps.googleusercontent.com","build":"0062f6c","push":{"config":{"apiKey":"AIzaSyBON-0KvTXPD_MV6ykhYvCoBRiECEHyE9c","authDomain":"huddle-e2548.firebaseapp.com","projectId":"huddle-e2548","storageBucket":"huddle-e2548.firebasestorage.app","messagingSenderId":"554653922065","appId":"1:554653922065:web:87de53b4cb11b36835d2b0"},"vapidKey":"BHKeDoBmW7vL-qAT3ocyTaMaZ27Ca66jvQtTes2NC4CPoWFiPBJcga7wVd-RD1IuyhBki0oKXwPBGSNq002s8o8"}};document.documentElement.classList.add('web');</script>
+<script>window.HUDDLE_WEB={"api":"https://script.google.com/macros/s/AKfycbzM8K_-XRMDdOJYJ3THn_FhyZkRreMddHIBAOFCFVoq5S_Y7MnsfFLsl7ac_fyDPrch/exec","clientId":"473377418367-cqmmnfum4kshq16973m4sj2jqqfa55p0.apps.googleusercontent.com","build":"0151c45","push":{"config":{"apiKey":"AIzaSyBON-0KvTXPD_MV6ykhYvCoBRiECEHyE9c","authDomain":"huddle-e2548.firebaseapp.com","projectId":"huddle-e2548","storageBucket":"huddle-e2548.firebasestorage.app","messagingSenderId":"554653922065","appId":"1:554653922065:web:87de53b4cb11b36835d2b0"},"vapidKey":"BHKeDoBmW7vL-qAT3ocyTaMaZ27Ca66jvQtTes2NC4CPoWFiPBJcga7wVd-RD1IuyhBki0oKXwPBGSNq002s8o8"}};document.documentElement.classList.add('web');</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <!-- The fonts load without holding up the first paint; the page shows in the phone's own font for a moment if needed. -->
@@ -665,7 +665,7 @@
   /* Nov 12 (MT-5): on phones the meeting gets the whole screen: no tab bar (‹ Leave gets you out), the pinned bar sits at the
      bottom, and Alfred is a hat button in that bar instead of a floating bubble. */
   @media (max-width:699px) { body.v-live nav.bottom { display:none; } body.v-live .live-ctl { padding-bottom:max(12px, env(safe-area-inset-bottom, 0px)); } }
-  body.v-live .alf-fab { display:none !important; }
+  body.tv .alf-fab { display:none !important; }   /* Nov 16 (Brayden): in a meeting Alfred is the usual floating hat (above the meeting bar); TV mode hides him */
   .tv-items { list-style:none; margin:16px auto 0; padding:0; max-width:900px; width:100%; display:grid; gap:8px; font-size:clamp(18px, 2.2vw, 28px); }
   .tv-items li { display:flex; justify-content:space-between; gap:24px; border-bottom:1px solid rgba(255,255,255,.15); padding:8px 0; }
   .tv-items b { white-space:nowrap; font-weight:600; }
@@ -3689,18 +3689,21 @@ async function postComment(el){
 }
 
 /* ---------- the Accountability review (the Weekly Tactical's Accountability step, Nov 10) ---------- */
-// Only action items from a meeting count (never Only Me or hand-added tasks). Each person's list is their meeting items
+// Nov 16: every task that isn't Only Me counts (see isReviewItem). Each person's list is their tasks
 // due today or earlier that aren't Done, plus anything already reviewed in this meeting (so an item stays put after it
 // gets a new date or is marked Done), and a short list of what they finished since the last tactical.
 // The review entries are shared through the live meeting (st.review: task id -> { due_before, status_before,
 // status_after, new_due, note, by, at }), merged one at a time on the server (apiLiveMark 'review').
 function isMeetingItem(t){ return !!t && !isPriv(t) && (!!t.meeting_id || (!!t.source && t.source!=='manual')); }
+// Nov 16 (Brayden: "everybody says zero to review"): the Accountability step and the Next Tactical card cover every task
+// of theirs that isn't Only Me (hand-added ones too), not just tasks from recorded meetings.
+function isReviewItem(t){ return !!t && !isPriv(t); }
 // What the review shows for a task: another phone's change may be in the review before this phone's task list catches up.
 function rvView(t, e){ return { status: e && e.status_after ? e.status_after : t.status, due: e && e.new_due ? e.new_due : t.due }; }
 function needsDate(t, e){ const v=rvView(t, e); return v.status!=='Done' && (!v.due || v.due<=S.data.today); }
 function reviewItems(email, st){
   const rv=(st && st.review)||{}, today=S.data.today, last=S.data.lastTactical||addDays(today,-7);
-  const mine=S.data.tasks.filter(t=>isMeetingItem(t) && owners(t).indexOf(email)>=0 && t.status!=='Needs Review');
+  const mine=S.data.tasks.filter(t=>isReviewItem(t) && owners(t).indexOf(email)>=0 && t.status!=='Needs Review');
   const open=mine.filter(t=>rv[t.id] || (isOpen(t) && t.due && t.due<=today))
     .sort((a,b)=>String((rv[a.id]&&rv[a.id].due_before)||a.due||'9999').localeCompare(String((rv[b.id]&&rv[b.id].due_before)||b.due||'9999')));
   const done=mine.filter(t=>t.status==='Done' && !rv[t.id] && String(t.completed_at||'').slice(0,10)>last);
@@ -4242,8 +4245,7 @@ function renderLiveCtl(){
   if (!on) { el.innerHTML=''; return; }
   const narrow=window.innerWidth<400;
   const item='<button type="button" class="btn ghost" data-act="lv-item">+ Task</button>';
-  // Nov 12: during a meeting Alfred sits in this bar instead of floating over the agenda.
-  const hat=alfredEnabled() ? '<button type="button" class="btn ghost hat-btn" data-act="alf-open" aria-label="Ask Alfred"><svg viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><path d="M9 6.7h14a1 1 0 0 1 1 1v8.2H8V7.7a1 1 0 0 1 1-1z"/><rect x="8" y="18.9" width="16" height="2.4"/><path d="M5 19.7Q16 21.7 27 19.7L27 21.68Q16 26.92 5 21.68Z"/></svg></button>' : '';
+  const hat='';   // Nov 16 (Brayden): Alfred floats in his usual spot during a meeting, not in this bar
   const hc=hat?' has-hat':'';
   if (!isHost(st)) { el.innerHTML='<div class="ctl-row one'+hc+'">'+hat+item+'</div>'; document.documentElement.style.setProperty('--ctl-h', el.offsetHeight+'px'); return; }
   const nx=liveNextBtn(st);
@@ -4272,7 +4274,7 @@ document.addEventListener('visibilitychange', ()=>{ if (!document.hidden) S.wake
 // so you can update them ahead of time. A Done item or one with a date after the tactical won't hold up the Accountability step.
 function prepItems(){
   const next=S.data.defaultDue; if (!next) return [];
-  return S.data.tasks.filter(t=>isMeetingItem(t) && isOpen(t) && t.status!=='Needs Review' && t.due && t.due<=next && owners(t).indexOf(S.data.me)>=0)
+  return S.data.tasks.filter(t=>isReviewItem(t) && isOpen(t) && t.status!=='Needs Review' && t.due && t.due<=next && owners(t).indexOf(S.data.me)>=0)
     .sort((a,b)=>String(a.due).localeCompare(String(b.due)));
 }
 function prepCard(){
@@ -4642,7 +4644,7 @@ async function liveAddItem(el){
 /* ---------- Alfred chat bubble ---------- */
 // The conversation lives only in this page (S.alf) and is gone after a reload. Every message carries the screen
 // context below, and the screenshot taken when the bubble was tapped, so nobody has to describe where they were.
-const APP_VERSION = '2026.11.16-hatonly';
+const APP_VERSION = '2026.11.16-acct';
 const H2C_URL = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
 const DIAG = { errors:[], actions:[] };   // last 10 of each, for bug reports
 function pushDiag(list, item){ list.push(item); if (list.length>10) list.shift(); }
