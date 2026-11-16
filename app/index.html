@@ -19,7 +19,7 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" type="image/png" href="icon-192.png">
-<script>window.HUDDLE_WEB={"api":"https://script.google.com/macros/s/AKfycbzM8K_-XRMDdOJYJ3THn_FhyZkRreMddHIBAOFCFVoq5S_Y7MnsfFLsl7ac_fyDPrch/exec","clientId":"473377418367-cqmmnfum4kshq16973m4sj2jqqfa55p0.apps.googleusercontent.com","build":"d3d328e","push":{"config":{"apiKey":"AIzaSyBON-0KvTXPD_MV6ykhYvCoBRiECEHyE9c","authDomain":"huddle-e2548.firebaseapp.com","projectId":"huddle-e2548","storageBucket":"huddle-e2548.firebasestorage.app","messagingSenderId":"554653922065","appId":"1:554653922065:web:87de53b4cb11b36835d2b0"},"vapidKey":"BHKeDoBmW7vL-qAT3ocyTaMaZ27Ca66jvQtTes2NC4CPoWFiPBJcga7wVd-RD1IuyhBki0oKXwPBGSNq002s8o8"}};document.documentElement.classList.add('web');</script>
+<script>window.HUDDLE_WEB={"api":"https://script.google.com/macros/s/AKfycbzM8K_-XRMDdOJYJ3THn_FhyZkRreMddHIBAOFCFVoq5S_Y7MnsfFLsl7ac_fyDPrch/exec","clientId":"473377418367-cqmmnfum4kshq16973m4sj2jqqfa55p0.apps.googleusercontent.com","build":"e126a7b","push":{"config":{"apiKey":"AIzaSyBON-0KvTXPD_MV6ykhYvCoBRiECEHyE9c","authDomain":"huddle-e2548.firebaseapp.com","projectId":"huddle-e2548","storageBucket":"huddle-e2548.firebasestorage.app","messagingSenderId":"554653922065","appId":"1:554653922065:web:87de53b4cb11b36835d2b0"},"vapidKey":"BHKeDoBmW7vL-qAT3ocyTaMaZ27Ca66jvQtTes2NC4CPoWFiPBJcga7wVd-RD1IuyhBki0oKXwPBGSNq002s8o8"}};document.documentElement.classList.add('web');</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <!-- The fonts load without holding up the first paint; the page shows in the phone's own font for a moment if needed. -->
@@ -445,6 +445,11 @@
   .head-row.ptitle .ptools > * { flex:none; }
   .head-row.ptitle h2 svg.tree { height:30px; }
   .head-row.ptitle .ptools { display:flex; align-items:center; gap:2px; flex:none; }
+  /* Nov 16 (Brayden): the title's words end on the same line as the bottom of the icons (the 32pt initials), while the
+     tree and the icons stay centered in the 44pt row. */
+  .head-row.ptitle h2 { align-self:stretch; }
+  .head-row.ptitle h2 svg.tree { align-self:center; }
+  .head-row.ptitle h2 .ttext { align-self:flex-end; line-height:1; padding-bottom:6px; min-width:0; }
   .head-row.ptitle .mebtn { margin:0 0 0 4px; padding:6px; }
   .mebtn { position:relative; }
   .mebtn .rdot { position:absolute; top:2px; right:2px; width:11px; height:11px; border-radius:50%; background:var(--gold); border:2px solid var(--page); }
@@ -536,7 +541,8 @@
   .pulse .stat b { font-family:var(--serif); font-size:var(--fs-title); color:var(--heading); }
   .pulse .stat span { font-size:var(--fs-sub); font-weight:600; color:var(--ink); }
   .pulse .stat small { display:block; font-weight:400; color:var(--muted); font-size:var(--fs-cap); }
-  .scorecard { padding:16px; }
+  .scorecard { padding:16px; margin-bottom:16px; }
+  .focus-card + .set-sec { margin-top:24px; }
   .home-row { display:grid; grid-template-columns:1fr auto auto; gap:10px; align-items:center; }
   .hcount { min-width:28px; height:24px; padding:0 8px; border-radius:999px; display:inline-grid; place-items:center; font-weight:600; font-size:var(--fs-sub); background:var(--line-soft); color:var(--ink); }
   .hcount.late { background:var(--p-high, #D64545); color:#fff; } .hcount.gold { background:var(--gold); color:#142640; }
@@ -702,9 +708,9 @@
   .tv-read b { color:#fff; }
   .tv-tag { font-style:italic; color:#C4C8CC; }
   .tv-close { font-family:var(--serif); font-weight:600; color:#C6A85C; break-inside:avoid; }
-  #ptr { height:0; overflow:hidden; display:flex; align-items:center; justify-content:center; gap:8px; color:var(--muted); font-size:var(--fs-sub); font-weight:600; }
+  #ptr { height:0; overflow:hidden; display:flex; align-items:flex-end; padding-bottom:0; box-sizing:border-box; justify-content:center; gap:8px; color:var(--muted); font-size:var(--fs-sub); font-weight:600; }
   #ptr.settle { transition:height .25s ease; }
-  #ptr .spin { width:20px; height:20px; border:2px solid var(--line); border-top-color:var(--heading); border-radius:50%; opacity:0; }
+  #ptr .spin { margin-bottom:12px; width:20px; height:20px; border:2px solid var(--line); border-top-color:var(--heading); border-radius:50%; opacity:0; }
   #ptr.busy .spin { opacity:1 !important; transform:none; animation:ptrspin .8s linear infinite; }
   @keyframes ptrspin { from { transform:rotate(0deg); } to { transform:rotate(360deg); } }
   .sr-only { position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; }
@@ -2195,6 +2201,8 @@ function decorateTitle(){
   if (!row || row.parentElement.closest('.head-row')) { row=document.createElement('div'); row.className='head-row'; h.parentNode.insertBefore(row, h); row.appendChild(h); }
   row.classList.add('ptitle');
   if (!S.back && !h.querySelector('svg.tree')) h.insertAdjacentHTML('afterbegin', TREE_SVG);
+  // The words get their own box (.ttext) so they can sit on the icons' bottom line while the tree stays centered.
+  if (!h.querySelector('.ttext')) { const words=[...h.childNodes].filter(n=>n.nodeType===3 && n.textContent.trim()); if (words.length) { const sp=document.createElement('span'); sp.className='ttext'; words[0].parentNode.insertBefore(sp, words[0]); words.forEach(n=>sp.appendChild(n)); } }
   let tools=row.querySelector('.ptools'); if (!tools) { tools=document.createElement('span'); tools.className='ptools'; row.appendChild(tools); }
   [...row.children].forEach(ch=>{ if (ch!==h && ch!==tools) tools.appendChild(ch); });
   if (!tools.querySelector('.mebtn') && S.view!=='more') tools.insertAdjacentHTML('beforeend', meBtn(S.meRc||0));
@@ -2282,10 +2290,8 @@ function focusCard(){
     +'<div class="sec">Strategic Anchors</div>'+list(f.anchors)
     +'<div class="sec">Defining Objectives</div>'+list(f.objectives)+'</div>';
 }
-// Nov 16 (Brayden): Home (titled Huddle), top to bottom: the focus card; the meeting (Live Now, Start Weekly Tactical, or
-// Next Tactical all week with your items that come up); For You; Your Next 3 Tasks; Latest Decisions (from the newest meeting
-// that has any); Team Pulse (on-time rate for meeting items over 30 days, open Blocked, the last meeting's rating);
-// and Team Scorecard (a placeholder until Brayden sends the details).
+// Nov 16 (Brayden): Home (titled Huddle), top to bottom: Team Scorecard (a placeholder until Brayden sends the details), the
+// Rally Cry card, For You, then the meeting card (Live Now, Start Weekly Tactical, or Next Tactical all week).
 const TACTICAL_TIME='8:15 am';
 function nextTacticalCard(){
   const now=tacticalCard() || (S.live ? '<button type="button" class="card start-card" data-act="go" data-view="live"><span class="sec"><span class="dot"></span> Live Now</span><b>'+esc(S.live.title)+'</b><span class="go">Join ›</span></button>' : '');
@@ -2305,33 +2311,12 @@ function renderHome(m){
     +(today?row('data-act="go" data-view="mine"','Due Today',today,''):'')
     +(waiting.length?row('data-act="home-waiting"','Waiting on You',waiting.length,'gold'):'')
     +(rc?row('data-act="go" data-view="review" data-back="Huddle"','To Review',rc,'gold'):'');
-  // Your next three: overdue and soonest first, then the ones with no date.
-  const next3=mineOpen.filter(t=>t.status!=='Needs Review').sort((a,b)=>(a.due||'9999').localeCompare(b.due||'9999')).slice(0,3);
-  // Latest decisions: the newest meeting with decisions (up to three).
-  let decs='';
-  if (S.decisions) {
-    const withMtg=S.decisions.filter(d=>d.meeting_id), top=withMtg[0] || S.decisions[0];
-    const list=top ? S.decisions.filter(d=>top.meeting_id ? d.meeting_id===top.meeting_id : d.id===top.id).slice(0,3) : [];
-    decs=list.length ? '<div class="set-card">'+list.map(d=>'<button type="button" class="set-row dec-row" data-act="'+(d.meeting_id?'meeting-open':'noop')+'" data-id="'+esc(d.meeting_id||'')+'"><span>'+esc(d.decision)+'<small>'+esc([d.meeting_title, fmtDate(d.date)].filter(Boolean).join(' · '))+'</small></span>'+(d.meeting_id?'<span class="chev" aria-hidden="true">›</span>':'')+'</button>').join('')+'</div>'
-      : '<p class="none">No decisions recorded yet.</p>';
-  } else decs='<div class="skel" style="height:64px"></div>';
-  // Team pulse
-  let pulse='<div class="skel" style="height:80px"></div>';
-  if (S.acct && !S.acct.failed) {
-    const ps=Object.values(S.acct.people||{}), done=ps.reduce((a,p)=>a+(p.done||0),0), on=ps.reduce((a,p)=>a+(p.on_time||0),0), blk=ps.reduce((a,p)=>a+(p.blocked||0),0);
-    const last=(S.liveLogs||[]).filter(l=>l.rating).sort((a,b)=>String(b.date).localeCompare(String(a.date)))[0];
-    pulse='<div class="pulse"><div class="stat"><b>'+(done?Math.round(on*100/done)+'%':'—')+'</b><span>On Time<small>meeting items, 30 days</small></span></div>'
-      +'<div class="stat"><b>'+blk+'</b><span>Blocked<small>open now</small></span></div>'
-      +'<div class="stat"><b>'+(last?esc(last.rating):'—')+'</b><span>Last Meeting<small>'+(last?esc(fmtDate(last.date,{month:'short',day:'numeric'})):'not rated yet')+'</small></span></div></div>';
-  } else if (S.acct && S.acct.failed) pulse='<p class="none">Couldn\'t load the team pulse.</p>';
-  if (!S.decisions || !S.acct) prefetchLists();
   m.innerHTML='<div class="head-row"><h2>Huddle</h2></div>'   // Nov 16 (Brayden): the Home tab's page is titled Huddle
-    +focusCard()+nextTacticalCard()
+    // Nov 16 (Brayden): Scorecard first, then the Rally Cry card, then For You, then the meeting card.
+    +'<h3 class="set-sec">Team Scorecard</h3><div class="card scorecard"><p class="none">Coming soon.</p></div>'
+    +focusCard()
     +'<h3 class="set-sec">For You</h3>'+(rows?'<div class="set-card">'+rows+'</div>':'<p class="none">You\'re all caught up.</p>')
-    +'<h3 class="set-sec">Your Next 3 Tasks</h3>'+(next3.length?taskRows(next3):'<p class="none">Nothing on your list.</p>')
-    +'<h3 class="set-sec">Latest Decisions</h3>'+decs
-    +'<h3 class="set-sec">Team Pulse</h3>'+pulse
-    +'<h3 class="set-sec">Team Scorecard</h3><div class="card scorecard"><p class="none">Coming soon.</p></div>';
+    +nextTacticalCard();
 }
 
 /* ---------- More (a page since Nov 10, Batch 2) ---------- */
@@ -4369,7 +4354,7 @@ async function liveAddItem(el){
 /* ---------- Alfred chat bubble ---------- */
 // The conversation lives only in this page (S.alf) and is gone after a reload. Every message carries the screen
 // context below, and the screenshot taken when the bubble was tapped, so nobody has to describe where they were.
-const APP_VERSION = '2026.11.16-huddletab';
+const APP_VERSION = '2026.11.16-titleline';
 const H2C_URL = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
 const DIAG = { errors:[], actions:[] };   // last 10 of each, for bug reports
 function pushDiag(list, item){ list.push(item); if (list.length>10) list.shift(); }
@@ -5309,7 +5294,7 @@ document.addEventListener('touchend', ()=>{
   if (p.h<PTR_AT) { el.style.height='0px'; return; }
   // The pull leaves the circle turned part way; clear it first, or the spin only runs that last part over and over.
   { const sp=el.querySelector('.ptr-spin'); if (sp) { sp.style.transform=''; sp.style.opacity=''; } }
-  el.style.height='44px'; el.classList.add('busy');
+  el.style.height='64px'; el.classList.add('busy');   // tall enough that the spinner sits below iOS's fade under the clock
   fullRefresh().finally(()=>{ el.style.height='0px'; setTimeout(()=>{ el.classList.remove('busy'); const sp=el.querySelector('.ptr-spin'); if (sp) { sp.style.opacity=0; sp.style.transform=''; } }, 260); });
 });
 async function fullRefresh(){
