@@ -19,7 +19,7 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" type="image/png" href="icon-192.png">
-<script>window.HUDDLE_WEB={"api":"https://script.google.com/macros/s/AKfycbzM8K_-XRMDdOJYJ3THn_FhyZkRreMddHIBAOFCFVoq5S_Y7MnsfFLsl7ac_fyDPrch/exec","clientId":"473377418367-cqmmnfum4kshq16973m4sj2jqqfa55p0.apps.googleusercontent.com","build":"34b6c3c","push":{"config":{"apiKey":"AIzaSyBON-0KvTXPD_MV6ykhYvCoBRiECEHyE9c","authDomain":"huddle-e2548.firebaseapp.com","projectId":"huddle-e2548","storageBucket":"huddle-e2548.firebasestorage.app","messagingSenderId":"554653922065","appId":"1:554653922065:web:87de53b4cb11b36835d2b0"},"vapidKey":"BHKeDoBmW7vL-qAT3ocyTaMaZ27Ca66jvQtTes2NC4CPoWFiPBJcga7wVd-RD1IuyhBki0oKXwPBGSNq002s8o8"}};document.documentElement.classList.add('web');</script>
+<script>window.HUDDLE_WEB={"api":"https://script.google.com/macros/s/AKfycbzM8K_-XRMDdOJYJ3THn_FhyZkRreMddHIBAOFCFVoq5S_Y7MnsfFLsl7ac_fyDPrch/exec","clientId":"473377418367-cqmmnfum4kshq16973m4sj2jqqfa55p0.apps.googleusercontent.com","build":"f40910f","push":{"config":{"apiKey":"AIzaSyBON-0KvTXPD_MV6ykhYvCoBRiECEHyE9c","authDomain":"huddle-e2548.firebaseapp.com","projectId":"huddle-e2548","storageBucket":"huddle-e2548.firebasestorage.app","messagingSenderId":"554653922065","appId":"1:554653922065:web:87de53b4cb11b36835d2b0"},"vapidKey":"BHKeDoBmW7vL-qAT3ocyTaMaZ27Ca66jvQtTes2NC4CPoWFiPBJcga7wVd-RD1IuyhBki0oKXwPBGSNq002s8o8"}};document.documentElement.classList.add('web');</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <!-- The fonts load without holding up the first paint; the page shows in the phone's own font for a moment if needed. -->
@@ -472,6 +472,10 @@
   .waiting-box { display:contents; }
   .live-ctl .ctl-row { display:grid; grid-template-columns:minmax(0,.9fr) minmax(0,1.2fr) minmax(0,1.4fr); gap:8px; max-width:640px; margin:0 auto; }
   .live-ctl .ctl-row.one { grid-template-columns:minmax(0,1fr); max-width:420px; }
+  /* Nov 16 (#10): with Alfred's hat in the bar it has four buttons on one row; Next gets the most room, under the right thumb. */
+  .live-ctl .ctl-row.has-hat { grid-template-columns:44px minmax(0,.9fr) minmax(0,1.1fr) minmax(0,1.6fr); }
+  .live-ctl .ctl-row.one.has-hat { grid-template-columns:44px minmax(0,1fr); }
+  .live-ctl .ctl-row > .btn { min-width:0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; padding-left:8px; padding-right:8px; }
   .live-ctl .btn { min-height:48px; padding:8px 8px; line-height:1.15; }
   body.live-on main { padding-bottom:calc(150px + 64px * var(--ts)); }
   body.live-on .toast { bottom:calc(var(--nav-h, 0px) + var(--ctl-h, 66px) + 12px); }
@@ -602,6 +606,22 @@
   .alf-fab.busy svg { animation:pulse 1s ease-in-out infinite; }
   body.tv .alf-fab, body.alf-open .alf-fab, body.sheet-on .alf-fab { opacity:0; pointer-events:none; }
   @media (prefers-reduced-motion: reduce) { .alf-fab { transition:none; } }
+  #liveConn { position:fixed; left:50%; top:calc(env(safe-area-inset-top, 0px) + 8px); transform:translate(-50%,-8px); z-index:60; opacity:0; pointer-events:none;
+    background:var(--card); color:var(--muted); border:1px solid var(--line); border-radius:999px; padding:6px 14px; font-size:var(--fs-sub); font-weight:600;
+    box-shadow:0 4px 12px var(--shadow); transition:opacity .2s, transform .2s; }
+  #liveConn.show { opacity:1; transform:translate(-50%,0); }
+  /* Nov 16: the + and Alfred's hat are navy Liquid Glass: see-through navy that blurs what scrolls under it, a light rim and a
+     soft sheen on top. Without backdrop-filter (or with Reduce Transparency) they stay solid navy. */
+  .fab, .alf-fab { background:rgba(10,52,90,.74); border:1px solid rgba(255,255,255,.30);
+    -webkit-backdrop-filter:blur(16px) saturate(180%); backdrop-filter:blur(16px) saturate(180%);
+    box-shadow:0 8px 22px rgba(10,52,90,.28), inset 0 1px 1px rgba(255,255,255,.45), inset 0 -2px 6px rgba(0,0,0,.18); overflow:hidden; }
+  .fab::before, .alf-fab::before { content:''; position:absolute; inset:0; border-radius:inherit; pointer-events:none;
+    background:radial-gradient(120% 70% at 30% 0%, rgba(255,255,255,.38), rgba(255,255,255,0) 60%); }
+  .fab > *, .alf-fab > * { position:relative; }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .fab, :root:not([data-theme="light"]) .alf-fab { background:rgba(31,82,133,.70); border-color:rgba(255,255,255,.22); box-shadow:0 8px 22px rgba(0,0,0,.45), inset 0 1px 1px rgba(255,255,255,.35), inset 0 -2px 6px rgba(0,0,0,.25); } }
+  :root[data-theme="dark"] .fab, :root[data-theme="dark"] .alf-fab { background:rgba(31,82,133,.70); border-color:rgba(255,255,255,.22); box-shadow:0 8px 22px rgba(0,0,0,.45), inset 0 1px 1px rgba(255,255,255,.35), inset 0 -2px 6px rgba(0,0,0,.25); }
+  @supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))) { .fab, .alf-fab { background:var(--primary); } }
+  @media (prefers-reduced-transparency: reduce) { .fab, .alf-fab { background:var(--primary); -webkit-backdrop-filter:none; backdrop-filter:none; } }
 
   .alf-wrap { position:fixed; inset:0; z-index:45; display:flex; align-items:flex-end; justify-content:center; }
   .alf-panel { position:relative; width:100%; max-width:640px; min-width:0; height:min(88vh, 860px); display:flex; flex-direction:column; background:var(--page);
@@ -911,6 +931,10 @@
   .toast { transform:translateY(28px) scale(.92); transition:opacity .18s ease, transform .22s cubic-bezier(.4,0,1,1); }
   .toast.show { transform:none; transition:opacity .2s ease, transform .5s cubic-bezier(.34,1.45,.64,1); }
   @media (prefers-reduced-motion: reduce) { .toast, .toast.show { transform:none; transition:opacity .2s; } }
+  /* Nov 16 (#47): with a panel open, messages appear at the top of the screen instead of over the panel's buttons. */
+  body.sheet-on .toast { bottom:auto; top:calc(env(safe-area-inset-top, 0px) + 10px); transform:translateY(-28px) scale(.92); }
+  body.sheet-on .toast.show { transform:none; }
+  @media (prefers-reduced-motion: reduce) { body.sheet-on .toast { transform:none; } }
   /* Opened sections (details, expanded requests) ease in. */
   @keyframes openIn { from { opacity:0; transform:translateY(-4px); } }
   details[open] > :not(summary), .req.open > :not(.req-line) { animation:openIn .25s cubic-bezier(.2,.8,.2,1); }
@@ -1608,7 +1632,7 @@ async function load(){
   if (!load.painted) await paintBoot(); else render();
   if (S.startMeeting) { const id=S.startMeeting; S.startMeeting=null; openMeeting(id); }
   if (S.startReport) { S.startReport=false; openReport(); }
-  if (S.startTask) { const id=S.startTask; S.startTask=null; if (find(id)) openTask(id); }
+  if (S.startTask) { const id=S.startTask; S.startTask=null; if (find(id)) openTask(id); else toast('That task isn\'t available any more.'); }
   flushOutbox();
   if (WEB) setTimeout(pushRefresh, 6000);
   restoreLists(); setTimeout(prefetchLists, 400);   // every tab's list is fresh before you tap it
@@ -1639,7 +1663,8 @@ function startParam(){
   return new Promise(ok=>{
     // ?meeting=ID (the summary email's link) opens that meeting's summary on the Meetings screen.
     const pick=(v,mtg,task)=>{ v=String(v||''); if (task) S.startTask=String(task);
-      if (v==='live') { S.startLive=true; v='meetings'; }   // a "meeting started" notification const allowed=['mine','team','meetings','topics','settings','requests','deleted'].concat(S.data.isApprover?['review','admin']:[]);
+      if (v==='live') { S.startLive=true; v='meetings'; }   // a "meeting started" notification
+      const allowed=['mine','team','meetings','topics','settings','requests','deleted'].concat(S.data.isApprover?['review','admin']:[]);
       if (mtg && S.data.meetings && S.data.meetings[mtg]) { S.startMeeting=String(mtg); v='meetings'; }
       if (v==='report') { S.startReport=true; v='team'; }   // the report email's link (?view=report) on the web address
       ok(allowed.indexOf(v)>=0?v:''); };
@@ -2417,6 +2442,7 @@ function showSheet(){
 }
 function closeSheet(silent){
   if (S.sheet==='task' && S.edit && !S.edit.isNew && (S.saveTimer || S.edit.unsaved)) flushSave();
+  const draftId=S.sheet==='task' && S.edit && !S.edit.isNew && commentDraft(S.edit.task.id) ? S.edit.task.id : null;
   if (S.sheet==='topic' && (S.topicTimer || (S.topicEdit && S.topicEdit.unsaved))) flushTopic();
   S.sheet=null; S.edit=null; S.topicEdit=null; S.confirmDel=false;
   document.body.style.overflow=''; document.body.classList.remove('sheet-on');
@@ -2429,6 +2455,7 @@ function closeSheet(silent){
     S.closeT=setTimeout(()=>{ w.hidden=true; w.classList.remove('leave','dialog','dragged'); const bd=w.querySelector('.backdrop'); if (bd) bd.style.opacity=''; }, 290);
   }
   if (!silent) render();
+  if (draftId && !silent) setTimeout(()=>toast('Your comment wasn\'t posted. It\'s saved for next time.', ()=>{ openTask(draftId); }, { label:'Open' }), 300);
 }
 function renderSheet(){
   if (heldRedraw('sheet')) return;
@@ -2547,7 +2574,7 @@ function renderSheetBody(){
     html+='<div class="form thread" id="f-comments"><h3 class="sec-h">Comments</h3>'
       +(d ? (d.comments.map(c=>'<div class="comment"><span class="who">'+esc(nameOf(c.author))+'</span><span class="small muted">'+esc(fmtDate(c.created_at))+'</span><div>'+mentionify(c.text)+'</div></div>').join('') || '<p class="none">No comments yet.</p>')
         : S.edit.detailErr ? '<p class="none">Couldn\'t load comments. <button type="button" class="linkbtn" data-act="reload-detail">Try Again</button></p>' : '<p class="none">Loading…</p>')
-      +'<textarea class="box mt-s" id="f-comment" rows="2" placeholder="'+(isPriv(t)?'Add a note for yourself.':'Add a comment. Type @ and a name to notify someone.')+'"></textarea>'
+      +'<textarea class="box mt-s" id="f-comment" rows="2" placeholder="'+(isPriv(t)?'Add a note for yourself.':'Add a comment. Type @ and a name to notify someone.')+'">'+esc(commentDraft(t.id))+'</textarea>'
       +(isPriv(t)?'':'<div class="mentions"><span>Mention:</span>'+S.data.people.filter(p=>p.email!==S.data.me).map(p=>'<button type="button" data-act="mention" data-name="'+esc(firstName(p.email))+'">@'+esc(firstName(p.email))+'</button>').join('')+'</div>')
       +'<div class="mt-s"><button type="button" class="btn ghost sm" data-act="post">Post Comment</button></div></div>'
       +'<div class="form thread"><h3 class="sec-h">History</h3><div class="log">'
@@ -3019,15 +3046,24 @@ async function addTask(el){
   if (S.edit===edit) closeSheet();
   toast(isPriv(saved)?'Added to My Tasks as Only Me':edit.live?'Action Item Added':'Task Added');
 }
+// Nov 16 (#41): a half-typed comment survives a redraw (tapping a priority, owner or date) and closing the panel. Drafts are
+// kept per task on this device (lt-drafts) until posted; closing a task with a draft says so and offers to post it.
+function commentDraft(id, v){
+  if (!S.drafts) { try { S.drafts=JSON.parse(localStorage.getItem('lt-drafts')||'{}')||{}; } catch(e){ S.drafts={}; } }
+  if (v===undefined) return S.drafts[id]||'';
+  if (v && v.trim()) S.drafts[id]=v; else delete S.drafts[id];
+  try { localStorage.setItem('lt-drafts', JSON.stringify(S.drafts)); } catch(e){}
+}
 async function postComment(el){
   const box=document.getElementById('f-comment'), id=S.edit && S.edit.task.id; if (!box || !box.value.trim()) return;
   const cid=newCid();
-  const offlineNote=()=>{ queueComment(id, box.value, S.edit && S.edit.task.title, cid); box.value=''; toast('Comment saved on this phone. It will post when you\'re back online.'); };
+  const offlineNote=()=>{ queueComment(id, box.value, S.edit && S.edit.task.title, cid); box.value=''; commentDraft(id, ''); toast('Comment saved on this phone. It will post when you\'re back online.'); };
   if (!navigator.onLine || isTmp(id) || S.outbox.length) { offlineNote(); return; }
   let netDown=false;
   const c=await saving(el, 'Posting…', ()=>call('apiAddComment', id, box.value, cid).catch(e=>{ if (isNetErr(e)) { netDown=true; return null; } throw e; }));
   if (netDown) { offlineNote(); return; }
   if (!c) return;
+  commentDraft(id, '');
   if (S.edit && S.edit.task.id===id) { if (S.edit.detail) S.edit.detail.comments.push(c); renderSheet(); }
   toast(c.notified && c.notified.length ? 'Posted. Emailed '+c.notified.join(' and ') : 'Comment posted');
 }
@@ -3303,16 +3339,16 @@ function applyLive(res){
     const said = S.live && [res.ended, res.canceled].some(x=>x && x.id===S.live.id);
     if (S.live && !said && !(res.state && res.state.id===S.endedId)) {
       if (!S.liveGone || Date.now()-S.liveGone.last>60000) S.liveGone={ at:Date.now(), n:0 };
-      S.liveGone.n++; S.liveGone.last=Date.now();
+      S.liveGone.n++; S.liveGone.last=Date.now(); liveConn();
       if (S.liveGone.n<3 || Date.now()-S.liveGone.at<45000) { clearTimeout(S.liveRecheck); S.liveRecheck=setTimeout(()=>{ S.liveChecked=0; livePoll(); }, 2000); return; }
     }
-    S.liveGone=0;
+    S.liveGone=0; liveConn();
     const why = res.canceled && S.live && res.canceled.id===S.live.id ? res.canceled.by+' canceled the meeting' : 'The meeting has ended';
     if (S.startLive) { S.startLive=false; toast('That meeting has already ended.'); }
     if (S.live) { S.live=null; if (S.view==='live') { S.view='meetings'; toast(why); render(); } else { renderLivebar(); if (res.canceled) toast(why); } }
     return;
   }
-  S.liveGone=0;
+  if (S.liveGone) { S.liveGone=0; liveConn(); }
   if (S.liveDirty && !res.fromWrite) return;                         // our own change is still on its way to the server
   // MT-6: after signing in again mid-meeting, the app opens back on the meeting.
   try { if (!S.live && S.view!=='live' && (S.startLive || sessionStorage.getItem('lt-was-live'))) { S.view='live'; S.liveAt=Date.now(); } } catch(e){}
@@ -3325,7 +3361,15 @@ function applyLive(res){
   if (S.view==='live') { const a=document.activeElement; if (!(a && /^(INPUT|TEXTAREA)$/.test(a.tagName))) render(); }
   else renderLivebar();
 }
+// Nov 16 (#46): while the meeting connection blinks (two or more empty answers), say so instead of freezing silently.
+function liveConn(){
+  let el=document.getElementById('liveConn');
+  const on=!!(S.liveGone && S.liveGone.n>=2 && S.live && S.view==='live');
+  if (!el) { if (!on) return; el=document.createElement('div'); el.id='liveConn'; el.setAttribute('role','status'); el.textContent='Reconnecting…'; document.body.appendChild(el); }
+  el.classList.toggle('show', on);
+}
 function livePoll(){
+  if (S.liveGone || document.getElementById("liveConn")) liveConn();
   if (!S.data || document.hidden) return;
   const now=Date.now();
   if (S.view!=='live' && now-(S.liveChecked||0) < 20000) return;
@@ -3517,9 +3561,10 @@ function renderLiveCtl(){
   const item='<button type="button" class="btn ghost" data-act="lv-item">'+(narrow?'+ Item':'+ Action Item')+'</button>';
   // Nov 12: during a meeting Alfred sits in this bar instead of floating over the agenda.
   const hat=alfredEnabled() ? '<button type="button" class="btn ghost hat-btn" data-act="alf-open" aria-label="Ask Alfred"><svg viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><rect x="8" y="6.7" width="16" height="14.6" rx="1"/><rect x="8" y="15.9" width="16" height="3" class="hat-band"/><path d="M5 19.7Q16 21.7 27 19.7L27 21.68Q16 26.92 5 21.68Z"/></svg></button>' : '';
-  if (!isHost(st)) { el.innerHTML='<div class="ctl-row one">'+hat+item+'</div>'; document.documentElement.style.setProperty('--ctl-h', el.offsetHeight+'px'); return; }
+  const hc=hat?' has-hat':'';
+  if (!isHost(st)) { el.innerHTML='<div class="ctl-row one'+hc+'">'+hat+item+'</div>'; document.documentElement.style.setProperty('--ctl-h', el.offsetHeight+'px'); return; }
   const nx=liveNextBtn(st);
-  el.innerHTML='<div class="ctl-row">'+hat+'<button type="button" class="btn ghost" data-act="'+(st.phase==='done'?'lv-back':'lv-prev')+'"'+(liveBackOff(st)?' disabled':'')+'>‹ Back</button>'
+  el.innerHTML='<div class="ctl-row'+hc+'">'+hat+'<button type="button" class="btn ghost" data-act="'+(st.phase==='done'?'lv-back':'lv-prev')+'"'+(liveBackOff(st)?' disabled':'')+'>‹ Back</button>'
     +item+'<button type="button" class="btn primary" data-act="'+nx.act+'">'+esc(nx.label)+'</button></div>';
   document.documentElement.style.setProperty('--ctl-h', el.offsetHeight+'px');
 }
@@ -3894,7 +3939,7 @@ async function liveAddItem(el){
 /* ---------- Alfred chat bubble ---------- */
 // The conversation lives only in this page (S.alf) and is gone after a reload. Every message carries the screen
 // context below, and the screenshot taken when the bubble was tapped, so nobody has to describe where they were.
-const APP_VERSION = '2026.11.13-live-gap-2';
+const APP_VERSION = '2026.11.16-fixes';
 const H2C_URL = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
 const DIAG = { errors:[], actions:[] };   // last 10 of each, for bug reports
 function pushDiag(list, item){ list.push(item); if (list.length>10) list.shift(); }
@@ -4442,6 +4487,7 @@ function requestClick(a, el){
       .catch(e=>{ el.disabled=false; toast('Not saved: '+String(e.message).replace(/^(Exception|Error):\s*/,'')); }); return true; }
   return false;
 }
+document.addEventListener('input', e=>{ if (e.target.id==='f-comment' && S.edit && S.edit.task.id) commentDraft(S.edit.task.id, e.target.value); });
 document.addEventListener('input', e=>{ if (e.target.id==='lv-title') S.lvTitle=e.target.value; if (e.target.id==='mtg-ctx' && S.mtg) S.mtg.ctx=e.target.value; });
 // Phones: tapping away from an empty search box closes it (no Cancel button needed).
 document.addEventListener('focusout', e=>{
@@ -5115,7 +5161,16 @@ function pushRefresh(){
 function openFromPush(url){
   let q; try { q=new URL(url, location.href).searchParams; } catch(e){ return; }
   const task=q.get('task'), v=q.get('view');
-  if (task) { if (find(task)) { if (S.sheet) closeSheet(true); openTask(task); } else go('mine'); return; }
+  if (task) {
+    // Nov 16 (#42): Huddle open in the background doesn't have a brand-new task yet: fetch the list, then open it.
+    const show=()=>{ if (S.sheet) closeSheet(true); openTask(task); };
+    if (find(task)) { show(); return; }
+    if (S.outbox.length || !navigator.onLine) { go('mine'); return; }
+    call('apiTasks').then(tasks=>{ S.data.tasks=tasks; S.lastSync=Date.now(); saveBoot(); render();
+      if (find(task)) show(); else { go('mine'); toast('That task isn\'t available any more.'); } })
+      .catch(()=>go('mine'));
+    return;
+  }
   if (v==='live') { if (S.live) go('live'); else { S.startLive=true; S.liveChecked=0; livePoll(); } return; }
   if (['mine','team','meetings','topics'].indexOf(v)>=0) go(v);
 }
