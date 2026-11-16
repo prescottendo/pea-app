@@ -19,7 +19,7 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" type="image/png" href="icon-192.png">
-<script>window.HUDDLE_WEB={"api":"https://script.google.com/macros/s/AKfycbzM8K_-XRMDdOJYJ3THn_FhyZkRreMddHIBAOFCFVoq5S_Y7MnsfFLsl7ac_fyDPrch/exec","clientId":"473377418367-cqmmnfum4kshq16973m4sj2jqqfa55p0.apps.googleusercontent.com","build":"5ef7306","push":{"config":{"apiKey":"AIzaSyBON-0KvTXPD_MV6ykhYvCoBRiECEHyE9c","authDomain":"huddle-e2548.firebaseapp.com","projectId":"huddle-e2548","storageBucket":"huddle-e2548.firebasestorage.app","messagingSenderId":"554653922065","appId":"1:554653922065:web:87de53b4cb11b36835d2b0"},"vapidKey":"BHKeDoBmW7vL-qAT3ocyTaMaZ27Ca66jvQtTes2NC4CPoWFiPBJcga7wVd-RD1IuyhBki0oKXwPBGSNq002s8o8"}};document.documentElement.classList.add('web');</script>
+<script>window.HUDDLE_WEB={"api":"https://script.google.com/macros/s/AKfycbzM8K_-XRMDdOJYJ3THn_FhyZkRreMddHIBAOFCFVoq5S_Y7MnsfFLsl7ac_fyDPrch/exec","clientId":"473377418367-cqmmnfum4kshq16973m4sj2jqqfa55p0.apps.googleusercontent.com","build":"e9c95c5","push":{"config":{"apiKey":"AIzaSyBON-0KvTXPD_MV6ykhYvCoBRiECEHyE9c","authDomain":"huddle-e2548.firebaseapp.com","projectId":"huddle-e2548","storageBucket":"huddle-e2548.firebasestorage.app","messagingSenderId":"554653922065","appId":"1:554653922065:web:87de53b4cb11b36835d2b0"},"vapidKey":"BHKeDoBmW7vL-qAT3ocyTaMaZ27Ca66jvQtTes2NC4CPoWFiPBJcga7wVd-RD1IuyhBki0oKXwPBGSNq002s8o8"}};document.documentElement.classList.add('web');</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <!-- The fonts load without holding up the first paint; the page shows in the phone's own font for a moment if needed. -->
@@ -130,13 +130,13 @@
     #ptr { margin-top:env(safe-area-inset-top, 0px); }
     #livebar:not([hidden]) ~ #ptr { margin-top:0; }
     /* The no-signal bar too: when it's the first thing on the page, it starts below the clock. */
-    #offline:not([hidden]) { padding-top:calc(16px + env(safe-area-inset-top, 0px)); }
+    #offline:not([hidden]) { padding-top:var(--top-safe); }
     #livebar:not([hidden]) ~ #offline:not([hidden]) { padding-top:8px; }
     #offline:not([hidden]) ~ #ptr { margin-top:0; }
     body.v-live main { padding-top:30px; }
     /* Nov 10: the live meeting bar shows on every tab. Without the logo bar it used to sit under the clock, out of sight;
        now it starts below the clock and stays pinned to the top while you scroll, so anyone can join from anywhere. */
-    #livebar { position:sticky; top:0; z-index:22; padding-top:calc(16px + env(safe-area-inset-top, 0px)); }
+    #livebar { position:sticky; top:0; z-index:22; padding-top:var(--top-safe); }
     /* Nov 12: with the header on every tab, the live bar sits under it and sticks just below the clock while you scroll. */
  }
   @media (max-width:420px) { .logo { height:30px; } .divider { height:24px; } .bar { gap:8px; } }
@@ -156,6 +156,9 @@
   /* The app runs inside Google's frame, where the phone's safe-area inset often reads 0, so keep at least 30px under the bar
      to clear the rounded corners and the home indicator. */
   :root { --nav-under:max(30px, env(safe-area-inset-bottom, 0px)); }
+  /* Nov 16 (Brayden): iOS fades the strip under the clock (its Liquid Glass edge). Nothing in the app may sit in it: every
+     fixed or top-placed thing starts at or below --top-safe (24pt under the clock). topSafe() gives the same line in px. */
+  :root { --top-safe:calc(env(safe-area-inset-top, 0px) + 24px); }
   nav.bottom { display:none; position:fixed; left:0; right:0; bottom:0; z-index:25; background:var(--card); border-top:1px solid var(--line);
     padding:10px max(14px, env(safe-area-inset-right, 0px)) var(--nav-under) max(14px, env(safe-area-inset-left, 0px)); }
   nav.bottom .tabs { display:grid; grid-template-columns:repeat(4, 1fr); max-width:520px; margin:0 auto; }
@@ -257,7 +260,7 @@
 
   .sheet-wrap { position:fixed; inset:0; z-index:40; display:flex; align-items:flex-end; justify-content:center; }
   .backdrop { position:absolute; inset:0; background:var(--backdrop); opacity:1; transition:opacity .32s ease; }
-  .sheet { position:relative; width:100%; max-width:640px; max-height:92vh; overflow-y:auto; background:var(--page); border-radius:18px 18px 0 0;
+  .sheet { position:relative; width:100%; max-width:640px; max-height:min(92vh, calc(100vh - var(--top-safe) - 8px)); overflow-y:auto; background:var(--page); border-radius:18px 18px 0 0;
     padding:8px max(16px, env(safe-area-inset-right, 0px)) calc(24px + env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px));
     box-shadow:0 -8px 30px var(--shadow); transition:transform .38s cubic-bezier(.32,.72,0,1), opacity .3s ease; will-change:transform; }
   .sheet-wrap.enter .backdrop, .sheet-wrap.leave .backdrop { opacity:0; }
@@ -450,7 +453,7 @@
   .tbar { display:none; }
   @media (max-width:699px) {
     .tbar { display:grid; grid-template-columns:minmax(0,1fr) auto minmax(0,1fr); column-gap:8px; align-items:center; position:fixed; left:0; right:0; top:0; z-index:21;
-      padding:calc(env(safe-area-inset-top, 0px) + 20px) 16px 6px; height:calc(70px + env(safe-area-inset-top, 0px)); box-sizing:border-box;
+      padding:var(--top-safe) 16px 6px; height:calc(var(--top-safe) + 50px); box-sizing:border-box;
       background:color-mix(in srgb, var(--page) 82%, transparent);
       border-bottom:1px solid var(--line-soft); opacity:0; visibility:hidden; pointer-events:none; transition:opacity .18s ease, visibility 0s linear .18s; }
     .tbar.show { opacity:1; visibility:visible; pointer-events:auto; transition:opacity .18s ease, visibility 0s;
@@ -726,7 +729,7 @@
   .alf-fab.busy svg { animation:pulse 1s ease-in-out infinite; }
   body.tv .alf-fab, body.alf-open .alf-fab, body.sheet-on .alf-fab { opacity:0; pointer-events:none; }
   @media (prefers-reduced-motion: reduce) { .alf-fab { transition:none; } }
-  #liveConn { position:fixed; left:50%; top:calc(env(safe-area-inset-top, 0px) + 8px); transform:translate(-50%,-8px); z-index:60; opacity:0; pointer-events:none;
+  #liveConn { position:fixed; left:50%; top:var(--top-safe); transform:translate(-50%,-8px); z-index:60; opacity:0; pointer-events:none;
     background:var(--card); color:var(--muted); border:1px solid var(--line); border-radius:999px; padding:6px 14px; font-size:var(--fs-sub); font-weight:600;
     box-shadow:0 4px 12px var(--shadow); transition:opacity .2s, transform .2s; }
   #liveConn.show { opacity:1; transform:translate(-50%,0); }
@@ -746,7 +749,7 @@
   @media (prefers-reduced-transparency: reduce) { .fab, .alf-fab { background:var(--primary); -webkit-backdrop-filter:none; backdrop-filter:none; } }
 
   .alf-wrap { position:fixed; inset:0; z-index:45; display:flex; align-items:flex-end; justify-content:center; }
-  .alf-panel { position:relative; width:100%; max-width:640px; min-width:0; height:min(88vh, 860px); display:flex; flex-direction:column; background:var(--page);
+  .alf-panel { position:relative; width:100%; max-width:640px; min-width:0; height:min(88vh, 860px, calc(100vh - var(--top-safe) - 8px)); display:flex; flex-direction:column; background:var(--page);
     border-radius:18px 18px 0 0; box-shadow:0 -8px 30px var(--shadow); overflow:hidden; }
   /* Batch 3: the panel's opening (grows from the bubble), closing and drag are driven from the script (showAlfred / closeAlfred). */
   @media (min-width:700px) {
@@ -802,7 +805,7 @@
   .alf-draft details { font-size:var(--fs-sub); color:var(--muted); }
   .alf-draft details ul { margin:4px 0 0; padding-left:16px; }
   .alf-draft .sent { color:var(--st-done-ink); font-weight:600; }
-  .alf-pick-hint { position:fixed; left:50%; top:calc(12px + env(safe-area-inset-top, 0px)); transform:translateX(-50%); z-index:46; background:var(--header); color:var(--header-ink);
+  .alf-pick-hint { position:fixed; left:50%; top:var(--top-safe); transform:translateX(-50%); z-index:46; background:var(--header); color:var(--header-ink);
     border:2px solid #C6A85C; border-radius:999px; padding:8px 16px; font-weight:600; font-size:var(--fs-sub); max-width:calc(100% - 32px); text-align:center; box-shadow:0 6px 16px var(--shadow); }
   .alf-pick-hint button { margin-left:12px; border:none; background:none; color:#C6A85C; font-weight:600; padding:0; }
   .alf-picked { outline:3px solid #C6A85C !important; outline-offset:2px; box-shadow:0 0 0 6px rgba(198,168,92,.35) !important; }
@@ -1056,7 +1059,7 @@
   .toast.show { transform:none; transition:opacity .2s ease, transform .5s cubic-bezier(.34,1.45,.64,1); }
   @media (prefers-reduced-motion: reduce) { .toast, .toast.show { transform:none; transition:opacity .2s; } }
   /* Nov 16 (#47): with a panel open, messages appear at the top of the screen instead of over the panel's buttons. */
-  body.sheet-on .toast { bottom:auto; top:calc(env(safe-area-inset-top, 0px) + 10px); transform:translateY(-28px) scale(.92); }
+  body.sheet-on .toast { bottom:auto; top:var(--top-safe); transform:translateY(-28px) scale(.92); }
   body.sheet-on .toast.show { transform:none; }
   @media (prefers-reduced-motion: reduce) { body.sheet-on .toast { transform:none; } }
   /* Opened sections (details, expanded requests) ease in. */
@@ -1070,7 +1073,7 @@
   @media (max-width:699px) {
     /* Nov 16 (Brayden): iOS fades the strip just under the clock (its Liquid Glass edge), so the title row starts a little
        lower to stay clear of it. Pages and the meeting screen alike; the thin scroll bar's content sits lower too. */
-    body:not(.v-live) main { padding-top:22px; }
+    body:not(.v-live) main { padding-top:24px; }
     .rv-banner { padding:8px 12px; margin-bottom:12px; font-size:var(--fs-sub); gap:8px; }
     .rv-banner .go { font-size:var(--fs-body); }
     .head-row.compact { align-items:center; margin-bottom:12px; }
@@ -1325,7 +1328,7 @@
   .report-screen { position:fixed; inset:0; z-index:60; background:var(--page); overflow-y:auto; -webkit-overflow-scrolling:touch; }
   .report-screen .rp-load { position:fixed; inset:0; display:grid; place-items:center; }
   .report-screen .rp-load .spin { width:28px; height:28px; border:3px solid var(--line); border-top-color:var(--heading); border-radius:50%; animation:spin .8s linear infinite; }
-  .report-screen .rp-bar { position:sticky; top:0; z-index:1; display:flex; align-items:center; gap:12px; padding:calc(10px + env(safe-area-inset-top, 0px)) 16px 10px; background:var(--page); border-bottom:1px solid var(--line); }
+  .report-screen .rp-bar { position:sticky; top:0; z-index:1; display:flex; align-items:center; gap:12px; padding:var(--top-safe) 16px 10px; background:var(--page); border-bottom:1px solid var(--line); }
   .report-screen .rp-bar b { flex:1; min-width:0; text-align:center; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; font-family:var(--serif, "STIX Two Text", Georgia, serif); font-size:var(--fs-body); color:var(--heading); }
   .report-screen .rp-paper { background:#fff; color:#333; border-radius:12px; margin:16px auto calc(24px + env(safe-area-inset-bottom, 0px)); padding:16px; max-width:820px; width:calc(100% - 32px); box-sizing:border-box; overflow-x:auto; }
   .report-screen .rp-paper h2 { margin-top:0; }
@@ -1868,13 +1871,18 @@ function showCoach(){
   setTimeout(placeCoach, st.view ? 380 : 0); placeCoach();
 }
 function coachTarget(st){ return st.sel ? [...document.querySelectorAll(st.sel)].find(e=>{ const r=e.getBoundingClientRect(); return r.width>0 && r.height>0; }) : null; }
+function topSafe(){
+  let p=document.getElementById('topSafeProbe');
+  if (!p) { p=document.createElement('div'); p.id='topSafeProbe'; p.style.cssText='position:fixed;left:0;top:var(--top-safe);width:1px;height:1px;visibility:hidden;pointer-events:none'; document.body.appendChild(p); }
+  return p.getBoundingClientRect().top || 12;
+}
 function placeCoach(){
   if (S.coach==null) return;
   const st=COACH[S.coach], ov=document.getElementById('coach'); if (!ov || ov.hidden) return;
   const spot=ov.querySelector('.coach-spot'), bub=ov.querySelector('.coach-bub'), W=innerWidth, H=innerHeight, pad=6;
   let el=coachTarget(st);
   if (el && getComputedStyle(el).position!=='fixed' && !el.closest('nav')) {
-    const r0=el.getBoundingClientRect(); if (r0.top<80 || r0.bottom>H-160) { window.scrollTo(0, window.scrollY + r0.top - H*0.3); el=coachTarget(st); }
+    const r0=el.getBoundingClientRect(); if (r0.top<topSafe()+70 || r0.bottom>H-160) { window.scrollTo(0, window.scrollY + r0.top - H*0.3); el=coachTarget(st); }
   }
   const r=el && el.getBoundingClientRect();
   if (r) { const big=r.width>W*0.6; Object.assign(spot.style, { left:(r.left-pad)+'px', top:(r.top-pad)+'px', width:(r.width+pad*2)+'px', height:(r.height+pad*2)+'px',
@@ -1884,10 +1892,11 @@ function placeCoach(){
   let top, left, arrow='';
   if (r) {
     const below=r.bottom+pad+14, above=r.top-pad-14-bh;
-    if (below+bh < H-12) { top=below; arrow='up'; } else if (above>12) { top=above; arrow='down'; } else { top=Math.max(12, H-bh-12); }
+    const ts=topSafe();
+    if (below+bh < H-12) { top=below; arrow='up'; } else if (above>ts) { top=above; arrow='down'; } else { top=Math.max(ts, H-bh-12); }
     left=Math.min(Math.max(16, r.left+r.width/2-bw/2), W-bw-16);
     bub.style.setProperty('--ax', Math.min(Math.max(20, r.left+r.width/2-left), bw-20)+'px');
-  } else { top=Math.max(16, (H-bh)/2); left=(W-bw)/2; }
+  } else { top=Math.max(topSafe(), (H-bh)/2); left=(W-bw)/2; }
   bub.className='coach-bub'+(arrow?' arrow-'+arrow:'');
   bub.style.top=top+'px'; bub.style.left=left+'px';
 }
@@ -4296,7 +4305,7 @@ async function liveAddItem(el){
 /* ---------- Alfred chat bubble ---------- */
 // The conversation lives only in this page (S.alf) and is gone after a reload. Every message carries the screen
 // context below, and the screenshot taken when the bubble was tapped, so nobody has to describe where they were.
-const APP_VERSION = '2026.11.16-focus';
+const APP_VERSION = '2026.11.16-safe';
 const H2C_URL = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
 const DIAG = { errors:[], actions:[] };   // last 10 of each, for bug reports
 function pushDiag(list, item){ list.push(item); if (list.length>10) list.shift(); }
@@ -4327,7 +4336,7 @@ function alfBounds(side){
   const head=document.querySelector('header'), nav=document.getElementById('navBottom'), plus=document.getElementById('fab');
   const ctl=document.getElementById('liveCtl');
   const navTop = Math.min(nav && getComputedStyle(nav).display!=='none' ? nav.getBoundingClientRect().top : H, ctl && !ctl.hidden ? ctl.getBoundingClientRect().top : H);
-  let minTop=(head ? head.getBoundingClientRect().bottom : 0)+gap, maxTop=navTop-size-gap;
+  let minTop=Math.max(head ? head.getBoundingClientRect().bottom : 0, topSafe())+gap, maxTop=navTop-size-gap;   // never under the clock's fade
   // Nov 16 (Brayden): on Meetings there's no +, but the hat still sits where it does on the other tabs: level with the spot
   // the + would have (measured with the + laid out invisibly for a moment).
   let pr=null, ghost=false;
