@@ -19,7 +19,7 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" type="image/png" href="icon-192.png">
-<script>window.HUDDLE_WEB={"api":"https://script.google.com/macros/s/AKfycbzM8K_-XRMDdOJYJ3THn_FhyZkRreMddHIBAOFCFVoq5S_Y7MnsfFLsl7ac_fyDPrch/exec","clientId":"473377418367-cqmmnfum4kshq16973m4sj2jqqfa55p0.apps.googleusercontent.com","build":"1caa4ce","push":{"config":{"apiKey":"AIzaSyBON-0KvTXPD_MV6ykhYvCoBRiECEHyE9c","authDomain":"huddle-e2548.firebaseapp.com","projectId":"huddle-e2548","storageBucket":"huddle-e2548.firebasestorage.app","messagingSenderId":"554653922065","appId":"1:554653922065:web:87de53b4cb11b36835d2b0"},"vapidKey":"BHKeDoBmW7vL-qAT3ocyTaMaZ27Ca66jvQtTes2NC4CPoWFiPBJcga7wVd-RD1IuyhBki0oKXwPBGSNq002s8o8"}};document.documentElement.classList.add('web');</script>
+<script>window.HUDDLE_WEB={"api":"https://script.google.com/macros/s/AKfycbzM8K_-XRMDdOJYJ3THn_FhyZkRreMddHIBAOFCFVoq5S_Y7MnsfFLsl7ac_fyDPrch/exec","clientId":"473377418367-cqmmnfum4kshq16973m4sj2jqqfa55p0.apps.googleusercontent.com","build":"7d1165d","push":{"config":{"apiKey":"AIzaSyBON-0KvTXPD_MV6ykhYvCoBRiECEHyE9c","authDomain":"huddle-e2548.firebaseapp.com","projectId":"huddle-e2548","storageBucket":"huddle-e2548.firebasestorage.app","messagingSenderId":"554653922065","appId":"1:554653922065:web:87de53b4cb11b36835d2b0"},"vapidKey":"BHKeDoBmW7vL-qAT3ocyTaMaZ27Ca66jvQtTes2NC4CPoWFiPBJcga7wVd-RD1IuyhBki0oKXwPBGSNq002s8o8"}};document.documentElement.classList.add('web');</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <!-- The fonts load without holding up the first paint; the page shows in the phone's own font for a moment if needed. -->
@@ -503,6 +503,27 @@
   .livebar span:nth-child(2) { flex:1; min-width:0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
   .livebar .join { font-weight:600; }
   .live-top { display:flex; align-items:center; gap:8px; margin-bottom:12px; }
+  .live-head { display:grid; grid-template-columns:auto 1fr 44px; align-items:center; gap:8px; margin-bottom:12px; }
+  .live-head .back { margin:0; }
+  .live-head .lh-mid { text-align:center; font-weight:600; color:var(--muted); font-size:var(--fs-sub); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; font-variant-numeric:tabular-nums; }
+  .live-head .lh-more { width:44px; height:44px; display:grid; place-items:center; border:none; background:none; color:var(--heading); border-radius:50%; }
+  .live-head .lh-more svg { width:22px; height:22px; }
+  .live-h { margin:0 0 12px; }
+  .step-card .sec.paused { color:var(--gold); }
+  .full-sum { margin-top:16px; }
+  .full-sum > summary { cursor:pointer; font-weight:600; color:var(--link); padding:12px 0; list-style:none; }
+  .full-sum > summary::-webkit-details-marker { display:none; }
+  .full-sum[open] > summary { color:var(--muted); }
+  .mtg-menu { margin:8px 0 16px; }
+  .nm-row { display:flex; align-items:center; gap:12px; }
+  .nm-row > span { flex:1; min-width:0; }
+  .nm-row.pre { background:var(--line-soft); }
+  .alf-pickbtn { flex:none; width:40px; height:40px; border:none; background:none; color:var(--muted); display:grid; place-items:center; border-radius:50%; padding:0; }
+  .alf-pickbtn svg { width:22px; height:22px; }
+  .alf-tools:has(.note:empty) { display:none; }
+  article.card.rv { transition:background-color .15s; }
+  article.card.rv.rv-yes { box-shadow:inset 4px 0 0 #3E9B5B; }
+  article.card.rv.rv-no { box-shadow:inset -4px 0 0 #D64545; }
   .live-top > div:first-child { flex:1; min-width:0; }
   .sec { font-size:var(--fs-cap); letter-spacing:.06em; text-transform:uppercase; color:var(--muted); font-weight:600; }
   .step-card, .topic-timer { padding:16px; }
@@ -1372,12 +1393,12 @@
 <div class="alf-wrap" id="alfWrap" hidden><div class="backdrop" data-act="alf-close"></div>
   <section class="alf-panel" id="alfPanel" role="dialog" aria-modal="true" aria-label="Alfred chat" tabindex="-1">
     <div class="alf-head"><button type="button" data-act="alf-new" title="Start a new conversation">New</button><span class="hat"><svg viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><rect x="8" y="6.7" width="16" height="14.6" rx="1"/><rect x="8" y="15.9" width="16" height="3" class="hat-band"/><path d="M5 19.7Q16 21.7 27 19.7L27 21.68Q16 26.92 5 21.68Z"/></svg></span>
-      <span class="t"><b>Alfred</b><small>Meetings, tasks, help, or report a problem</small></span>
+      <span class="t"><b>Alfred</b></span>
       <button type="button" data-act="alf-close" aria-label="Done, close the chat">Done</button></div>
     <div class="alf-msgs" id="alfMsgs" aria-live="polite"></div>
     <div class="alf-foot">
-      <div class="alf-tools"><button type="button" class="chipbtn" data-act="alf-pick">👆 Tap what you mean</button><span class="note" id="alfNote"></span></div>
-      <div class="alf-input"><textarea id="alfInput" rows="1" placeholder="Ask Alfred…" aria-label="Message Alfred"></textarea><button type="button" class="btn primary sm" data-act="alf-send">Send</button></div>
+      <div class="alf-tools"><span class="note" id="alfNote"></span></div>
+      <div class="alf-input"><button type="button" class="alf-pickbtn" data-act="alf-pick" aria-label="Point at something on the screen" title="Point at something on the screen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 11V5.5a1.5 1.5 0 0 1 3 0V11m0-1.5a1.5 1.5 0 0 1 3 0V11m0-.5a1.5 1.5 0 0 1 3 0V15a6 6 0 0 1-6 6h-.5a6 6 0 0 1-4.9-2.5L4.3 15.2a1.5 1.5 0 0 1 2.4-1.8L9 15"/></svg></button><textarea id="alfInput" rows="1" placeholder="Ask Alfred…" aria-label="Message Alfred"></textarea><button type="button" class="btn primary sm" data-act="alf-send">Send</button></div>
     </div>
   </section></div>
 <div class="alf-pick-hint" id="alfPick" hidden>Tap the thing you mean <button type="button" data-act="alf-pick-cancel">Cancel</button></div>
@@ -2494,10 +2515,11 @@ function renderReview(m){
       +(r?'<div class="rv-why"><b>Why:</b> '+esc(r)+'</div>':'')
       +(t.details?'<div class="small muted">'+esc(t.details)+'</div>':'')
       +(when?'<div class="small muted">Alfred approves it '+esc(when)+' if nobody does first.</div>':'')
-      +(ok?'<div class="acts"><button type="button" class="btn approve sm" data-act="approve" data-id="'+t.id+'">Approve</button><button type="button" class="btn ghost sm" data-act="reject" data-id="'+t.id+'">Reject</button></div>':'')
+      +(ok && r?'<div class="acts"><button type="button" class="btn approve sm" data-act="approve" data-id="'+t.id+'">Approve</button><button type="button" class="btn ghost sm" data-act="reject" data-id="'+t.id+'">Reject</button></div>':'')
       +'</article>'; };
-  let html=backLink()+'<h2>Review</h2><p class="lead">'+(all.length ? all.length+' task'+(all.length===1?'':'s')+' from recent meetings'+(unsure.length?', '+unsure.length+' need'+(unsure.length===1?'s':'')+' a look.':'.') : 'Alfred found these in recent meetings.')+' '
-    +(ok?(auto?'Alfred approves the ones it\'s sure about after 24 hours. Tap one to fix the wording, owner or date first.':'Approve to send them to their owners, or tap one to fix the wording, owner or date first.'):'Brayden or Jared approves or rejects them.')+'</p>';
+  // #21 (Nov 16): one line; cards that look fine are approved with a swipe right (left rejects); buttons only where a look is needed.
+  let html=backLink()+'<h2>Review</h2><p class="lead">'+(all.length ? (unsure.length ? unsure.length+' need'+(unsure.length===1?'s':'')+' a look. ' : '')
+      +(ok ? (auto ? 'Alfred approves the rest after 24 hours.' : '') + (sure.length ? ' Swipe right to approve, left to reject.' : '') : 'Brayden or Jared approves them.') : '')+'</p>';
   if (ok && all.length>1) html+='<div class="acts top"><button type="button" class="btn approve sm" data-act="approve-all">Approve All '+all.length+'</button></div>';
   if (!all.length) html+='<div class="empty"><b>Nothing to Review</b>New meeting tasks will show up here.</div>';
   if (unsure.length) html+='<h3 class="sec-h">Needs a Look · '+unsure.length+'</h3><div class="list">'+unsure.map(card).join('')+'</div>';
@@ -2649,9 +2671,9 @@ function renderSheetBody(){
     return;
   }
   if (S.sheet==='newmeeting') {
-    el.innerHTML='<div class="grab"></div><div class="sheet-head"><button type="button" class="btn ghost sm" data-act="close-sheet">Cancel</button><h3>Start a Meeting</h3></div><div class="menu">'
-      +[['tactical','Weekly Tactical','90 minutes · your tactical agenda'],['strategic','Monthly Strategic','About 2 hours · draft agenda from the Table Group model']]
-        .map(([k,l,d])=>'<button type="button" data-act="lv-start" data-val="'+k+'"><span class="menu-ico">'+ICON.meetings+'</span><span>'+l+'<small>'+d+'</small></span></button>').join('')
+    el.innerHTML='<div class="grab"></div><div class="sheet-head"><button type="button" class="btn ghost sm" data-act="close-sheet">Cancel</button><h3>Start a Meeting</h3></div><div class="set-card">'
+      +[['tactical','Weekly Tactical','90 minutes'],['strategic','Monthly Strategic','About 2 hours']]
+        .map(([k,l,d])=>'<div class="set-row nm-row'+(S.pendingType===k?' pre':'')+'"><span>'+l+'<small>'+d+' · Start Otter first, titled “'+esc(TEMPLATES[k].title)+'”.</small></span><button type="button" class="btn primary sm" data-act="lv-begin" data-val="'+k+'">Start</button></div>').join('')
       +'</div><p class="small muted">Everyone with the app open will see the meeting and the same timers.</p>';
     return;
   }
@@ -2671,6 +2693,7 @@ function renderSheetBody(){
   }
   if (S.sheet==='meeting') { el.innerHTML=meetingSheet(); return; }
   if (S.sheet==='livelog') { el.innerHTML=liveLogSheet(); return; }
+  if (S.sheet==='livemenu') { el.innerHTML=liveMenuSheet(); return; }
   if (S.sheet==='pushask') {
     const inst=pushState()==='install';
     el.innerHTML='<div class="grab"></div><div class="sheet-head"><h3>Get a Tap on Your Phone?</h3></div>'
@@ -2972,13 +2995,14 @@ async function renderDeleted(m){
   }
   const d=S.deleted, who=e=>e?nameOf(e):'';
   const row=(title,sub,act,id)=>'<div class="card del"><div><div class="t">'+esc(title)+'</div><div class="small muted">'+sub+'</div></div><button type="button" class="btn ghost sm" data-act="'+act+'" data-id="'+id+'">Restore</button></div>';
-  const lead=backLink()+'<h2>Recently Deleted</h2><p class="lead">Nothing here is gone for good. Restore puts it back exactly where it was. Meeting tasks rejected in Review stay here for 30 days.</p>';
+  // #22 (Nov 16): only the sections that have something, and one line of help at the bottom.
+  const lead=backLink()+'<h2>Recently Deleted</h2>', foot='<p class="set-note mt-l">Restore puts it back where it was. Meeting tasks rejected in Review stay here for 30 days.</p>';
   if (!d.tasks.length && !d.topics.length && !(d.meetings||[]).length) { m.innerHTML=lead+'<div class="empty"><b>Nothing Deleted</b>Deleted tasks, Parking Lot topics and meetings wait here so you can restore them.</div>'; return; }
-  const none=(b,t)=>'<p class="none">'+t+'</p>';
   m.innerHTML=lead
-    +'<h3 class="set-sec">Tasks</h3><div class="list">'+(d.tasks.length?d.tasks.map(t=>row(t.title,(t.rejected?'Rejected in Review ':'Deleted ')+esc(fmtDate(t.deleted_at))+(t.deleted_by?' by '+esc(who(t.deleted_by)):'')+' · '+esc(owners(t).map(firstName).join(', ')),'restore-task',t.id)).join(''):none('No Deleted Tasks','Deleted tasks will show up here.'))+'</div>'
-    +'<h3 class="set-sec">Parking Lot</h3><div class="list">'+(d.topics.length?d.topics.map(t=>row(t.topic,'Deleted '+esc(fmtDate(t.deleted_at))+(t.deleted_by?' by '+esc(who(t.deleted_by)):''),'restore-topic',t.id)).join(''):none('No Deleted Topics','Deleted Parking Lot topics will show up here.'))+'</div>'
-    +'<h3 class="set-sec">Meetings</h3><div class="list">'+((d.meetings||[]).length?d.meetings.map(x=>row(x.title||x.type, esc(fmtDate(x.date))+(x.live?' · Guided meeting':'')+' · Deleted '+esc(fmtDate(x.deleted_at))+(x.deleted_by?' by '+esc(who(x.deleted_by)):''),x.live?'restore-log':'restore-meeting',x.id)).join(''):none('','Deleted meetings will show up here.'))+'</div>';
+    +(d.tasks.length?'<h3 class="set-sec">Tasks</h3><div class="list">'+d.tasks.map(t=>row(t.title,(t.rejected?'Rejected in Review ':'Deleted ')+esc(fmtDate(t.deleted_at))+(t.deleted_by?' by '+esc(who(t.deleted_by)):'')+' · '+esc(owners(t).map(firstName).join(', ')),'restore-task',t.id)).join('')+'</div>':'')
+    +(d.topics.length?'<h3 class="set-sec">Parking Lot</h3><div class="list">'+d.topics.map(t=>row(t.topic,'Deleted '+esc(fmtDate(t.deleted_at))+(t.deleted_by?' by '+esc(who(t.deleted_by)):''),'restore-topic',t.id)).join('')+'</div>':'')
+    +((d.meetings||[]).length?'<h3 class="set-sec">Meetings</h3><div class="list">'+d.meetings.map(x=>row(x.title||x.type, esc(fmtDate(x.date))+(x.live?' · Guided meeting':'')+' · Deleted '+esc(fmtDate(x.deleted_at))+(x.deleted_by?' by '+esc(who(x.deleted_by)):''),x.live?'restore-log':'restore-meeting',x.id)).join('')+'</div>':'')
+    +foot;
 }
 
 /* ---------- in-app meeting summary ---------- */
@@ -3020,8 +3044,10 @@ function openMeeting(id){
 }
 function meetingSheet(){
   const g=S.mtg, x=(S.meetings||[]).find(m=>m.id===g.id)||(g.data&&g.data.meeting)||(S.data.meetings||{})[g.id]||{};
-  let h='<div class="grab" data-act="close-sheet"></div><div class="sheet-head"><h3>'+esc(x.title||x.type||'Meeting')+'</h3><button type="button" class="btn ghost sm" data-act="close-sheet">Done</button></div>'
-    +'<p class="small muted sheet-sub">'+esc(fmtDate(x.date))+(x.title&&x.type&&x.title!==x.type?' · '+esc(x.type):'')+'</p>';
+  let h='<div class="grab" data-act="close-sheet"></div><div class="sheet-head">'+(g.data && !g.err ? '<button type="button" class="btn ghost sm" data-act="mtg-mode" data-val="'+(g.mode?'':'menu')+'">'+(g.mode?'Cancel':'Edit')+'</button>' : '')
+    +'<h3>'+esc(x.title||x.type||'Meeting')+'</h3><button type="button" class="btn ghost sm" data-act="close-sheet">Done</button></div>'
+    +'<p class="small muted sheet-sub">'+esc(fmtDate(x.date))+(x.title&&x.type&&x.title!==x.type?' · '+esc(x.type):'')+'</p>'
+    +(g.mode ? meetingEditHtml(x) : '');
   const tasks=S.data.tasks.filter(t=>t.meeting_id===g.id && t.kind!=='cascade'), tell=S.data.tasks.filter(t=>t.meeting_id===g.id && t.kind==='cascade');
   const taskBlock='<h3 class="sum-h2">Action Items</h3>'+(tasks.length?taskRows(tasks,'stack'):'<p class="none">No action items from this meeting.</p>');
   // NF-3: the "Tell your team" tasks Alfred made from the Cascading Communication, each due within 48 hours.
@@ -3029,6 +3055,12 @@ function meetingSheet(){
   if (g.err) return h+'<p class="err">Could not load the summary: '+esc(g.err)+'</p>'+taskBlock+tellBlock;
   if (!g.data) return h+'<div class="list"><div class="skel" style="height:22px;width:60%"></div><div class="skel" style="height:70px"></div><div class="skel" style="height:22px;width:45%"></div><div class="skel" style="height:90px"></div></div>';
   const blocks=g.data.blocks||[];
+  // #18: Decisions and your own tasks first; everything else under Full Summary.
+  let decisions='', inDec=false;
+  blocks.forEach(b=>{ if (b.t==='h2') { inDec=/^decisions?\b/i.test(b.text); return; } if (inDec && (b.t==='li' || b.t==='p')) decisions+='<li>'+esc(b.text)+'</li>'; });
+  const mineT=tasks.filter(t=>owners(t).indexOf(S.data.me)>=0);
+  const top=(decisions?'<h3 class="sum-h2">Decisions</h3><ul class="sum-list">'+decisions+'</ul>':'')
+    +(mineT.length?'<h3 class="sum-h2">Your Tasks</h3>'+taskRows(mineT,'stack'):'');
   let body='', list=false, skip=false, placed=false, tellPlaced=!tellBlock;
   const close=()=>{ if (list) { body+='</ul>'; list=false; } };
   blocks.forEach((b,i)=>{
@@ -3047,13 +3079,14 @@ function meetingSheet(){
   if (!placed) body+=taskBlock;
   if (!tellPlaced) body+=tellBlock;
   const links=(docUrl(x.summary_url)?'<a class="doc" href="'+esc(docUrl(x.summary_url))+'" target="_blank" rel="noopener">Open in Google Docs</a>':'')+(docUrl(x.transcript_url)?'<a class="doc" href="'+esc(docUrl(x.transcript_url))+'" target="_blank" rel="noopener">Transcript</a>':'');
-  return h+'<div class="form summary">'+body+reviewSection(g.data.review)+'</div>'+(links?'<div class="sum-links">'+links+'</div>':'')+meetingEditHtml(x);
+  return h+(top?'<div class="form summary">'+top+'</div>':'')
+    +'<details class="full-sum"'+(top?'':' open')+'><summary>Full Summary</summary><div class="form summary">'+body+reviewSection(g.data.review)+'</div>'+(links?'<div class="sum-links">'+links+'</div>':'')+'</details>';
 }
 // Edit a meeting from the app: add context (Alfred can rewrite the summary with it), fix its details, or delete it.
 const MEETING_TYPES=['Weekly Tactical','Monthly Strategic','Quarterly Offsite','Ad Hoc Strategic'];
 function meetingEditHtml(x){
   const g=S.mtg, mode=g.mode||'';
-  let h='<h3 class="sum-h2 mtg-edit-h">Edit This Meeting</h3>';
+  let h='';
   if (mode==='context') return h+'<div class="card mtg-edit"><label class="lbl" for="mtg-ctx">Add Context</label>'
     +'<p class="small muted">A correction or something the recording missed, like "Becky owns the referral calls, not Erin."</p>'
     +'<textarea id="mtg-ctx" class="box" rows="4" placeholder="What should the summary say?">'+esc(g.ctx||'')+'</textarea>'
@@ -3065,7 +3098,7 @@ function meetingEditHtml(x){
     +'<label class="lbl" for="mtg-date">Date</label><input type="date" id="mtg-date" value="'+esc(x.date||'')+'">'
     +'<div class="step-actions"><button type="button" class="btn ghost" data-act="mtg-mode" data-val="">Cancel</button><button type="button" class="btn primary" data-act="mtg-save-details">Save</button></div></div>';
   const row=(v,t,d)=>'<button type="button" class="set-row" data-act="mtg-mode" data-val="'+v+'"><span>'+t+'<small>'+d+'</small></span><span class="chev" aria-hidden="true">›</span></button>';
-  return h+'<div class="set-card">'+row('context','Add Context','Correct or add to the summary')+row('details','Edit Details','Title, meeting type and date')
+  return h+'<div class="set-card mtg-menu">'+row('context','Add Context','Correct or add to the summary')+row('details','Edit Details','Title, meeting type and date')
     +'<button type="button" class="set-row del-row" data-act="mtg-delete"><span>Delete Meeting'
     +'<small>Moves it to Recently Deleted. Its tasks and decisions stay.</small></span></button></div>';
 }
@@ -3286,6 +3319,8 @@ function reviewSet(id, ch){
   const e={ due_before: prev ? prev.due_before : t.due, status_before: prev ? prev.status_before : t.status, note: prev ? prev.note||'' : '', status_after:v.status, new_due:'' };
   if (ch.note!=null) e.note=String(ch.note).trim().slice(0,200);
   if (ch.status) { e.status_after=ch.status; if (ch.status!==t.status) setStatus(id, ch.status, { undo:false }); }
+  // #11 (Nov 16): not done and still due today or earlier: Next Tactical fills in at once (tap another date to change it).
+  if (ch.status && ch.status!=='Done' && ch.due==null && (!v.due || v.due<=S.data.today)) ch.due=S.data.defaultDue;
   let due=v.due;
   if (ch.due!=null) { due=ch.due; if (ch.due!==t.due) { t.due=ch.due; saveTaskEdit({ id:t.id, due:ch.due }); } }
   e.new_due = due && due!==e.due_before ? due : '';
@@ -3319,10 +3354,10 @@ async function renderTopics(m){
   const since=sinceDate();
   const topics=S.topics.filter(t=>!since || String(t.date||'')>=since).sort((a,b)=>order[a.status]-order[b.status]||(b.date||'').localeCompare(a.date||''));
   const tag=st=>'<span class="tag'+(st==='Scheduled'?' gold':st==='Discussed'?' done':'')+'">'+esc(st)+'</span>';
-  m.innerHTML=topicsHead()+'<p class="lead">The Parking Lot: issues too big for a tactical. Alfred adds them from meetings, and anyone can add one.</p>'
+  m.innerHTML=topicsHead()
     +'<div class="card add-card"><div class="addrow"><input type="text" id="tp-new" data-input="tp" placeholder="Add to the Parking Lot" aria-label="New Parking Lot topic"><button type="button" class="btn primary sm" data-act="topic-add">Add</button></div>'
     +'<textarea class="box mt-s" id="tp-desc" rows="2" placeholder="Description: why it matters, what to decide (optional)" hidden></textarea></div>'
-    +'<div class="mfilters one mt-m">'+dateFilter()+'</div><div class="list mt-m">'
+    +'<div class="list mt-m">'
     +(topics.length?topics.map(t=>{ const age=t.status==='Open' && t.date ? Math.round((new Date(S.data.today+'T12:00:00')-new Date(t.date+'T12:00:00'))/864e5) : 0;
       return '<button type="button" class="card topic'+(t.status==='Dropped'?' dim':'')+'" data-act="topic-open" data-id="'+t.id+'"><div class="t">'+esc(t.topic)+'</div>'
       +'<div class="meta">'+esc(fmtDate(t.date))+(t.raised_by?' · Raised by '+esc(t.raised_by):'')+(t.owner?' · Owner: '+esc(firstName(t.owner)):'')+'</div>'
@@ -3341,8 +3376,8 @@ async function renderDecisions(m){
     try { S.decisions=await call('apiDecisions'); saveLists(); } catch(e){ if (S.view==='meetings' && S.mtab==='decisions') m.innerHTML=head+loadFail('Decisions'); return; }
     if (S.view!=='meetings' || S.mtab!=='decisions') return;
   }
-  m.innerHTML=head+'<p class="lead">Every decision Alfred heard in a recorded meeting. Tap one to open its meeting.</p>'
-    +'<div class="mtools"><label class="search">'+ICON.search+'<input type="search" id="dq" data-input="dq" placeholder="Search Decisions" value="'+esc(S.dq||'')+'" aria-label="Search decisions"></label><div class="mfilters one">'+dateFilter()+'</div></div>'
+  m.innerHTML=head
+    +'<div class="mtools"><label class="search">'+ICON.search+'<input type="search" id="dq" data-input="dq" placeholder="Search Decisions" value="'+esc(S.dq||'')+'" aria-label="Search decisions"></label></div>'
     +'<div id="decResults"></div>';
   renderDecisionResults();
 }
@@ -3371,10 +3406,7 @@ async function renderMeetings(m){
     setMeetingLists(r); saveLists(); if (S.view!=='meetings') return; }
   m.innerHTML='<div class="head-row"><h2>Meetings</h2></div>'+(tacticalCard() || (S.live ? '' : '<button type="button" class="btn ghost start-row" data-act="lv-new">Start a Meeting</button>'))+meetingsSeg()
     +(S.live?'<button type="button" class="card live-card" data-act="go" data-view="live"><div class="sec">● Live Now</div><div class="t">'+esc(S.live.title)+'</div><div class="small muted">Tap to join</div></button>':'')
-    +'<div class="mtools"><label class="search">'+ICON.search+'<input type="search" id="mq" data-input="mq" placeholder="Search summaries and transcripts" value="'+esc(S.mq||'')+'" aria-label="Search meetings"></label>'
-    +'<div class="mfilters"><select class="sf-sel" data-change="filter" data-key="mfType" aria-label="Meeting type">'
-    +[['','All Types'],['Tactical','Tactical'],['Strategic','Strategic'],['Offsite','Offsite']].map(([v,l])=>'<option value="'+v+'"'+((S.mfType||'')===v?' selected':'')+'>'+l+'</option>').join('')+'</select>'
-    +dateFilter()+'</div></div>'
+    +'<div class="mtools"><label class="search">'+ICON.search+'<input type="search" id="mq" data-input="mq" placeholder="Search summaries and transcripts" value="'+esc(S.mq||'')+'" aria-label="Search meetings"></label></div>'
     +'<div id="mResults"></div>';
   renderMeetingResults();
 }
@@ -3382,6 +3414,7 @@ async function renderMeetings(m){
 // date and the search box. Typing searches titles at once; after a pause it also searches inside every summary and
 // transcript (apiSearchMeetings, Drive's full-text search).
 // One date filter shared by the Meetings, Decisions and Strategy Topics tabs.
+function sinceReset(){ S.mfRange=''; S.mfType=''; }
 function dateFilter(){
   return '<select class="sf-sel" data-change="filter" data-key="mfRange" aria-label="Date">'
     +[['','Any Date'],['30','Last 30 Days'],['90','Last 90 Days'],['year','This Year']].map(([v,l])=>'<option value="'+v+'"'+((S.mfRange||'')===v?' selected':'')+'>'+l+'</option>').join('')+'</select>';
@@ -3402,18 +3435,19 @@ function renderMeetingResults(){
   const searching = q.length>=2 && !hits;
   if (!S.meetings.length && !pending.length) { box.innerHTML='<div class="empty"><b>No Meetings Yet</b>Summaries appear here after Alfred processes a recording.</div>'; return; }
   box.innerHTML=(searching?'<p class="small muted mt-s">Searching summaries and transcripts…</p>':'')
-    +(items.length?'<div class="list">'+items.map(it=>{
+    +(items.length?meetingGroups(items, hits):(searching ? '' : '<div class="empty"><b>No Matching Meetings</b>Try a different word.</div>'));
+}
+// #9 (Nov 16): rows like Notes, grouped by month; the whole row opens the summary.
+function meetingGroups(items, hits){
+  const groups=[]; items.forEach(it=>{ const k=String(it.date).slice(0,7); let g=groups[groups.length-1]; if (!g || g.k!==k) groups.push(g={ k:k, items:[] }); g.items.push(it); });
+  return groups.map(g=>'<h3 class="set-sec">'+esc(new Date(g.k+'-15T12:00:00').toLocaleDateString('en-US', g.k.slice(0,4)===String(S.data.today).slice(0,4) ? { month:'long' } : { month:'long', year:'numeric' }))+'</h3><div class="set-card mrows">'
+    +g.items.map(it=>{
       if (it.kind==='log') { const l=it.l;
-        return '<button type="button" class="card meeting" data-act="log-open" data-id="'+esc(l.id)+'"><div class="t">'+esc(l.title)+'</div><div class="small muted">'+esc(fmtDate(l.date))+' · Run with the meeting timer</div>'
-          +'<div class="tags mt-s"><span class="tag">'+fmtClock(Number(l.total_secs)).replace('+','')+' of '+Math.round(Number(l.planned_secs)/60)+' min</span>'
-          +(l.rating?'<span class="tag gold">Rated '+esc(l.rating)+'/10</span>':'')+(Number(l.items)?'<span class="tag">'+esc(l.items)+' added live</span>':'')+'</div>'
-          +'<div class="small muted mt-s">Summary coming after Alfred processes the Otter recording.</div></button>'; }
+        return '<button type="button" class="set-row" data-act="log-open" data-id="'+esc(l.id)+'"><span>'+esc(l.title)+'<small>'+esc(fmtDate(l.date))+' · Timer log · summary coming</small></span><span class="chev" aria-hidden="true">›</span></button>'; }
       const x=it.x, n=S.data.tasks.filter(t=>t.meeting_id===x.id && t.kind!=='cascade').length, where=hits && hits[x.id] ? hits[x.id] : [];
-      const found=where.filter(w=>w!=='title').map(w=>w==='summary'?'Found in Summary':'Found in Transcript');
-      return '<button type="button" class="card meeting" data-act="meeting-open" data-id="'+x.id+'"><div class="t">'+esc(x.title||x.type)+'</div><div class="small muted">'+esc(fmtDate(x.date))+(x.title&&x.title!==x.type?' · '+esc(x.type):'')+'</div>'
-        +'<div class="tags mt-s"><span class="tag">'+n+' task'+(n===1?'':'s')+'</span>'+found.map(f=>'<span class="tag gold">'+f+'</span>').join('')+'<span class="read">Read Summary ›</span></div></button>';
-    }).join('')+'</div>'
-    : (searching ? '' : '<div class="empty"><b>No Matching Meetings</b>Try a different word, type or date.</div>'));
+      const found=where.filter(w=>w!=='title').map(w=>w==='summary'?'found in summary':'found in transcript');
+      return '<button type="button" class="set-row" data-act="meeting-open" data-id="'+x.id+'"><span>'+esc(x.title||x.type)+'<small>'+esc(fmtDate(x.date))+(x.title&&x.title!==x.type?' · '+esc(x.type):'')+(n?' · '+n+' task'+(n===1?'':'s'):'')+(found.length?' · '+found.join(', '):'')+'</small></span><span class="chev" aria-hidden="true">›</span></button>';
+    }).join('')+'</div>').join('');
 }
 let mqT=null;
 function searchMeetings(){
@@ -3654,7 +3688,7 @@ function liveTick(){
     const nd=document.getElementById('lvNudge'); if (nd) nd.hidden = (liveNow(st)-st.topic.start)/1000 < st.topic.mins*30;
   }
   if (PERSON_SECS[st.steps[st.i].kind] && st.personStart) set('lvPerson', personLeft(st), null);
-  const tot=document.getElementById('lvTotal'); if (tot) tot.textContent=fmtClock(totalElapsed(st)).replace('+','')+' of '+fmtClock(plannedTotal(st));
+  const tot=document.getElementById('lvTotal'); if (tot) tot.textContent=fmtClock(totalElapsed(st)).replace('+','');
 }
 
 function liveBegin(st){ const n=srvNow(); st.phase='running'; st.startedAt=n; st.stepStart=n; st.personStart=n; st.pausedAt=null; }
@@ -3762,17 +3796,21 @@ function prepCard(){
   return '<button type="button" class="card start-card prep-card" data-act="prep-open"><span class="sec">Before '+esc(dayName(wd))+'\'s Tactical</span><b>'+n+' Item'+(n===1?'':'s')+' Coming Up</b><span class="go">Update Now ›</span></button>';
 }
 function prepSheet(){
-  const ids=S.prepIds||[], next=S.data.defaultDue, after=addDays(next,7), wk=addDays(S.data.today,7);
+  // #28 (Nov 16): the same card as the Accountability step (title, meta line, the four statuses, the date block), so people
+  // learn it once. Here the date shortcut is "After This Tactical", because a date after the meeting keeps it off the list.
+  const ids=S.prepIds||[], next=S.data.defaultDue, after=addDays(next,7), today=S.data.today;
   const rows=ids.map(find).filter(Boolean).map(t=>{
-    const ok = t.status==='Done' || (t.due && t.due>next);
-    const st=[['Done','Done'],['In Progress','In Progress'],['Not Done','Not Started'],['Blocked','Blocked']];
-    return '<div class="card prep-item'+(ok?' ok':'')+'"><div class="t">'+esc(t.title)+'</div><div class="small muted">'+(ok?'Ready ✓ · ':'')+(t.status==='Done'?'Done':'Due '+esc(fmtDate(t.due)))+'</div>'
-      +'<div class="mm-seg rv4 mt-s" role="group" aria-label="Status">'+st.map(([v,l])=>'<button type="button" class="'+v.replace(/ /g,'')+(t.status===v?' on':'')+'" data-act="prep-status" data-id="'+t.id+'" data-val="'+v+'">'+l+'</button>').join('')+'</div>'
-      +(t.status==='Done'?'':'<div class="quick-dates mt-s">'+quickDates([['After This Tactical · '+short(after),after],['Next Week · '+short(wk),wk]]).map(([l,d])=>'<button type="button" class="'+(t.due===d?'on':'')+'" data-act="prep-due" data-id="'+t.id+'" data-val="'+d+'">'+esc(l)+'</button>').join('')
-        +'<input type="date" data-change="prep-date" data-id="'+t.id+'" min="'+addDays(S.data.today,1)+'" value="'+esc(t.due||'')+'" aria-label="Pick a new due date"></div>')+'</div>';
+    const ok = t.status==='Done' || (t.due && t.due>next), need=t.status!=='Done' && !(t.due && t.due>next);
+    const meta=[t.due ? '<span class="due'+(t.due<=today && t.status!=='Done'?' late':'')+'">Due '+esc(short(t.due))+'</span>' : 'No due date', 'From '+esc(meetingName(t)), ok ? 'Ready ✓' : ''].filter(Boolean);
+    return '<div class="mm-card rv-item'+(ok?' ok':'')+'"><div class="t">'+esc(t.title)+'</div>'
+      +'<div class="meta">'+meta.map((b,i)=>'<span class="mb">'+(i?'<i class="dot" aria-hidden="true">·</i>':'')+b+'</span>').join('')+'</div>'
+      +'<div class="mm-seg rv4" role="group" aria-label="Status">'+[['Done','Done'],['In Progress','In Progress'],['Not Done','Not Started'],['Blocked','Blocked']].map(([v,l])=>'<button type="button" class="'+v.replace(/ /g,'')+(t.status===v?' on':'')+'" data-act="prep-status" data-id="'+t.id+'" data-val="'+v+'" aria-pressed="'+(t.status===v)+'">'+l+'</button>').join('')+'</div>'
+      +(t.status==='Done'?'':'<div class="rv-due'+(need?' need':'')+'"><div class="rv-due-h">'+(need?'Pick a New Date':'New Date: '+esc(fmtDate(t.due)))+'</div>'
+        +'<div class="quick-dates"><button type="button" class="'+(t.due===after?'on':'')+'" data-act="prep-due" data-id="'+t.id+'" data-val="'+after+'">After This Tactical · '+esc(short(after))+'</button></div>'
+        +'<input type="date" data-change="prep-date" data-id="'+t.id+'" min="'+addDays(today,1)+'" value="'+esc(t.due||'')+'" aria-label="Pick a new due date"></div>')+'</div>';
   }).join('');
   return '<div class="grab" data-act="close-sheet"></div><div class="sheet-head"><h3>Before the Tactical</h3><button type="button" class="btn ghost sm" data-act="close-sheet">Done</button></div>'
-    +'<p class="small muted sheet-sub">Mark what\'s done and give the rest a new date now, so the Accountability step goes quickly.</p><div class="list">'+(rows||'<p class="none">Nothing left to update.</p>')+'</div>';
+    +'<p class="small muted sheet-sub">Mark what\'s done and give the rest a date after the meeting.</p><div class="list">'+(rows||'<p class="none">Nothing left to update.</p>')+'</div>';
 }
 function tacticalCard(){
   const wd=S.data.tacticalWeekday, now=new Date(), mins=now.getHours()*60+now.getMinutes();
@@ -3870,13 +3908,13 @@ function renderLive(m){
     const over=st.log.filter(l=>l&&l.secs>l.planned).length, skipped=st.steps.filter((x,k)=>!st.log[k] || st.log[k].secs<SKIPPED_SECS).length;
     const timing=[over?over+' step'+(over===1?'':'s')+' ran over':'', skipped?skipped+' step'+(skipped===1?' was':'s were')+' skipped':''].filter(Boolean).join(' and ');
     const wuSecs=Math.max(0, Math.round((st.endedAt-st.startedAt-(st.pausedTotal||0))/1000));
-    m.innerHTML=leaveLink()+'<div class="live-top"><div><h2>'+esc(st.title)+' Wrap-Up</h2>'+hostLine+'</div>'+takeOver+'</div><div class="stack live-slide">'
+    m.innerHTML=liveHead('Wrap-Up')+'<h2 class="live-h">'+esc(st.title)+'</h2><div class="stack live-slide">'
       +'<div class="stats three"><div class="stat"><b class="count-up" id="wuTime">'+fmtClock(wuSecs).replace('+','')+'</b><span>of '+Math.round(plannedTotal(st)/60)+' Min Planned</span></div>'
       +'<div class="stat"><b class="count-up" id="wuTopics">'+topicsN+'</b><span>Topics Discussed</span></div><div class="stat"><b class="count-up" id="wuItems">'+st.items.length+'</b><span>Action Items</span></div></div>'
       +'<p class="small muted">'+(timing?timing.charAt(0).toUpperCase()+timing.slice(1)+'. Times are below.':'Every step finished on time.')+'</p>'
       +ratingCard(st)
       +outline
-      +'<p class="small muted">'+(host?'Back returns to '+esc(step.title)+'. End Meeting saves it for everyone. Stop the Otter recording first.':'Rate the meeting above. '+esc(hostName)+' ends the meeting for everyone.')+'</p>'+cancelCard(host)+'</div>';
+      +'<p class="small muted">'+(host?'Back returns to '+esc(step.title)+'. End Meeting saves it for everyone. Stop the Otter recording first.':'Rate the meeting above. '+esc(hostName)+' ends the meeting for everyone.')+'</p></div>';
     countUpStats(st.id+':'+st.endedAt, [['wuTime', wuSecs, n=>fmtClock(n).replace('+','')], ['wuTopics', topicsN, String], ['wuItems', st.items.length, String]]);
     return;
   }
@@ -3884,16 +3922,13 @@ function renderLive(m){
   if (S.tv) { m.innerHTML=tvHtml(st, step, next); liveTick(); return; }
   // LB-14: on per-person and Discuss steps the person or topic timer is the big one, and the step timer is one line.
   const compact=perPerson(st) || step.kind==='discuss';
-  const plus=host && !st.topic?'<button type="button" class="btn ghost sm" data-act="lv-plus">+5 Min</button>':'';   // one +5 Min at a time
-  let html=leaveLink()+'<div class="live-top"><div><div class="sec">'+esc(st.title)+' · Step '+(st.i+1)+' of '+st.steps.length+'</div><div class="small muted" id="lvTotal"></div>'+hostLine+'</div>'
-    +'<button type="button" class="btn ghost sm tv-btn" data-act="lv-tv">TV</button>'
-    +(host?'<button type="button" class="iconbtn" data-act="lv-pause" aria-label="'+(st.pausedAt?'Resume':'Pause')+' meeting">'+(st.pausedAt?ICON.play:ICON.pause)+'</button>'
-      +'<button type="button" class="btn ghost sm" data-act="lv-wrap-ask">Wrap Up</button>':takeOver)+'</div>'
-    +'<div class="card step-card live-slide'+(compact?' compact':'')+'"><div class="sec">'+esc(step.sec)+(st.pausedAt?' · Paused':'')+'</div><div class="step-title">'+esc(step.title)+'</div>'
+  const plus='';   // #4: Add 5 Minutes is in the ••• menu
+  let html=liveHead('Step '+(st.i+1)+' of '+st.steps.length+' · <span id="lvTotal"></span>')
+    +'<div class="card step-card live-slide'+(compact?' compact':'')+'">'+(st.pausedAt?'<div class="sec paused">Paused</div>':'')+'<div class="step-title">'+esc(step.title)+'</div>'
     +(compact?'<div class="step-line"><span>Step: <span id="lvStep" data-line="1">'+fmtClock(stepLeft(st)).replace('+','')+'</span></span>'+plus+'</div>'
       :'<div class="timer-row"><div class="bigtimer" id="lvStep">'+fmtClock(stepLeft(st))+'</div>'+plus+'</div>')
     +(next && !compact?'<div class="small muted up-next">Up next: '+esc(next.title)+' · '+next.mins+' min</div>':'')+'</div>';   // compact: the pinned Next says what's next
-  html += '<div class="step-body live-slide">'+liveBody(st, step)+'</div>'+cancelCard(host);
+  html += '<div class="step-body live-slide">'+liveBody(st, step)+'</div>';
   html += '<h3 class="sec-h">Agenda</h3>'+outline;
   m.innerHTML=html; liveTick();
 }
@@ -4034,6 +4069,21 @@ function cascadeCard(){
 // host can cancel it: it ends for everyone without being saved (no timer log, ratings or review comments; task changes made
 // during it stay). The host's toast offers Undo while it shows (8 seconds; the server allows it for 60 seconds).
 function leaveLink(){ return '<button type="button" class="back" data-act="lv-leave">‹ Leave</button>'; }
+// #4 (Nov 16): "‹ Leave · Step 4 of 8 · 0:07 · •••". Pause, Add 5 Minutes, Wrap Up Early, TV, the chime and Cancel Meeting
+// (host), or Take Over and TV (everyone else), live in the ••• menu.
+function liveHead(mid){
+  return '<div class="live-head"><button type="button" class="back" data-act="lv-leave">‹ Leave</button><span class="lh-mid">'+mid+'</span>'
+    +'<button type="button" class="iconbtn lh-more" data-act="lv-menu" aria-label="More meeting options"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg></button></div>';
+}
+function liveMenuSheet(){
+  const st=S.live; if (!st) return '';
+  const host=isHost(st), run=st.phase==='running', item=(act,l,cls)=>'<button type="button" class="'+(cls||'')+'" data-act="lvm" data-do="'+act+'"><span class="grow">'+l+'</span></button>';
+  return '<div class="grab"></div><div class="sheet-head"><h3>'+esc(st.title)+'</h3><button type="button" class="btn ghost sm" data-act="close-sheet">Cancel</button></div><div class="menu">'
+    +(host ? (run ? item('lv-pause', st.pausedAt?'Resume Timer':'Pause Timer') + (!st.topic ? item('lv-plus','Add 5 Minutes') : '') + item('lv-wrap-ask','Wrap Up Early') : '')
+        + item('lv-tv','TV Mode') + item('lv-chime', pref('lt-chime','on')==='off'?'Turn the Chime On':'Mute the Chime')
+      : item('lv-takeover-ask','Take Over as Host') + item('lv-tv','TV Mode'))
+    +'</div>'+(host ? '<div class="menu mt-l">'+item('lv-cancel-ask','Cancel Meeting','danger-row-btn')+'</div>' : '');
+}
 function cancelCard(host){
   return host ? '<div class="set-card mt-l"><button type="button" class="set-row del-row" data-act="lv-cancel-ask"><span>Cancel Meeting<small>Ends it for everyone without saving it. Action items and task updates made during it stay.</small></span></button></div>' : '';
 }
@@ -4100,7 +4150,7 @@ async function liveAddItem(el){
 /* ---------- Alfred chat bubble ---------- */
 // The conversation lives only in this page (S.alf) and is gone after a reload. Every message carries the screen
 // context below, and the screenshot taken when the bubble was tapped, so nobody has to describe where they were.
-const APP_VERSION = '2026.11.16-tasks';
+const APP_VERSION = '2026.11.16-meetings';
 const H2C_URL = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
 const DIAG = { errors:[], actions:[] };   // last 10 of each, for bug reports
 function pushDiag(list, item){ list.push(item); if (list.length>10) list.shift(); }
@@ -4398,14 +4448,14 @@ function alfMd(text){
   return html+(list?'</ul>':'');
 }
 
-const ALF_SUGGEST = ['What did we decide at the last tactical?', 'What\'s overdue for me?', 'Add a task for me to call Dr. Lee\'s office', 'Request a feature or report a bug'];
+const ALF_SUGGEST = ['What did we decide at the last tactical?', 'What\'s overdue for me?', 'Request a feature or report a bug'];
 function renderAlfred(){
   const box=document.getElementById('alfMsgs'); if (!box) return;
   const A=S.alf, nearBottom=box.scrollHeight-box.scrollTop-box.clientHeight<80;
   let html='';
   if (S.data && S.data.alfred && !S.data.alfred.ready) html+='<div class="alf-msg err">Alfred isn\'t available yet. Brayden is setting it up.</div>';
   if (!A.msgs.length) html+='<button type="button" class="alf-reqs" data-act="alf-requests" data-k="reqs">Your Requests<span class="chev" aria-hidden="true">›</span></button>';
-  if (!A.msgs.length) html+='<div class="alf-hello" data-k="hello"><b>Good '+partOfDay()+', '+esc(firstName(S.data.me))+'</b>Ask me about past meetings, decisions and tasks, or how to do something in the app. I can also mark a task done, move a date or add a task once you confirm, and write up a problem for Brayden.'
+  if (!A.msgs.length) html+='<div class="alf-hello" data-k="hello"><b>Good '+partOfDay()+', '+esc(firstName(S.data.me))+'</b>Ask about meetings and tasks, or tell me about a problem. I can see the screen you\'re on.'
     +'<div class="alf-sugg">'+ALF_SUGGEST.map(q=>'<button type="button" data-act="alf-suggest" data-val="'+esc(q)+'">'+esc(q)+'</button>').join('')+'</div></div>';
   A.msgs.forEach((m,i)=>{
     if (m.role==='user') html+='<div class="alf-msg me" data-k="m'+i+'">'+esc(m.text)+'</div>'+(m.failed?'<div class="alf-msg err" data-k="e'+i+'">'+esc(m.error||'Alfred could not answer.')+'<button type="button" class="retry" data-act="alf-retry" data-val="'+i+'">Try Again</button></div>':'');
@@ -4427,7 +4477,7 @@ function renderAlfred(){
 }
 function alfNote(){
   const A=S.alf, note=document.getElementById('alfNote');
-  if (note) note.textContent = A.tapped ? 'Pointing at: '+(A.tapped.card||A.tapped.label||A.tapped.tag) : A.shot ? 'Alfred can see the screen you were on.' : A.shotP ? 'Taking a picture of the screen you were on…' : '';
+  if (note) note.textContent = A.tapped ? 'Pointing at: '+(A.tapped.card||A.tapped.label||A.tapped.tag) : '';
 }
 
 function ctxSummary(c){
@@ -4830,9 +4880,13 @@ function actClick(e, el){
   else if (a==='tour-open') startCoach();
   else if (a==='mtab') { S.mtab=v; render(); }
   else if (a==='lv-new') { S.zoomFrom=el.getBoundingClientRect(); if (S.live) { S.view='live'; S.liveAt=Date.now(); render(); zoomIn(); } else { S.sheet='newmeeting'; showSheet(); } }
-  else if (a==='lv-start') { S.pendingType=v; if (!el.closest('#sheet')) S.zoomFrom=el.getBoundingClientRect(); if (S.sheet && !REDUCED) { closeSheet(true); setTimeout(()=>{ S.sheet='otter'; showSheet(); }, 290); } else { S.sheet='otter'; showSheet(); } }
+  else if (a==='lv-start') { S.pendingType=v; S.zoomFrom=el.getBoundingClientRect(); S.sheet='newmeeting'; showSheet(); }
+  else if (a==='lv-begin') { S.pendingType=v; closeSheet(true); startLive(v, true); }
   else if (a==='lv-confirm') startLive(S.pendingType, true);
   else if (a==='lv-pause') liveAct(livePause);
+  else if (a==='lv-menu') { S.sheet='livemenu'; showSheet(); }
+  else if (a==='lv-chime') { setPref('lt-chime', pref('lt-chime','on')==='off' ? 'on' : 'off'); toast(pref('lt-chime','on')==='off' ? 'Chime muted on this device' : 'Chime on'); }
+  else if (a==='lvm') { const d=el.dataset.do; closeSheet(true); setTimeout(()=>{ const b=document.createElement('button'); b.type='button'; b.dataset.act=d; b.hidden=true; document.body.appendChild(b); b.click(); b.remove(); }, 60); }
   else if (a==='lv-next') { const gate=reviewGate(S.live); if (gate) askLive('New Dates Needed', gate, 'OK', null, null, { single:true }); else liveAct(st=>liveStep(st, 1)); }
   else if (a==='rv-status') reviewSet(id, { status:v });
   else if (a==='rv-due') reviewSet(id, { due:v });
@@ -4930,6 +4984,28 @@ document.addEventListener('touchend', ()=>{
   if (s.dx<=90 && s.card.animate && !REDUCED) s.card.animate([{ transform:'translateX('+s.dx+'px)' }, { transform:'none' }], { duration:220, easing:'cubic-bezier(.2,.8,.2,1)' });
   s.card.style.transform='';
   if (s.dx>90) { const t=find(s.card.dataset.id), card=s.card; mineOrConfirm(t, 'Done', ()=>{ haptic(); setStatus(card.dataset.id, 'Done', { quiet:true }); }, ()=>card.classList.remove('swipe-ready')); } else s.card.classList.remove('swipe-ready');
+});
+
+// #21: on Review, swipe a card that looks fine right to approve it, or left to reject it (approvers; Undo as with the buttons).
+let rvSwipe=null;
+document.addEventListener('touchstart', e=>{
+  const card=S.view==='review' && S.data && S.data.isApprover && e.target.closest && e.target.closest('article.card.rv:not(.unsure)');
+  if (!card || e.target.closest('button, a') || e.touches[0].clientX<20) return;
+  rvSwipe={ card:card, x:e.touches[0].clientX, y:e.touches[0].clientY, dx:0, on:false };
+}, { passive:true });
+document.addEventListener('touchmove', e=>{
+  if (!rvSwipe) return;
+  const dx=e.touches[0].clientX-rvSwipe.x, dy=e.touches[0].clientY-rvSwipe.y;
+  if (!rvSwipe.on) { if (Math.abs(dy)>10 && Math.abs(dy)>Math.abs(dx)) { rvSwipe=null; return; } if (Math.abs(dx)<12) return; rvSwipe.on=true; }
+  e.preventDefault(); rvSwipe.dx=Math.max(-160, Math.min(dx, 160));
+  rvSwipe.card.style.transform='translateX('+rvSwipe.dx+'px)';
+  rvSwipe.card.classList.toggle('rv-yes', rvSwipe.dx>90); rvSwipe.card.classList.toggle('rv-no', rvSwipe.dx<-90);
+}, { passive:false });
+document.addEventListener('touchend', ()=>{
+  if (!rvSwipe) return; const s=rvSwipe; rvSwipe=null; if (!s.on) return;
+  S.swiped=true; setTimeout(()=>{ S.swiped=false; }, 400);
+  s.card.style.transform=''; s.card.classList.remove('rv-yes','rv-no');
+  if (Math.abs(s.dx)>90) { haptic(); review(s.card.dataset.id, s.dx>0, null); }
 });
 
 // Swipe down on a bottom sheet (More, Start a Meeting, a task) to dismiss it, like iOS.
