@@ -19,7 +19,7 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" type="image/png" href="icon-192.png">
-<script>window.HUDDLE_WEB={"api":"https://script.google.com/macros/s/AKfycbzM8K_-XRMDdOJYJ3THn_FhyZkRreMddHIBAOFCFVoq5S_Y7MnsfFLsl7ac_fyDPrch/exec","clientId":"473377418367-cqmmnfum4kshq16973m4sj2jqqfa55p0.apps.googleusercontent.com","build":"e126a7b","push":{"config":{"apiKey":"AIzaSyBON-0KvTXPD_MV6ykhYvCoBRiECEHyE9c","authDomain":"huddle-e2548.firebaseapp.com","projectId":"huddle-e2548","storageBucket":"huddle-e2548.firebasestorage.app","messagingSenderId":"554653922065","appId":"1:554653922065:web:87de53b4cb11b36835d2b0"},"vapidKey":"BHKeDoBmW7vL-qAT3ocyTaMaZ27Ca66jvQtTes2NC4CPoWFiPBJcga7wVd-RD1IuyhBki0oKXwPBGSNq002s8o8"}};document.documentElement.classList.add('web');</script>
+<script>window.HUDDLE_WEB={"api":"https://script.google.com/macros/s/AKfycbzM8K_-XRMDdOJYJ3THn_FhyZkRreMddHIBAOFCFVoq5S_Y7MnsfFLsl7ac_fyDPrch/exec","clientId":"473377418367-cqmmnfum4kshq16973m4sj2jqqfa55p0.apps.googleusercontent.com","build":"225680f","push":{"config":{"apiKey":"AIzaSyBON-0KvTXPD_MV6ykhYvCoBRiECEHyE9c","authDomain":"huddle-e2548.firebaseapp.com","projectId":"huddle-e2548","storageBucket":"huddle-e2548.firebasestorage.app","messagingSenderId":"554653922065","appId":"1:554653922065:web:87de53b4cb11b36835d2b0"},"vapidKey":"BHKeDoBmW7vL-qAT3ocyTaMaZ27Ca66jvQtTes2NC4CPoWFiPBJcga7wVd-RD1IuyhBki0oKXwPBGSNq002s8o8"}};document.documentElement.classList.add('web');</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <!-- The fonts load without holding up the first paint; the page shows in the phone's own font for a moment if needed. -->
@@ -460,9 +460,11 @@
     .tbar { display:grid; grid-template-columns:minmax(0,1fr) auto minmax(0,1fr); column-gap:8px; align-items:center; position:fixed; left:0; right:0; top:0; z-index:21;
       padding:var(--top-safe) 16px 6px; height:calc(var(--top-safe) + 50px); box-sizing:border-box;
       background:color-mix(in srgb, var(--page) 82%, transparent);
-      border-bottom:1px solid var(--line-soft); opacity:0; visibility:hidden; pointer-events:none; transition:opacity .18s ease, visibility 0s linear .18s; }
-    .tbar.show { opacity:1; visibility:visible; pointer-events:auto; transition:opacity .18s ease, visibility 0s;
-      -webkit-backdrop-filter:blur(18px) saturate(180%); backdrop-filter:blur(18px) saturate(180%); }
+      border-bottom:1px solid var(--line-soft); opacity:var(--tp,0); visibility:hidden; pointer-events:none; }
+    .tbar.part { visibility:visible; }
+    .tbar.show { pointer-events:auto; -webkit-backdrop-filter:blur(18px) saturate(180%); backdrop-filter:blur(18px) saturate(180%); }
+    #tglide { position:fixed; left:0; top:0; z-index:22; transform-origin:left center; white-space:nowrap; pointer-events:none; will-change:transform; }
+    #tglide[hidden] { display:none; }
     .tbar .tb-t { max-width:56vw; text-align:center; font-family:var(--sans); font-weight:600; font-size:var(--fs-body); color:var(--heading); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
     .tbar .tb-l { justify-self:start; display:flex; align-items:center; } .tbar .tb-r { justify-self:end; }
     .tbar svg.tree { height:22px; }
@@ -2208,22 +2210,44 @@ function decorateTitle(){
   if (!tools.querySelector('.mebtn') && S.view!=='more') tools.insertAdjacentHTML('beforeend', meBtn(S.meRc||0));
   S.titleEl=h; syncTbar();
 }
+// Nov 16 (Brayden's pick, "Glide to Center"): from the first point of scrolling, the big title shrinks and slides into the
+// middle of the thin top bar (a fixed copy, #tglide, follows the real title and lands centered at 17pt over ~60pt of scroll),
+// while the bar's background, the tree (or ‹ Back) and the initials fade in at the same pace.
+// Reduce Motion: no glide; the bar appears once the title is scrolled away.
+const GLIDE_DIST=60, GLIDE_SIZE=17;
 function syncTbar(){
   const bar=document.getElementById('tbar'); if (!bar) return;
-  const h=S.titleEl, show=!!h && isPhone() && h.isConnected && h.getBoundingClientRect().bottom < (parseFloat(getComputedStyle(bar).paddingTop)||0)+8;
-  if (show) {
-    const t=h.textContent.trim();
-    if (bar.dataset.t!==t+'|'+(S.back||'')+'|'+(S.meRc||0)) {
-      bar.dataset.t=t+'|'+(S.back||'')+'|'+(S.meRc||0);
-      bar.querySelector('.tb-l').innerHTML=S.back ? backLink() : TREE_SVG;
-      bar.querySelector('.tb-t').textContent=t;
-      bar.querySelector('.tb-r').innerHTML=S.view==='more' ? '' : meBtn(S.meRc||0);
-    }
-    const lb=document.getElementById('livebar'); bar.style.top=(lb && !lb.hidden ? Math.max(0, lb.getBoundingClientRect().bottom) : 0)+'px';
+  let g=document.getElementById('tglide');
+  if (!g) { g=document.createElement('div'); g.id='tglide'; g.setAttribute('aria-hidden','true'); g.hidden=true; document.body.appendChild(g); }
+  const h=S.titleEl, words=h && h.isConnected && isPhone() ? (h.querySelector('.ttext')||h) : null;
+  if (!words) { bar.style.setProperty('--tp', 0); bar.classList.remove('show','part'); g.hidden=true; return; }
+  const key=words.textContent.trim()+'|'+(S.back||'')+'|'+(S.meRc||0)+'|'+S.view;
+  if (bar.dataset.t!==key) {
+    bar.dataset.t=key;
+    bar.querySelector('.tb-l').innerHTML=S.back ? backLink() : TREE_SVG;
+    bar.querySelector('.tb-t').textContent='';
+    bar.querySelector('.tb-r').innerHTML=S.view==='more' ? '' : meBtn(S.meRc||0);
+    const cs=getComputedStyle(words); g.textContent=words.textContent.trim();
+    Object.assign(g.style, { fontFamily:cs.fontFamily, fontWeight:cs.fontWeight, fontSize:cs.fontSize, color:cs.color, lineHeight:'1' });
   }
-  bar.classList.toggle('show', show); bar.setAttribute('aria-hidden', show?'false':'true');
+  const lb=document.getElementById('livebar'), barTop=lb && !lb.hidden ? Math.max(0, lb.getBoundingClientRect().bottom) : 0;
+  bar.style.top=barTop+'px';
+  const raw=Math.max(0, Math.min(1, window.scrollY/GLIDE_DIST)), t=REDUCED ? (words.getBoundingClientRect().bottom < topSafe() ? 1 : 0) : raw;
+  bar.style.setProperty('--tp', t);
+  bar.classList.toggle('part', t>0); bar.classList.toggle('show', t>=0.98); bar.setAttribute('aria-hidden', t>=0.98 ? 'false' : 'true');
+  // The page's own tree and icons fade out as the bar's fade in, so only one set shows at a time.
+  const row=words.closest('.head-row'), fadeOut=row ? [...row.querySelectorAll('.ptools, svg.tree')] : [];
+  fadeOut.forEach(el=>{ el.style.opacity=t>0 ? String(Math.max(0, 1-t*1.6)) : ''; });
+  if (t<=0) { g.hidden=true; words.style.visibility=''; return; }
+  // Start: where the title is right now. End: centered in the bar at GLIDE_SIZE.
+  const r=words.getBoundingClientRect(), start=parseFloat(g.style.fontSize)||26, s=1+(GLIDE_SIZE/start-1)*t;
+  const W=document.documentElement.clientWidth, endX=W/2-(r.width*GLIDE_SIZE/start)/2;
+  const barMid=barTop+topSafe()+25, x=r.left+(endX-r.left)*t, yc=(r.top+r.height/2)+(barMid-(r.top+r.height/2))*t;
+  g.hidden=false; words.style.visibility='hidden';
+  g.style.transform='translate('+x.toFixed(1)+'px,'+(yc-r.height/2).toFixed(1)+'px) scale('+s.toFixed(3)+')';
 }
-window.addEventListener('scroll', ()=>{ if (S.titleEl) syncTbar(); }, { passive:true });
+let tbarRaf=0;
+window.addEventListener('scroll', ()=>{ if (!S.titleEl && !document.getElementById('tglide')) return; if (tbarRaf) return; tbarRaf=requestAnimationFrame(()=>{ tbarRaf=0; syncTbar(); }); }, { passive:true });
 function renderPage(){
   renderNav();
   // The same wide + button starts a task on task screens and a meeting on the Meetings tab.
@@ -4354,7 +4378,7 @@ async function liveAddItem(el){
 /* ---------- Alfred chat bubble ---------- */
 // The conversation lives only in this page (S.alf) and is gone after a reload. Every message carries the screen
 // context below, and the screenshot taken when the bubble was tapped, so nobody has to describe where they were.
-const APP_VERSION = '2026.11.16-titleline';
+const APP_VERSION = '2026.11.16-glide';
 const H2C_URL = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
 const DIAG = { errors:[], actions:[] };   // last 10 of each, for bug reports
 function pushDiag(list, item){ list.push(item); if (list.length>10) list.shift(); }
