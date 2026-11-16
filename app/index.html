@@ -19,7 +19,7 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" type="image/png" href="icon-192.png">
-<script>window.HUDDLE_WEB={"api":"https://script.google.com/macros/s/AKfycbzM8K_-XRMDdOJYJ3THn_FhyZkRreMddHIBAOFCFVoq5S_Y7MnsfFLsl7ac_fyDPrch/exec","clientId":"473377418367-cqmmnfum4kshq16973m4sj2jqqfa55p0.apps.googleusercontent.com","build":"dd607fb","push":{"config":{"apiKey":"AIzaSyBON-0KvTXPD_MV6ykhYvCoBRiECEHyE9c","authDomain":"huddle-e2548.firebaseapp.com","projectId":"huddle-e2548","storageBucket":"huddle-e2548.firebasestorage.app","messagingSenderId":"554653922065","appId":"1:554653922065:web:87de53b4cb11b36835d2b0"},"vapidKey":"BHKeDoBmW7vL-qAT3ocyTaMaZ27Ca66jvQtTes2NC4CPoWFiPBJcga7wVd-RD1IuyhBki0oKXwPBGSNq002s8o8"}};document.documentElement.classList.add('web');</script>
+<script>window.HUDDLE_WEB={"api":"https://script.google.com/macros/s/AKfycbzM8K_-XRMDdOJYJ3THn_FhyZkRreMddHIBAOFCFVoq5S_Y7MnsfFLsl7ac_fyDPrch/exec","clientId":"473377418367-cqmmnfum4kshq16973m4sj2jqqfa55p0.apps.googleusercontent.com","build":"d3d328e","push":{"config":{"apiKey":"AIzaSyBON-0KvTXPD_MV6ykhYvCoBRiECEHyE9c","authDomain":"huddle-e2548.firebaseapp.com","projectId":"huddle-e2548","storageBucket":"huddle-e2548.firebasestorage.app","messagingSenderId":"554653922065","appId":"1:554653922065:web:87de53b4cb11b36835d2b0"},"vapidKey":"BHKeDoBmW7vL-qAT3ocyTaMaZ27Ca66jvQtTes2NC4CPoWFiPBJcga7wVd-RD1IuyhBki0oKXwPBGSNq002s8o8"}};document.documentElement.classList.add('web');</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <!-- The fonts load without holding up the first paint; the page shows in the phone's own font for a moment if needed. -->
@@ -1467,7 +1467,7 @@
 <script>
 const S = { view:'home', layout:pref('lt-layout','list'), q:'', status:'open', priority:'', meeting:'', sort:'due', quick:'', person:'', searchOpen:false, back:null,
             data:null, sheet:null, edit:null, saveTimer:null, pending:0, undo:null, topics:null, meetings:null, lastSync:0, swiped:false, outbox:[] };
-const TABS = [['home','Home'],['mine','My Tasks'],['team','Team Tasks'],['review','Review'],['meetings','Meetings']];
+const TABS = [['home','Huddle'],['mine','My Tasks'],['team','Team Tasks'],['review','Review'],['meetings','Meetings']];
 // Strategy Topics live on the Meetings screen (Meetings | Decisions | Topics); the old 'topics' view opens that tab.
 function onTopics(){ return S.view==='topics' || (S.view==='meetings' && S.mtab==='topics'); }
 // Blocked (Nov 10) is open, like Not Started and In Progress: it shows in lists, counts as overdue and is in every report.
@@ -2035,7 +2035,7 @@ function renderNav(){
   renderLivebar();
   const inMeet = S.view==='meetings' || S.view==='live';
   // The tab bar is drawn once; after that only the highlight moves, so nothing flashes and the highlight slides.
-  const BT=[['home','Home'],['mine','My Tasks'],['team','Team Tasks'],['meetings','Meetings']], nb=document.getElementById('navBottom');
+  const BT=[['home','Huddle'],['mine','My Tasks'],['team','Team Tasks'],['meetings','Meetings']], nb=document.getElementById('navBottom');
   let tabs=nb.querySelector('.tabs');
   if (!tabs) {
     nb.innerHTML='<div class="tabs"><span class="ind" aria-hidden="true"></span>'+BT.map(([k,l])=>'<button type="button" data-act="go" data-view="'+k+'">'+ICON[k]+'<span>'+l+'</span></button>').join('')+'</div>';
@@ -2076,7 +2076,7 @@ function morph(fn, kind){
 }
 // Where a screen sits, left to right, so a tab change knows which way to slide.
 const NAV_ORDER={ home:-1, mine:0, team:1, review:2, meetings:3, live:3, more:4, requests:4, deleted:4, settings:4, teamset:4, admin:4 };
-const TAB_VIEWS={ home:'Home', mine:'My Tasks', team:'Team Tasks', meetings:'Meetings', review:'Review' };
+const TAB_VIEWS={ home:'Huddle', mine:'My Tasks', team:'Team Tasks', meetings:'Meetings', review:'Review' };
 // Your initials (header on computers, title row on phones) open your page; a gold dot means meeting tasks wait in Review.
 function meBtn(rc){ return '<button type="button" class="mebtn" data-act="me-open" aria-label="Your account'+(rc?', '+rc+' to review':'')+'" title="Account">'+avatar(S.data.me, 32)+(rc?'<span class="rdot" aria-hidden="true"></span>':'')+'</button>'; }
 function renderMe(rc){ const el=document.getElementById('me'); if (el) el.innerHTML=meBtn(rc); S.meRc=rc; }
@@ -2304,7 +2304,7 @@ function renderHome(m){
   const rows=(late?row('data-act="go" data-view="mine"','Overdue',late,'late'):'')
     +(today?row('data-act="go" data-view="mine"','Due Today',today,''):'')
     +(waiting.length?row('data-act="home-waiting"','Waiting on You',waiting.length,'gold'):'')
-    +(rc?row('data-act="go" data-view="review" data-back="Home"','To Review',rc,'gold'):'');
+    +(rc?row('data-act="go" data-view="review" data-back="Huddle"','To Review',rc,'gold'):'');
   // Your next three: overdue and soonest first, then the ones with no date.
   const next3=mineOpen.filter(t=>t.status!=='Needs Review').sort((a,b)=>(a.due||'9999').localeCompare(b.due||'9999')).slice(0,3);
   // Latest decisions: the newest meeting with decisions (up to three).
@@ -3719,7 +3719,7 @@ const READINGS = {
         ['How will we succeed?', 'We row as one · We create fanatically loyal dental offices · We create unreasonable customer experiences'],
         ['What is most important, right now?', 'Raise Customer XP to an Unreasonable Level']],
   commitments: [['Becky', 'Continue entering the danger and be a soft landing'], ['Brayden', 'Push for conflict'], ['Dr. Smith', 'Be a better listener'],
-                ['Erin', 'Speak up about others\' behaviors'], ['Jared', 'Speak up; shake things up'], ['Elice', '']],
+                ['Erin', 'Speak up about others\' behaviors'], ['Jared', 'Speak up; shake things up']],   // Elice off the team for now (Nov 16)
   norms: ['Highest & best: Is this the highest and best use of our time together?', 'Argue like you\'re right; listen like you\'re wrong: Bring your full conviction to the table and hold it loosely enough to be persuaded.', 'Just say it: If you\'re thinking it, even if it\'s an unpopular opinion, just say it.'],
   focus: ['Team members are passionate and unguarded in their discussion of issues (Conflict)', 'Team members point out one another\'s behaviors that hold the team back (Accountability)', 'Team meetings are interesting and compelling, not boring (Conflict)'],
   conflict: [['Tone', ['Firm tone is acceptable', 'No yelling', 'Show love through your attention and body language', 'Emotion is allowed', 'Passion is allowed and invited']],
@@ -4369,7 +4369,7 @@ async function liveAddItem(el){
 /* ---------- Alfred chat bubble ---------- */
 // The conversation lives only in this page (S.alf) and is gone after a reload. Every message carries the screen
 // context below, and the screenshot taken when the bubble was tapped, so nobody has to describe where they were.
-const APP_VERSION = '2026.11.16-home2';
+const APP_VERSION = '2026.11.16-huddletab';
 const H2C_URL = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
 const DIAG = { errors:[], actions:[] };   // last 10 of each, for bug reports
 function pushDiag(list, item){ list.push(item); if (list.length>10) list.shift(); }
