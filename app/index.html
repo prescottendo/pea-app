@@ -19,7 +19,7 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" type="image/png" href="icon-192.png">
-<script>window.HUDDLE_WEB={"api":"https://script.google.com/macros/s/AKfycbzM8K_-XRMDdOJYJ3THn_FhyZkRreMddHIBAOFCFVoq5S_Y7MnsfFLsl7ac_fyDPrch/exec","clientId":"473377418367-cqmmnfum4kshq16973m4sj2jqqfa55p0.apps.googleusercontent.com","build":"310efc1","push":{"config":{"apiKey":"AIzaSyBON-0KvTXPD_MV6ykhYvCoBRiECEHyE9c","authDomain":"huddle-e2548.firebaseapp.com","projectId":"huddle-e2548","storageBucket":"huddle-e2548.firebasestorage.app","messagingSenderId":"554653922065","appId":"1:554653922065:web:87de53b4cb11b36835d2b0"},"vapidKey":"BHKeDoBmW7vL-qAT3ocyTaMaZ27Ca66jvQtTes2NC4CPoWFiPBJcga7wVd-RD1IuyhBki0oKXwPBGSNq002s8o8"}};document.documentElement.classList.add('web');</script>
+<script>window.HUDDLE_WEB={"api":"https://script.google.com/macros/s/AKfycbzM8K_-XRMDdOJYJ3THn_FhyZkRreMddHIBAOFCFVoq5S_Y7MnsfFLsl7ac_fyDPrch/exec","clientId":"473377418367-cqmmnfum4kshq16973m4sj2jqqfa55p0.apps.googleusercontent.com","build":"5e3b166","push":{"config":{"apiKey":"AIzaSyBON-0KvTXPD_MV6ykhYvCoBRiECEHyE9c","authDomain":"huddle-e2548.firebaseapp.com","projectId":"huddle-e2548","storageBucket":"huddle-e2548.firebasestorage.app","messagingSenderId":"554653922065","appId":"1:554653922065:web:87de53b4cb11b36835d2b0"},"vapidKey":"BHKeDoBmW7vL-qAT3ocyTaMaZ27Ca66jvQtTes2NC4CPoWFiPBJcga7wVd-RD1IuyhBki0oKXwPBGSNq002s8o8"}};document.documentElement.classList.add('web');</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <!-- The fonts load without holding up the first paint; the page shows in the phone's own font for a moment if needed. -->
@@ -223,6 +223,16 @@
   .group.done-week { color:var(--st-done-ink); }
   .group .n { font-variant-numeric:tabular-nums; font-weight:600; }
   .group .capsule { margin:0 2px 0 auto; text-transform:none; letter-spacing:0; }
+  /* Nov 16 (Brayden, spacing option C, 16 above): every section heading is a 30pt row with its words (and the navy
+     button, on the first one) on the bottom line, 10pt above its card and 20pt below the card before; the button has 16pt
+     above it. The same on My Tasks, Team Tasks, Meetings, Decisions and Parking Lot. */
+  #results .group { align-items:flex-end; min-height:30px; margin:20px 4px 10px; line-height:1.2; }
+  #results > .group:first-child { margin-top:var(--cap-top, 16px); }
+  .mg-head { align-items:flex-end !important; min-height:30px; margin:20px 0 10px !important; }
+  .mg-head .set-sec { margin:0 4px !important; line-height:1.2; }
+  #decResults > .mg-head:first-child, #tpResults > .mg-head:first-child, #mResults > .mg-head:first-child { margin-top:var(--cap-top-m, 16px) !important; }
+  .mg-head.mg-only { margin:var(--cap-top-m, 16px) 0 10px !important; }
+  .capsule { margin-bottom:0 !important; }
   .list { display:grid; gap:8px; }
   .card { background:var(--card); border:1px solid var(--line); border-radius:12px; }
   .title .lock, .src.priv .lock { width:.95em; height:.95em; vertical-align:-.1em; margin-right:8px; color:var(--muted); }
@@ -855,6 +865,7 @@
      history and New on the right. No Done button (a Close button stays for screen readers only). */
   .alf-head { position:relative; padding-top:20px; }
   .alf-grab { position:absolute; top:7px; left:50%; transform:translateX(-50%); width:38px; height:5px; border-radius:999px; background:rgba(255,255,255,.45); }
+  .alf-head .hat { margin-left:-4px; }   /* Brayden: "Alfred", then the hat */
   .alf-head .alf-tools { margin-left:auto; display:flex; align-items:center; gap:2px; }
   .alf-head .alf-new { width:40px; height:40px; padding:0; display:grid; place-items:center; } .alf-head .alf-new svg { width:22px; height:22px; }
   .alf-head .alf-new.armed { width:auto; padding:8px 4px; }
@@ -1288,6 +1299,13 @@
 
   /* ---------- Guided tour: a spotlight on the real app with a bubble beside it ---------- */
   .coach { position:fixed; inset:0; z-index:60; }
+  /* Between tabs the dimming fades away and a tap ripples on the tab's button (coachTravel). */
+  .coach.travel .coach-spot { box-shadow:0 0 0 9999px rgba(6,16,28,0), 0 0 0 2px var(--gold); }
+  .coach-bub.hide { opacity:0; pointer-events:none; }
+  .coach-tap { position:fixed; width:44px; height:44px; margin:-22px 0 0 -22px; border-radius:50%; background:rgba(198,168,92,.55); opacity:0; pointer-events:none; }
+  .coach-tap.go { animation:coachtap .6s ease-out; }
+  @keyframes coachtap { 0% { transform:scale(.4); opacity:.9; } 100% { transform:scale(1.6); opacity:0; } }
+  .coach-press { transform:scale(.92); transition:transform .12s; }
   .coach-spot { position:fixed; border-radius:12px; box-shadow:0 0 0 9999px rgba(6,16,28,.62), 0 0 0 2px var(--gold); pointer-events:none;
     transition:left .38s cubic-bezier(.32,.72,0,1), top .38s cubic-bezier(.32,.72,0,1), width .38s cubic-bezier(.32,.72,0,1), height .38s cubic-bezier(.32,.72,0,1), border-radius .38s; }
   .coach-bub { position:fixed; background:var(--card); color:var(--ink); border-radius:12px; padding:16px; box-shadow:0 12px 32px rgba(0,0,0,.35);
@@ -1544,7 +1562,7 @@
 <button class="alf-fab" id="alfFab" type="button" data-act="alf-open" aria-label="Ask Alfred" title="Ask Alfred (drag to move)" hidden><svg viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><path d="M9 6.7h14a1 1 0 0 1 1 1v8.2H8V7.7a1 1 0 0 1 1-1z"/><rect x="8" y="18.9" width="16" height="2.4"/><path d="M5 19.7Q16 21.7 27 19.7L27 21.68Q16 26.92 5 21.68Z"/></svg></button>
 <div class="alf-wrap" id="alfWrap" hidden><div class="backdrop" data-act="alf-close"></div>
   <section class="alf-panel" id="alfPanel" role="dialog" aria-modal="true" aria-label="Alfred chat" tabindex="-1">
-    <div class="alf-head"><span class="alf-grab" aria-hidden="true"></span><span class="hat"><svg viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><rect x="8" y="6.7" width="16" height="14.6" rx="1"/><rect x="8" y="15.9" width="16" height="3" class="hat-band"/><path d="M5 19.7Q16 21.7 27 19.7L27 21.68Q16 26.92 5 21.68Z"/></svg></span><span class="t"><b>Alfred</b></span>
+    <div class="alf-head"><span class="alf-grab" aria-hidden="true"></span><span class="t"><b>Alfred</b></span><span class="hat"><svg viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><rect x="8" y="6.7" width="16" height="14.6" rx="1"/><rect x="8" y="15.9" width="16" height="3" class="hat-band"/><path d="M5 19.7Q16 21.7 27 19.7L27 21.68Q16 26.92 5 21.68Z"/></svg></span>
       <span class="alf-tools"><button type="button" class="alf-clock" data-act="alf-history" aria-label="Past Chats and Your Requests" title="Past Chats and Your Requests"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 12a8.5 8.5 0 1 0 2.6-6.1L3.5 8.5"/><path d="M3.5 3.8v4.7h4.7"/><path d="M12 7.5v4.7l3.2 1.9"/></svg></button><button type="button" class="alf-new" data-act="alf-new" aria-label="New chat" title="New chat"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 4.5H6.5a2 2 0 0 0-2 2v11a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V13"/><path d="M17.6 3.6a1.9 1.9 0 0 1 2.8 2.8L12 14.8l-3.6.8.8-3.6z"/></svg></button></span><button type="button" class="alf-x" data-act="alf-close" aria-label="Close Alfred">Close</button></div>
     <div class="alf-msgs" id="alfMsgs" aria-live="polite"></div>
     <div class="alf-foot">
@@ -1974,15 +1992,41 @@ function startParam(){
 // (markStandalone, the old Google-frame strip, was removed on Nov 10.)
 function maybeWelcome(){ if (pref('lt-tour','')==='5' || S.view==='live' || S.sheet) return; setPref('lt-tour','5'); setPref('lt-welcomed','1'); startCoach(); }
 const BOX={ todo:'<i class="tbox"></i>', prog:'<i class="tbox prog"></i>', blk:'<i class="tbox blk"></i>', done:'<i class="tbox on">'+'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></i>' };
-// #5 (Nov 16): five short steps. Everything else is learned where it happens; the team guide and Alfred hold the rest.
+// Nov 16 (Brayden: "the tour got cut down too far"): a step-by-step tour of each tab. Before a step on another tab, the
+// dimming fades away and the tour shows that tab's button being pressed, then the tab opens and the tour carries on there.
 const COACH=[
-  { view:'home', sel:'#main .focus-card, #main .set-card', h:'Huddle', b:'<p>What needs you today: the team\'s Rally Cry, anything overdue or waiting on you, and the next meeting.</p>' },
-  { view:'mine', sel:'article.task .circ', h:'Your Tasks', b:'<p>Tap the box when a task is done. Hold it for In Progress or Blocked. Tap <b>＋ New Task</b> to add one.</p>' },
-  { view:'team', sel:'.people', h:'Team Tasks', b:'<p>Everyone\'s tasks in one place. Tap a person to see just theirs. The printer opens the Accountability Report and One-on-Ones.</p>' },
-  { view:'meetings', sel:'.capsule, .mtab', h:'Meetings', b:'<p>Start the weekly tactical here, and read any meeting\'s summary, decisions and Parking Lot.</p>' },
-  { view:'home', sel:'.alf-fab', h:'Alfred', b:'<p>The hat is <b>Alfred</b>: ask about meetings and tasks, or report a problem. Drag him anywhere.</p>' },
-  { view:'home', sel:'.ptitle .mebtn, #me .mebtn', h:'Your Account', b:'<p>Your initials open notifications, appearance and Sign Out.</p>' }
+  { view:'home', sel:'#main .focus-card', h:'Welcome to Huddle', b:'<p>This is the <b>Huddle</b> tab, your home base. At the top is the team\'s <b>Rally Cry</b>; tap it to see the Strategic Anchors and Defining Objectives.</p>' },
+  { view:'home', sel:'#main .set-card', h:'For You', b:'<p>What needs you today: anything <b>overdue</b>, <b>due today</b>, or a teammate <b>waiting on you</b>. Tap a row to go straight there.</p>' },
+  { view:'home', sel:'#main .start-card', h:'The Next Meeting', b:'<p>The weekly tactical: when it is, and how many of your items will come up. Tap it during the week to update them before the meeting.</p>' },
+  { view:'mine', sel:'article.task .circ', h:'Finish a Task', b:'<p>Tap the box when a task is <b>done</b> (Undo shows for a few seconds). <b>Hold</b> it for In Progress, Blocked or Not Started. You can also swipe a task to the right.</p>' },
+  { view:'mine', sel:'article.task .title', h:'Open a Task', b:'<p>Tap a task to read it and change its status, due date, priority or owners. Comments are at the bottom; type <b>@</b> to mention someone.</p>' },
+  { view:'mine', sel:'#main .capsule', h:'Add a Task', b:'<p>Tap <b>＋ New Task</b>: a title, who owns it and a date. Choose <b>Only Me</b> to keep it to yourself.</p>' },
+  { view:'mine', sel:'#main .ptitle .sort-ico, #main .sort-ico', h:'Search and Sort', b:'<p>The magnifier searches your tasks. The sort icon sorts by due date or priority, shows only Blocked tasks, or shows finished ones.</p>' },
+  { view:'team', sel:'.people', h:'Team Tasks', b:'<p>Everyone\'s tasks in one place. Tap a person to see just theirs; a red number means they have overdue tasks.</p>' },
+  { view:'team', sel:'#main .ptitle .sort-ico, #main .sort-ico, .print-btn', h:'Report & One-on-Ones', b:'<p>The <b>Accountability Report</b> and each leader\'s <b>One-on-Ones</b> are the first choice in this menu (on a computer, the printer).</p>' },
+  { view:'meetings', sel:'.mtab', h:'Meetings', b:'<p>Three lists: past <b>Meetings</b>, every <b>Decision</b>, and the <b>Parking Lot</b> of bigger topics. Search looks inside every summary and transcript.</p>' },
+  { view:'meetings', sel:'#main .capsule', h:'Start a Meeting', b:'<p>Tap <b>＋ Start Meeting</b> for the weekly tactical (start the Otter recording first). Whoever starts it runs it; everyone else follows along, and a gold bar lets anyone join from any tab.</p>' },
+  { view:'meetings', sel:'#mResults .set-row', h:'Read a Meeting', b:'<p>Tap any meeting for its summary: the decisions and your tasks come first, then the full notes.</p>' },
+  { view:'home', sel:'.alf-fab', h:'Alfred', b:'<p>The hat is <b>Alfred</b>, your assistant. Ask about meetings and tasks, have him make a small change, or tell him about a problem or an idea. Drag him anywhere.</p>' },
+  { view:'home', sel:'.ptitle .mebtn, #me .mebtn', h:'Your Account', b:'<p>Your initials open <b>Notifications</b>, Appearance, Recently Deleted, this tour and Sign Out.</p>' }
 ];
+// The tab button for a view (the bottom bar on a phone, the top bar on a computer).
+function coachTab(view){ return [...document.querySelectorAll('#navBottom [data-view="'+view+'"], #navTop [data-view="'+view+'"]')].find(e=>{ const r=e.getBoundingClientRect(); return r.width>0 && r.height>0; }); }
+// The dimming fades away, a ring and a tap show on the tab's button, the tab opens, then the dimming comes back.
+function coachTravel(view){
+  return new Promise(done=>{
+    const ov=document.getElementById('coach'), spot=ov.querySelector('.coach-spot'), bub=ov.querySelector('.coach-bub'), tab=coachTab(view);
+    S.coachBusy=true; ov.classList.add('travel'); bub.classList.add('hide');
+    if (!tab) { go(view); setTimeout(()=>{ ov.classList.remove('travel'); S.coachBusy=false; done(); }, 350); return; }
+    const r=tab.getBoundingClientRect(), pad=4;
+    Object.assign(spot.style, { left:(r.left-pad)+'px', top:(r.top-pad)+'px', width:(r.width+pad*2)+'px', height:(r.height+pad*2)+'px', borderRadius:'14px', opacity:'1' });
+    let tap=ov.querySelector('.coach-tap'); if (!tap) { tap=document.createElement('i'); tap.className='coach-tap'; ov.appendChild(tap); }
+    tap.style.left=(r.left+r.width/2)+'px'; tap.style.top=(r.top+r.height/2)+'px';
+    setTimeout(()=>{ tap.classList.remove('go'); void tap.offsetWidth; tap.classList.add('go'); tab.classList.add('coach-press'); haptic(); }, REDUCED ? 0 : 450);
+    setTimeout(()=>{ tab.classList.remove('coach-press'); go(view); }, REDUCED ? 200 : 950);
+    setTimeout(()=>{ ov.classList.remove('travel'); S.coachBusy=false; done(); }, REDUCED ? 450 : 1350);
+  });
+}
 function startCoach(){
   closeSheet(true); document.body.classList.remove('fabs-away');
   let ov=document.getElementById('coach');
@@ -1993,15 +2037,17 @@ function startCoach(){
       if (e.target.closest('.coach-bub') || S.coach==null) return;
       const el=coachTarget(COACH[S.coach]), r=el && el.getBoundingClientRect();
       if (r && r.width && e.clientX>=r.left && e.clientX<=r.right && e.clientY>=r.top && e.clientY<=r.bottom) {
-        if (S.coach>=COACH.length-1) endCoach(); else { haptic(); S.coach++; showCoach(); }
+        if (S.coachBusy) return; if (S.coach>=COACH.length-1) endCoach(); else { haptic(); S.coach++; showCoach(true); }
       }
     }); }
   ov.hidden=false; document.body.classList.add('coach-on'); S.coach=0; showCoach();
 }
 function endCoach(){ const ov=document.getElementById('coach'); if (ov) ov.hidden=true; document.body.classList.remove('coach-on'); S.coach=null; if (S.view!=='home') go('home'); setTimeout(maybePushAsk, 600); }
-function showCoach(){
+function showCoach(fwd){
   const st=COACH[S.coach]; if (!st) return endCoach();
-  if (st.view && S.view!==st.view) go(st.view);
+  if (st.view==='meetings' && S.mtab && S.mtab!=='meetings') { S.mtab='meetings'; if (S.view==='meetings') render(); }   // the tour shows the Meetings list
+  if (st.view && S.view!==st.view) { if (fwd) { coachTravel(st.view).then(()=>showCoach(false)); return; } go(st.view); }
+  document.querySelector('#coach .coach-bub').classList.remove('hide');
   const i=S.coach, last=i===COACH.length-1, bub=document.querySelector('#coach .coach-bub');
   bub.innerHTML='<div class="coach-dots" aria-label="Step '+(i+1)+' of '+COACH.length+'">'+COACH.map((x,j)=>'<i class="'+(j===i?'on':'')+'"></i>').join('')+'</div><h3>'+st.h+'</h3>'+st.b
     +'<div class="coach-acts"><button type="button" class="linkbtn" data-act="coach-done">'+(last?'':'Skip Tour')+'</button><span class="sp"></span>'
@@ -4595,7 +4641,7 @@ async function liveAddItem(el){
 /* ---------- Alfred chat bubble ---------- */
 // The conversation lives only in this page (S.alf) and is gone after a reload. Every message carries the screen
 // context below, and the screenshot taken when the bubble was tapped, so nobody has to describe where they were.
-const APP_VERSION = '2026.11.16-autoupd';
+const APP_VERSION = '2026.11.16-spacing';
 const H2C_URL = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
 const DIAG = { errors:[], actions:[] };   // last 10 of each, for bug reports
 function pushDiag(list, item){ list.push(item); if (list.length>10) list.shift(); }
@@ -5381,8 +5427,8 @@ function actClick(e, el){
   else if (a==='log-open') { S.lvlog={ id:id, confirmDel:false }; S.sheet='livelog'; showSheet(); }
   else if (a==='log-delete') deleteLiveLog(el);
   else if (a==='restore-log') restoreLiveLog(id, el);
-  else if (a==='coach-next') { S.coach=Math.min(COACH.length-1, S.coach+1); showCoach(); }
-  else if (a==='coach-back') { S.coach=Math.max(0, S.coach-1); showCoach(); }
+  else if (a==='coach-next') { if (S.coachBusy) return; S.coach=Math.min(COACH.length-1, S.coach+1); showCoach(true); }
+  else if (a==='coach-back') { if (S.coachBusy) return; S.coach=Math.max(0, S.coach-1); showCoach(); }
   else if (a==='coach-done') endCoach();
   else if (a==='tp-link-open') { S.topicEdit.picking=true; renderSheet(); }
   else if (a==='tp-link-cancel') { S.topicEdit.picking=false; renderSheet(); }
