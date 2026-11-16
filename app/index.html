@@ -19,7 +19,7 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" type="image/png" href="icon-192.png">
-<script>window.HUDDLE_WEB={"api":"https://script.google.com/macros/s/AKfycbzM8K_-XRMDdOJYJ3THn_FhyZkRreMddHIBAOFCFVoq5S_Y7MnsfFLsl7ac_fyDPrch/exec","clientId":"473377418367-cqmmnfum4kshq16973m4sj2jqqfa55p0.apps.googleusercontent.com","build":"a1fd01d","push":{"config":{"apiKey":"AIzaSyBON-0KvTXPD_MV6ykhYvCoBRiECEHyE9c","authDomain":"huddle-e2548.firebaseapp.com","projectId":"huddle-e2548","storageBucket":"huddle-e2548.firebasestorage.app","messagingSenderId":"554653922065","appId":"1:554653922065:web:87de53b4cb11b36835d2b0"},"vapidKey":"BHKeDoBmW7vL-qAT3ocyTaMaZ27Ca66jvQtTes2NC4CPoWFiPBJcga7wVd-RD1IuyhBki0oKXwPBGSNq002s8o8"}};document.documentElement.classList.add('web');</script>
+<script>window.HUDDLE_WEB={"api":"https://script.google.com/macros/s/AKfycbzM8K_-XRMDdOJYJ3THn_FhyZkRreMddHIBAOFCFVoq5S_Y7MnsfFLsl7ac_fyDPrch/exec","clientId":"473377418367-cqmmnfum4kshq16973m4sj2jqqfa55p0.apps.googleusercontent.com","build":"5ef7306","push":{"config":{"apiKey":"AIzaSyBON-0KvTXPD_MV6ykhYvCoBRiECEHyE9c","authDomain":"huddle-e2548.firebaseapp.com","projectId":"huddle-e2548","storageBucket":"huddle-e2548.firebasestorage.app","messagingSenderId":"554653922065","appId":"1:554653922065:web:87de53b4cb11b36835d2b0"},"vapidKey":"BHKeDoBmW7vL-qAT3ocyTaMaZ27Ca66jvQtTes2NC4CPoWFiPBJcga7wVd-RD1IuyhBki0oKXwPBGSNq002s8o8"}};document.documentElement.classList.add('web');</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <!-- The fonts load without holding up the first paint; the page shows in the phone's own font for a moment if needed. -->
@@ -519,6 +519,13 @@
   .full-sum[open] > summary { color:var(--muted); }
   .mtg-menu { margin:8px 0 16px; }
   .mbar { display:flex; align-items:center; gap:8px; margin:12px 0 16px; }
+  .focus-card { position:relative; margin-bottom:8px; padding:16px; display:block; }
+  .focus-card .sec { margin-top:14px; } .focus-card .focus-top .sec { margin-top:0; }
+  .focus-top { display:flex; align-items:center; justify-content:space-between; gap:12px; }
+  .focus-card .rally { font-family:var(--serif); font-weight:600; font-size:var(--fs-title); color:var(--heading); line-height:1.25; margin-top:4px; }
+  .focus-list { margin:4px 0 0; padding-left:20px; line-height:1.45; }
+  .focus-list li { margin:2px 0; }
+  .focus-edit { flex:none; }
   .home-row { display:grid; grid-template-columns:1fr auto auto; gap:10px; align-items:center; }
   .hcount { min-width:28px; height:24px; padding:0 8px; border-radius:999px; display:inline-grid; place-items:center; font-weight:600; font-size:var(--fs-sub); background:var(--line-soft); color:var(--ink); }
   .hcount.late { background:var(--p-high, #D64545); color:#fff; } .hcount.gold { background:var(--gold); color:#142640; }
@@ -727,7 +734,7 @@
      soft sheen on top. Without backdrop-filter (or with Reduce Transparency) they stay solid navy. */
   /* Nov 16 (Brayden): the buttons look the same in light and dark mode: the dark mode's deep navy glass. Glass takes its
      color from what's behind it. Light mode: a see-through navy a little deeper than the first try (Brayden). */
-  .fab, .alf-fab { background:rgba(10,52,90,.52); border:1px solid rgba(255,255,255,.34);
+  .fab, .alf-fab { background:rgba(10,52,90,.38); border:1px solid rgba(255,255,255,.40);
     -webkit-backdrop-filter:blur(10px) saturate(190%); backdrop-filter:blur(10px) saturate(190%);
     box-shadow:0 8px 22px rgba(0,0,0,.30), inset 0 1px 1px rgba(255,255,255,.35), inset 0 -2px 6px rgba(0,0,0,.25); overflow:hidden; }
   @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .fab, :root:not([data-theme="light"]) .alf-fab { background:rgba(31,82,133,.36); } }
@@ -2234,6 +2241,15 @@ function agoText(at){
   const mins=Math.round((Date.now()-d)/60000);
   return mins<1?'Just now':mins<60?mins+' min ago':mins<1440?Math.round(mins/60)+' hr ago':fmtDate(String(at).slice(0,10),{weekday:'short'});
 }
+// Nov 16 (Brayden): the Rally Cry, Defining Objectives and Strategic Anchors at the top of Home. Approvers can edit them.
+function focusCard(){
+  const f=S.data.focus; if (!f) return '';
+  const list=a=>a && a.length ? '<ul class="focus-list">'+a.map(x=>'<li>'+esc(x)+'</li>').join('')+'</ul>' : '<p class="none">'+(S.data.isApprover?'Tap Edit to add them.':'Not set yet.')+'</p>';
+  return '<div class="card focus-card">'
+    +'<div class="focus-top"><div class="sec">Rally Cry</div>'+(S.data.isApprover?'<button type="button" class="linkbtn focus-edit" data-act="focus-edit">Edit</button>':'')+'</div><div class="rally">'+(f.rally?esc(f.rally):'<span class="none">Not set yet.</span>')+'</div>'
+    +'<div class="sec">Defining Objectives</div>'+list(f.objectives)
+    +'<div class="sec">Strategic Anchors</div>'+list(f.anchors)+'</div>';
+}
 function renderHome(m){
   loadActivity();
   const me=S.data.me, mineOpen=S.data.tasks.filter(t=>isOpen(t) && owners(t).indexOf(me)>=0);
@@ -2254,7 +2270,7 @@ function renderHome(m){
         +'<span class="act-ico act-'+x.kind+'" aria-hidden="true">'+ICONS[x.kind]+'</span><span class="act-body"><span class="act-line">'+said(x)+' <span class="act-when">· '+esc(agoText(x.at))+'</span></span>'
         +'<span class="act-title">'+esc(x.title)+'</span>'+(x.text?'<span class="act-text">'+esc(x.text)+'</span>':'')+'</span>'+(x.at>seen?'<i class="act-dot" aria-label="New"></i>':'')+'</button>').join('')+'</div>';
   m.innerHTML='<div class="head-row"><h2>Home</h2></div>'
-    +now
+    +now+focusCard()
     +'<h3 class="set-sec">For You</h3>'+(rows?'<div class="set-card">'+rows+'</div>':'<p class="none">You\'re all caught up.</p>')
     +'<h3 class="set-sec">Activity</h3>'+act;
   // Looking at Home counts as having seen it: the dots stay for this visit, the counts clear.
@@ -2772,6 +2788,16 @@ function renderSheetBody(){
   if (S.sheet==='meeting') { el.innerHTML=meetingSheet(); return; }
   if (S.sheet==='livelog') { el.innerHTML=liveLogSheet(); return; }
   if (S.sheet==='livemenu') { el.innerHTML=liveMenuSheet(); return; }
+  if (S.sheet==='focus') {
+    const f=S.data.focus||{ rally:'', objectives:[], anchors:[] };
+    el.innerHTML='<div class="grab"></div><div class="sheet-head"><button type="button" class="btn ghost sm" data-act="close-sheet">Cancel</button><h3>Rally Cry</h3><button type="button" class="btn primary sm" data-act="focus-save">Save</button></div>'
+      +'<div class="err" id="f-err" role="alert"></div><div class="form">'
+      +'<label for="fc-rally">Rally Cry</label><textarea id="fc-rally" rows="2" placeholder="What is most important, right now?">'+esc(f.rally||'')+'</textarea>'
+      +'<label for="fc-obj">Defining Objectives</label><textarea id="fc-obj" rows="5" placeholder="One per line">'+esc((f.objectives||[]).join('\n'))+'</textarea>'
+      +'<label for="fc-anc">Strategic Anchors</label><textarea id="fc-anc" rows="4" placeholder="One per line">'+esc((f.anchors||[]).join('\n'))+'</textarea>'
+      +'<p class="small muted">One item per line. Everyone sees these at the top of Home.</p></div>';
+    return;
+  }
   if (S.sheet==='waitlist') {
     const list=S.data.tasks.filter(t=>t.status==='Blocked' && t.waiting_on===S.data.me);
     el.innerHTML='<div class="grab"></div><div class="sheet-head"><h3>Waiting on You</h3><button type="button" class="btn ghost sm" data-act="close-sheet">Done</button></div>'
@@ -4270,7 +4296,7 @@ async function liveAddItem(el){
 /* ---------- Alfred chat bubble ---------- */
 // The conversation lives only in this page (S.alf) and is gone after a reload. Every message carries the screen
 // context below, and the screenshot taken when the bubble was tapped, so nobody has to describe where they were.
-const APP_VERSION = '2026.11.16-home';
+const APP_VERSION = '2026.11.16-focus';
 const H2C_URL = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
 const DIAG = { errors:[], actions:[] };   // last 10 of each, for bug reports
 function pushDiag(list, item){ list.push(item); if (list.length>10) list.shift(); }
@@ -4986,6 +5012,9 @@ function actClick(e, el){
   else if (a==='prep-status') { setStatus(id, v); if (S.sheet==='prep') renderSheet(); }
   else if (a==='prep-due') { const t=find(id); if (t && t.due!==v) { t.due=v; saveTaskEdit({ id:id, due:v }); render(); } if (S.sheet==='prep') renderSheet(); }
   else if (a==='report-open') openReport();
+  else if (a==='focus-edit') { S.sheet='focus'; showSheet(); }
+  else if (a==='focus-save') { const r=document.getElementById('fc-rally').value, o=document.getElementById('fc-obj').value, n=document.getElementById('fc-anc').value;
+    saving(el, 'Saving…', ()=>call('apiSetFocus', r, o, n)).then(f=>{ if (!f) return; S.data.focus=f; saveBoot(); closeSheet(); render(); }); }
   else if (a==='home-waiting') { const ids=S.data.tasks.filter(t=>t.status==='Blocked' && t.waiting_on===S.data.me).map(t=>t.id); if (ids.length===1) openTask(ids[0]); else { S.sheet='waitlist'; showSheet(); } }
   else if (a==='rp-tab') { const r=document.getElementById('report'); if (r) { S.rpTab=v; r.querySelectorAll('.rp-seg button').forEach(b=>b.classList.toggle('on', b.dataset.val===v));
       r.querySelector('.rp-paper').hidden=v!=='report'; r.querySelector('.rp-ones').hidden=v!=='ones'; const pb=r.querySelector('[data-act="report-print"]'); if (pb) pb.hidden=v!=='report'; renderReportOnes(); } }
