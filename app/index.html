@@ -19,7 +19,7 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" type="image/png" href="icon-192.png">
-<script>window.HUDDLE_WEB={"api":"https://script.google.com/macros/s/AKfycbzM8K_-XRMDdOJYJ3THn_FhyZkRreMddHIBAOFCFVoq5S_Y7MnsfFLsl7ac_fyDPrch/exec","clientId":"473377418367-cqmmnfum4kshq16973m4sj2jqqfa55p0.apps.googleusercontent.com","build":"beb1f71","push":{"config":{"apiKey":"AIzaSyBON-0KvTXPD_MV6ykhYvCoBRiECEHyE9c","authDomain":"huddle-e2548.firebaseapp.com","projectId":"huddle-e2548","storageBucket":"huddle-e2548.firebasestorage.app","messagingSenderId":"554653922065","appId":"1:554653922065:web:87de53b4cb11b36835d2b0"},"vapidKey":"BHKeDoBmW7vL-qAT3ocyTaMaZ27Ca66jvQtTes2NC4CPoWFiPBJcga7wVd-RD1IuyhBki0oKXwPBGSNq002s8o8"}};document.documentElement.classList.add('web');</script>
+<script>window.HUDDLE_WEB={"api":"https://script.google.com/macros/s/AKfycbzM8K_-XRMDdOJYJ3THn_FhyZkRreMddHIBAOFCFVoq5S_Y7MnsfFLsl7ac_fyDPrch/exec","clientId":"473377418367-cqmmnfum4kshq16973m4sj2jqqfa55p0.apps.googleusercontent.com","build":"3743fe9","push":{"config":{"apiKey":"AIzaSyBON-0KvTXPD_MV6ykhYvCoBRiECEHyE9c","authDomain":"huddle-e2548.firebaseapp.com","projectId":"huddle-e2548","storageBucket":"huddle-e2548.firebasestorage.app","messagingSenderId":"554653922065","appId":"1:554653922065:web:87de53b4cb11b36835d2b0"},"vapidKey":"BHKeDoBmW7vL-qAT3ocyTaMaZ27Ca66jvQtTes2NC4CPoWFiPBJcga7wVd-RD1IuyhBki0oKXwPBGSNq002s8o8"}};document.documentElement.classList.add('web');</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <!-- The fonts load without holding up the first paint; the page shows in the phone's own font for a moment if needed. -->
@@ -409,8 +409,9 @@
   .quick-dates button.on { background:var(--primary); border-color:var(--primary); color:var(--primary-ink); }
   .head-row { display:flex; align-items:baseline; justify-content:space-between; gap:12px; }
   /* Phones: the title row is tree, large title, the page's own icons, then your initials (#1, #7). */
-  .head-row.ptitle { align-items:center; gap:4px; }
-  .head-row.ptitle h2 { display:flex; align-items:center; gap:10px; min-width:0; flex:1; }
+  .head-row.ptitle { align-items:center !important; flex-wrap:nowrap !important; gap:4px; margin-bottom:12px; }
+  .head-row.ptitle h2, .head-row.ptitle h2:only-child { display:flex; align-items:center; gap:10px; min-width:0; flex:1; margin:0 !important; line-height:1.15; }
+  .head-row.ptitle .ptools > * { flex:none; }
   .head-row.ptitle h2 svg.tree { height:30px; }
   .head-row.ptitle .ptools { display:flex; align-items:center; gap:2px; flex:none; }
   .head-row.ptitle .mebtn { margin:0 0 0 4px; padding:6px; }
@@ -422,9 +423,10 @@
   @media (max-width:699px) {
     .tbar { display:grid; grid-template-columns:72px 1fr 72px; align-items:center; position:fixed; left:0; right:0; top:0; z-index:21;
       padding:env(safe-area-inset-top, 0px) 12px 0; height:calc(44px + env(safe-area-inset-top, 0px)); box-sizing:border-box;
-      background:color-mix(in srgb, var(--page) 82%, transparent); -webkit-backdrop-filter:blur(18px) saturate(180%); backdrop-filter:blur(18px) saturate(180%);
-      border-bottom:1px solid var(--line-soft); opacity:0; pointer-events:none; transition:opacity .18s ease; }
-    .tbar.show { opacity:1; pointer-events:auto; }
+      background:color-mix(in srgb, var(--page) 82%, transparent);
+      border-bottom:1px solid var(--line-soft); opacity:0; visibility:hidden; pointer-events:none; transition:opacity .18s ease, visibility 0s linear .18s; }
+    .tbar.show { opacity:1; visibility:visible; pointer-events:auto; transition:opacity .18s ease, visibility 0s;
+      -webkit-backdrop-filter:blur(18px) saturate(180%); backdrop-filter:blur(18px) saturate(180%); }
     .tbar .tb-t { text-align:center; font-family:var(--sans); font-weight:600; font-size:var(--fs-body); color:var(--heading); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
     .tbar .tb-l { justify-self:start; display:flex; align-items:center; } .tbar .tb-r { justify-self:end; }
     .tbar svg.tree { height:22px; }
@@ -4026,7 +4028,7 @@ async function liveAddItem(el){
 /* ---------- Alfred chat bubble ---------- */
 // The conversation lives only in this page (S.alf) and is gone after a reload. Every message carries the screen
 // context below, and the screenshot taken when the bubble was tapped, so nobody has to describe where they were.
-const APP_VERSION = '2026.11.16-nav';
+const APP_VERSION = '2026.11.16-title';
 const H2C_URL = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
 const DIAG = { errors:[], actions:[] };   // last 10 of each, for bug reports
 function pushDiag(list, item){ list.push(item); if (list.length>10) list.shift(); }
