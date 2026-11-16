@@ -19,7 +19,7 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" type="image/png" href="icon-192.png">
-<script>window.HUDDLE_WEB={"api":"https://script.google.com/macros/s/AKfycbzM8K_-XRMDdOJYJ3THn_FhyZkRreMddHIBAOFCFVoq5S_Y7MnsfFLsl7ac_fyDPrch/exec","clientId":"473377418367-cqmmnfum4kshq16973m4sj2jqqfa55p0.apps.googleusercontent.com","build":"820b0ed","push":{"config":{"apiKey":"AIzaSyBON-0KvTXPD_MV6ykhYvCoBRiECEHyE9c","authDomain":"huddle-e2548.firebaseapp.com","projectId":"huddle-e2548","storageBucket":"huddle-e2548.firebasestorage.app","messagingSenderId":"554653922065","appId":"1:554653922065:web:87de53b4cb11b36835d2b0"},"vapidKey":"BHKeDoBmW7vL-qAT3ocyTaMaZ27Ca66jvQtTes2NC4CPoWFiPBJcga7wVd-RD1IuyhBki0oKXwPBGSNq002s8o8"}};document.documentElement.classList.add('web');</script>
+<script>window.HUDDLE_WEB={"api":"https://script.google.com/macros/s/AKfycbzM8K_-XRMDdOJYJ3THn_FhyZkRreMddHIBAOFCFVoq5S_Y7MnsfFLsl7ac_fyDPrch/exec","clientId":"473377418367-cqmmnfum4kshq16973m4sj2jqqfa55p0.apps.googleusercontent.com","build":"06489b0","push":{"config":{"apiKey":"AIzaSyBON-0KvTXPD_MV6ykhYvCoBRiECEHyE9c","authDomain":"huddle-e2548.firebaseapp.com","projectId":"huddle-e2548","storageBucket":"huddle-e2548.firebasestorage.app","messagingSenderId":"554653922065","appId":"1:554653922065:web:87de53b4cb11b36835d2b0"},"vapidKey":"BHKeDoBmW7vL-qAT3ocyTaMaZ27Ca66jvQtTes2NC4CPoWFiPBJcga7wVd-RD1IuyhBki0oKXwPBGSNq002s8o8"}};document.documentElement.classList.add('web');</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <!-- The fonts load without holding up the first paint; the page shows in the phone's own font for a moment if needed. -->
@@ -476,8 +476,13 @@
     .tbar.part { visibility:visible; }
     .tbar.under-live { padding-top:6px; height:56px; }
     .tbar.show { pointer-events:auto; -webkit-backdrop-filter:blur(18px) saturate(180%); backdrop-filter:blur(18px) saturate(180%); }
-    #tglide { position:fixed; left:0; top:0; z-index:22; transform-origin:left center; white-space:nowrap; pointer-events:none; will-change:transform; }
-    #tglide[hidden] { display:none; }
+    /* Nov 16: the title row pins at the top line; the frosted bar fades in behind it. */
+    .head-row.ptitle { position:sticky; top:var(--pin-top, var(--top-safe)); z-index:22; }
+    .head-row.ptitle h2 .ttext { transform-origin:left center; white-space:nowrap; will-change:transform; }
+    .head-row.ptitle h2 svg.tree { transform-origin:left center; }
+    .pt-sent { height:0; }
+    /* The page doesn't rubber-band past its ends, so nothing pinned can be dragged along (pull to refresh is our own). */
+    html, body { overscroll-behavior-y:none; }
     .tbar .tb-t { max-width:56vw; text-align:center; font-family:var(--sans); font-weight:600; font-size:var(--fs-body); color:var(--heading); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
     .tbar .tb-l { justify-self:start; display:flex; align-items:center; } .tbar .tb-r { justify-self:end; }
     .tbar svg.tree { height:22px; }
@@ -558,7 +563,7 @@
   .mbar { display:flex; align-items:center; gap:8px; margin:12px 0 16px; }
   .mg-head { display:flex; align-items:flex-end; justify-content:space-between; gap:8px; }
   .mg-head.mg-only { justify-content:flex-end; margin:4px 0 8px; }
-  .capsule { position:relative; flex:none; border:1px solid var(--gold); border-radius:999px; background:none; color:var(--heading); font-weight:600; font-size:var(--fs-sub);
+  .capsule { position:relative; flex:none; border:1px solid var(--primary); border-radius:999px; background:var(--primary); color:var(--primary-ink); font-weight:600; font-size:var(--fs-sub);
     padding:6px 12px; margin:0 2px 8px; white-space:nowrap; }
   .capsule::after { content:""; position:absolute; inset:-6px -2px; }
   .set-row.drow { display:flex; align-items:flex-start; padding:12px 16px; gap:16px; } .drow .chev { align-self:center; }
@@ -654,7 +659,7 @@
   .tv-items li { display:flex; justify-content:space-between; gap:24px; border-bottom:1px solid rgba(255,255,255,.15); padding:8px 0; }
   .tv-items b { white-space:nowrap; font-weight:600; }
   .live-ctl .hat-btn { flex:0 0 44px; width:44px; height:44px; min-height:44px; padding:0; display:grid; place-items:center; border-radius:50% !important;
-    background:rgba(255,255,255,.40) !important; border:1px solid rgba(198,168,92,.75) !important; color:#0A345A !important; box-shadow:0 4px 12px rgba(0,0,0,.10), inset 0 1px 2px rgba(255,255,255,.85) !important; }
+    background:rgba(255,255,255,.12) !important; border:1px solid rgba(198,168,92,.85) !important; -webkit-backdrop-filter:blur(3px) saturate(150%); backdrop-filter:blur(3px) saturate(150%); color:#0A345A !important; box-shadow:0 4px 12px rgba(0,0,0,.10), inset 0 1px 2px rgba(255,255,255,.85) !important; }
   @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .live-ctl .hat-btn { background:rgba(31,82,133,.36) !important; border-color:rgba(255,255,255,.45) !important; color:#fff !important; } }
   :root[data-theme="dark"] .live-ctl .hat-btn { background:rgba(31,82,133,.36) !important; border-color:rgba(255,255,255,.45) !important; color:#fff !important; }
   .live-ctl .hat-btn svg { width:24px; height:24px; }
@@ -808,9 +813,9 @@
      Light mode: clear glass (barely tinted white) with a thin gold rim and navy icons, so it adds no new color.
      Dark mode: the navy glass with a light rim and white icons. Without backdrop-filter, or with Reduce Transparency,
      they turn solid (white in light mode, navy in dark mode). */
-  .fab, .alf-fab { background:rgba(255,255,255,.42); border:1px solid rgba(198,168,92,.8); color:#0A345A;
-    -webkit-backdrop-filter:blur(18px) saturate(170%); backdrop-filter:blur(18px) saturate(170%);
-    box-shadow:0 6px 18px rgba(0,0,0,.10), inset 0 1px 2px rgba(255,255,255,.85), inset 0 -1px 2px rgba(0,0,0,.06); overflow:hidden; }
+  .fab, .alf-fab { background:rgba(255,255,255,.12); border:1px solid rgba(198,168,92,.85); color:#0A345A;
+    -webkit-backdrop-filter:blur(3px) saturate(150%) brightness(1.05); backdrop-filter:blur(3px) saturate(150%) brightness(1.05);
+    box-shadow:0 8px 20px rgba(0,0,0,.12), inset 0 1px 1.5px rgba(255,255,255,.95), inset 0 -1px 1.5px rgba(255,255,255,.45), inset 0 0 14px rgba(255,255,255,.28); overflow:hidden; }
   .fab svg, .alf-fab svg { filter:drop-shadow(0 0 1px #fff) drop-shadow(0 0 1px #fff); }   /* layout #13: the navy icon keeps a white halo over navy */
   @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .fab, :root:not([data-theme="light"]) .alf-fab { background:rgba(31,82,133,.36); border-color:rgba(255,255,255,.46); color:#fff;
       -webkit-backdrop-filter:blur(10px) saturate(190%); backdrop-filter:blur(10px) saturate(190%);
@@ -844,7 +849,9 @@
   .alf-head { display:flex; align-items:center; gap:12px; padding:12px max(14px, env(safe-area-inset-right, 0px)) 10px 14px; background:var(--header); color:var(--header-ink); flex:none; }
   .alf-head .hat { width:36px; height:36px; border-radius:50%; color:var(--header-ink); display:grid; place-items:center; flex:none; }
   .alf-head .hat svg { width:30px; height:30px; }
-  .alf-head .t { flex:1; min-width:0; }
+  .alf-head { position:relative; } .alf-head .t { position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); text-align:center; pointer-events:none; }
+  .alf-head .alf-done { margin-left:auto; }   /* Nov 16 (Brayden): Done, then the squared clock at the far right */
+  .alf-head .hat { display:none; }   /* Nov 16 (Brayden): no hat in the header; the title is centered */
   .alf-head b { display:block; font-family:var(--serif); font-size:var(--fs-title); line-height:1.15; }
   .alf-head small { display:block; color:var(--header-muted); font-size:var(--fs-sub); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
   .alf-head button { border:none; background:none; color:var(--header-ink); border-radius:12px; padding:8px 4px; font-size:17px; font-weight:400; flex:none; }
@@ -880,7 +887,7 @@
   .alf-input { display:flex; align-items:flex-end; gap:8px; }
   .alf-input.cbox { margin-top:0; gap:4px; padding:4px 6px 4px 14px; } .alf-input.cbox .alf-pickbtn { order:2; } .alf-input.cbox .send { order:3; margin-bottom:5px; }
   .alf-input.cbox .alf-pickbtn { margin-bottom:0; }
-  .alf-input.cbox textarea { border:none !important; background:none !important; padding:8px 0 !important; box-shadow:none !important; }
+  .alf-input.cbox textarea { border:none !important; background:none !important; padding:11px 0 !important; min-height:44px !important; box-sizing:border-box; box-shadow:none !important; }
   .alf-input textarea { flex:1; min-width:0; resize:none; max-height:140px; overflow-y:hidden; border:1px solid var(--line); border-radius:12px; padding:8px 12px; background:var(--field); font-size:var(--fs-body); line-height:1.35; }
   .alf-input .btn { flex:none; border-radius:12px; }
   .alf-draft { align-self:stretch; background:var(--card); border:1px solid var(--gold); border-radius:12px; padding:12px; display:grid; gap:8px; min-width:0; }
@@ -1530,8 +1537,8 @@
   <section class="alf-panel" id="alfPanel" role="dialog" aria-modal="true" aria-label="Alfred chat" tabindex="-1">
     <div class="alf-head"><button type="button" data-act="alf-new" title="Start a new conversation">New</button><span class="hat"><svg viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><rect x="8" y="6.7" width="16" height="14.6" rx="1"/><rect x="8" y="15.9" width="16" height="3" class="hat-band"/><path d="M5 19.7Q16 21.7 27 19.7L27 21.68Q16 26.92 5 21.68Z"/></svg></span>
       <span class="t"><b>Alfred</b></span>
-      <button type="button" class="alf-clock" data-act="alf-history" aria-label="Past Chats and Your Requests" title="Past Chats and Your Requests"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></button>
-      <button type="button" data-act="alf-close" aria-label="Done, close the chat">Done</button></div>
+      <button type="button" data-act="alf-close" class="alf-done" aria-label="Done, close the chat">Done</button>
+      <button type="button" class="alf-clock" data-act="alf-history" aria-label="Past Chats and Your Requests" title="Past Chats and Your Requests"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="4.5"/><path d="M12 8v4.2l2.8 1.8"/></svg></button></div>
     <div class="alf-msgs" id="alfMsgs" aria-live="polite"></div>
     <div class="alf-foot">
       <div class="alf-tools"><span class="note" id="alfNote"></span></div>
@@ -1961,7 +1968,7 @@ const COACH=[
   { view:'home', sel:'#main .focus-card, #main .set-card', h:'Huddle', b:'<p>What needs you today: the team\'s Rally Cry, anything overdue or waiting on you, and the next meeting.</p>' },
   { view:'mine', sel:'article.task .circ', h:'Your Tasks', b:'<p>Tap the box when a task is done. Hold it for In Progress or Blocked. Tap <b>+</b> to add a task.</p>' },
   { view:'team', sel:'.people', h:'Team Tasks', b:'<p>Everyone\'s tasks in one place. Tap a person to see just theirs. The printer opens the Accountability Report and One-on-Ones.</p>' },
-  { view:'meetings', sel:'.mbar, .mtab', h:'Meetings', b:'<p>Start the weekly tactical here, and read any meeting\'s summary, decisions and Parking Lot.</p>' },
+  { view:'meetings', sel:'.capsule, .mtab', h:'Meetings', b:'<p>Start the weekly tactical here, and read any meeting\'s summary, decisions and Parking Lot.</p>' },
   { view:'home', sel:'.alf-fab', h:'Alfred', b:'<p>The hat is <b>Alfred</b>: ask about meetings and tasks, or report a problem. Drag him anywhere.</p>' },
   { view:'home', sel:'.ptitle .mebtn, #me .mebtn', h:'Your Account', b:'<p>Your initials open notifications, appearance and Sign Out.</p>' }
 ];
@@ -2298,6 +2305,7 @@ function decorateTitle(){
   let row=h.closest('.head-row');
   if (!row || row.parentElement.closest('.head-row')) { row=document.createElement('div'); row.className='head-row'; h.parentNode.insertBefore(row, h); row.appendChild(h); }
   row.classList.add('ptitle');
+  if (!row.previousElementSibling || !row.previousElementSibling.classList.contains('pt-sent')) row.insertAdjacentHTML('beforebegin', '<div class="pt-sent" aria-hidden="true"></div>');
   if (!S.back && !h.querySelector('svg.tree')) h.insertAdjacentHTML('afterbegin', TREE_SVG);
   // The words get their own box (.ttext) so they can sit on the icons' bottom line while the tree stays centered.
   if (!h.querySelector('.ttext')) { const words=[...h.childNodes].filter(n=>n.nodeType===3 && n.textContent.trim()); if (words.length) { const sp=document.createElement('span'); sp.className='ttext'; words[0].parentNode.insertBefore(sp, words[0]); words.forEach(n=>sp.appendChild(n)); } }
@@ -2306,56 +2314,50 @@ function decorateTitle(){
   if (!tools.querySelector('.mebtn') && S.view!=='more' && S.back!=='Account') tools.insertAdjacentHTML('beforeend', meBtn(S.meRc||0));   // Critique 4 (#9)
   S.titleEl=h; syncTbar();
 }
-// Nov 16 (Brayden's pick, "Glide to Center"): from the first point of scrolling, the big title shrinks and slides into the
-// middle of the thin top bar (a fixed copy, #tglide, follows the real title and lands centered at 17pt over ~60pt of scroll),
-// while the bar's background, the tree (or ‹ Back) and the initials fade in at the same pace.
-// Reduce Motion: no glide; the bar appears once the title is scrolled away.
-const GLIDE_DIST=60, GLIDE_SIZE=17;
+// Nov 16 (Brayden, after Critique 4): the page's title row pins at the top line (sticky at --pin-top) the moment you
+// scroll, so nothing in it moves up or down. Over ~60pt of scroll the title words slide straight sideways to the middle of the
+// space between the tree and the icons and shrink to 17pt; the tree shrinks in place; the search, filter and initials stay
+// where they are. The bar (#tbar) is only the frosted background behind the row (and ‹ Back on pages that have one).
+// Reduce Motion: no glide; the small title appears at once.
+const GLIDE_DIST=60, GLIDE_SIZE=17, TREE_SMALL=.67;
 function syncTbar(){
   const bar=document.getElementById('tbar'); if (!bar) return;
-  let g=document.getElementById('tglide');
-  if (!g) { g=document.createElement('div'); g.id='tglide'; g.setAttribute('aria-hidden','true'); g.hidden=true; document.body.appendChild(g); }
   const h=S.titleEl, words=h && h.isConnected && isPhone() ? (h.querySelector('.ttext')||h) : null;
-  if (!words) { bar.style.setProperty('--tp', 0); bar.classList.remove('show','part'); g.hidden=true;
-    // Critique 4 (bug #8): after a rotation the page's own title and icons come back.
-    document.querySelectorAll('#main .ptitle .ttext, #main .head-row .ttext').forEach(el=>{ el.style.visibility=''; });
-    document.querySelectorAll('#main .ptools, #main svg.tree').forEach(el=>{ el.style.opacity=''; });
-    return; }
-  // Critique 4 (#17): the bar's right side is the page's own buttons (search, filter, initials), the same data-act; no tree.
-  const row0=words.closest('.head-row'), ptools=row0 && row0.querySelector('.ptools'), toolsHtml=ptools ? ptools.innerHTML : '';
-  const key=words.textContent.trim()+'|'+(S.back||'')+'|'+(S.meRc||0)+'|'+S.view+'|'+toolsHtml;
-  if (bar.dataset.t!==key) {
-    bar.dataset.t=key;
-    bar.querySelector('.tb-l').innerHTML=S.back ? backLink() : '';
-    bar.querySelector('.tb-t').textContent='';
-    bar.querySelector('.tb-r').innerHTML=toolsHtml;
-    const cs=getComputedStyle(words); g.textContent=words.textContent.trim();
-    Object.assign(g.style, { fontFamily:cs.fontFamily, fontWeight:cs.fontWeight, fontSize:cs.fontSize, lineHeight:'1' });
-  }
-  g.style.color=getComputedStyle(words).color;   // Critique 4 (bug #20): follows a light/dark switch
+  const clear=()=>document.querySelectorAll('#main .ptitle .ttext, #main .ptitle svg.tree').forEach(el=>{ el.style.transform=''; });
+  if (!words) { bar.style.setProperty('--tp', 0); bar.classList.remove('show','part'); clear(); return; }
+  const row=words.closest('.head-row'), sent=row && row.previousElementSibling && row.previousElementSibling.classList.contains('pt-sent') ? row.previousElementSibling : null;
+  const key=(S.back||'')+'|'+S.view;
+  if (bar.dataset.t!==key) { bar.dataset.t=key; bar.querySelector('.tb-l').innerHTML=S.back ? backLink() : ''; bar.querySelector('.tb-t').textContent=''; bar.querySelector('.tb-r').innerHTML=''; }
   const lb=document.getElementById('livebar'), barTop=lb && !lb.hidden ? Math.max(0, lb.getBoundingClientRect().bottom) : 0;
-  bar.style.top=barTop+'px'; bar.classList.toggle('under-live', barTop>0);   // Critique 4 layout #2
-  // Layout #10: on a page that scrolls less than 60pt, the glide finishes within what it can scroll.
-  const dist=glideDist(), raw=Math.max(0, Math.min(1, window.scrollY/dist)), t=REDUCED ? (words.getBoundingClientRect().bottom < topSafe() ? 1 : 0) : raw;
-  bar.style.setProperty('--tp', t);
-  bar.classList.toggle('part', t>0); bar.classList.toggle('show', t>=0.98); bar.setAttribute('aria-hidden', t>=0.98 ? 'false' : 'true');
-  // Critique 4 (#18): the page's own tree and icons simply scroll away with their row; the bar's buttons appear only once the
-  // bar is in place (.show), so there are never two sets at once.
-  if (t<=0) { g.hidden=true; words.style.visibility=''; return; }
-  // Start: where the title is right now. End: centered in the bar at GLIDE_SIZE.
-  const r=words.getBoundingClientRect(), start=parseFloat(g.style.fontSize)||26, s=1+(GLIDE_SIZE/start-1)*t;
-  const W=document.documentElement.clientWidth, endX=W/2-(r.width*GLIDE_SIZE/start)/2;
-  const barMid=barTop+(barTop>0?6:topSafe())+25, x=r.left+(endX-r.left)*t, yc=(r.top+r.height/2)+(barMid-(r.top+r.height/2))*t;
-  g.hidden=false; words.style.visibility='hidden';
-  const yTop=Math.max(barTop>0 ? barTop : topSafe(), yc-r.height/2);   // layout #3: never in the faded strip under the clock
-  g.style.transform='translate('+x.toFixed(1)+'px,'+yTop.toFixed(1)+'px) scale('+s.toFixed(3)+')';
+  const pinTop=barTop>0 ? barTop+6 : topSafe();
+  document.documentElement.style.setProperty('--pin-top', pinTop+'px');
+  bar.style.top=barTop+'px'; bar.classList.toggle('under-live', barTop>0);
+  // Where the row starts pinning (0 on most pages; later on pages with ‹ Back or a live bar above the title).
+  S.pinStart=sent ? Math.max(0, sent.getBoundingClientRect().top+window.scrollY-pinTop) : 0;
+  const past=window.scrollY-S.pinStart, dist=glideDist();
+  const t=REDUCED ? (past>0 ? 1 : 0) : Math.max(0, Math.min(1, past/dist));
+  bar.style.setProperty('--tp', REDUCED ? t : Math.max(0, Math.min(1, past/30)));   // the frosted band comes in a little faster than the glide
+  bar.classList.toggle('part', past>0); bar.classList.toggle('show', t>=0.98); bar.setAttribute('aria-hidden', t>=0.98 ? 'false' : 'true');
+  const tree=row && row.querySelector('svg.tree'), tools=row && row.querySelector('.ptools');
+  if (t<=0) { clear(); return; }
+  // Natural spots (transforms don't change offsetLeft): the row is the words' and tree's offset parent.
+  const rr=row.getBoundingClientRect(), fs=parseFloat(getComputedStyle(words).fontSize)||26, sEnd=GLIDE_SIZE/fs, s=1+(sEnd-1)*t;
+  const wLeft=rr.left+words.offsetLeft, wW=words.offsetWidth;
+  const leftEdge=tree ? rr.left+treeLeft(tree, rr)+treeW(tree)*TREE_SMALL+10 : rr.left;
+  const rightEdge=tools ? tools.getBoundingClientRect().left-6 : rr.right;
+  const endLeft=Math.max(leftEdge, (leftEdge+rightEdge)/2-wW*sEnd/2);
+  words.style.transform='translateX('+((endLeft-wLeft)*t).toFixed(1)+'px) scale('+s.toFixed(3)+')';
+  if (tree) tree.style.transform='scale('+(1+(TREE_SMALL-1)*t).toFixed(3)+')';
 }
-function glideDist(){ const maxS=document.documentElement.scrollHeight-window.innerHeight; return Math.max(1, Math.min(GLIDE_DIST, maxS>0 ? maxS : GLIDE_DIST)); }
+// The tree's natural left and width (an SVG has no offsetLeft): read with its transform briefly off.
+function treeLeft(tree, rr){ const old=tree.style.transform; tree.style.transform=''; const r=tree.getBoundingClientRect(); tree.style.transform=old; tree._w=r.width; return r.left-rr.left; }
+function treeW(tree){ return tree._w||30; }
+function glideDist(){ const maxS=document.documentElement.scrollHeight-window.innerHeight-(S.pinStart||0); return Math.max(1, Math.min(GLIDE_DIST, maxS>0 ? maxS : GLIDE_DIST)); }
 // Layout #10: like iPhone large titles, a glide never rests half-way: when scrolling stops inside it, it finishes the nearer way.
 let glideSnapT=0;
 window.addEventListener('scroll', ()=>{ clearTimeout(glideSnapT); glideSnapT=setTimeout(()=>{
-  if (REDUCED || S.touching || !S.titleEl || !isPhone()) return; const y=window.scrollY, d=glideDist();
-  if (y>0 && y<d) window.scrollTo({ top:y<d/2 ? 0 : d, behavior:'smooth' }); }, 160); }, { passive:true });
+  if (REDUCED || S.touching || !S.titleEl || !isPhone()) return; const p0=S.pinStart||0, y=window.scrollY-p0, d=glideDist();
+  if (y>0 && y<d) window.scrollTo({ top:p0+(y<d/2 ? 0 : d), behavior:'smooth' }); }, 160); }, { passive:true });
 document.addEventListener('touchend', ()=>{ if (!S.titleEl) return; clearTimeout(glideSnapT); glideSnapT=setTimeout(()=>window.dispatchEvent(new Event('scroll')), 200); }, { passive:true });
 let tbarRaf=0;
 // Critique 4 (bug #8, #22): after a rotation or resize, the title row is rebuilt and long cards are measured again.
@@ -2363,7 +2365,7 @@ let rszRaf=0;
 window.addEventListener('resize', ()=>{ if (rszRaf) return; rszRaf=requestAnimationFrame(()=>{ rszRaf=0; if (!S.data) return; decorateTitle();
   ['decResults','tpResults'].forEach(id=>{ const box=document.getElementById(id); if (!box) return;
     box.querySelectorAll('.clamped').forEach(cd=>{ cd.classList.remove('clamped'); const mo=cd.querySelector('.card-more'); if (mo) mo.remove(); }); clampCards(box); }); }); });
-window.addEventListener('scroll', ()=>{ if (!S.titleEl && !document.getElementById('tglide')) return; if (tbarRaf) return; tbarRaf=requestAnimationFrame(()=>{ tbarRaf=0; syncTbar(); }); }, { passive:true });
+window.addEventListener('scroll', ()=>{ if (!S.titleEl) return; if (tbarRaf) return; tbarRaf=requestAnimationFrame(()=>{ tbarRaf=0; syncTbar(); }); }, { passive:true });
 function renderPage(){
   renderNav();
   // The same wide + button starts a task on task screens and a meeting on the Meetings tab.
@@ -3763,11 +3765,11 @@ function mHead(){
     +meetingsSeg()
     +(open?'<div class="search-row msearch"><label class="search">'+ICON.search+'<input type="search" id="'+q[0]+'" data-input="'+q[0]+'" placeholder="'+q[1]+'" value="'+esc(S[q[0]]||'')+'" aria-label="'+q[1]+'">'
       +'<button type="button" class="search-x" data-act="m-search-close" aria-label="Close search">'+ICON.x+'</button></label></div>':'')
-    +(tab==='meetings'?'<div class="mbar"><button type="button" class="btn primary sm mbar-act wide" data-act="'+act[0]+'">'+act[1]+'</button></div>':'')
-    +(tab==='meetings'?tacticalCard():'');
+    +(tab==='meetings'?tacticalCard():'');   // Nov 16 (Brayden, option A): Start Meeting is the same navy capsule as Add Decision and Add Topic
 }
 // Critique 4 (#4): Decisions and Parking Lot add with a small gold-rim capsule on the first month line.
-function addCapsule(){ const tab=S.mtab; return tab==='decisions' ? '<button type="button" class="capsule" data-act="dec-new">＋ Add Decision</button>' : tab==='topics' ? '<button type="button" class="capsule" data-act="topic-new">＋ Add Topic</button>' : ''; }
+function addCapsule(){ const tab=S.mtab||'meetings'; return tab==='decisions' ? '<button type="button" class="capsule" data-act="dec-new">＋ Add Decision</button>' : tab==='topics' ? '<button type="button" class="capsule" data-act="topic-new">＋ Add Topic</button>'
+  : '<button type="button" class="capsule" data-act="lv-new">'+(S.live?'Join Meeting':'＋ Start Meeting')+'</button>'; }
 // Critique 4 (#20): Meetings, Decisions and Parking Lot share one grouped list. Groups of rows under a heading; the first
 // heading carries the Add capsule.
 function monthLabel(k){ return k ? new Date(k+'-15T12:00:00').toLocaleDateString('en-US', k.slice(0,4)===String(S.data.today).slice(0,4) ? { month:'long' } : { month:'long', year:'numeric' }) : 'No Date'; }
@@ -3840,14 +3842,15 @@ function renderMeetingResults(){
   if (q) items=items.filter(it=>(it.title+' '+it.type).toLowerCase().indexOf(q)>=0 || (it.kind==='mtg' && hits && hits[it.x.id]));
   items.sort((a,b)=>String(b.date).localeCompare(String(a.date)) || (a.kind==='mtg'?-1:1));
   const searching = q.length>=2 && !hits;
-  if (!S.meetings.length && !pending.length) { box.innerHTML='<div class="empty"><b>No Meetings Yet</b>Summaries appear here after Alfred processes a recording.</div>'; return; }
+  if (!S.meetings.length && !pending.length) { box.innerHTML=rowGroups([], null)+'<div class="empty"><b>No Meetings Yet</b>Summaries appear here after Alfred processes a recording.</div>'; return; }
   box.innerHTML=(searching?'<p class="small muted mt-s">Searching summaries and transcripts…</p>':'')
-    +(items.length?meetingGroups(items, hits):(searching ? '' : '<div class="empty"><b>No Matching Meetings</b>Try a different word.</div>'));
+    +(items.length?meetingGroups(items, hits):(searching ? '' : rowGroups([], null)+'<div class="empty"><b>No Matching Meetings</b>Try a different word.</div>'));
 }
 // #9 (Nov 16): rows like Notes, grouped by month; the whole row opens the summary.
 function meetingGroups(items, hits){
   const groups=[]; items.forEach(it=>{ const k=String(it.date).slice(0,7); let g=groups[groups.length-1]; if (!g || g.k!==k) groups.push(g={ k:k, items:[] }); g.items.push(it); });
-  return groups.map(g=>'<h3 class="set-sec">'+esc(new Date(g.k+'-15T12:00:00').toLocaleDateString('en-US', g.k.slice(0,4)===String(S.data.today).slice(0,4) ? { month:'long' } : { month:'long', year:'numeric' }))+'</h3><div class="set-card mrows">'
+  const cap=addCapsule();
+  return groups.map((g,gi)=>'<div class="mg-head"><h3 class="set-sec">'+esc(new Date(g.k+'-15T12:00:00').toLocaleDateString('en-US', g.k.slice(0,4)===String(S.data.today).slice(0,4) ? { month:'long' } : { month:'long', year:'numeric' }))+'</h3>'+(gi===0?cap:'')+'</div><div class="set-card mrows">'
     +g.items.map(it=>{
       if (it.kind==='log') { const l=it.l;
         return '<button type="button" class="set-row" data-act="log-open" data-id="'+esc(l.id)+'"><span>'+esc(l.title)+'<small>'+esc(fmtDate(l.date))+' · Timer log · summary coming</small></span><span class="chev" aria-hidden="true">›</span></button>'; }
@@ -4565,7 +4568,7 @@ async function liveAddItem(el){
 /* ---------- Alfred chat bubble ---------- */
 // The conversation lives only in this page (S.alf) and is gone after a reload. Every message carries the screen
 // context below, and the screenshot taken when the bubble was tapped, so nobody has to describe where they were.
-const APP_VERSION = '2026.11.16-c4design';
+const APP_VERSION = '2026.11.16-pin';
 const H2C_URL = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
 const DIAG = { errors:[], actions:[] };   // last 10 of each, for bug reports
 function pushDiag(list, item){ list.push(item); if (list.length>10) list.shift(); }
@@ -5086,7 +5089,9 @@ function alfredClick(a, el){
   else if (a==='alf-p-no') { const p=proposalAt(el); if (p && p.state==='ready') { p.state='cancelled'; renderAlfred(); } }
   return true;
 }
-function autoGrow(b, max){ b.style.height='auto'; const bw=(b.offsetHeight-b.clientHeight)||0, h=b.scrollHeight+bw, cap=max||140; b.style.height=Math.min(h, cap)+'px'; b.style.overflowY=h>cap?'auto':'hidden'; }
+// Nov 16: a hidden box (Alfred closed) measures 0, which used to squeeze it so the hint fell out the bottom. Hidden or
+// empty, it goes back to its natural one-line height.
+function autoGrow(b, max){ if (!b.getClientRects().length || !b.value) { b.style.height=''; b.style.overflowY='hidden'; return; } b.style.height='auto'; const bw=(b.offsetHeight-b.clientHeight)||0, h=b.scrollHeight+bw, cap=max||140; b.style.height=Math.min(h, cap)+'px'; b.style.overflowY=h>cap?'auto':'hidden'; }
 document.addEventListener('input', e=>{
   if (e.target.id==='alfInput') { autoGrow(e.target); return; }
   if (e.target.id==='f-title' || e.target.id==='lv-title') { autoGrow(e.target, 240); }
