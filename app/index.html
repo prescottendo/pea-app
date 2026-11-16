@@ -19,7 +19,7 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" type="image/png" href="icon-192.png">
-<script>window.HUDDLE_WEB={"api":"https://script.google.com/macros/s/AKfycbzM8K_-XRMDdOJYJ3THn_FhyZkRreMddHIBAOFCFVoq5S_Y7MnsfFLsl7ac_fyDPrch/exec","clientId":"473377418367-cqmmnfum4kshq16973m4sj2jqqfa55p0.apps.googleusercontent.com","build":"f40910f","push":{"config":{"apiKey":"AIzaSyBON-0KvTXPD_MV6ykhYvCoBRiECEHyE9c","authDomain":"huddle-e2548.firebaseapp.com","projectId":"huddle-e2548","storageBucket":"huddle-e2548.firebasestorage.app","messagingSenderId":"554653922065","appId":"1:554653922065:web:87de53b4cb11b36835d2b0"},"vapidKey":"BHKeDoBmW7vL-qAT3ocyTaMaZ27Ca66jvQtTes2NC4CPoWFiPBJcga7wVd-RD1IuyhBki0oKXwPBGSNq002s8o8"}};document.documentElement.classList.add('web');</script>
+<script>window.HUDDLE_WEB={"api":"https://script.google.com/macros/s/AKfycbzM8K_-XRMDdOJYJ3THn_FhyZkRreMddHIBAOFCFVoq5S_Y7MnsfFLsl7ac_fyDPrch/exec","clientId":"473377418367-cqmmnfum4kshq16973m4sj2jqqfa55p0.apps.googleusercontent.com","build":"c2bf19b","push":{"config":{"apiKey":"AIzaSyBON-0KvTXPD_MV6ykhYvCoBRiECEHyE9c","authDomain":"huddle-e2548.firebaseapp.com","projectId":"huddle-e2548","storageBucket":"huddle-e2548.firebasestorage.app","messagingSenderId":"554653922065","appId":"1:554653922065:web:87de53b4cb11b36835d2b0"},"vapidKey":"BHKeDoBmW7vL-qAT3ocyTaMaZ27Ca66jvQtTes2NC4CPoWFiPBJcga7wVd-RD1IuyhBki0oKXwPBGSNq002s8o8"}};document.documentElement.classList.add('web');</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <!-- The fonts load without holding up the first paint; the page shows in the phone's own font for a moment if needed. -->
@@ -244,7 +244,8 @@
   .fab { position:fixed; right:max(16px, env(safe-area-inset-right, 0px)); bottom:calc(22px + env(safe-area-inset-bottom, 0px)); z-index:24;
     width:54px; height:54px; border-radius:50%; border:none; background:var(--primary); color:var(--primary-ink); padding:0;
     display:grid; place-items:center; box-shadow:0 6px 16px var(--shadow); }
-  .fab svg { width:26px; height:26px; display:block; }
+  .fab svg { width:26px; height:26px; display:block; filter:drop-shadow(0 1px 1.5px rgba(0,0,0,.35)); }
+  .alf-fab svg { filter:drop-shadow(0 1px 1.5px rgba(0,0,0,.35)); }
   @media (max-width:699px) { .fab { bottom:calc(88px + var(--nav-under)); } }
 
   .sheet-wrap { position:fixed; inset:0; z-index:40; display:flex; align-items:flex-end; justify-content:center; }
@@ -612,14 +613,14 @@
   #liveConn.show { opacity:1; transform:translate(-50%,0); }
   /* Nov 16: the + and Alfred's hat are navy Liquid Glass: see-through navy that blurs what scrolls under it, a light rim and a
      soft sheen on top. Without backdrop-filter (or with Reduce Transparency) they stay solid navy. */
-  .fab, .alf-fab { background:rgba(10,52,90,.74); border:1px solid rgba(255,255,255,.30);
-    -webkit-backdrop-filter:blur(16px) saturate(180%); backdrop-filter:blur(16px) saturate(180%);
+  .fab, .alf-fab { background:rgba(10,52,90,.34); border:1px solid rgba(255,255,255,.42);
+    -webkit-backdrop-filter:blur(10px) saturate(190%); backdrop-filter:blur(10px) saturate(190%);
     box-shadow:0 8px 22px rgba(10,52,90,.28), inset 0 1px 1px rgba(255,255,255,.45), inset 0 -2px 6px rgba(0,0,0,.18); overflow:hidden; }
   .fab::before, .alf-fab::before { content:''; position:absolute; inset:0; border-radius:inherit; pointer-events:none;
-    background:radial-gradient(120% 70% at 30% 0%, rgba(255,255,255,.38), rgba(255,255,255,0) 60%); }
+    background:radial-gradient(120% 70% at 30% 0%, rgba(255,255,255,.30), rgba(255,255,255,0) 60%); }
   .fab > *, .alf-fab > * { position:relative; }
-  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .fab, :root:not([data-theme="light"]) .alf-fab { background:rgba(31,82,133,.70); border-color:rgba(255,255,255,.22); box-shadow:0 8px 22px rgba(0,0,0,.45), inset 0 1px 1px rgba(255,255,255,.35), inset 0 -2px 6px rgba(0,0,0,.25); } }
-  :root[data-theme="dark"] .fab, :root[data-theme="dark"] .alf-fab { background:rgba(31,82,133,.70); border-color:rgba(255,255,255,.22); box-shadow:0 8px 22px rgba(0,0,0,.45), inset 0 1px 1px rgba(255,255,255,.35), inset 0 -2px 6px rgba(0,0,0,.25); }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .fab, :root:not([data-theme="light"]) .alf-fab { background:rgba(31,82,133,.36); border-color:rgba(255,255,255,.30); box-shadow:0 8px 22px rgba(0,0,0,.45), inset 0 1px 1px rgba(255,255,255,.35), inset 0 -2px 6px rgba(0,0,0,.25); } }
+  :root[data-theme="dark"] .fab, :root[data-theme="dark"] .alf-fab { background:rgba(31,82,133,.36); border-color:rgba(255,255,255,.30); box-shadow:0 8px 22px rgba(0,0,0,.45), inset 0 1px 1px rgba(255,255,255,.35), inset 0 -2px 6px rgba(0,0,0,.25); }
   @supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))) { .fab, .alf-fab { background:var(--primary); } }
   @media (prefers-reduced-transparency: reduce) { .fab, .alf-fab { background:var(--primary); -webkit-backdrop-filter:none; backdrop-filter:none; } }
 
@@ -1296,7 +1297,7 @@
 <nav class="bottom" id="navBottom"></nav>
 <div class="sheet-wrap" id="sheetWrap" hidden><div class="backdrop" data-act="close-sheet"></div><section class="sheet" id="sheet" role="dialog" aria-modal="true" tabindex="-1"></section></div>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
-<button class="alf-fab" id="alfFab" type="button" data-act="alf-open" aria-label="Ask Alfred" title="Ask Alfred (drag to move)" hidden><svg viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><rect x="8" y="6.7" width="16" height="14.6" rx="1"/><rect x="8" y="15.9" width="16" height="3" class="hat-band"/><path d="M5 19.7Q16 21.7 27 19.7L27 21.68Q16 26.92 5 21.68Z"/></svg></button>
+<button class="alf-fab" id="alfFab" type="button" data-act="alf-open" aria-label="Ask Alfred" title="Ask Alfred (drag to move)" hidden><svg viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><path d="M9 6.7h14a1 1 0 0 1 1 1v8.2H8V7.7a1 1 0 0 1 1-1z"/><rect x="8" y="18.9" width="16" height="2.4"/><path d="M5 19.7Q16 21.7 27 19.7L27 21.68Q16 26.92 5 21.68Z"/></svg></button>
 <div class="alf-wrap" id="alfWrap" hidden><div class="backdrop" data-act="alf-close"></div>
   <section class="alf-panel" id="alfPanel" role="dialog" aria-modal="true" aria-label="Alfred chat" tabindex="-1">
     <div class="alf-head"><button type="button" data-act="alf-new" title="Start a new conversation">New</button><span class="hat"><svg viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><rect x="8" y="6.7" width="16" height="14.6" rx="1"/><rect x="8" y="15.9" width="16" height="3" class="hat-band"/><path d="M5 19.7Q16 21.7 27 19.7L27 21.68Q16 26.92 5 21.68Z"/></svg></span>
@@ -3560,7 +3561,7 @@ function renderLiveCtl(){
   const narrow=window.innerWidth<400;
   const item='<button type="button" class="btn ghost" data-act="lv-item">'+(narrow?'+ Item':'+ Action Item')+'</button>';
   // Nov 12: during a meeting Alfred sits in this bar instead of floating over the agenda.
-  const hat=alfredEnabled() ? '<button type="button" class="btn ghost hat-btn" data-act="alf-open" aria-label="Ask Alfred"><svg viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><rect x="8" y="6.7" width="16" height="14.6" rx="1"/><rect x="8" y="15.9" width="16" height="3" class="hat-band"/><path d="M5 19.7Q16 21.7 27 19.7L27 21.68Q16 26.92 5 21.68Z"/></svg></button>' : '';
+  const hat=alfredEnabled() ? '<button type="button" class="btn ghost hat-btn" data-act="alf-open" aria-label="Ask Alfred"><svg viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><path d="M9 6.7h14a1 1 0 0 1 1 1v8.2H8V7.7a1 1 0 0 1 1-1z"/><rect x="8" y="18.9" width="16" height="2.4"/><path d="M5 19.7Q16 21.7 27 19.7L27 21.68Q16 26.92 5 21.68Z"/></svg></button>' : '';
   const hc=hat?' has-hat':'';
   if (!isHost(st)) { el.innerHTML='<div class="ctl-row one'+hc+'">'+hat+item+'</div>'; document.documentElement.style.setProperty('--ctl-h', el.offsetHeight+'px'); return; }
   const nx=liveNextBtn(st);
@@ -3939,7 +3940,7 @@ async function liveAddItem(el){
 /* ---------- Alfred chat bubble ---------- */
 // The conversation lives only in this page (S.alf) and is gone after a reload. Every message carries the screen
 // context below, and the screenshot taken when the bubble was tapped, so nobody has to describe where they were.
-const APP_VERSION = '2026.11.16-fixes';
+const APP_VERSION = '2026.11.16-glass';
 const H2C_URL = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
 const DIAG = { errors:[], actions:[] };   // last 10 of each, for bug reports
 function pushDiag(list, item){ list.push(item); if (list.length>10) list.shift(); }
