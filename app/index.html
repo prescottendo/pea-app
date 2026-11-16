@@ -19,7 +19,7 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" type="image/png" href="icon-192.png">
-<script>window.HUDDLE_WEB={"api":"https://script.google.com/macros/s/AKfycbzM8K_-XRMDdOJYJ3THn_FhyZkRreMddHIBAOFCFVoq5S_Y7MnsfFLsl7ac_fyDPrch/exec","clientId":"473377418367-cqmmnfum4kshq16973m4sj2jqqfa55p0.apps.googleusercontent.com","build":"563900f","push":{"config":{"apiKey":"AIzaSyBON-0KvTXPD_MV6ykhYvCoBRiECEHyE9c","authDomain":"huddle-e2548.firebaseapp.com","projectId":"huddle-e2548","storageBucket":"huddle-e2548.firebasestorage.app","messagingSenderId":"554653922065","appId":"1:554653922065:web:87de53b4cb11b36835d2b0"},"vapidKey":"BHKeDoBmW7vL-qAT3ocyTaMaZ27Ca66jvQtTes2NC4CPoWFiPBJcga7wVd-RD1IuyhBki0oKXwPBGSNq002s8o8"}};document.documentElement.classList.add('web');</script>
+<script>window.HUDDLE_WEB={"api":"https://script.google.com/macros/s/AKfycbzM8K_-XRMDdOJYJ3THn_FhyZkRreMddHIBAOFCFVoq5S_Y7MnsfFLsl7ac_fyDPrch/exec","clientId":"473377418367-cqmmnfum4kshq16973m4sj2jqqfa55p0.apps.googleusercontent.com","build":"cf63199","push":{"config":{"apiKey":"AIzaSyBON-0KvTXPD_MV6ykhYvCoBRiECEHyE9c","authDomain":"huddle-e2548.firebaseapp.com","projectId":"huddle-e2548","storageBucket":"huddle-e2548.firebasestorage.app","messagingSenderId":"554653922065","appId":"1:554653922065:web:87de53b4cb11b36835d2b0"},"vapidKey":"BHKeDoBmW7vL-qAT3ocyTaMaZ27Ca66jvQtTes2NC4CPoWFiPBJcga7wVd-RD1IuyhBki0oKXwPBGSNq002s8o8"}};document.documentElement.classList.add('web');</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <!-- The fonts load without holding up the first paint; the page shows in the phone's own font for a moment if needed. -->
@@ -450,7 +450,7 @@
   .tbar { display:none; }
   @media (max-width:699px) {
     .tbar { display:grid; grid-template-columns:72px 1fr 72px; align-items:center; position:fixed; left:0; right:0; top:0; z-index:21;
-      padding:calc(env(safe-area-inset-top, 0px) + 10px) 12px 0; height:calc(54px + env(safe-area-inset-top, 0px)); box-sizing:border-box;
+      padding:calc(env(safe-area-inset-top, 0px) + 22px) 12px 0; height:calc(66px + env(safe-area-inset-top, 0px)); box-sizing:border-box;
       background:color-mix(in srgb, var(--page) 82%, transparent);
       border-bottom:1px solid var(--line-soft); opacity:0; visibility:hidden; pointer-events:none; transition:opacity .18s ease, visibility 0s linear .18s; }
     .tbar.show { opacity:1; visibility:visible; pointer-events:auto; transition:opacity .18s ease, visibility 0s;
@@ -710,8 +710,8 @@
   /* Nov 16: the + and Alfred's hat are navy Liquid Glass: see-through navy that blurs what scrolls under it, a light rim and a
      soft sheen on top. Without backdrop-filter (or with Reduce Transparency) they stay solid navy. */
   /* Nov 16 (Brayden): the buttons look the same in light and dark mode: the dark mode's deep navy glass. Glass takes its
-     color from what's behind it, so on the light page the navy is deeper and less see-through to land on the same look. */
-  .fab, .alf-fab { background:rgba(18,42,70,.92); border:1px solid rgba(255,255,255,.30);
+     color from what's behind it. Light mode: a see-through navy a little deeper than the first try (Brayden). */
+  .fab, .alf-fab { background:rgba(10,52,90,.52); border:1px solid rgba(255,255,255,.34);
     -webkit-backdrop-filter:blur(10px) saturate(190%); backdrop-filter:blur(10px) saturate(190%);
     box-shadow:0 8px 22px rgba(0,0,0,.30), inset 0 1px 1px rgba(255,255,255,.35), inset 0 -2px 6px rgba(0,0,0,.25); overflow:hidden; }
   @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .fab, :root:not([data-theme="light"]) .alf-fab { background:rgba(31,82,133,.36); } }
@@ -2045,7 +2045,7 @@ function go(v, back){
   // NF-3: leaving Team Tasks (or opening it the first time) counts as having looked.
   try { if ((S.view==='team' && v!=='team') || (v==='team' && !localStorage.getItem('lt-team-seen'))) localStorage.setItem('lt-team-seen', stampNow()); } catch(e){}
   try { if (v==='live') sessionStorage.setItem('lt-was-live','1'); else sessionStorage.removeItem('lt-was-live'); } catch(e){}   // MT-6
-  const keepY=(!back && TABV[v] && v!==S.view) ? (S.scrollMem[v]||0) : 0;
+  const keepY=0;   // Nov 16 (Brayden): every tab and screen opens at the top
   if (!S.popping) { if (back) (S.backFrom=S.backFrom||[]).push({ view:S.view, back:S.back }); else S.backFrom=[]; }
   S.view=v; S.back=back||null; S.quick=''; closeSheet(true); render(); window.scrollTo(0,keepY);
   requestAnimationFrame(()=>{ S.lastNav={ view:v, ms:Math.round(performance.now()-t0) }; });
@@ -4196,7 +4196,7 @@ async function liveAddItem(el){
 /* ---------- Alfred chat bubble ---------- */
 // The conversation lives only in this page (S.alf) and is gone after a reload. Every message carries the screen
 // context below, and the screenshot taken when the bubble was tapped, so nobody has to describe where they were.
-const APP_VERSION = '2026.11.16-more';
+const APP_VERSION = '2026.11.16-top';
 const H2C_URL = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
 const DIAG = { errors:[], actions:[] };   // last 10 of each, for bug reports
 function pushDiag(list, item){ list.push(item); if (list.length>10) list.shift(); }
