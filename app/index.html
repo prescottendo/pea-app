@@ -19,7 +19,7 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" type="image/png" href="icon-192.png">
-<script>window.HUDDLE_WEB={"api":"https://script.google.com/macros/s/AKfycbzM8K_-XRMDdOJYJ3THn_FhyZkRreMddHIBAOFCFVoq5S_Y7MnsfFLsl7ac_fyDPrch/exec","clientId":"473377418367-cqmmnfum4kshq16973m4sj2jqqfa55p0.apps.googleusercontent.com","build":"f8eb434","push":{"config":{"apiKey":"AIzaSyBON-0KvTXPD_MV6ykhYvCoBRiECEHyE9c","authDomain":"huddle-e2548.firebaseapp.com","projectId":"huddle-e2548","storageBucket":"huddle-e2548.firebasestorage.app","messagingSenderId":"554653922065","appId":"1:554653922065:web:87de53b4cb11b36835d2b0"},"vapidKey":"BHKeDoBmW7vL-qAT3ocyTaMaZ27Ca66jvQtTes2NC4CPoWFiPBJcga7wVd-RD1IuyhBki0oKXwPBGSNq002s8o8"}};document.documentElement.classList.add('web');</script>
+<script>window.HUDDLE_WEB={"api":"https://script.google.com/macros/s/AKfycbzM8K_-XRMDdOJYJ3THn_FhyZkRreMddHIBAOFCFVoq5S_Y7MnsfFLsl7ac_fyDPrch/exec","clientId":"473377418367-cqmmnfum4kshq16973m4sj2jqqfa55p0.apps.googleusercontent.com","build":"08e3f11","push":{"config":{"apiKey":"AIzaSyBON-0KvTXPD_MV6ykhYvCoBRiECEHyE9c","authDomain":"huddle-e2548.firebaseapp.com","projectId":"huddle-e2548","storageBucket":"huddle-e2548.firebasestorage.app","messagingSenderId":"554653922065","appId":"1:554653922065:web:87de53b4cb11b36835d2b0"},"vapidKey":"BHKeDoBmW7vL-qAT3ocyTaMaZ27Ca66jvQtTes2NC4CPoWFiPBJcga7wVd-RD1IuyhBki0oKXwPBGSNq002s8o8"}};document.documentElement.classList.add('web');</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <!-- The fonts load without holding up the first paint; the page shows in the phone's own font for a moment if needed. -->
@@ -130,13 +130,13 @@
     #ptr { margin-top:env(safe-area-inset-top, 0px); }
     #livebar:not([hidden]) ~ #ptr { margin-top:0; }
     /* The no-signal bar too: when it's the first thing on the page, it starts below the clock. */
-    #offline:not([hidden]) { padding-top:calc(8px + env(safe-area-inset-top, 0px)); }
+    #offline:not([hidden]) { padding-top:calc(16px + env(safe-area-inset-top, 0px)); }
     #livebar:not([hidden]) ~ #offline:not([hidden]) { padding-top:8px; }
     #offline:not([hidden]) ~ #ptr { margin-top:0; }
-    body.v-live main { padding-top:24px; }
+    body.v-live main { padding-top:30px; }
     /* Nov 10: the live meeting bar shows on every tab. Without the logo bar it used to sit under the clock, out of sight;
        now it starts below the clock and stays pinned to the top while you scroll, so anyone can join from anywhere. */
-    #livebar { position:sticky; top:0; z-index:22; padding-top:calc(8px + env(safe-area-inset-top, 0px)); }
+    #livebar { position:sticky; top:0; z-index:22; padding-top:calc(16px + env(safe-area-inset-top, 0px)); }
     /* Nov 12: with the header on every tab, the live bar sits under it and sticks just below the clock while you scroll. */
  }
   @media (max-width:420px) { .logo { height:30px; } .divider { height:24px; } .bar { gap:8px; } }
@@ -450,7 +450,7 @@
   .tbar { display:none; }
   @media (max-width:699px) {
     .tbar { display:grid; grid-template-columns:72px 1fr 72px; align-items:center; position:fixed; left:0; right:0; top:0; z-index:21;
-      padding:env(safe-area-inset-top, 0px) 12px 0; height:calc(44px + env(safe-area-inset-top, 0px)); box-sizing:border-box;
+      padding:calc(env(safe-area-inset-top, 0px) + 10px) 12px 0; height:calc(54px + env(safe-area-inset-top, 0px)); box-sizing:border-box;
       background:color-mix(in srgb, var(--page) 82%, transparent);
       border-bottom:1px solid var(--line-soft); opacity:0; visibility:hidden; pointer-events:none; transition:opacity .18s ease, visibility 0s linear .18s; }
     .tbar.show { opacity:1; visibility:visible; pointer-events:auto; transition:opacity .18s ease, visibility 0s;
@@ -1039,7 +1039,9 @@
   .fab:active { transform:scale(.92); }
   /* Phones: a tighter top on My Tasks: a slim review line, and the greeting shares a row with search and Filter. */
   @media (max-width:699px) {
-    body:not(.v-live) main { padding-top:8px; }   /* the large title starts just below the clock */
+    /* Nov 16 (Brayden): iOS fades the strip just under the clock (its Liquid Glass edge), so the title row starts a little
+       lower to stay clear of it. Pages and the meeting screen alike; the thin scroll bar's content sits lower too. */
+    body:not(.v-live) main { padding-top:22px; }
     .rv-banner { padding:8px 12px; margin-bottom:12px; font-size:var(--fs-sub); gap:8px; }
     .rv-banner .go { font-size:var(--fs-body); }
     .head-row.compact { align-items:center; margin-bottom:12px; }
@@ -4152,7 +4154,7 @@ async function liveAddItem(el){
 /* ---------- Alfred chat bubble ---------- */
 // The conversation lives only in this page (S.alf) and is gone after a reload. Every message carries the screen
 // context below, and the screenshot taken when the bubble was tapped, so nobody has to describe where they were.
-const APP_VERSION = '2026.11.16-glass3';
+const APP_VERSION = '2026.11.16-lower';
 const H2C_URL = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
 const DIAG = { errors:[], actions:[] };   // last 10 of each, for bug reports
 function pushDiag(list, item){ list.push(item); if (list.length>10) list.shift(); }
