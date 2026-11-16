@@ -19,7 +19,7 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" type="image/png" href="icon-192.png">
-<script>window.HUDDLE_WEB={"api":"https://script.google.com/macros/s/AKfycbzM8K_-XRMDdOJYJ3THn_FhyZkRreMddHIBAOFCFVoq5S_Y7MnsfFLsl7ac_fyDPrch/exec","clientId":"473377418367-cqmmnfum4kshq16973m4sj2jqqfa55p0.apps.googleusercontent.com","build":"08e3f11","push":{"config":{"apiKey":"AIzaSyBON-0KvTXPD_MV6ykhYvCoBRiECEHyE9c","authDomain":"huddle-e2548.firebaseapp.com","projectId":"huddle-e2548","storageBucket":"huddle-e2548.firebasestorage.app","messagingSenderId":"554653922065","appId":"1:554653922065:web:87de53b4cb11b36835d2b0"},"vapidKey":"BHKeDoBmW7vL-qAT3ocyTaMaZ27Ca66jvQtTes2NC4CPoWFiPBJcga7wVd-RD1IuyhBki0oKXwPBGSNq002s8o8"}};document.documentElement.classList.add('web');</script>
+<script>window.HUDDLE_WEB={"api":"https://script.google.com/macros/s/AKfycbzM8K_-XRMDdOJYJ3THn_FhyZkRreMddHIBAOFCFVoq5S_Y7MnsfFLsl7ac_fyDPrch/exec","clientId":"473377418367-cqmmnfum4kshq16973m4sj2jqqfa55p0.apps.googleusercontent.com","build":"675c252","push":{"config":{"apiKey":"AIzaSyBON-0KvTXPD_MV6ykhYvCoBRiECEHyE9c","authDomain":"huddle-e2548.firebaseapp.com","projectId":"huddle-e2548","storageBucket":"huddle-e2548.firebasestorage.app","messagingSenderId":"554653922065","appId":"1:554653922065:web:87de53b4cb11b36835d2b0"},"vapidKey":"BHKeDoBmW7vL-qAT3ocyTaMaZ27Ca66jvQtTes2NC4CPoWFiPBJcga7wVd-RD1IuyhBki0oKXwPBGSNq002s8o8"}};document.documentElement.classList.add('web');</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <!-- The fonts load without holding up the first paint; the page shows in the phone's own font for a moment if needed. -->
@@ -3347,7 +3347,7 @@ function reviewSection(list){
         return '<div class="rv-row"><div class="t">'+esc(e.title||'')+'</div><div class="small muted">'+esc(bits)+(e.note?' · <i>'+esc(e.note)+'</i>':'')+'</div></div>'; }).join('')+'</div>'; }).join('');
 }
 /* ---------- strategy topics + meetings ---------- */
-function topicsHead(){ return '<div class="head-row"><h2>Meetings</h2></div>'+tacticalCard()+meetingsSeg(); }
+function topicsHead(){ return '<div class="head-row"><h2>Meetings</h2></div>'+meetingsSeg()+tacticalCard(); }
 async function renderTopics(m){
   if (!S.topics) {
     m.innerHTML=topicsHead()+'<div class="list"><div class="skel" style="height:80px"></div><div class="skel" style="height:80px"></div></div>';
@@ -3374,7 +3374,7 @@ async function renderTopics(m){
 function meetingsSeg(){ const tab=S.mtab||'meetings';
   return '<div class="seg mtab" role="group" aria-label="Show">'+[['meetings','Meetings'],['decisions','Decisions'],['topics','Parking Lot']].map(([k,l])=>'<button type="button" class="'+(tab===k?'on':'')+'" data-act="mtab" data-val="'+k+'" aria-pressed="'+(tab===k)+'">'+l+'</button>').join('')+'</div>'; }
 async function renderDecisions(m){
-  const head='<div class="head-row"><h2>Meetings</h2></div>'+tacticalCard()+meetingsSeg();
+  const head='<div class="head-row"><h2>Meetings</h2></div>'+meetingsSeg()+tacticalCard();
   if (!S.decisions) {
     m.innerHTML=head+'<div class="list"><div class="skel" style="height:70px"></div><div class="skel" style="height:70px"></div></div>';
     try { S.decisions=await call('apiDecisions'); saveLists(); } catch(e){ if (S.view==='meetings' && S.mtab==='decisions') m.innerHTML=head+loadFail('Decisions'); return; }
@@ -3408,7 +3408,8 @@ async function renderMeetings(m){
   if (!S.meetings) { m.innerHTML='<div class="head-row"><h2>Meetings</h2></div>'+meetingsSeg()+'<div class="list"><div class="skel" style="height:90px"></div><div class="skel" style="height:90px"></div></div>';
     let r; try { r=await Promise.all([call('apiMeetings'), call('apiLiveLogs')]); } catch(e){ if (S.view==='meetings') m.innerHTML='<div class="head-row"><h2>Meetings</h2></div>'+loadFail('Meetings'); return; }
     setMeetingLists(r); saveLists(); if (S.view!=='meetings') return; }
-  m.innerHTML='<div class="head-row"><h2>Meetings</h2></div>'+(tacticalCard() || (S.live ? '' : '<button type="button" class="btn ghost start-row" data-act="lv-new">Start a Meeting</button>'))+meetingsSeg()
+  // Nov 16 (Brayden): the Meetings | Decisions | Parking Lot switch comes first, so it sits in the same spot on all three tabs.
+  m.innerHTML='<div class="head-row"><h2>Meetings</h2></div>'+meetingsSeg()+(tacticalCard() || (S.live ? '' : '<button type="button" class="btn ghost start-row" data-act="lv-new">Start a Meeting</button>'))
     +(S.live?'<button type="button" class="card live-card" data-act="go" data-view="live"><div class="sec">● Live Now</div><div class="t">'+esc(S.live.title)+'</div><div class="small muted">Tap to join</div></button>':'')
     +'<div class="mtools"><label class="search">'+ICON.search+'<input type="search" id="mq" data-input="mq" placeholder="Search summaries and transcripts" value="'+esc(S.mq||'')+'" aria-label="Search meetings"></label></div>'
     +'<div id="mResults"></div>';
@@ -4154,7 +4155,7 @@ async function liveAddItem(el){
 /* ---------- Alfred chat bubble ---------- */
 // The conversation lives only in this page (S.alf) and is gone after a reload. Every message carries the screen
 // context below, and the screenshot taken when the bubble was tapped, so nobody has to describe where they were.
-const APP_VERSION = '2026.11.16-lower';
+const APP_VERSION = '2026.11.16-mswitch';
 const H2C_URL = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
 const DIAG = { errors:[], actions:[] };   // last 10 of each, for bug reports
 function pushDiag(list, item){ list.push(item); if (list.length>10) list.shift(); }
