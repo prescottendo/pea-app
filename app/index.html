@@ -19,7 +19,7 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" type="image/png" href="icon-192.png">
-<script>window.HUDDLE_WEB={"api":"https://script.google.com/macros/s/AKfycbzM8K_-XRMDdOJYJ3THn_FhyZkRreMddHIBAOFCFVoq5S_Y7MnsfFLsl7ac_fyDPrch/exec","clientId":"473377418367-cqmmnfum4kshq16973m4sj2jqqfa55p0.apps.googleusercontent.com","build":"b978ee1","push":{"config":{"apiKey":"AIzaSyBON-0KvTXPD_MV6ykhYvCoBRiECEHyE9c","authDomain":"huddle-e2548.firebaseapp.com","projectId":"huddle-e2548","storageBucket":"huddle-e2548.firebasestorage.app","messagingSenderId":"554653922065","appId":"1:554653922065:web:87de53b4cb11b36835d2b0"},"vapidKey":"BHKeDoBmW7vL-qAT3ocyTaMaZ27Ca66jvQtTes2NC4CPoWFiPBJcga7wVd-RD1IuyhBki0oKXwPBGSNq002s8o8"}};document.documentElement.classList.add('web');</script>
+<script>window.HUDDLE_WEB={"api":"https://script.google.com/macros/s/AKfycbzM8K_-XRMDdOJYJ3THn_FhyZkRreMddHIBAOFCFVoq5S_Y7MnsfFLsl7ac_fyDPrch/exec","clientId":"473377418367-cqmmnfum4kshq16973m4sj2jqqfa55p0.apps.googleusercontent.com","build":"20958d2","push":{"config":{"apiKey":"AIzaSyBON-0KvTXPD_MV6ykhYvCoBRiECEHyE9c","authDomain":"huddle-e2548.firebaseapp.com","projectId":"huddle-e2548","storageBucket":"huddle-e2548.firebasestorage.app","messagingSenderId":"554653922065","appId":"1:554653922065:web:87de53b4cb11b36835d2b0"},"vapidKey":"BHKeDoBmW7vL-qAT3ocyTaMaZ27Ca66jvQtTes2NC4CPoWFiPBJcga7wVd-RD1IuyhBki0oKXwPBGSNq002s8o8"}};document.documentElement.classList.add('web');</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <!-- The fonts load without holding up the first paint; the page shows in the phone's own font for a moment if needed. -->
@@ -232,7 +232,7 @@
   .mg-head .set-sec { margin:0 4px !important; line-height:1.2; }
   #decResults > .mg-head:first-child, #tpResults > .mg-head:first-child, #mResults > .mg-head:first-child { margin-top:var(--cap-top-m, 16px) !important; }
   .mg-head.mg-only { margin:var(--cap-top-m, 16px) 0 10px !important; }
-  .capsule { margin-bottom:0 !important; }
+  .capsule { margin-bottom:0 !important; line-height:1.2; }   /* Nov 17: the same height on every tab */
   .list { display:grid; gap:8px; }
   .card { background:var(--card); border:1px solid var(--line); border-radius:12px; }
   .title .lock, .src.priv .lock { width:.95em; height:.95em; vertical-align:-.1em; margin-right:8px; color:var(--muted); }
@@ -518,7 +518,7 @@
     h2 { margin:0 0 16px; }
     .head-row h2 { margin-bottom:16px; }
     .lead, .head-sub { margin:-8px 0 24px; }
-    .people { margin-bottom:16px; }
+    .people, .mtab-band { margin-bottom:16px; }
     .toolbar { margin-bottom:24px; }
   }
   /* Desktop: more breathing room between a page's title, the line under it and the controls below. */
@@ -527,7 +527,7 @@
     h2 { margin:0 0 24px; }
     .head-row h2 { margin-bottom:24px; }
     .lead, .head-sub { margin:-12px 0 24px; }
-    .people { margin-bottom:24px; }
+    .people, .mtab-band { margin-bottom:24px; }
     .toolbar { gap:12px; margin-bottom:24px; }
   }
   .synced { font-size:var(--fs-cap); color:var(--muted); white-space:nowrap; }
@@ -850,6 +850,9 @@
 
   #sheetWrap .sheet { margin-bottom:var(--kb, 0px); max-height:calc(100% - var(--top-safe) - 8px - var(--kb, 0px)); }
   .alf-wrap { padding-bottom:var(--kb, 0px); }
+  /* Nov 17 (Brayden): with the keyboard up, the space under Alfred's typing bar (behind the see-through keyboard bar and its
+     rounded corners) is the same white as the bar, so the page behind never shows through. */
+  .alf-wrap::after { content:""; position:absolute; left:0; right:0; bottom:0; height:var(--kb, 0px); background:var(--card); pointer-events:none; }
   .alf-wrap { position:fixed; inset:0; z-index:45; display:flex; align-items:flex-end; justify-content:center; }
   .alf-panel { position:relative; width:100%; max-width:640px; min-width:0; height:min(88vh, 860px, calc(100vh - var(--top-safe) - 8px)); display:flex; flex-direction:column; background:var(--page);
     border-radius:18px 18px 0 0; box-shadow:0 -8px 30px var(--shadow); overflow:hidden; }
@@ -1078,6 +1081,10 @@
   .rv-why { font-size:var(--fs-sub); line-height:1.35; color:var(--gold-ink); }
   .rv-why b { font-weight:600; }
   .mtab { display:flex; width:100%; margin:0 0 16px; }
+  /* Nov 17 (Brayden): the slider sits centered in a band as tall as Team Tasks' row of faces (6 + 4 + 40 + 6 + name + 4)
+     with the same gap under it, so "＋ Start Meeting" lands exactly where "＋ New Task" does on Team Tasks. */
+  .mtab-band { display:flex; align-items:center; min-height:calc(60px + var(--fs-cap) * 1.15); margin-bottom:12px; }
+  .mtab-band .mtab { margin:0; }
   .mtab button { flex:1; }
   @media (min-width:700px) { .mtab { max-width:360px; } }
   button.card.decision { width:100%; text-align:left; font:inherit; color:inherit; cursor:pointer; padding:16px; display:grid; gap:4px; }
@@ -1278,7 +1285,7 @@
   .print-btn { position:relative; margin-left:0; width:40px; height:40px; border-radius:50%; border:none; background:none; color:var(--heading); display:grid; place-items:center; flex:none; padding:0; }
   .print-btn svg { width:22px; height:22px; }
   .print-btn:active { transform:scale(.94); }
-  .team-head + .compact-sync { margin-top:8px; }
+  .head-row + .compact-sync { margin-top:8px; }
 
   /* Search: an x inside the field instead of a Cancel button. */
   .search .search-x { position:absolute; right:4px; top:50%; transform:translateY(-50%); width:36px; height:36px; border:none; background:none; color:var(--muted); display:grid; place-items:center; padding:0; }
@@ -2352,6 +2359,7 @@ function render(){
   S.flipKey=key;
   const m=document.getElementById('main');
   if (same || first) melt(m, renderPage); else renderPage();
+  updateSynced();
   placeSegs();   // pill highlights are in place before anything animates
   if (snap) flipPlay(snap);
   if (mv) liveMoveIn(mv);
@@ -3828,7 +3836,8 @@ function mHead(){
   return '<div class="head-row"><h2>Meetings</h2>'
     +'<button type="button" class="tool-ico" data-act="m-search" aria-label="Search">'+ICON.search+'</button>'
     +'<button type="button" class="tool-ico sort-ico" data-act="m-filter" aria-haspopup="dialog" aria-label="Filter'+(nf?', '+nf+' on':'')+'">'+ICON.sort+(nf?'<span class="rdot" aria-hidden="true"></span>':'')+'</button></div>'
-    +meetingsSeg()
+    +'<span class="synced compact-sync" id="synced"></span>'   // Nov 17 (Brayden): the same "Updated 3 min ago" note as the task tabs
+    +'<div class="mtab-band">'+meetingsSeg()+'</div>'
     +(open?'<div class="search-row msearch"><label class="search">'+ICON.search+'<input type="search" id="'+q[0]+'" data-input="'+q[0]+'" placeholder="'+q[1]+'" value="'+esc(S[q[0]]||'')+'" aria-label="'+q[1]+'">'
       +'<button type="button" class="search-x" data-act="m-search-close" aria-label="Close search">'+ICON.x+'</button></label></div>':'')
     +(tab==='meetings'?tacticalCard():'');   // Nov 16 (Brayden, option A): Start Meeting is the same navy capsule as Add Decision and Add Topic
@@ -4652,7 +4661,7 @@ async function liveAddItem(el){
 /* ---------- Alfred chat bubble ---------- */
 // The conversation lives only in this page (S.alf) and is gone after a reload. Every message carries the screen
 // context below, and the screenshot taken when the bubble was tapped, so nobody has to describe where they were.
-const APP_VERSION = '2026.11.16-pace';
+const APP_VERSION = '2026.11.17-band';
 const H2C_URL = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
 const DIAG = { errors:[], actions:[] };   // last 10 of each, for bug reports
 function pushDiag(list, item){ list.push(item); if (list.length>10) list.shift(); }
