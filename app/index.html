@@ -19,7 +19,7 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" type="image/png" href="icon-192.png">
-<script>window.HUDDLE_WEB={"api":"https://script.google.com/macros/s/AKfycbzM8K_-XRMDdOJYJ3THn_FhyZkRreMddHIBAOFCFVoq5S_Y7MnsfFLsl7ac_fyDPrch/exec","clientId":"473377418367-cqmmnfum4kshq16973m4sj2jqqfa55p0.apps.googleusercontent.com","build":"b4e380e","push":{"config":{"apiKey":"AIzaSyBON-0KvTXPD_MV6ykhYvCoBRiECEHyE9c","authDomain":"huddle-e2548.firebaseapp.com","projectId":"huddle-e2548","storageBucket":"huddle-e2548.firebasestorage.app","messagingSenderId":"554653922065","appId":"1:554653922065:web:87de53b4cb11b36835d2b0"},"vapidKey":"BHKeDoBmW7vL-qAT3ocyTaMaZ27Ca66jvQtTes2NC4CPoWFiPBJcga7wVd-RD1IuyhBki0oKXwPBGSNq002s8o8"}};document.documentElement.classList.add('web');</script>
+<script>window.HUDDLE_WEB={"api":"https://script.google.com/macros/s/AKfycbzM8K_-XRMDdOJYJ3THn_FhyZkRreMddHIBAOFCFVoq5S_Y7MnsfFLsl7ac_fyDPrch/exec","clientId":"473377418367-cqmmnfum4kshq16973m4sj2jqqfa55p0.apps.googleusercontent.com","build":"1fb540c","push":{"config":{"apiKey":"AIzaSyBON-0KvTXPD_MV6ykhYvCoBRiECEHyE9c","authDomain":"huddle-e2548.firebaseapp.com","projectId":"huddle-e2548","storageBucket":"huddle-e2548.firebasestorage.app","messagingSenderId":"554653922065","appId":"1:554653922065:web:87de53b4cb11b36835d2b0"},"vapidKey":"BHKeDoBmW7vL-qAT3ocyTaMaZ27Ca66jvQtTes2NC4CPoWFiPBJcga7wVd-RD1IuyhBki0oKXwPBGSNq002s8o8"}};document.documentElement.classList.add('web');</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <!-- The fonts load without holding up the first paint; the page shows in the phone's own font for a moment if needed. -->
@@ -1849,8 +1849,8 @@ if (!('switch' in document.createElement('input'))) document.documentElement.cla
 
 function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 function call(fn, ...args){
-  if (WEB) return webCall(fn, args);
-  if (MOCK) return new Promise((ok,fail)=>setTimeout(()=>{ try { if (S.mockOffline) throw new Error('NetworkError: Connection failure due to HTTP 0'); ok(JSON.parse(JSON.stringify(Mock[fn](...JSON.parse(JSON.stringify(args)))))); } catch(e){ fail(e); } }, 120));
+  if (WEB && !(S.sample && SAMPLE_REAL.indexOf(fn)<0)) return webCall(fn, args);
+  if (MOCK || S.sample) return new Promise((ok,fail)=>setTimeout(()=>{ try { if (S.mockOffline) throw new Error('NetworkError: Connection failure due to HTTP 0'); ok(JSON.parse(JSON.stringify(Mock[fn](...JSON.parse(JSON.stringify(args)))))); } catch(e){ fail(e); } }, 120));
   return new Promise((ok,fail)=>google.script.run.withSuccessHandler(ok).withFailureHandler(e=>{ if (typeof clientError==='function') clientError(e && e.message || e, fn); fail(e); })[fn](...args));
 }
 function person(email){ return S.data.people.find(p=>p.email===email) || (S.data.members||[]).find(p=>p.email===email) || (email==='ashley@sample' ? { name:'Ashley (Sample)', email:email } : undefined); }
@@ -2051,9 +2051,9 @@ const BOOT_V=1;
 // Speed: the Meetings, Decisions, Strategy Topics and One-on-Ones lists are also kept on the phone, so every tab shows at once
 // (even right after reopening the app), and they are fetched in the background soon after the app opens.
 const LISTS=['meetings','liveLogs','decisions','topics','ones','acct'];
-function saveLists(){ if (MOCK) return; try { const o={ v:1, at:Date.now() }; LISTS.forEach(k=>{ if (S[k]) o[k]=S[k]; }); localStorage.setItem('lt-lists', JSON.stringify(o)); } catch(e){} }
+function saveLists(){ if (FAKE()) return; try { const o={ v:1, at:Date.now() }; LISTS.forEach(k=>{ if (S[k]) o[k]=S[k]; }); localStorage.setItem('lt-lists', JSON.stringify(o)); } catch(e){} }
 function restoreLists(){
-  if (MOCK) return;
+  if (FAKE()) return;
   let o=null; try { o=JSON.parse(localStorage.getItem('lt-lists')||'null'); } catch(e){}
   if (!o || o.v!==1) return;
   LISTS.forEach(k=>{ if (!S[k] && o[k]) S[k]=o[k]; });
@@ -2076,7 +2076,7 @@ async function prefetchLists(){
   ].map(p=>p.catch(()=>{})));
   S.prefetching=false;
 }
-function saveBoot(){ if (MOCK || !S.data) return; try { localStorage.setItem('lt-boot', JSON.stringify({ v:BOOT_V, at:Date.now(), data:S.data })); } catch(e){} }
+function saveBoot(){ if (FAKE() || !S.data) return; try { localStorage.setItem('lt-boot', JSON.stringify({ v:BOOT_V, at:Date.now(), data:S.data })); } catch(e){} }
 async function paintBoot(){
   renderMe(0); resetDeviceChoices();
   let resume=null;
@@ -2106,11 +2106,16 @@ async function load(){
   updateOffline();
   // Speed: on a return visit the app draws at once from the copy saved on this phone, then swaps in fresh data.
   let saved=null;
-  if (!load.started && !MOCK) { try { saved=JSON.parse(localStorage.getItem('lt-boot')||'null'); } catch(e){} }
+  if (!load.started && !MOCK && !sampleOn()) { try { saved=JSON.parse(localStorage.getItem('lt-boot')||'null'); } catch(e){} }
   if (saved && saved.v===BOOT_V && saved.data && saved.data.me) { S.data=saved.data; S.stale=true; restorePrefs(S.data.prefs); restoreLists(); await paintBoot(); }
   try { S.data = await call('apiBootstrap'); }
   catch(e){ if (S.stale) { toast('Showing your saved list. '+errText(e)); startLoops(); return; } bootFailed(e); return; }
   S.stale=false; restorePrefs(S.data.prefs); saveBoot();
+  if (sampleOn() && !MOCK && !S.sample) {   // Show Sample Data: from here on everything comes from the stand-in
+    const real=S.data; Mock=makeMock({ people:real.people, me:real.me }); S.sample=true;
+    try { S.data=await call('apiBootstrap'); } catch(e){ S.sample=false; S.data=real; }
+    if (S.sample) { S.data.me=real.me; S.data.access=real.access; S.data.marketingApprover=real.marketingApprover; S.data.members=real.members; }
+  }
   try { if (S.data.appUrl && S.data.appUrl!=='#') localStorage.setItem('lt-app-url', S.data.appUrl); } catch(e){}
   S.lastSync = Date.now();
   if (!load.painted) await paintBoot(); else render();
@@ -2412,6 +2417,7 @@ function updateSynced(){
   let el=document.getElementById('synced');
   if (SYNC_SKIP[S.view] || S.tv) { if (el) el.remove(); return; }
   if (!el || el.parentNode!==m || el.nextElementSibling) { if (el) el.remove(); m.insertAdjacentHTML('beforeend', '<p class="synced foot-sync" id="synced" role="status"></p>'); el=document.getElementById('synced'); }
+  if (S.sample) { if (!el.querySelector('[data-act="sample-off"]')) el.innerHTML='Sample data · nothing is saved · <button type="button" class="linkbtn" data-act="sample-off">Turn Off</button>'; return; }
   const at=syncedAt(); if (!at) { el.textContent=''; return; }
   const mins=Math.floor((Date.now()-at)/60000), ago=mins<1 ? 'just now' : mins<60 ? mins+' min ago' : Math.floor(mins/60)+' hr ago';
   el.textContent = (!navigator.onLine ? 'Offline · updated ' : 'Updated ')+ago;
@@ -2771,6 +2777,14 @@ function nextTacticalCard(){
 // every card and chart can be seen working. Only on this device (lt-sample); nothing is read from or saved to the sheet,
 // and tapping a sample row just says it's sample data.
 function sampleOn(){ return pref('lt-sample','')==='on'; }
+// Nov 17: turning sample data on or off reloads the app, so every screen comes from one place (the stand-in or the server).
+function sampleSwitch(on){
+  setPref('lt-sample', on ? 'on' : '');
+  if (MOCK) { render(); return; }
+  toast(on ? 'Filling Huddle with sample data…' : 'Back to your real data…');
+  try { sessionStorage.setItem('lt-resume', JSON.stringify({ view:S.view, mtab:S.mtab||'', back:S.back||'', y:0, at:Date.now() })); } catch(e){}
+  setTimeout(()=>location.reload(), 500);
+}
 const SAMPLE_HOME={
   // Nov 17: the measures of Brayden's Monthly Results Scorecard, with MADE-UP numbers. This page is published on a public
   // site, so real practice numbers must never be written into it (the real ones come from the sheet, after sign-in).
@@ -4282,7 +4296,7 @@ function mtgCache(id, d){
   MTG_MEM[id]=d;
   c[id]={ d:d, at:Date.now() };
   const keys=Object.keys(c).sort((a,b)=>c[b].at-c[a].at); keys.slice(12).forEach(k=>delete c[k]);
-  if (!MOCK) try { localStorage.setItem('lt-mtg', JSON.stringify(c)); } catch(e){ try { localStorage.removeItem('lt-mtg'); } catch(err){} }
+  if (!FAKE()) try { localStorage.setItem('lt-mtg', JSON.stringify(c)); } catch(e){ try { localStorage.removeItem('lt-mtg'); } catch(err){} }
 }
 function glideIn(skip){
   const sh=document.getElementById('sheet'); if (!sh || !sh.animate) return;
@@ -5507,7 +5521,7 @@ const LISTEN={ on:false, ws:null, ctx:null, stream:null, proc:null, src:null, bu
 async function listenStart(){
   const st=S.live; if (!st || st.phase!=='running') { toast('Start the meeting first.'); return; }
   if (LISTEN.on) return;
-  if (MOCK) return listenPractice();
+  if (FAKE()) return listenPractice();
   if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) { toast('This browser can\'t use the microphone.'); return; }
   let ctx;
   try { ctx=new (window.AudioContext || window.webkitAudioContext)(); } catch(e){ toast('Couldn\'t start the microphone.'); return; }   // created inside the tap (iPhone rule)
@@ -5786,7 +5800,7 @@ async function liveAddItem(el){
 /* ---------- Alfred chat bubble ---------- */
 // The conversation lives only in this page (S.alf) and is gone after a reload. Every message carries the screen
 // context below, and the screenshot taken when the bubble was tapped, so nobody has to describe where they were.
-const APP_VERSION = '2026.11.17-tour';
+const APP_VERSION = '2026.11.17-sampleall';
 const H2C_URL = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
 const DIAG = { errors:[], actions:[] };   // last 10 of each, for bug reports
 function pushDiag(list, item){ list.push(item); if (list.length>10) list.shift(); }
@@ -5985,6 +5999,7 @@ function showAlfred(){
 // Undo. Chats kept on a phone before Nov 17 (no v:2) go up to the account once, on the first save or list after the update.
 const CHAT_KEEP=50, CHAT_MSGS_KEEP=20;
 function alfHistory(v){
+  if (S.sample) { if (v===undefined) return S.sampleChats||[]; S.sampleChats=v.slice(0,CHAT_KEEP); return; }   // sample chats never reach this phone's saved chats or the account
   if (v===undefined) { try { const h=JSON.parse(localStorage.getItem('lt-alf-history')||'null'); if (!h || h.me!==(S.data&&S.data.me) || !Array.isArray(h.chats)) return [];
       if (h.v!==2) return h.chats.filter(c=>c && c.id && Array.isArray(c.msgs)).map(c=>Object.assign({}, c, { n:c.msgs.filter(m=>m.role==='user').length, pending:true }));
       return h.chats; } catch(e){ return []; } }
@@ -6194,7 +6209,7 @@ function alfMd(text){
     const u=url.replace(/&amp;/g,'&');
     let mt=/^#task-([\w-]+)$/.exec(u); if (mt) return '<button type="button" class="alf-link" data-act="alf-task" data-id="'+esc(mt[1])+'">'+label+'</button>';
     mt=/^#meeting-([\w-]+)$/.exec(u); if (mt) return '<button type="button" class="alf-link" data-act="alf-meeting" data-id="'+esc(mt[1])+'">'+label+'</button>';
-    if (/^https:\/\//.test(u)) return '<a href="'+esc(u)+'" target="_blank" rel="noopener"'+(MOCK?' data-mock="1"':'')+'>'+label+'</a>';
+    if (/^https:\/\//.test(u)) return '<a href="'+esc(u)+'" target="_blank" rel="noopener"'+(FAKE()?' data-mock="1"':'')+'>'+label+'</a>';
     return label;
   });
   let html='', list=false;
@@ -6516,7 +6531,7 @@ document.addEventListener('click', e=>{
 document.addEventListener('click', e=>{
   unlockAudio();
   const link=e.target.closest('a');
-  if (link) { if (MOCK && (link.classList.contains('doc') || link.dataset.mock)) { e.preventDefault(); toast('In the real app this opens the Google Doc.'); } return; }
+  if (link) { if (FAKE() && (link.classList.contains('doc') || link.dataset.mock)) { e.preventDefault(); toast('In the real app this opens the Google Doc.'); } return; }
   if (e.target.closest('select, input, textarea') || S.swiped) return;
   // MP-4 / BUG-16: ignore a tap that lands in a panel in the moment it opens (a quick double tap on +).
   if (S.sheetAt && Date.now()-S.sheetAt<350 && e.target.closest('#sheet')) return;
@@ -6676,7 +6691,7 @@ function actClick(e, el){
   else if (a==='tour-open') startCoach();
   else if (a==='mtab') { S.mtab=v; render(); }
   else if (a==='sample-tap') toast('This is sample data. Turn it off in Account.');
-  else if (a==='sample-off') { setPref('lt-sample',''); render(); toast('Sample data is off.'); }
+  else if (a==='sample-off') sampleSwitch(false);
   else if (a==='tside') { if (v!==S.view) { S.taskSide=v; go(v); } }
   else if (a==='lv-new') { S.zoomFrom=el.getBoundingClientRect(); if (S.live) { S.view='live'; S.liveAt=Date.now(); render(); zoomIn(); } else { S.sheet='newmeeting'; showSheet(); } }
   else if (a==='lv-start') { S.pendingType=v; S.zoomFrom=el.getBoundingClientRect(); S.sheet='newmeeting'; showSheet(); }
@@ -6977,7 +6992,7 @@ document.addEventListener('input', e=>{
 function switchChanged(a, el){
   breadcrumb(el);
   if (a==='task-area') { if (S.edit) { S.edit.task.area=el.checked ? 'marketing' : ''; if (S.edit.isNew) renderSheet(); else queueSave(0); } return; }
-  if (a==='sample') { setPref('lt-sample', el.checked ? 'on' : ''); toast(el.checked ? 'Sample data is on. Open the Huddle tab to see it.' : 'Sample data is off.'); return; }
+  if (a==='sample') { sampleSwitch(el.checked); return; }
   if (a==='private-toggle') togglePrivate();
   else if (a==='sf-done') { S.status = S.status==='' ? 'open' : ''; closeSheet(); }
   else if (a==='sf-blocked') { S.status = S.status==='Blocked' ? 'open' : 'Blocked'; closeSheet(); }
@@ -7321,6 +7336,339 @@ function webStart(){
   webServiceWorker();
   if (!webToken()) { webSignIn('', false); return; }
   load();
+}
+// ===== Sample data everywhere (Nov 17, Brayden: "flood everything full of information") =====
+// Account › Show Sample Data now runs the WHOLE app on this in-memory stand-in for the server (the same one the preview
+// uses): tasks, meetings, decisions, Parking Lot, one-on-ones, the report, review, requests, Alfred, Marketing. The app
+// still signs in for real (to know who you are and the team's names); then every call goes to Mock except signing out and
+// this device's notifications (SAMPLE_REAL). Nothing sample is ever saved on the phone (FAKE() guards the caches) or sent
+// to the sheet. Turning it on or off reloads the app. Sample people use the signed-in team's addresses; the page itself
+// holds no real addresses or numbers (it is published on a public site).
+const SAMPLE_REAL=['apiSignOut','apiSignOutEveryone','apiPushRegister','apiPushUpdate','apiPushUnregister','apiPushTest','apiSetMyPrefs'];
+function FAKE(){ return MOCK || !!S.sample; }
+let Mock=null;
+function makeMock(REAL){
+  const today=new Date().toLocaleDateString('en-CA'), d=n=>addDays(today,n);
+  const E={DS:'drsmith@sample',ES:'elice@sample',BC:'becky@sample',EP:'erin@sample',JS:'jared@sample',BS:'brayden@sample'};
+  // Sample mode: the signed-in team's own addresses (looked up by first name), so names, faces and "you" all work.
+  if (REAL && REAL.people) { [['DS','Dr.'],['BC','Becky'],['EP','Erin'],['JS','Jared'],['BS','Brayden'],['ES','Elice']].forEach(([k,p])=>{ const x=REAL.people.find(q=>String(q.name).indexOf(p)===0); if (x) E[k]=x.email; });
+    if (E.ES==='elice@sample') E.ES=E.DS; }   // Elice is off the team: her sample tasks go to Dr. Smith
+  const people=[['Dr. Smith','DS'],['Elice Smith','ES'],['Becky Calia','BC'],['Erin Pickett','EP'],['Jared Smith','JS'],['Brayden Smith','BS']].map(p=>({name:p[0],email:E[p[1]]}));
+  const meetings=[
+    {id:'m1',type:'Weekly Tactical',title:'Weekly Tactical',date:d(-5)},
+    {id:'m2',type:'Ad Hoc Strategic',title:'Phone coverage',date:d(-7)},
+    {id:'m3',type:'Weekly Tactical',title:'Weekly Tactical',date:d(-12)},
+    {id:'m4',type:'Weekly Tactical',title:'Weekly Tactical',date:d(-19)},
+    {id:'m5',type:'Monthly Strategic',title:'Monthly Strategic',date:d(-26)},
+    {id:'m6',type:'Quarterly Offsite',title:'Q3 Offsite',date:d(-40)}].map(m=>Object.assign(m,{summary_url:'#',transcript_url:'#'}));
+  // Nov 17 (Brayden: "flood everything"): about two and a half months of meetings.
+  [[-33,'Weekly Tactical','Weekly Tactical'],[-40,'Weekly Tactical','Weekly Tactical'],[-47,'Weekly Tactical','Weekly Tactical'],[-54,'Weekly Tactical','Weekly Tactical'],
+   [-56,'Monthly Strategic','Monthly Strategic'],[-61,'Weekly Tactical','Weekly Tactical'],[-68,'Weekly Tactical','Weekly Tactical'],[-14,'Ad Hoc Strategic','Insurance contracts']]
+    .forEach((x,i)=>meetings.push({ id:'m'+(7+i), type:x[1], title:x[2], date:d(x[0]), summary_url:'#', transcript_url:'#' }));
+  const mt={}; meetings.forEach(m=>mt[m.id]=m);
+  let n=0;
+  const T=(title,who,status,priority,due,mid,details)=>{ const m=mt[mid];
+    return {id:'t'+(++n),title:title,details:details||'',owners:who.split(',').map(k=>E[k]).join(', '),status:status,priority:priority,due:due==null?'':d(due),
+      source:m?m.date+' '+m.title:'manual',meeting_id:m?m.id:'',updated_at:d(-(n%6))+' 09:00',completed_at:status==='Done'?d(-(n%5)):''}; };
+  const tasks=[
+    T('Call the three top referring offices about the new scheduling line','BC','In Progress','High',2,'m1','Dr. Lee, Dr. Patel and Mountain View Dental.'),
+    T('Draft the patient follow-up text script','EP,BC','Not Done','Medium',5,'m1'),
+    T('Review the October referral numbers','DS','Not Done','Medium',1,'m1'),
+    T('Finalize Q1 hiring plan for the PV office','JS','Not Done','High',-1,'m3'),
+    T('Confirm the CE course dates with the doctors','JS','Not Done','Medium',-3,'m3'),
+    T('Get quotes for the new CBCT service contract','BS','In Progress','Medium',9,'m3'),
+    T('Plan the quarterly offsite agenda','ES,BS','In Progress','Low',14,'m5'),
+    T('Update the new-patient welcome packet','BC','Not Done','Low',-2,null),
+    T('Set up a backup phone line for Fridays','BS','Not Done','High',3,'m2'),
+    T('Write the phone coverage schedule for November','EP','In Progress','High',4,'m2'),
+    T('Share the new review-request script with the front desk','EP','Done','Medium',-2,'m3'),
+    T('Send thank-you gifts to Dr. Lee\'s office','EP','Done','Medium',-3,'m4'),
+    T('Train the front desk on the new phone tree','BC','Done','High',-4,'m4'),
+    T('Order the new patient satisfaction cards','ES','Not Done','Low',12,'m1'),
+    T('Compare two payroll providers','JS,ES','Not Done','Medium',20,'m5'),
+    T('Decide on the holiday party date','ES','Done','Low',-6,'m4'),
+    T('Audit insurance verification turnaround times','BC','Not Done','High',6,'m1'),
+    T('Draft the job post for a new care coordinator','JS','In Progress','Medium',2,'m1'),
+    T('Fix the after-hours voicemail greeting','BS','Done','Medium',-1,'m2'),
+    T('Prepare the referral-office lunch calendar for Q1','EP','Not Done','Low',25,'m5'),
+    T('Review the November marketing budget','DS,ES','Not Done','Medium',8,'m1'),
+    T('Re-sign the lab services agreement','DS','Not Done','High',-2,'m4'),
+    T('Write up the new referral thank-you process','BC','Not Done','Medium',null,'m3'),
+    T('Schedule a check-in with the insurance coordinator','BC','Needs Review','Medium',5,'m1','Raised during the lightning round.'),
+    Object.assign(T('Look into a second panoramic unit for PV','BS','Needs Review','Low',5,'m1','Came up during the lightning round.\n\n[Owner unclear from the recording: Doc]'), { uncertain_reason:'Owner unclear: "Doc" could mean Dr. Smith' }),
+    T('Create a one-page referral guide for new offices','EP','Needs Review','Medium',9,'m1','Erin offered to draft it; Dr. Smith to review.'),
+    Object.assign(T('Send the referral thank-you list to the front desk','BC','Needs Review','Medium',null,'m1'), { uncertain_reason:'Possible duplicate of "Write up the new referral thank-you process"' }),
+    Object.assign(T('Tell your team: the new scheduling line is the only number on referral pads','BC','Not Done','High',-3,'m1','Cascading communication from the Weekly Tactical.'), { kind:'cascade' }),
+    Object.assign(T('Tell your team: the new scheduling line is the only number on referral pads','EP','Done','High',-3,'m1','Cascading communication from the Weekly Tactical.'), { kind:'cascade' })];
+  tasks.forEach(t=>{ if (t.status==='Needs Review') t.created_at=d(-1)+' 14:05'; });
+  tasks.push(Object.assign(T('Book my CE renewal before December','BC','Not Done','Low',6,''), { source:'manual', meeting_id:'', private:'yes', created_by:E.BC }));
+  // Accountability review (Nov 10): a few overdue meeting items for everyone, a Blocked one, and some finished on time.
+  tasks.push(T('Collect quotes for the reception chairs','ES','Not Done','Medium',-1,'m1'),
+    T('Send the October referral thank-you notes','BC','In Progress','Medium',0,'m3'),
+    T('Draft the Friday lunch rotation','EP','Blocked','High',-2,'m2','Waiting on Jared for the new float\'s start date.'),
+    T('Update the website with the new scheduling line','BS','Not Done','High',-4,'m3'),
+    T('Pick the new patient survey questions','EP','Not Done','Low',-1,'m1'));
+  // Nov 17 (Brayden: "flood everything"): a full list for everyone.
+  tasks.push(
+    T('Approve the December staff schedule','BS','Not Done','High',1,'m1'), T('Renew the practice liability policy','BS','In Progress','High',10,'m7'),
+    T('Set up two-factor sign-in on the practice email','BS','Not Done','Medium',7,'m8'), T('Replace the PV front desk printer','BS','Blocked','Low',-2,'m3','Waiting on the vendor quote.'),
+    T('Map out the bookkeeping handoff to the new firm','BS','Not Done','High',15,'m12'), T('Order holiday cards for referring offices','BS','Done','Medium',-6,'m9'),
+    T('Pull last year\'s new-patient numbers by month','BS','Not Done','Medium',0,'m1'), T('Call the phone company about the Friday dropped calls','BS','In Progress','Medium',2,'m2'),
+    T('Finish the fee schedule comparison','DS','In Progress','High',4,'m11'), T('Sign off on the triage training outline','DS','Not Done','Medium',11,'m13'),
+    T('Meet with the new oral surgeon in town','DS','Not Done','Low',18,'m10'), T('Review two associate doctor résumés','DS','Done','Medium',-8,'m10'),
+    T('Rebuild the referral-office contact list','BC','In Progress','Medium',3,'m8'), T('Plan the January lunch-and-learn','BC','Not Done','Low',30,'m13'),
+    T('Order the new intake forms','BC','Done','Low',-9,'m9'), T('Cross-train Erin on insurance verification','BC','Not Done','Medium',13,'m12'),
+    T('Draft the triage training handout','EP','In Progress','High',5,'m13'), T('Collect patient reviews for the website','EP','Not Done','Medium',9,'m7'),
+    T('Set up the holiday on-call calendar','EP','Done','High',-1,'m9'), T('Interview two candidates for the float position','JS','In Progress','High',1,'m2'),
+    T('Update the employee handbook PTO section','JS','Not Done','Medium',16,'m11'), T('Run the eNPS survey for November','JS','Not Done','Medium',6,'m12'),
+    T('Finish 90-day reviews for the new hires','JS','Done','Medium',-4,'m8'));
+  const byTitle=x=>tasks.find(t=>t.title.indexOf(x)===0);
+  byTitle('Share the new review-request').completed_at=d(-3); byTitle('Train the front desk').completed_at=d(-4); byTitle('Decide on the holiday').completed_at=d(-1);
+  // History with due dates moved more than once ("slipping"): the CE dates (t5) twice, the lab agreement (t22) three times.
+  const hist={
+    t5:[{at:d(-17)+' 09:10',user:E.JS,field:'due',old_value:d(-17),new_value:d(-10)},{at:d(-10)+' 08:40',user:E.JS,field:'due',old_value:d(-10),new_value:d(-3)}],
+    t22:[{at:d(-19)+' 09:00',user:E.DS,field:'due',old_value:d(-14),new_value:d(-12)},{at:d(-12)+' 08:50',user:E.DS,field:'due',old_value:d(-12),new_value:d(-7)},
+         {at:d(-5)+' 08:55',user:E.BS,field:'due',old_value:d(-7),new_value:d(-2)},{at:d(-5)+' 08:55',user:E.BS,field:'status',old_value:'Not Done',new_value:'Blocked'}]};
+  tasks.find(t=>t.id==='t22').status='Blocked';
+  let me=REAL && REAL.me && Object.values(E).indexOf(REAL.me)>=0 ? REAL.me : E.BC;
+  // The guided tactical five days ago (it goes with meeting m1), with its Accountability review.
+  const RV=(id,before,after,dueBefore,newDue,note,by)=>{ const t=tasks.find(x=>x.id===id); return { task_id:id, owners:t.owners.split(',').map(x=>x.trim()), title:t.title,
+    due_before:dueBefore, status_before:before, status_after:after, new_due:newDue, note:note||'', by:by||E.BS, at:d(-5)+' 08:41' }; };
+  let live=null, canceledLive=null, endedLive=null, blips=0; const liveLogs=[{ id:'L0', date:d(-5), title:'Weekly Tactical', total_secs:5320, planned_secs:5400, rating:'8.5', ratings_count:6, items:1,
+    review_list:JSON.stringify([RV('t4','Not Done','In Progress',d(-6),d(-1)), RV('t5','Not Done','Not Done',d(-10),d(-3),'Doctors haven\'t answered yet',E.JS),
+      RV('t13','In Progress','Done',d(-4),''), RV('t22','Not Done','Blocked',d(-7),d(-2),'Waiting on the lab\'s new terms'), RV('t9','Not Done','In Progress',d(-5),d(3)),
+      RV('t11','In Progress','Done',d(-2),'','',E.EP)]) }];
+  const reviewFor=(date,type)=>{ const l=liveLogs.filter(x=>!x.deleted_at && x.date===date && String(type||'').toLowerCase().indexOf(String(x.title).toLowerCase())>=0).pop();
+    try { return l ? JSON.parse(l.review_list||'[]') : []; } catch(e){ return []; } };
+  const isItem=t=>t.private!=='yes' && (!!t.meeting_id || (!!t.source && t.source!=='manual'));
+  const decisions=[
+    {id:'dc1',decision:'Keep the new scheduling line as the only number on referral pads',date:d(-5),meeting_id:'m1',meeting_title:'Weekly Tactical',raised_by:'Becky',topic_id:'',topic:'',context:'Offices kept calling the old number.'},
+    {id:'dc2',decision:'Hire one front desk float shared by both offices instead of two part-timers',date:d(-7),meeting_id:'m2',meeting_title:'Phone coverage',raised_by:'Jared',topic_id:'p4',topic:'Front desk staffing model for PV',context:'Covers Friday lunch hours too.'},
+    {id:'dc3',decision:'Set up a backup phone line for Friday lunch hours',date:d(-7),meeting_id:'m2',meeting_title:'Phone coverage',raised_by:'Erin',topic_id:'',topic:'',context:''},
+    {id:'dc4',decision:'Hold the 2027 referral appreciation budget at this year\'s level',date:d(-26),meeting_id:'m5',meeting_title:'Monthly Strategic',raised_by:'Dr. Smith',topic_id:'',topic:'',context:'Revisit after Q1 numbers.'}];
+  [['Drop the Delta Dental PPO at the end of the year','m14','Jared','Reimbursement is 30% below the others.'],['Raise the comprehensive exam fee by 6% in January','m11','Dr. Smith',''],
+   ['Move the monthly strategic to the first Tuesday','m11','Elice',''],['Use one shared referral thank-you card design for both offices','m7','Becky','Printing in bulk saves about $400.'],
+   ['Send every new referring office a welcome box in their first month','m8','Erin',''],['Close both offices the Friday after Thanksgiving','m9','Brayden',''],
+   ['Bookkeeping moves to the new firm on January 1','m12','Dr. Smith','They also catch up the last two quarters.'],['Hire for marketing in Q1, not Q2','m13','Becky','']]
+    .forEach((x,i)=>decisions.push({ id:'dc'+(5+i), decision:x[0], date:mt[x[1]].date, meeting_id:x[1], meeting_title:mt[x[1]].title, raised_by:x[2], topic_id:'', topic:'', context:x[3] }));
+  const topics=[
+    {id:'p1',topic:'When to open Saturday hours',context:'Came up twice in tacticals. Needs demand data first.',raised_by:'Erin',date:d(-41),status:'Open',owner:E.EP},
+    {id:'p2',topic:'Referral appreciation program for 2027',context:'Budget and format for the year.',raised_by:'Dr. Smith',date:d(-26),status:'Scheduled',owner:E.DS,scheduled_for:d(9)},
+    {id:'p3',topic:'Should we add a second CBCT location?',context:'Brayden has utilization numbers from both offices.',raised_by:'Brayden',date:d(-5),status:'Open'},
+    {id:'p4',topic:'Front desk staffing model for PV',context:'Discussed in the phone coverage meeting.',raised_by:'Jared',date:d(-7),status:'Discussed',owner:E.JS,
+      outcome:'Hire one front desk float shared by both offices instead of two part-timers',decision_id:'dc2',decision:{id:'dc2',date:d(-7),meeting_id:'m2',meeting_title:'Phone coverage'}},
+    {id:'p5',topic:'What does an "unreasonable" customer experience look like?',context:'Ties to our thematic goal.',raised_by:'Elice',date:d(-40),status:'Open'},
+    {id:'p6',topic:'Patient portal vendor choice',context:'Parked until next year.',raised_by:'Becky',date:d(-19),status:'Dropped'}];
+  [['Should PV have its own scheduling line?','Becky',-12,'Open'],['How do we measure "unreasonable" customer experience?','Elice',-20,'Scheduled'],
+   ['Team retreat location for spring','Jared',-30,'Open'],['Do we want a second associate doctor by 2028?','Dr. Smith',-45,'Open']]
+    .forEach((x,i)=>topics.push({ id:'p'+(7+i), topic:x[0], context:'', raised_by:x[1], date:d(x[2]), status:x[3], scheduled_for:x[3]==='Scheduled'?d(16):'' }));
+  const comments={t1:[{author:'Alfred 🎩',text:'From the tactical: Becky will call all three before Thursday.',created_at:d(-5)},{author:E.EP,text:'@Becky Dr. Patel\'s office prefers email. I can send you their contact.',created_at:d(-1)+' 16:20'}],
+                  t4:[{author:'Alfred 🎩',text:'Update from Weekly Tactical: Jared has two candidates in final interviews.',created_at:d(-5)}]};
+  const adminLog=[{at:d(-2)+' 15:10',user:'Claude',action:'status',result:'Inbox: 0 waiting, 0 with errors.'},
+    {at:d(-1)+' 07:00',user:'Scheduled job',action:'error: morningJobs',result:'Exception: Service invoked too many times for one day: email.'}];
+  const alog=(action,result)=>{ adminLog.push({at:today+' 12:00',user:me,action:action,result:result}); return result; };
+  const team={review_mode:'on',auto_approve:'on',status_from_meeting:'auto',weekly_digest:'on',report_email:'on',report_weekday:'2',tactical_weekday:'4',reminder_days_ahead:'2',alfred_chat:'on'};
+  // Nov 17: a chat saved from another device, so the preview shows one that has to be fetched.
+  let mkStore=null; const MK=()=>MkLocal(mkStore||(mkStore=sampleMkt()));
+  const chats=[{ id:'c1700000000000', email:me, title:'Who has the most overdue tasks right now?', at:'2026-11-12T16:05:00.000Z',
+    msgs:[{ role:'user', text:'Who has the most overdue tasks right now?' }, { role:'assistant', text:'Becky has the most: 3 overdue tasks, the oldest from Nov 5.' }] }];
+  const requests=[
+    {id:'r2',created_at:d(-2)+' 10:15',requested_by:E.EP,type:'Feature',title:'Show who added a comment on the task card',description:'When a task has new comments I have to open it to see who wrote them. It would help to see the newest commenter on the card.',acceptance:'Task cards show a small note like "New comment from Becky" for a day after someone comments.',has_screenshot:true,status:'New',decided_by:'',decided_at:'',pr_url:'',notes:'',context:{view:'team',device:'phone',viewport:'390x844',themeShown:'light',personFilter:'Erin Pickett',errors:[],actions:[{act:'person',label:'Erin'}]}},
+    {id:'r1',created_at:d(-9)+' 08:40',requested_by:me,type:'Bug',title:'Due date box runs off the screen on my iPhone',description:'In a task, the due date box is wider than the panel and I can\'t see the right side.',acceptance:'The due date box fits inside the task panel on an iPhone.',has_screenshot:true,status:'Live',decided_by:E.BS,decided_at:d(-8)+' 09:00',pr_url:'https://github.com/prescottendo/leadership-meeting-system/pull/7',notes:'Brayden Smith ('+d(-8)+'): Good catch, fixing it this week.',context:{view:'mine',sheet:'task',device:'phone',viewport:'375x812',themeShown:'dark',errors:[],actions:[]}}];
+  const fakeShot=()=>{ try { const c=document.createElement('canvas'); c.width=360; c.height=640; const x=c.getContext('2d'); x.fillStyle='#EBE6D9'; x.fillRect(0,0,360,640); x.fillStyle='#0A345A'; x.fillRect(0,0,360,70);
+    x.fillStyle='#fff'; x.font='bold 20px Georgia'; x.fillText('Leadership Team',20,44); x.fillStyle='#fff'; for (let i=0;i<5;i++) x.fillRect(16,90+i*100,328,84); return c.toDataURL('image/jpeg',.7); } catch(e){ return ''; } };
+  // Canned Alfred answers for the preview, picked by a few keywords. The real app asks Claude.
+  const alfred=(msgs)=>{
+    const last=(msgs[msgs.length-1]||{}).text||'', q=last.split('<app_context>')[0].toLowerCase();
+    if (/broken|bug|not working|isn.t working|wrong|wish|feature|could you add|would be nice|request/.test(q)) return { reply:'Sorry about that. I\'ve written it up for Brayden from what you said and the screen you were on. Check the draft below, then tap **Send Request**.',
+      drafts:[{type:/wish|feature|add|would be nice/.test(q)?'Feature':'Bug',title:'Task list doesn\'t update after marking a task done',description:'On My Tasks, I swiped a task to mark it done. It turned green but came back as Not Started after the page refreshed.',acceptance:'A task marked done stays done after the page refreshes, on phones and computers.'}] };
+    // NF-5: small changes come back as confirm cards.
+    if (/mark .*done|move|push|add a task|remind me to|reassign|give .* to/.test(q)) {
+      if (/add a task|remind me to/.test(q)) { const title=(last.split('<app_context>')[0].replace(/^.*?(add a task( for me)?( to)?|remind me to)\s*/i,'').trim()||'Follow up').replace(/^./,c=>c.toUpperCase());
+        return { reply:'Here\'s the task. Tap **Confirm** to add it.', drafts:[], proposals:[{ kind:'new', title:title, task:{ title:title, owners:me, due:d(3), priority:'Medium', details:'', status:'Not Done' }, lines:['For: '+nameOf(me),'Due: '+fmtDate(d(3)),'Priority: Medium'] }] }; }
+      const t=tasks.find(x=>x.owners.indexOf(me)>=0 && OPEN.indexOf(x.status)>=0 && x.kind!=='cascade');
+      if (/mark .*done/.test(q)) return { reply:'Tap **Confirm** and I\'ll mark ['+t.title+'](#task-'+t.id+') done.', drafts:[], proposals:[{ kind:'update', task_id:t.id, title:t.title, changes:{status:'Done'}, lines:['Status: '+label(t.status)+' → Done'] }] };
+      return { reply:'Tap **Confirm** and I\'ll move it to next week.', drafts:[], proposals:[{ kind:'update', task_id:t.id, title:t.title, changes:{due:addDays(t.due||today,7)}, lines:['Due: '+(t.due?fmtDate(t.due):'no date')+' → '+fmtDate(addDays(t.due||today,7))] }] };
+    }
+    if (/what did we decide about|decision/.test(q)) return { reply:'From the Decisions log:\n- **Hire one front desk float shared by both offices** ([Phone coverage, '+fmtDate(d(-7),{month:'short',day:'numeric'})+'](#meeting-m2)), raised by Jared.\n- **Backup phone line for Friday lunch hours** (same meeting), raised by Erin.', drafts:[] };
+    if (/overdue/.test(q)) { const who=/jared/.test(q)?'JS':'BC', late=tasks.filter(t=>t.owners.indexOf(E[who])>=0 && OPEN.indexOf(t.status)>=0 && t.due && t.due<today);
+      return { reply:(who==='JS'?'Jared':'You')+' '+(who==='JS'?'has ':'have ')+late.length+' overdue task'+(late.length===1?'':'s')+':\n'+late.map(t=>'- ['+t.title+'](#task-'+t.id+'), due '+fmtDate(t.due)+' ('+label(t.status)+')').join('\n')+'\n\nFrom the task list, as of today.', drafts:[] }; }
+    if (/decid|meeting|tactical|nov/.test(q)) { const m=meetings[0];
+      return { reply:'At the [Weekly Tactical, '+fmtDate(m.date,{month:'short',day:'numeric'})+'](https://docs.google.com/document/d/sample) the team decided:\n- Keep the new scheduling line as the only number on referral pads.\n- Set up a backup phone line for Friday lunch hours (Brayden).\n- Becky calls the top three referring offices this week.\n\nSource: the meeting summary.', drafts:[] }; }
+    if (/private|only me/.test(q)) return { reply:'When you add a task, turn on **Only Me** before tapping Add Task. The task gets a lock, shows only in your My Tasks, and stays out of Team Tasks, reports and meetings. I can see your own Only Me tasks when you ask me, never anyone else\'s. You can also turn it on later for a task you added yourself by hand.', drafts:[] };
+    return { reply:'In the preview I only know a few canned answers. Try asking what\'s overdue, what was decided at the last tactical, how to make a task private, or tell me something isn\'t working.', drafts:[] };
+  };
+  return {
+    apiBootstrap:()=>({scorecard:Mock._sc,focus:{ rally:'Raise Customer XP to an Unreasonable Level', objectives:['Raise Fees','Establish Scorecard','Decide on Insurance','Automate and Catch Up Bookkeeping','Finish Rebranding','Schedule Triage Training','Begin the Marketing Hiring Process'], operating:['Scheduling','HR','Operations','IT Systems','First Choice Partners (Marketing)','Finance','Quality'], status:{}, anchors:['We row as one','We create fanatically loyal dental offices','We create unreasonable customer experiences'] },me:me,isApprover:true,people:people.filter(p=>p.email!==E.ES),tasks:tasks,today:today,defaultDue:d(((4-new Date().getDay()+7)%7)||7),appUrl:'#',meetings:mt,lastTactical:d(-5),emails:{summary:false,assigned:true,mentions:true,reminders:true,digest:true,report:true},reminderDays:2,tacticalWeekday:'4',reportWeekday:team.report_email==='on'?team.report_weekday:'',motiveNext:'A',alfred:{on:team.alfred_chat==='on',ready:true},isRequestApprover:true}),
+    apiTasks:()=>tasks,
+    apiSaveTask:t=>{ const i=tasks.findIndex(x=>x.id===t.id);
+      if (i>=0) t=Object.assign({}, tasks[i], t);   // like the server: an edit only changes the fields it sends
+      if (i>=0) ['status','due'].forEach(f=>{ if (String(t[f]||'')!==String(tasks[i][f]||'')) (hist[t.id]=hist[t.id]||[]).push({ at:today+' 12:00', user:me, field:f, old_value:tasks[i][f]||'', new_value:t[f]||'' }); });
+      if (i>=0 && t.status!==tasks[i].status) t.completed_at=t.status==='Done'?today+' 12:00':'';
+      const saved=Object.assign({},t,{id:t.id||'t'+(++n),updated_at:today+' 12:00',source:t.source||(t.liveMeeting?today+' '+t.liveMeeting:'manual')}); delete saved.liveMeeting; if(i>=0) tasks[i]=saved; else tasks.push(saved); return saved; },
+    apiReview:(ids,ok)=>({ tasks:[].concat(ids).map(id=>{ const t=tasks.find(x=>x.id===id); if (t.status==='Needs Review') { t.prev_status='Needs Review'; t.status=ok?'Not Done':'Rejected'; if (!ok) { t.deleted_at=today; t.deleted_by=me; t.rejected=true; } } return t; }), failed:0 }),
+    apiUndoReview:ids=>[].concat(ids).map(id=>{ const t=tasks.find(x=>x.id===id); if (t.status==='Not Done'||t.status==='Rejected') { t.status='Needs Review'; delete t.rejected; } return t; }),
+    apiSendApprovalEmails:ids=>[].concat(ids).length,
+    apiAlfredProgress:()=>'Searching meetings…',
+    apiTaskDetail:id=>{ const t=tasks.find(x=>x.id===id)||{}; const c=comments[id]||(t.meeting_id?[{author:'Alfred 🎩',text:'Added from '+mt[t.meeting_id].title+'.',created_at:mt[t.meeting_id].date}]:[]);
+      const h=[{at:t.meeting_id?mt[t.meeting_id].date:d(-3),user:t.meeting_id?'Alfred 🎩':me,field:'created',new_value:''}];
+      if (t.status!=='Not Done'&&t.status!=='Needs Review'&&!(hist[id]||[]).some(x=>x.field==='status')) h.push({at:t.updated_at,user:t.owners.split(',')[0].trim(),field:'status',new_value:t.status});
+      return {comments:c,history:h.concat(hist[id]||[])}; },
+    // Like the server: on-time rate for meeting items finished in the last 30 days, open Blocked items, and items moved twice or more.
+    apiAccountabilityReport:()=>({ html:'<div style="font-family:Arial,sans-serif;color:#333"><h2 style="font-family:Georgia,serif;color:#0A345A">Accountability Report</h2><p style="color:#5F5F5F">Sample report for the preview.</p>'
+      +S.data.people.map(p=>'<h3 style="font-family:Georgia,serif;color:#0A345A;border-bottom:2px solid #C6A85C;padding-bottom:4px">'+esc(p.name)+'</h3><p style="color:#5F5F5F">'+S.data.tasks.filter(t=>t.owners.indexOf(p.email)>=0 && t.status!=='Done').length+' open items.</p>').join('')+'</div>' }),
+    apiAccountability:()=>{ const since=d(-30), out={};
+      const moves=id=>(hist[id]||[]).filter(h=>h.field==='due' && h.old_value).length;
+      people.forEach(p=>{ const mine=tasks.filter(t=>t.owners.indexOf(p.email)>=0 && ['Needs Review','Deleted','Rejected'].indexOf(t.status)<0 && (t.private!=='yes' || t.created_by===me)), items=mine.filter(isItem);
+        const done=items.filter(t=>t.status==='Done' && t.due && String(t.completed_at).slice(0,10)>=since), on=done.filter(t=>String(t.completed_at).slice(0,10)<=t.due).length;
+        out[p.email]={ done:done.length, on_time:on, rate:done.length?Math.round(on*100/done.length):null, blocked:mine.filter(t=>t.status==='Blocked').length,
+          slipping:items.filter(t=>['Not Done','In Progress','Blocked'].indexOf(t.status)>=0 && moves(t.id)>=2).map(t=>({ id:t.id, title:t.title, due:t.due, moves:moves(t.id) })) }; });
+      return { since:since, people:out }; },
+    apiAddComment:(id,text)=>{ const notified=people.filter(p=>p.email!==me && text.toLowerCase().indexOf('@'+(p.name.indexOf('Dr.')===0?p.name:p.name.split(' ')[0]).toLowerCase())>=0).map(p=>p.name.indexOf('Dr.')===0?p.name:p.name.split(' ')[0]);
+      const c={author:me,text:text,created_at:today,notified:notified}; (comments[id]=comments[id]||[]).push(c); return c; },
+    apiTopics:()=>topics.filter(t=>t.status!=='Deleted'),
+    apiDecisions:()=>decisions.filter(d=>!d.deleted_at),
+    apiSetFocus:(r,o,n)=>{ const l=v=>String(v||'').split('\n').map(s=>s.trim()).filter(Boolean); S.data.focus={ rally:String(r||'').trim(), objectives:l(o), anchors:l(n), status:(S.data.focus&&S.data.focus.status)||{} }; return S.data.focus; },
+    apiSetScorecardGoal:(n,g)=>{ const x=Mock._sc.items.find(i=>i.name===n); if (g==='') delete x.goal; else { x.goal=Number(g); x.foot=String(x.foot||'').replace(/( · )?No goal set yet/,''); } return JSON.parse(JSON.stringify(Mock._sc)); },
+    apiSetObjectiveStatus:(t,st)=>{ const m=Object.assign({}, S.data.focus.status||{}); if (st) m[t]=st; else delete m[t]; return { status:m }; },
+    apiActivity:()=>[{kind:'mention',at:d(0)+' 09:12',by:E.EP,by_name:'Erin',task_id:'t1',title:'Call the three top referring offices about the new scheduling line',text:'@Becky Dr. Patel\'s office prefers email. I can send you their contact.'},
+      {kind:'assigned',at:d(-1)+' 16:05',by:E.JS,by_name:'Jared',task_id:'t2',title:'Send the October referral thank-you notes'},
+      {kind:'done',at:d(-2)+' 11:40',by:E.EP,by_name:'Erin',task_id:'t3',title:'Draft the patient follow-up text script'},
+      {kind:'comment',at:d(-4)+' 08:30',by:E.DS,by_name:'Dr. Smith',task_id:'t4',title:'Audit insurance verification turnaround times',text:'Let\'s look at this together Thursday.'}],
+    apiAddDecision:(text,ctx,date)=>{ const d={id:'dc'+Date.now(),decision:text,date:date||today,meeting_id:'',meeting_title:'',raised_by:'Becky',topic_id:'',topic:'',context:ctx||'',editable:true}; decisions.unshift(d); return d; },
+    apiUpdateDecision:(id,text,ctx,date)=>{ const d=decisions.find(x=>x.id===id); Object.assign(d,{decision:text,context:ctx,date:date||d.date}); return d; },
+    apiDeleteDecision:id=>{ const d=decisions.find(x=>x.id===id); d.deleted_at=today+' 12:00'; d.deleted_by=me; return { ok:true }; },
+    apiRestoreDecision:id=>{ const d=decisions.find(x=>x.id===id); d.deleted_at=''; return { ok:true }; },
+    apiOneOnOnes:()=>{ const P={ [E.DS]:[{date:d(-12),answer:'some'},{date:d(-5),answer:'some'}], [E.BC]:[{date:d(-12),answer:'some'},{date:d(-5),answer:'all'}],
+      [E.EP]:[{date:d(-12),answer:'all'},{date:d(-5),answer:'all'}], [E.JS]:[{date:d(-12),answer:'none'},{date:d(-5),answer:'some'}] };
+      Object.keys(P).forEach(k=>{ P[k]=P[k].filter(x=>x.date.slice(0,7)===today.slice(0,7)); });   // like the server: this month only
+      return { month:today.slice(0,7), people:P }; },
+    apiUpdateTopic:(id,f)=>{ const t=topics.find(x=>x.id===id); Object.assign(t, f);
+      if (f.decision_id) { const d=decisions.find(x=>x.id===f.decision_id); t.decision={ id:d.id, decision:d.decision, date:d.date, meeting_id:d.meeting_id, meeting_title:d.meeting_title||'' }; if (!t.outcome) t.outcome=d.decision; if (t.status==='Open'||t.status==='Scheduled') t.status='Discussed'; }
+      else if (f.decision_id==='') t.decision=null;
+      return t; },
+    apiDeleteTopic:id=>{ const t=topics.find(x=>x.id===id); t.prev_status=t.status; t.status='Deleted'; t.deleted_at=today; t.deleted_by=me; return t; },
+    apiRestoreTopic:id=>{ const t=topics.find(x=>x.id===id); t.status=t.prev_status||'Open'; return t; },
+    apiDeleteTask:id=>{ const t=tasks.find(x=>x.id===id); t.prev_status=t.status; t.status='Deleted'; t.deleted_at=today; t.deleted_by=me; return t; },
+    apiRestoreTask:id=>{ const t=tasks.find(x=>x.id===id); t.status=t.prev_status||'Not Done'; delete t.rejected; return t; },
+    apiDeleted:()=>({ tasks:tasks.filter(t=>t.status==='Deleted'||t.status==='Rejected'), topics:topics.filter(t=>t.status==='Deleted'), decisions:decisions.filter(d=>d.deleted_at), meetings:meetings.filter(m=>m.deleted_at).concat(liveLogs.filter(l=>l.deleted_at).map(l=>Object.assign({}, l, { live:true, type:l.title }))) }),
+    apiMeetingSummary:id=>{ const m=mt[id], ts=tasks.filter(t=>t.meeting_id===id && t.status!=='Deleted');
+      const blocks=[{t:'h1',text:m.title}];
+      if (m.type==='Weekly Tactical') blocks.push({t:'h2',text:'One-on-One Reports'},{t:'li',text:'Becky, Erin and Jared have finished their one-on-ones for the month.',level:0},{t:'li',text:'Brayden has two left; Dr. Smith has one left.',level:0},
+        {t:'h2',text:'Lightning Round'},{t:'li',text:'Becky: referral-office calls and the insurance verification audit.',level:0},{t:'li',text:'Erin: phone coverage schedule for November.',level:0},{t:'li',text:'Jared: final interviews for the PV care coordinator role.',level:0});
+      blocks.push({t:'h2',text:'Agenda Items'},{t:'h3',text:'New scheduling line'},{t:'p',text:'Referral offices are still calling the old number. The team agreed to call the top three offices this week and update the website.'},
+        {t:'h3',text:'Friday phone coverage'},{t:'p',text:'Calls are going to voicemail between 12 and 1. A backup line will be set up, and Erin will draft a lunch rotation.'},
+        {t:'h2',text:'Decisions'},{t:'li',text:'Keep the new scheduling line as the only number on referral pads.',level:0},
+        {t:'h2',text:'Action Items'},...ts.map(t=>({t:'li',text:t.title,level:0})),
+        {t:'h2',text:'Cascading Communication'},{t:'li',text:'Becky tells the front desk about the new phone tree by Monday.',level:0},
+        {t:'h2',text:'Team Health'},{t:'li',text:'Good, direct debate on phone coverage; Jared pushed back on the timeline and the team adjusted.',level:0},
+        {t:'h2',text:'Meeting Timing'},{t:'li',text:'Total: 1:28:40 of 90 minutes planned',level:0},{t:'li',text:'Ran over: Discuss and Address Agenda Items (52:10 of 50 min)',level:0},{t:'li',text:'"Highest and best use of our time?" 8.5 out of 10 (6 ratings)',level:0});
+      if ((m.notes||[]).length) blocks.push({t:'h2',text:'Notes Added Later'},...m.notes.map(n=>({t:'li',text:n,level:0})));
+      return { meeting:m, blocks:blocks, topics:topics.filter(t=>t.meeting_id===id), review:reviewFor(m.date, m.type) }; },
+    apiSetTopicStatus:(id,s)=>{ topics.find(x=>x.id===id).status=s; return {}; },
+    apiAddTopic:(topic,context)=>{ const t={id:'p'+Date.now(),topic:topic,context:context||'',raised_by:'Becky',date:today,status:'Open'}; topics.unshift(t); return t; },
+    apiMeetings:()=>meetings.filter(m=>!m.deleted_at),
+    apiSearchMeetings:q=>meetings.filter(m=>!m.deleted_at && (/phone|referral|schedul/.test(q) || (m.title+' '+m.type).toLowerCase().indexOf(q)>=0)).map((m,i)=>({ id:m.id, in:i%2?['transcript']:['summary','transcript'] })),
+    apiUpdateMeeting:(id,c)=>Object.assign(mt[id], c),
+    apiMeetingContext:(id,text,rw)=>{ const m=mt[id]; (m.notes=m.notes||[]).push(text); return { summary:Mock.apiMeetingSummary(id), rewritten:!!rw, problem:'' }; },
+    apiDeleteMeeting:id=>Object.assign(mt[id], { deleted_at:today+' 12:00', deleted_by:me }),
+    apiRestoreMeeting:id=>Object.assign(mt[id], { deleted_at:'', deleted_by:'' }),
+    apiSetMyEmail:(k,on)=>on,
+    apiPushRegister:(tok,kinds)=>({ ok:true, kinds:kinds||['meeting','mentions','tasks','waiting'] }),
+    apiPushUpdate:(tok,kinds)=>({ ok:true, kinds:kinds }),
+    apiPushUnregister:()=>({ ok:true }),
+    apiPushTest:()=>({ sent:1 }),
+    apiSetMyPrefs:o=>o,
+    apiSetMyReminderDays:n=>n,
+    apiTeamSettings:()=>Object.assign({}, team),
+    apiSetTeamSetting:(k,v)=>{ team[k]=v; return { value:v, defaultDue:d(2) }; },
+    // Preview only: "_blip(n)" makes the next n reads come back empty, like a read that lands mid-save.
+    apiLiveGet:()=>{ if (blips>0) { blips--; return {state:null, now:Date.now()}; }
+      const out={state:live, now:Date.now()}; if (!live && endedLive) out.ended=endedLive; if (!live && canceledLive) out.canceled={ id:canceledLive.id, by:'Brayden' }; return out; },
+    _blip:n=>{ blips=n; return n; },
+    // Preview: the shape scorecard_() returns, with made-up numbers (no goals yet).
+    _sc:{ month:'October', items:[
+      { name:'Completed Cases', value:240, better:'up', viz:'trend', trend:[210,232,218,245,226,251,229,238,221,240], foot:'12-mo avg 231 · No goal set yet' },
+      { name:'Turnover Rate', value:2.5, unit:'%', better:'down', viz:'trend', trend:[5,2.5,0,2.5,0,5,2.5,0,2.5,2.5], foot:'No goal set yet' },
+      { name:'eNPS', value:35, better:'up', viz:'enps', note:'Oct survey', foot:'30–50 is strong' } ] },
+    apiLiveSet:st=>{ const base=Number(st.version||0), stale=live ? (live.id===st.id ? base!==Number(live.version||0) : true) : base>0;
+      if (stale) return {conflict:true, state:live, now:Date.now()};
+      const host=live ? String(live.host||live.startedBy||'').toLowerCase() : me;
+      if (host && host!==me) return {conflict:true, notHost:true, state:live, now:Date.now()};
+      st.host=host; st.version=base+1; st.review=live ? live.review||{} : {}; live=st; return {state:live, now:Date.now()}; },
+    apiLiveTakeOver:id=>{ if (live && live.id===id) { live.host=me; live.version++; } return {state:live, now:Date.now()}; },
+    // Preview only: pretend to be someone else ("_as(<someone's email>)") to try the host and follower views.
+    _as:email=>{ me=email; S.data.me=email; render(); return me; },
+    // Preview only: acts like another phone changing the meeting, to try the out-of-date check (BUG-3).
+    _otherPhone:fn=>{ if (live) { fn(live); live.version++; } return live; },
+    apiLiveEnd:()=>{ if (live && String(live.host||live.startedBy||'').toLowerCase()!==me) throw new Error('Only the host can end the meeting. Tap Take Over first.');
+      if (live && live.startedAt) { const r=Object.values(live.ratings||{}); liveLogs.push({ id:live.id, date:today, title:live.title, total_secs:Math.round(((live.endedAt||Date.now())-live.startedAt-(live.pausedTotal||0))/1000),
+        planned_secs:live.steps.reduce((a,s)=>a+s.mins*60,0), rating:r.length?(r.reduce((a,b)=>a+b,0)/r.length).toFixed(1):'', items:(live.items||[]).length,
+        review_list:JSON.stringify(Object.keys(live.review||{}).map(id=>{ const t=tasks.find(x=>x.id===id)||{owners:'',title:''}; return Object.assign({ task_id:id, owners:t.owners.split(',').map(x=>x.trim()).filter(Boolean), title:t.title }, live.review[id]); })) }); }
+      if (live) endedLive={ id:live.id, at:Date.now() }; live=null; return {state:null, now:Date.now()}; },
+    apiLiveCancel:()=>{ if (live && String(live.host||live.startedBy||'').toLowerCase()!==me) throw new Error('Only the host can cancel the meeting. Tap Take Over first.');
+      if (live) canceledLive=live; live=null; return {state:null, now:Date.now()}; },
+    apiLiveUndoCancel:id=>{ if (!canceledLive || canceledLive.id!==id) throw new Error('It\'s too late to undo that.'); live=canceledLive; canceledLive=null; return {state:live, now:Date.now()}; },
+    // Nov 17: the live agenda and listening, in memory (a rough stand-in for Alfred: keywords pick the area and color).
+    apiLiveAgenda:op=>{ if (!live) return {state:live, now:Date.now()}; const g=live.agenda=live.agenda||{ items:[], areaColors:{}, sugg:[], listen:null, n:0 };
+      const it=g.items.find(x=>x.id===op.id), A=(S.data.focus||{}), areas=(A.objectives||[]).concat(A.operating||[]);
+      const area=v=>areas.find(x=>x.toLowerCase()===String(v||'').toLowerCase())||'Lightning Round';
+      if (op.op==='add') { g.n++; g.items.push({ id:'a'+g.n, text:op.text, area:area(op.area), color:op.color||'', by:nameOf(me), src:'manual', done:false, secs:0 }); }
+      else if (op.op==='edit' && it) { ['text','color','done','secs'].forEach(k=>{ if (op[k]!=null) it[k]=op[k]; }); if (op.area!=null) it.area=area(op.area); }
+      else if (op.op==='del' || op.op==='park') { const i=g.items.findIndex(x=>x.id===op.id); if (i>=0) { g.gone=(g.gone||[]).concat([{ id:op.id, text:g.items[i].text, how:op.op==='park'?'parked':'removed', by:nameOf(me), at:Date.now(), item:g.items[i], index:i }]); g.items.splice(i,1); } }
+      else if (op.op==='restore') { const x=(g.gone||[]).find(y=>y.id===op.id); if (x) { g.gone=g.gone.filter(y=>y!==x); g.items.splice(Math.min(x.index, g.items.length), 0, x.item); } }
+      else if (op.op==='area_color') { if (op.color) g.areaColors[op.area]=op.color; else delete g.areaColors[op.area]; }
+      else if (op.op==='sugg') { const x=g.sugg.find(y=>y.id===op.id); if (x) x.state=op.state; }
+      else if (op.op==='listen') g.listen=op.on ? { by:me, name:nameOf(me), mic:op.mic||'' } : null;
+      live.version++; return {state:live, now:Date.now()}; },
+    apiSttToken:()=>({ token:'preview', expires_in:60, keyterms:[] }),
+    apiLiveListen:(seq,text)=>{ if (!live) return {state:live, now:Date.now()}; const g=live.agenda=live.agenda||{ items:[], areaColors:{}, sugg:[], listen:null, n:0 };
+      const A=(S.data.focus||{}), areas=(A.objectives||[]).concat(A.operating||[]);
+      String(text).split('\n').forEach(line=>{ const l=line.replace(/^\[S\d+\]\s*/,''), low=l.toLowerCase();
+        const color=/\bred\b/.test(low)?'red':/yellow/.test(low)?'yellow':/\bgreen\b/.test(low)?'green':'';
+        const ar=areas.find(x=>low.indexOf(x.toLowerCase().split(' (')[0])>=0);
+        if (/^i'll |^i will /.test(low)) { g.n++; g.sugg.push({ id:'s'+g.n, kind:'task', text:l.replace(/^I'll /i,'').replace(/\.$/,''), owner:'', due:'', state:'' }); return; }
+        if (/agreed|we decided|let's go with/.test(low)) { g.n++; g.sugg.push({ id:'s'+g.n, kind:'decision', text:l.replace(/^So /,'').replace(/\.$/,''), owner:'', due:'', state:'' }); return; }
+        if (ar && /nothing to add|this week/.test(low)) { if (color) g.areaColors[ar]=color; return; }
+        const m=/(?:under [a-z ]+, |for [a-z ]+, |lightning round, )(.+?)(?:\.|$)/i.exec(l);
+        const who={ S1:'Becky', S2:'Dr. Smith', S3:'Jared' }[(/^\[(S\d+)\]/.exec(line)||[])[1]]||'';   // the practice conversation's voices
+        if (m) { g.n++; g.items.push({ id:'a'+g.n, text:m[1].replace(/^the /i,'').replace(/ is ready to review/,'').replace(/^\w/, c=>c.toUpperCase()), area:ar||'Lightning Round', color:color, by:who, src:'alfred', done:false, secs:0 }); } });
+      live.version++; return {state:live, now:Date.now()}; },
+    apiLiveRate:n=>{ if (live) { live.ratings=live.ratings||{}; live.ratings[me]=n; live.version++; } return {state:live, now:Date.now()}; },
+    apiSetMotiveNext:v=>v,
+    apiLiveMark:(field,key,value,move)=>{ if (live) {
+        if (field==='items') { live.items=live.items||[]; if (live.items.indexOf(key)<0) live.items.push(key); }
+        else if (field==='review') { live.review=live.review||{}; const prev=live.review[key];
+          if (!value) delete live.review[key]; else live.review[key]=Object.assign({}, value, { due_before:prev?prev.due_before:value.due_before, status_before:prev?prev.status_before:value.status_before, by:me, at:today+' 12:00' }); }
+        else { live[field]=live[field]||{}; const k=field==='ratings'?me:key; if (value) live[field][k]=field==='ratings'?Number(value):value; else delete live[field][k];
+          if (value && move && live.i===move.step && (live.person||0)===move.from) { live.person=move.to; live.personStart=Date.now(); } }
+        live.version++; } return {state:live, now:Date.now()}; },
+    apiLiveLogs:()=>liveLogs.filter(l=>!l.deleted_at).slice().reverse(),
+    apiDeleteLiveLog:id=>Object.assign(liveLogs.find(l=>l.id===id), { deleted_at:today+' 12:00', deleted_by:me }),
+    apiRestoreLiveLog:id=>Object.assign(liveLogs.find(l=>l.id===id), { deleted_at:'', deleted_by:'' }),
+    apiAdminProcessInbox:()=>alog('Process New Meetings Now','No new meetings were waiting.'),
+    apiAdminResetTriggers:()=>alog('Repair Scheduled Jobs','Scheduled jobs in place, running as the operations account: Process new meetings (every 5 minutes); Morning emails (daily, 7am).'),
+    apiAdminTestEmail:()=>alog('Send Me a Test Email','Test email sent to '+me+'. 1480 emails left today.'),
+    apiAdminAddSample:()=>alog('Load Sample Data','Sample data loaded: 4 meetings, 14 tasks and 2 Parking Lot topics, all marked [Sample].'),
+    apiAdminRemoveSample:()=>alog('Remove Sample Data','Sample data removed (38 rows).'),
+    apiAlfredChat:(msgs)=>team.alfred_chat==='off' ? {reply:'Alfred chat is turned off right now.',drafts:[],proposals:[]} : alfred(msgs),
+    apiSubmitChangeRequest:(draft,ctx,shot)=>{ const r=Object.assign({id:'r'+Date.now(),created_at:today+' 12:00',requested_by:me,has_screenshot:!!shot,status:'New',decided_by:'',decided_at:'',pr_url:'',notes:'',context:ctx}, draft);
+      requests.unshift(r); r._shot=shot; return r; },
+    apiChangeRequests:()=>requests,
+    // Nov 17: Marketing runs in memory in the preview, on the same sample store as Show Sample Data.
+    apiMarketing:()=>MK().apiMarketing(me), apiSaveDelivery:d=>MK().apiSaveDelivery(me,d), apiDeleteDelivery:x=>MK().apiDeleteDelivery(me,x),
+    apiSavePost:p=>MK().apiSavePost(me,p), apiDeletePost:x=>MK().apiDeletePost(me,x), apiSaveIdea:i=>MK().apiSaveIdea(me,i), apiLikeIdea:x=>MK().apiLikeIdea(me,x),
+    apiDeleteIdea:x=>MK().apiDeleteIdea(me,x), apiRestoreMarketing:(k,x)=>MK().apiRestoreMarketing(me,k,x),
+    apiChats:()=>chats.filter(c=>c.email===me).sort((a,b)=>b.at.localeCompare(a.at)).slice(0,50).map(c=>({ id:c.id, title:c.title, at:c.at, n:c.msgs.filter(m=>m.role==='user').length })),
+    apiChatGet:id=>{ const c=chats.find(x=>x.id===id && x.email===me); if (!c) throw new Error('That chat isn\'t there any more.'); return { id:c.id, title:c.title, at:c.at, msgs:c.msgs }; },
+    apiChatSave:list=>{ [].concat(list).forEach(c=>{ const o=chats.find(x=>x.id===c.id); const row={ id:c.id, email:me, title:c.title, at:c.at, msgs:c.msgs }; if (o) Object.assign(o,row); else chats.push(row); }); return { ok:true, saved:[].concat(list).length }; },
+    apiChatDelete:id=>{ const i=chats.findIndex(x=>x.id===id && x.email===me); if (i>=0) chats.splice(i,1); return { ok:true }; },
+    apiChangeRequestScreenshot:id=>{ const r=requests.find(x=>x.id===id); return (r && r._shot) || fakeShot(); },
+    apiDecideChangeRequest:(id,v,note)=>{ const r=requests.find(x=>x.id===id); r.status=v; r.decided_by=me; r.decided_at=today+' 12:00'; if (note) r.notes=(r.notes?r.notes+'\n':'')+'Becky Calia ('+today+'): '+note; return r; },
+    apiAdminAlfredUsage:()=>'Alfred chat is '+team.alfred_chat+'.\nThis month: 23 answers from 5 people.\nTokens: 41,200 in, 18,900 out, 512,000 read from cache, 38,000 written to cache.\nEstimated cost: $0.83 (Claude Opus 5.5 list prices; the Claude Console has the exact bill).\nChange requests: '+requests.filter(r=>r.status==='New').length+' waiting for a decision, 0 approved or being built, 0 ready for review, 1 live, 0 declined.',
+    apiAdminProblems:()=>({ log:adminLog.slice(-20).reverse(),
+      inbox:[{received_at:d(-3)+' 10:42',otter_id:'aB3xY9',error:'SyntaxError: Unexpected end of JSON input',processed_at:d(-3)+' 10:45'}] })
+  };
 }
 function start(){ if (WEB) webStart(); else load(); }
 
