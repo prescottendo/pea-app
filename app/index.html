@@ -19,7 +19,7 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" type="image/png" href="icon-192.png">
-<script>window.HUDDLE_WEB={"api":"https://script.google.com/macros/s/AKfycbzM8K_-XRMDdOJYJ3THn_FhyZkRreMddHIBAOFCFVoq5S_Y7MnsfFLsl7ac_fyDPrch/exec","clientId":"473377418367-cqmmnfum4kshq16973m4sj2jqqfa55p0.apps.googleusercontent.com","build":"9479a55","push":{"config":{"apiKey":"AIzaSyBON-0KvTXPD_MV6ykhYvCoBRiECEHyE9c","authDomain":"huddle-e2548.firebaseapp.com","projectId":"huddle-e2548","storageBucket":"huddle-e2548.firebasestorage.app","messagingSenderId":"554653922065","appId":"1:554653922065:web:87de53b4cb11b36835d2b0"},"vapidKey":"BHKeDoBmW7vL-qAT3ocyTaMaZ27Ca66jvQtTes2NC4CPoWFiPBJcga7wVd-RD1IuyhBki0oKXwPBGSNq002s8o8"}};document.documentElement.classList.add('web');</script>
+<script>window.HUDDLE_WEB={"api":"https://script.google.com/macros/s/AKfycbzM8K_-XRMDdOJYJ3THn_FhyZkRreMddHIBAOFCFVoq5S_Y7MnsfFLsl7ac_fyDPrch/exec","clientId":"473377418367-cqmmnfum4kshq16973m4sj2jqqfa55p0.apps.googleusercontent.com","build":"4c05a25","push":{"config":{"apiKey":"AIzaSyBON-0KvTXPD_MV6ykhYvCoBRiECEHyE9c","authDomain":"huddle-e2548.firebaseapp.com","projectId":"huddle-e2548","storageBucket":"huddle-e2548.firebasestorage.app","messagingSenderId":"554653922065","appId":"1:554653922065:web:87de53b4cb11b36835d2b0"},"vapidKey":"BHKeDoBmW7vL-qAT3ocyTaMaZ27Ca66jvQtTes2NC4CPoWFiPBJcga7wVd-RD1IuyhBki0oKXwPBGSNq002s8o8"}};document.documentElement.classList.add('web');</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <!-- The fonts load without holding up the first paint; the page shows in the phone's own font for a moment if needed. -->
@@ -2731,13 +2731,12 @@ function nextTacticalCard(){
 // and tapping a sample row just says it's sample data.
 function sampleOn(){ return pref('lt-sample','')==='on'; }
 const SAMPLE_HOME={
-  // Nov 17: Brayden's Monthly Results Scorecard (Google Sheet). Completed cases and turnover are their real numbers
-  // (Jan–Oct); eNPS has only October; Team Judgment and Profitability have no data yet, so those are made up. No goals are
-  // set yet, so the goals here are examples.
+  // Nov 17: the measures of Brayden's Monthly Results Scorecard, with MADE-UP numbers. This page is published on a public
+  // site, so real practice numbers must never be written into it (the real ones come from the sheet, after sign-in).
   scorecard:[
-    { name:'Completed Cases', value:327, goal:320, exampleGoal:true, better:'up', viz:'trend', trend:[377,307,342,326,297,330,316,325,303,327], foot:'12-mo avg 318' },
-    { name:'Turnover Rate', value:3.7, unit:'%', goal:4, exampleGoal:true, better:'down', viz:'trend', trend:[7.4,3.8,0,3.6,0,0,3.6,3.7,3.7,3.7], foot:'Lower is better' },
-    { name:'eNPS', value:47, viz:'enps', note:'Oct survey', foot:'30–50 is strong' },
+    { name:'Completed Cases', value:240, goal:230, exampleGoal:true, better:'up', viz:'trend', trend:[210,232,218,245,226,251,229,238,221,240], foot:'12-mo avg 231' },
+    { name:'Turnover Rate', value:2.5, unit:'%', goal:4, exampleGoal:true, better:'down', viz:'trend', trend:[5,2.5,0,2.5,0,5,2.5,0,2.5,2.5], foot:'Lower is better' },
+    { name:'eNPS', value:35, viz:'enps', note:'Oct survey', foot:'30–50 is strong' },
     { name:'Team Judgment', value:4.2, goal:4, exampleGoal:true, better:'up', viz:'scale5', unitNote:'of 5', sample:true },
     { name:'Profitability', value:72, goal:75, exampleGoal:true, better:'up', viz:'percentile', unit:'th', unitNote:'pctl', sample:true }
   ],
@@ -5636,7 +5635,7 @@ async function liveAddItem(el){
 /* ---------- Alfred chat bubble ---------- */
 // The conversation lives only in this page (S.alf) and is gone after a reload. Every message carries the screen
 // context below, and the screenshot taken when the bubble was tapped, so nobody has to describe where they were.
-const APP_VERSION = '2026.11.17-scorecard';
+const APP_VERSION = '2026.11.17-sample';
 const H2C_URL = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
 const DIAG = { errors:[], actions:[] };   // last 10 of each, for bug reports
 function pushDiag(list, item){ list.push(item); if (list.length>10) list.shift(); }
