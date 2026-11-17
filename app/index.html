@@ -19,7 +19,7 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" type="image/png" href="icon-192.png">
-<script>window.HUDDLE_WEB={"api":"https://script.google.com/macros/s/AKfycbzM8K_-XRMDdOJYJ3THn_FhyZkRreMddHIBAOFCFVoq5S_Y7MnsfFLsl7ac_fyDPrch/exec","clientId":"473377418367-cqmmnfum4kshq16973m4sj2jqqfa55p0.apps.googleusercontent.com","build":"9f22a67","push":{"config":{"apiKey":"AIzaSyBON-0KvTXPD_MV6ykhYvCoBRiECEHyE9c","authDomain":"huddle-e2548.firebaseapp.com","projectId":"huddle-e2548","storageBucket":"huddle-e2548.firebasestorage.app","messagingSenderId":"554653922065","appId":"1:554653922065:web:87de53b4cb11b36835d2b0"},"vapidKey":"BHKeDoBmW7vL-qAT3ocyTaMaZ27Ca66jvQtTes2NC4CPoWFiPBJcga7wVd-RD1IuyhBki0oKXwPBGSNq002s8o8"}};document.documentElement.classList.add('web');</script>
+<script>window.HUDDLE_WEB={"api":"https://script.google.com/macros/s/AKfycbzM8K_-XRMDdOJYJ3THn_FhyZkRreMddHIBAOFCFVoq5S_Y7MnsfFLsl7ac_fyDPrch/exec","clientId":"473377418367-cqmmnfum4kshq16973m4sj2jqqfa55p0.apps.googleusercontent.com","build":"cb9af47","push":{"config":{"apiKey":"AIzaSyBON-0KvTXPD_MV6ykhYvCoBRiECEHyE9c","authDomain":"huddle-e2548.firebaseapp.com","projectId":"huddle-e2548","storageBucket":"huddle-e2548.firebasestorage.app","messagingSenderId":"554653922065","appId":"1:554653922065:web:87de53b4cb11b36835d2b0"},"vapidKey":"BHKeDoBmW7vL-qAT3ocyTaMaZ27Ca66jvQtTes2NC4CPoWFiPBJcga7wVd-RD1IuyhBki0oKXwPBGSNq002s8o8"}};document.documentElement.classList.add('web');</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <!-- The fonts load without holding up the first paint; the page shows in the phone's own font for a moment if needed. -->
@@ -611,19 +611,39 @@
   .pulse .stat span { font-size:var(--fs-sub); font-weight:600; color:var(--ink); }
   .pulse .stat small { display:block; font-weight:400; color:var(--muted); font-size:var(--fs-cap); }
   .scorecard { padding:4px 16px 12px; margin-bottom:16px; }
-  /* Nov 17: the Team Scorecard: name and goal, the last 8 weeks (dashed line = goal), this week's number. */
-  .sc-row { display:grid; grid-template-columns:1fr auto 56px; gap:12px; align-items:center; padding:12px 0; border-top:1px solid var(--line-soft); }
-  .sc-row:first-child { border-top:none; }
-  .sc-name { font-weight:600; color:var(--ink); font-size:var(--fs-sub); line-height:1.25; min-width:0; } .sc-name small { display:block; font-weight:400; color:var(--muted); font-size:var(--fs-cap); margin-top:2px; }
-  .sc-val { text-align:right; } .sc-val b { font-family:var(--serif); font-size:calc(var(--fs-title) * .8); color:var(--heading); display:block; line-height:1.1; font-variant-numeric:tabular-nums; }
-  .sc-val small { font-size:calc(var(--fs-cap) * .92); color:var(--muted); white-space:nowrap; }
-  .sc-row.on .sc-val b { color:var(--green); } .sc-row.off .sc-val b { color:var(--red); } .sc-row.near .sc-val b { color:var(--gold-ink, #8A6418); }
-  .spark { display:block; overflow:visible; } .sp-line { fill:none; stroke:var(--heading); stroke-width:1.8; stroke-linejoin:round; stroke-linecap:round; opacity:.75; }
-  .sp-goal { stroke:var(--muted); stroke-width:1; stroke-dasharray:3 3; opacity:.7; } .sp-dot { fill:var(--heading); }
-  .sc-row.on .sp-dot { fill:var(--green); } .sc-row.off .sp-dot { fill:var(--red); } .sc-row.near .sp-dot { fill:var(--gold); }
-  .sc-key { display:flex; gap:14px; justify-content:center; padding-top:10px; border-top:1px solid var(--line-soft); font-size:var(--fs-cap); color:var(--muted); }
-  .sc-key span::before { content:""; display:inline-block; width:8px; height:8px; border-radius:50%; margin-right:5px; vertical-align:0; }
-  .sc-key .chg::before { display:none; } .sc-key { flex-wrap:wrap; row-gap:4px; } .sc-key .on::before { background:var(--green); } .sc-key .near::before { background:var(--gold); } .sc-key .off::before { background:var(--red); }
+  /* Nov 17 (option B): the Team Scorecard: a ring that counts what's on track, then a big-number tile per measure. */
+  .sc-health { display:flex; align-items:center; gap:14px; padding:12px 14px; margin-bottom:10px; }
+  .sc-health b { font-family:var(--serif); font-size:calc(var(--fs-title) * .8); color:var(--heading); display:block; line-height:1.15; }
+  .sc-health small { font-size:var(--fs-cap); color:var(--muted); line-height:1.4; display:block; margin-top:2px; }
+  .sc-ring { flex:none; } .sc-ring .rs { fill:none; stroke-width:8; } .sc-ring .on { stroke:var(--green); } .sc-ring .near { stroke:var(--gold); } .sc-ring .off { stroke:var(--red); } .sc-ring .none { stroke:var(--line-soft); }
+  .sc-ring text { font-family:var(--serif); font-weight:600; font-size:19px; fill:var(--heading); }
+  .sc-tiles { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:16px; }
+  .sc-tile { padding:11px 12px 10px; position:relative; min-width:0; margin:0; }
+  .sc-tile.wide { grid-column:span 2; display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1.3fr); gap:12px; align-items:center; }
+  .t-name { font-size:var(--fs-cap); font-weight:600; color:var(--ink); display:flex; align-items:center; justify-content:space-between; gap:4px; line-height:1.25; }
+  .t-num { font-family:var(--serif); font-weight:600; font-size:calc(var(--fs-title) * 1.2); line-height:1.05; margin-top:5px; display:flex; align-items:baseline; gap:5px; color:var(--heading); font-variant-numeric:tabular-nums; }
+  .t-num small { font-family:var(--sans, Inter, sans-serif); font-size:var(--fs-cap); font-weight:600; color:var(--muted); }
+  .sc-tile.on .t-num { color:var(--green); } .sc-tile.near .t-num { color:var(--gold-ink); } .sc-tile.off .t-num { color:var(--red); }
+  .t-foot { font-size:var(--fs-cap); color:var(--muted); margin-top:6px; line-height:1.3; }
+  .t-ex { color:var(--gold-ink); font-weight:600; }
+  .t-chip { font-size:10px; font-weight:700; color:var(--gold-ink); border:1px dashed var(--gold); border-radius:999px; padding:1px 6px; white-space:nowrap; }
+  .t-pill { font-size:10.5px; font-weight:700; border-radius:999px; padding:2px 7px; white-space:nowrap; background:var(--line-soft); color:var(--muted); }
+  .t-pill.on { background:var(--green-soft); color:var(--green); } .t-pill.near { background:rgba(198,168,92,.2); color:var(--gold-ink); } .t-pill.off { background:var(--red-soft); color:var(--red); }
+  .t-viz-box { position:relative; margin-top:6px; }
+  .t-viz { display:block; overflow:visible; } .sv-area { fill:var(--heading); opacity:.07; } .sv-line { fill:none; stroke:var(--heading); stroke-width:1.8; stroke-linejoin:round; stroke-linecap:round; opacity:.8; }
+  .sv-goal { stroke:var(--muted); stroke-width:1; stroke-dasharray:3 3; opacity:.8; }
+  .t-dot { position:absolute; width:8px; height:8px; border-radius:50%; background:var(--heading); box-shadow:0 0 0 1.5px var(--card); } .t-dot.on { background:var(--green); } .t-dot.near { background:var(--gold); } .t-dot.off { background:var(--red); }
+  .t-band { position:relative; height:8px; margin:14px 0 4px; } .t-band i { position:absolute; top:0; bottom:0; border-radius:2px; }
+  .t-band .b0 { background:#E7BDB8; } .t-band .b1 { background:#CFE3D6; } .t-band .b2 { background:#97C3A6; } .t-band .b3 { background:#5C9C74; } .t-band .b4 { background:var(--green); }
+  .t-band b { position:absolute; top:-6px; width:2px; height:20px; margin-left:-1px; background:var(--heading); border-radius:1px; }
+  .t-band b::before { content:""; position:absolute; top:-5px; left:-4px; border:5px solid transparent; border-top-color:var(--heading); }
+  .t-scale { display:flex; justify-content:space-between; font-size:10.5px; color:var(--muted); }
+  .t-dots { display:flex; gap:4px; margin-top:12px; } .t-dots i { flex:1; height:8px; border-radius:4px; background:var(--line-soft); overflow:hidden; position:relative; } .t-dots em { position:absolute; left:0; top:0; bottom:0; background:var(--green); }
+  .sc-tile.near .t-dots em { background:var(--gold); } .sc-tile.off .t-dots em { background:var(--red); }
+  .t-pct { position:relative; height:10px; border-radius:5px; background:var(--line-soft); margin:22px 0 4px; } .t-pct i { position:absolute; left:0; top:0; bottom:0; border-radius:5px; background:var(--green); }
+  .sc-tile.near .t-pct i { background:var(--gold); } .sc-tile.off .t-pct i { background:var(--red); }
+  .t-pct b { position:absolute; top:-5px; bottom:-5px; width:2px; margin-left:-1px; background:var(--heading); border-radius:1px; }
+  .t-pct b span { position:absolute; bottom:calc(100% + 3px); left:50%; transform:translateX(-50%); font-size:10.5px; font-weight:600; color:var(--heading); white-space:nowrap; }
   /* Nov 17: Marketing */
   body.mk-only nav.bottom, body.mk-only #navTop { display:none !important; }
   .mk-row { display:flex !important; align-items:center; gap:12px; text-align:left; }
@@ -2588,36 +2608,78 @@ const SAMPLE_HOME={
   // (Jan–Oct); eNPS has only October; Team Judgment and Profitability have no data yet, so those are made up. No goals are
   // set yet, so the goals here are examples.
   scorecard:[
-    { name:'Completed Cases', note:'October · 12-mo avg 318', value:327, goal:320, unit:'', better:'up', period:'month', trend:[377,307,342,326,297,330,316,325,303,327].slice(-8) },
-    { name:'Turnover Rate', note:'October', value:3.7, goal:3, unit:'%', better:'down', period:'month', trend:[3.6,0,0,3.6,3.7,3.7,3.7] },
-    { name:'eNPS', note:'Employee Net Promoter · 30+ is strong', value:47, goal:30, unit:'', better:'up', period:'month', trend:[] },
-    { name:'Team Judgment', note:'1 to 5 · sample', value:4.2, goal:4, unit:'', better:'up', period:'month', trend:[3.8,3.9,4.1,4,4.2] },
-    { name:'Profitability Percentile', note:'sample', value:72, goal:75, unit:'th', better:'up', period:'month', trend:[64,66,70,69,72] }
+    { name:'Completed Cases', value:327, goal:320, exampleGoal:true, better:'up', viz:'trend', trend:[377,307,342,326,297,330,316,325,303,327], foot:'12-mo avg 318' },
+    { name:'Turnover Rate', value:3.7, unit:'%', goal:4, exampleGoal:true, better:'down', viz:'trend', trend:[7.4,3.8,0,3.6,0,0,3.6,3.7,3.7,3.7], foot:'Lower is better' },
+    { name:'eNPS', value:47, viz:'enps', note:'Oct survey', foot:'30–50 is strong' },
+    { name:'Team Judgment', value:4.2, goal:4, exampleGoal:true, better:'up', viz:'scale5', unitNote:'of 5', sample:true },
+    { name:'Profitability', value:72, goal:75, exampleGoal:true, better:'up', viz:'percentile', unit:'th', unitNote:'pctl', sample:true }
   ],
+  month:'October',
   focus:{ rally:'Every referring office knows our new scheduling line by Dec 31',
     anchors:['Referring doctors come first', 'Same-week care for every patient', 'One team across both offices'],
     objectives:['Visit all 40 referring offices this quarter', 'Answer every referral call within 2 rings', 'Move to the new scheduling line by Dec 1', 'Train every front desk on the new script'] },
   rows:[['Overdue',2,'late'],['Due Today',1,''],['Waiting on You',1,'gold'],['To Review',3,'gold']]
 };
-// The Team Scorecard: one row per number, with this week's value, its goal and the last 8 weeks. Green when it meets the
-// goal, gold when it's within 10%, red beyond. (The same drawing will show the real numbers once they're set up.)
-function scoreState(x){ const v=Number(x.value), g=Number(x.goal); if (!isFinite(v) || !isFinite(g) || !g) return '';
-  const ok=x.better==='down' ? v<=g : v>=g; if (ok) return 'on'; const off=Math.abs(v-g)/Math.abs(g); return off<=0.1 ? 'near' : 'off'; }
-function sparkline(t, goal){
-  const W=84, H=28, p=3, all=t.concat(goal!=null?[goal]:[]), lo=Math.min(...all), hi=Math.max(...all), span=(hi-lo)||1;
-  const X=i=>p+(W-2*p)*i/(t.length-1), Y=v=>H-p-(H-2*p)*(v-lo)/span;
-  const pts=t.map((v,i)=>X(i).toFixed(1)+','+Y(v).toFixed(1)).join(' ');
-  return '<svg class="spark" viewBox="0 0 '+W+' '+H+'" width="'+W+'" height="'+H+'" aria-hidden="true">'
-    +(goal!=null?'<line x1="'+p+'" x2="'+(W-p)+'" y1="'+Y(goal).toFixed(1)+'" y2="'+Y(goal).toFixed(1)+'" class="sp-goal"/>':'')
-    +'<polyline points="'+pts+'" class="sp-line"/><circle cx="'+X(t.length-1).toFixed(1)+'" cy="'+Y(t[t.length-1]).toFixed(1)+'" r="3" class="sp-dot"/></svg>';
+// The Team Scorecard (Nov 17, Brayden: option B, "Health Ring and Tiles"). A ring on top counts the measures on track
+// ("4 of 5 On Track") with one line on what's close or behind, then a big-number tile per measure: a trend line with the
+// goal dashed (viz 'trend'), eNPS on its −100 to 100 band with the standard ranges ('enps'), a 5-step meter ('scale5') or
+// a wide 0–100 bar with the goal marked ('percentile'). Green = meets the goal, gold = within 10%, red = behind.
+// Items: { name, value, goal, exampleGoal, better:'up'|'down', unit, unitNote, viz, trend:[…oldest→newest], note, foot, sample }.
+const ENPS_BANDS=[[-100,0,'Trouble'],[0,10,'Positive'],[10,30,'Good'],[30,50,'Strong'],[50,101,'Excellent']];
+function enpsBand(v){ return ENPS_BANDS.find(b=>v>=b[0] && v<b[1]) || ENPS_BANDS[0]; }
+function scoreState(x){
+  const v=Number(x.value); if (!isFinite(v)) return '';
+  if (x.viz==='enps' && (x.goal==null || x.goal==='')) return v>=10 ? 'on' : v>0 ? 'near' : 'off';
+  const g=Number(x.goal); if (x.goal==null || x.goal==='' || !isFinite(g)) return '';
+  const ok=x.better==='down' ? v<=g : v>=g; if (ok) return 'on';
+  return Math.abs(v-g)<=Math.abs(g||1)*0.1 ? 'near' : 'off';
 }
-function scorecardHtml(list){
-  return '<div class="card scorecard">'+list.map(x=>{ const st=scoreState(x), t=x.trend||[], prev=t.length>1?t[t.length-2]:null, v=Number(x.value);
-    const up=prev!=null && v>prev, down=prev!=null && v<prev, arrow=up?'▲':down?'▼':'';
-    return '<div class="sc-row '+st+'"><div class="sc-name">'+esc(x.name)+'<small>'+esc(x.note||'')+(x.goal!=null?' · Goal '+esc(String(x.goal))+esc(x.unit||''):'')+'</small></div>'
-      +(t.length>1?sparkline(t.map(Number), x.goal!=null?Number(x.goal):null):'<span></span>')
-      +'<div class="sc-val"><b>'+esc(String(x.value))+esc(x.unit||'')+'</b><small'+(arrow?' title="Change from last '+(x.period==='month'?'month':'week')+'"':'')+'>'+(arrow?arrow+' '+esc(String(Math.round(Math.abs(v-prev)*10)/10)):'&nbsp;')+'</small></div></div>'; }).join('')
-    +'<div class="sc-key"><span class="on">Meets goal</span><span class="near">Within 10%</span><span class="off">Behind</span><span class="chg">▲▼ vs last '+(list[0] && list[0].period==='month'?'month':'week')+'</span></div></div>';
+function fmtNum(v, unit){ v=Number(v); const n=Math.round(v*10)/10; return String(n)+(unit==='th' ? (n%100>=11 && n%100<=13 ? 'th' : ({1:'st',2:'nd',3:'rd'}[n%10]||'th')) : (unit||'')); }
+function scTrend(t, goal, st){
+  const W=124, H=34, p=4, all=t.concat(goal!=null?[goal]:[]), lo=Math.min(...all), hi=Math.max(...all), span=(hi-lo)||1;
+  const X=i=>p+(W-2*p)*i/Math.max(1,t.length-1), Y=v=>H-p-(H-2*p)*(v-lo)/span, pts=t.map((v,i)=>X(i).toFixed(1)+','+Y(v).toFixed(1)).join(' '), last=t.length-1;
+  return '<svg class="t-viz" viewBox="0 0 '+W+' '+H+'" width="100%" height="'+H+'" preserveAspectRatio="none" aria-hidden="true">'
+    +'<polygon points="'+X(0).toFixed(1)+','+(H-p)+' '+pts+' '+X(last).toFixed(1)+','+(H-p)+'" class="sv-area"/>'
+    +(goal!=null?'<line x1="'+p+'" x2="'+(W-p)+'" y1="'+Y(goal).toFixed(1)+'" y2="'+Y(goal).toFixed(1)+'" class="sv-goal" vector-effect="non-scaling-stroke"/>':'')
+    +'<polyline points="'+pts+'" class="sv-line" vector-effect="non-scaling-stroke"/></svg>'
+    +'<span class="t-dot '+st+'" style="left:calc('+(X(last)/W*100).toFixed(1)+'% - 4px); top:'+(Y(t[last])-4+6).toFixed(1)+'px"></span>';
+}
+function scEnps(v){
+  const f=x=>(Math.max(-100,Math.min(100,x))+100)/2;
+  return '<div class="t-band" aria-hidden="true">'+ENPS_BANDS.map((b,i)=>'<i class="b'+i+'" style="left:'+f(b[0])+'%;width:calc('+(f(Math.min(100,b[1]))-f(b[0]))+'% - 2px)"></i>').join('')
+    +'<b style="left:'+f(v)+'%"></b></div><div class="t-scale"><span>−100</span><span>0</span><span>100</span></div>';
+}
+function scScale5(v){ return '<div class="t-dots" aria-hidden="true">'+[1,2,3,4,5].map(n=>'<i><em style="width:'+(Math.max(0,Math.min(1,v-(n-1)))*100)+'%"></em></i>').join('')+'</div>'; }
+function scPct(v, goal){ return '<div class="t-pct" aria-hidden="true"><i style="width:'+Math.max(0,Math.min(100,v))+'%"></i>'+(goal!=null?'<b style="left:'+goal+'%"><span>Goal '+fmtNum(goal,'th')+'</span></b>':'')+'</div><div class="t-scale"><span>0</span><span>100</span></div>'; }
+function scRing(states){
+  const r=26, cir=2*Math.PI*r, n=Math.max(1,states.length), seg=cir/n, gap=n>1?4:0, on=states.filter(x=>x==='on').length;
+  return '<svg class="sc-ring" viewBox="0 0 68 68" width="68" height="68" aria-hidden="true"><g transform="rotate(-90 34 34)">'
+    +states.map((st,i)=>'<circle cx="34" cy="34" r="'+r+'" class="rs '+(st||'none')+'" stroke-dasharray="'+(seg-gap).toFixed(2)+' '+(cir-seg+gap).toFixed(2)+'" stroke-dashoffset="'+(-(i*seg)).toFixed(2)+'"/>').join('')
+    +'</g><text x="34" y="40" text-anchor="middle">'+on+'/'+states.length+'</text></svg>';
+}
+function scorecardHtml(list, month){
+  const states=list.map(scoreState), on=states.filter(x=>x==='on').length;
+  const close=list.filter((x,i)=>states[i]==='near').map(x=>x.name), behind=list.filter((x,i)=>states[i]==='off').map(x=>x.name);
+  const moved=list.filter(x=>x.viz==='trend' && (x.trend||[]).length>1).map(x=>({ x:x, d:Number(x.value)-Number(x.trend[x.trend.length-2]) })).sort((a,b)=>Math.abs(b.d)-Math.abs(a.d))[0];
+  const sub=[month||'', behind.length ? listNames(behind)+(behind.length===1?' is':' are')+' behind' : close.length ? listNames(close)+(close.length===1?' is':' are')+' close' : 'Everything meets its goal'].filter(Boolean).join(' · ')
+    +(moved && moved.d ? '<br>'+esc(moved.x.name.split(' ')[0])+' '+(moved.d>0?'▲':'▼')+' '+fmtNum(Math.abs(moved.d), moved.x.unit==='th'?'':moved.x.unit)+' from last month' : '');
+  const chip=x=>x.sample ? '<span class="t-chip">Sample</span>' : '';
+  const ex=x=>x.exampleGoal ? ' <span class="t-ex">example</span>' : '';
+  const tiles=list.map((x,i)=>{
+    const st=states[i], t=(x.trend||[]).map(Number), prev=t.length>1 ? t[t.length-2] : null, v=Number(x.value);
+    const change=prev!=null ? (v>prev?'▲ ':v<prev?'▼ ':'— ')+fmtNum(Math.abs(Math.round((v-prev)*10)/10), x.unit==='th'?'':'') : '';
+    const goalTxt=x.goal!=null && x.goal!=='' ? 'Goal '+(x.better==='down'?'≤ ':'')+fmtNum(x.goal, x.unit)+ex(x) : '';
+    let viz='', small=x.unitNote||change||x.note||'';
+    if (x.viz==='trend' && t.length>1) viz=scTrend(t, x.goal!=null && x.goal!=='' ? Number(x.goal) : null, st);
+    else if (x.viz==='enps') { viz=scEnps(v); small=x.note||''; }
+    else if (x.viz==='scale5') viz=scScale5(v);
+    else if (x.viz==='percentile') viz=scPct(v, x.goal!=null && x.goal!=='' ? Number(x.goal) : null);
+    const pill=x.viz==='enps' ? '<span class="t-pill '+st+'">'+enpsBand(v)[2]+'</span>' : chip(x);
+    const foot=[x.viz==='percentile' && x.goal!=null && v<x.goal ? fmtNum(x.goal-v,'')+' points under goal' : goalTxt, x.foot||''].filter(Boolean).join('<br>');
+    if (x.viz==='percentile') return '<div class="card sc-tile wide '+st+'"><div><div class="t-name">'+esc(x.name)+' '+pill+'</div><div class="t-num">'+fmtNum(v, x.unit)+'<small>'+esc(small)+'</small></div><div class="t-foot">'+foot+'</div></div><div class="t-wide-viz">'+viz+'</div></div>';
+    return '<div class="card sc-tile '+st+'"><div class="t-name">'+esc(x.name)+' '+pill+'</div><div class="t-num">'+fmtNum(v, x.unit)+'<small>'+esc(small)+'</small></div><div class="t-viz-box">'+viz+'</div><div class="t-foot">'+foot+'</div></div>';
+  }).join('');
+  return '<div class="card sc-health">'+scRing(states)+'<div><b>'+on+' of '+list.length+' On Track</b><small>'+sub+'</small></div></div><div class="sc-tiles">'+tiles+'</div>';
 }
 function renderHome(m){
   if (sampleOn()) return renderHomeSample(m);
@@ -2632,7 +2694,7 @@ function renderHome(m){
   m.innerHTML='<div class="head-row home-title"><h2>Huddle</h2></div>'   // Nov 16 (Brayden): the Home tab's page is titled Huddle
     // Nov 16 (Brayden): Scorecard first, then the Rally Cry card, then For You, then the meeting card.
     // Critique 4 (#1): the Scorecard shows once it has numbers (S.data.scorecard).
-    +(S.data.scorecard && S.data.scorecard.length ? '<h3 class="set-sec">Team Scorecard</h3>'+scorecardHtml(S.data.scorecard) : '')
+    +(S.data.scorecard && S.data.scorecard.length ? '<h3 class="set-sec">Team Scorecard</h3>'+scorecardHtml(S.data.scorecard, S.data.scorecardMonth) : '')
     +focusCard()
     +'<h3 class="set-sec">For You</h3>'+(rows?'<div class="set-card">'+rows+'</div>':'<p class="none">You\'re all caught up.</p>')
     +nextTacticalCard();
@@ -2644,7 +2706,7 @@ function renderHomeSample(m){
   const next=S.data.defaultDue || addDays(S.data.today, 2);
   m.innerHTML='<div class="head-row home-title"><h2>Huddle</h2></div>'
     +'<div class="sample-note">'+ICON.tour+'<span>Showing <b>sample data</b>, only on this device.</span><button type="button" class="linkbtn" data-act="sample-off">Turn Off</button></div>'
-    +'<h3 class="set-sec">Team Scorecard</h3>'+scorecardHtml(X.scorecard)
+    +'<h3 class="set-sec">Team Scorecard</h3>'+scorecardHtml(X.scorecard, X.month)
     +'<details class="card focus-card"><summary><span class="sec">Rally Cry</span><span class="rally">'+esc(f.rally)+'</span><span class="chev" aria-hidden="true">›</span></summary>'
     +'<div class="focus-more">'+list('Strategic Anchors', f.anchors)+list('Defining Objectives', f.objectives)+'</div></details>'
     +'<h3 class="set-sec">For You</h3><div class="set-card">'+X.rows.map(r=>row(r[0], r[1], r[2])).join('')+'</div>'
@@ -5136,7 +5198,7 @@ async function liveAddItem(el){
 /* ---------- Alfred chat bubble ---------- */
 // The conversation lives only in this page (S.alf) and is gone after a reload. Every message carries the screen
 // context below, and the screenshot taken when the bubble was tapped, so nobody has to describe where they were.
-const APP_VERSION = '2026.11.17-marketing';
+const APP_VERSION = '2026.11.17-scorecard';
 const H2C_URL = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
 const DIAG = { errors:[], actions:[] };   // last 10 of each, for bug reports
 function pushDiag(list, item){ list.push(item); if (list.length>10) list.shift(); }
