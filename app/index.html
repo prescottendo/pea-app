@@ -19,7 +19,7 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" type="image/png" href="icon-192.png">
-<script>window.HUDDLE_WEB={"api":"https://script.google.com/macros/s/AKfycbzM8K_-XRMDdOJYJ3THn_FhyZkRreMddHIBAOFCFVoq5S_Y7MnsfFLsl7ac_fyDPrch/exec","clientId":"473377418367-cqmmnfum4kshq16973m4sj2jqqfa55p0.apps.googleusercontent.com","build":"d279eff","push":{"config":{"apiKey":"AIzaSyBON-0KvTXPD_MV6ykhYvCoBRiECEHyE9c","authDomain":"huddle-e2548.firebaseapp.com","projectId":"huddle-e2548","storageBucket":"huddle-e2548.firebasestorage.app","messagingSenderId":"554653922065","appId":"1:554653922065:web:87de53b4cb11b36835d2b0"},"vapidKey":"BHKeDoBmW7vL-qAT3ocyTaMaZ27Ca66jvQtTes2NC4CPoWFiPBJcga7wVd-RD1IuyhBki0oKXwPBGSNq002s8o8"}};document.documentElement.classList.add('web');</script>
+<script>window.HUDDLE_WEB={"api":"https://script.google.com/macros/s/AKfycbzM8K_-XRMDdOJYJ3THn_FhyZkRreMddHIBAOFCFVoq5S_Y7MnsfFLsl7ac_fyDPrch/exec","clientId":"473377418367-cqmmnfum4kshq16973m4sj2jqqfa55p0.apps.googleusercontent.com","build":"9de1e7a","push":{"config":{"apiKey":"AIzaSyBON-0KvTXPD_MV6ykhYvCoBRiECEHyE9c","authDomain":"huddle-e2548.firebaseapp.com","projectId":"huddle-e2548","storageBucket":"huddle-e2548.firebasestorage.app","messagingSenderId":"554653922065","appId":"1:554653922065:web:87de53b4cb11b36835d2b0"},"vapidKey":"BHKeDoBmW7vL-qAT3ocyTaMaZ27Ca66jvQtTes2NC4CPoWFiPBJcga7wVd-RD1IuyhBki0oKXwPBGSNq002s8o8"}};document.documentElement.classList.add('web');</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <!-- The fonts load without holding up the first paint; the page shows in the phone's own font for a moment if needed. -->
@@ -469,6 +469,9 @@
   .head-row.ptitle { align-items:center !important; flex-wrap:nowrap !important; gap:4px; margin-bottom:12px; }
   .head-row.ptitle h2, .head-row.ptitle h2:only-child { display:flex; align-items:center; gap:10px; min-width:0; flex:1; margin:0 !important; line-height:1.15; }
   .head-row.ptitle .ptools > * { flex:none; }
+  /* Nov 17 (Brayden: "‹ Account" only worked at the top of Admin Tools): the pinned title row sits over the small bar's back
+     link, so the row lets taps through; only its own buttons (search, filter, initials) take them. */
+  .head-row.ptitle { pointer-events:none; } .head-row.ptitle button, .head-row.ptitle a, .head-row.ptitle [data-act], .head-row.ptitle input { pointer-events:auto; }
   .head-row.ptitle h2 svg.tree { height:30px; }
   .head-row.ptitle .ptools { display:flex; align-items:center; gap:2px; flex:none; }
   /* Nov 16 (Brayden): the title's words end on the same line as the bottom of the icons (the 32pt initials), while the
@@ -653,6 +656,44 @@
   .set-row.mk-row > span.mk-date, .set-row.mk-row > span.plats { flex:0 0 auto; } .set-row.mk-row > .mk-main { flex:1 1 auto; min-width:0; }
   .mk-main { flex:1; min-width:0; font-weight:600; color:var(--ink); line-height:1.3; } .mk-main small { display:block; font-weight:400; color:var(--muted); font-size:var(--fs-cap); margin-top:2px; }
   .mk-date { width:38px; text-align:center; flex:none; } .mk-date b { display:block; font-family:var(--serif); font-size:20px; color:var(--heading); line-height:1; } .mk-date small { font-size:10px; font-weight:700; letter-spacing:.06em; color:var(--muted); }
+  /* Nov 17: Marketing Reports */
+  .rep-entry { display:flex; align-items:center; gap:12px; width:100%; text-align:left; padding:12px 14px; margin:0 0 4px; border-left:4px solid var(--gold); font:inherit; color:inherit; }
+  .rep-entry > span:first-child { flex:1; } .rep-entry b { color:var(--heading); font-size:var(--fs-body); } .rep-entry small { display:block; color:var(--muted); font-size:var(--fs-sub); margin-top:2px; }
+  .rep-card { padding:12px 14px; margin:0 0 10px; } .rep-card .sec-h { margin:0 0 8px; }
+  .rep-big { display:flex; align-items:baseline; gap:8px; } .rep-big b { font-family:var(--serif); font-size:32px; color:var(--heading); line-height:1; } .rep-big b.up { color:var(--green); } .rep-big b.dn { color:var(--red); } .rep-big span { color:var(--muted); font-size:var(--fs-sub); }
+  .rep-tags { display:flex; flex-wrap:wrap; gap:6px; margin-top:8px; }
+  .rep-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:10px; }
+  .rep-tile { text-align:left; padding:12px; margin:0; font:inherit; color:inherit; display:flex; flex-direction:column; gap:2px; min-height:104px; }
+  .rep-tile i { font-style:normal; font-size:20px; } .rep-tile b { color:var(--heading); font-size:var(--fs-body); margin-top:4px; } .rep-tile small { color:var(--muted); font-size:var(--fs-cap); }
+  .rep-chips { display:flex; gap:6px; margin:0 0 12px; flex-wrap:wrap; }
+  .rep-chip { font:inherit; font-size:var(--fs-cap); font-weight:600; padding:6px 11px; border-radius:999px; border:1px solid var(--line); background:var(--card); color:var(--heading); min-height:32px; }
+  .rep-chip.on { background:var(--primary); color:var(--primary-ink); border-color:var(--primary); }
+  .rep-svg { display:block; overflow:visible; } .rep-svg text { font-size:9px; fill:var(--muted); } .rep-svg .hit { fill:transparent; cursor:pointer; }
+  .rep-svg .l-prev { fill:none; stroke:var(--line); stroke-width:2; } .rep-svg .l-cur { fill:none; stroke:var(--heading); stroke-width:2.2; } .rep-svg .a-cur { fill:var(--heading); opacity:.08; } .rep-svg .d-cur { fill:var(--heading); }
+  .rep-key { font-size:var(--fs-cap); color:var(--muted); margin:6px 0 0; display:flex; flex-wrap:wrap; gap:4px 10px; align-items:center; }
+  .rep-key i { display:inline-block; width:10px; height:10px; border-radius:2px; margin-right:4px; vertical-align:-1px; } .rep-key .k-cur { background:var(--heading); } .rep-key .k-prev { background:var(--line); }
+  .rep-heat { display:grid; grid-template-columns:repeat(6,1fr); gap:5px; } .rep-heat span { text-align:center; }
+  .rep-heat b { display:grid; place-items:center; height:34px; border-radius:6px; font-size:11px; color:var(--heading); background:color-mix(in srgb, var(--heading) calc(15% + var(--t) * 75%), transparent); }
+  .rep-heat b.dk { color:#fff; } .rep-heat small { font-size:10px; color:var(--muted); }
+  .rep-note, .rep-p { font-size:var(--fs-sub); color:var(--ink); margin:8px 0 0; line-height:1.45; } .rep-note { color:var(--muted); } .rep-p .dn, .dn { color:var(--red); } .up { color:var(--green); }
+  .rep-div .dv { display:grid; grid-template-columns:96px 1fr 36px; gap:6px; align-items:center; width:100%; padding:5px 0; background:none; border:none; font:inherit; color:inherit; text-align:left; }
+  .dv-n b { display:block; font-size:var(--fs-sub); } .dv-n small { color:var(--muted); font-size:10.5px; display:block; overflow:hidden; text-overflow:clip; white-space:nowrap; }
+  .dv-bar { position:relative; height:12px; } .dv-bar::before { content:''; position:absolute; left:50%; top:-3px; bottom:-3px; width:1px; background:var(--line); }
+  .dv-bar i { position:absolute; height:12px; border-radius:3px; } .dv-bar i.up { left:50%; background:var(--green); } .dv-bar i.dn { right:50%; background:var(--red); }
+  .dv-v { text-align:right; font-size:var(--fs-sub); } .dv-v.up { color:var(--green); } .dv-v.dn { color:var(--red); }
+  .rep-two { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:6px; }
+  .rep-mini { text-align:left; padding:12px 14px; margin:0; font:inherit; color:inherit; } .rep-mini .sec-h { margin:0 0 4px; } .rep-mini small { color:var(--muted); font-size:var(--fs-cap); display:block; margin-top:4px; }
+  .rep-n { color:var(--heading); font-size:var(--fs-body); min-width:28px; text-align:right; } .rep-n .up, .rep-n .dn { font-size:var(--fs-sub); }
+  .rep-ch { font-size:var(--fs-cap); font-weight:700; white-space:nowrap; }
+  .rep-split { display:flex; height:28px; border-radius:7px; overflow:hidden; margin:2px 0 10px; } .rep-split button { border:none; color:#fff; font:inherit; font-size:11px; font-weight:700; padding:0; }
+  .rep-legend button { display:block; width:100%; text-align:left; background:none; border:none; font:inherit; font-size:var(--fs-sub); color:var(--ink); padding:4px 0; }
+  .rep-legend i { display:inline-block; width:10px; height:10px; border-radius:2px; margin-right:6px; } .rep-legend b { color:var(--heading); } .rep-legend small { color:var(--muted); margin-left:6px; }
+  .rep-area { display:flex; align-items:center; gap:12px; } .rep-donut { flex:none; } .rep-donut .dn-n { font-family:var(--serif); font-size:18px; fill:var(--heading); } .rep-donut .dn-l { font-size:9px; fill:var(--muted); }
+  .rep-hbar { display:grid; grid-template-columns:1fr auto; gap:3px 8px; width:100%; margin:6px 0; background:none; border:none; font:inherit; color:inherit; text-align:left; padding:0; }
+  .hb-t b { font-size:var(--fs-sub); } .hb-t small { color:var(--muted); font-size:var(--fs-cap); } .hb-v { color:var(--heading); font-size:var(--fs-sub); }
+  .hb-bar { grid-column:1 / -1; height:7px; border-radius:4px; background:var(--line-soft); } .hb-bar i { display:block; height:7px; border-radius:4px; background:var(--heading); }
+  .mk-picks:empty { display:none; } .mk-picks { margin-top:6px; } .mk-picks .set-row small { display:block; color:var(--muted); font-size:var(--fs-cap); }
+  .mk-doc { font-size:var(--fs-sub); margin:6px 0 0; }
   /* Nov 17: Referrals (Watch List, budget card, office page) */
   .ref-row .mk-main small.why { font-weight:600; } .ref-row .why.r, .ref-why.r { color:var(--red); } .ref-row .why.g, .ref-why.g { color:var(--green); } .ref-row .why.a, .ref-why.a { color:var(--gold-ink); }
   .ref-row .mk-main .mtag { margin-left:4px; vertical-align:1px; }
@@ -2503,7 +2544,7 @@ function navKind(el){
 // back: the screen this one was reached from ('More', 'Settings', 'My Tasks'), shown as "‹ More" above the title (AP-1).
 function go(v, back){
   if (v==='topics') { v='meetings'; S.mtab='topics'; back=null; }
-  if (mkOnly() && ['marketing','more','settings'].indexOf(v)<0) { v='marketing'; back=null; }   // Nov 17: Ashley sees only Marketing
+  if (mkOnly() && ['marketing','more','settings','reports','report'].indexOf(v)<0) { v='marketing'; back=null; }   // Nov 17: Ashley sees only Marketing
   if (S.tv && v!=='live') { S.tv=false; document.body.classList.remove('tv'); }
   // Each visit to a screen starts with no filters, so a person or priority picked on Team Tasks doesn't follow you around (BUG-12).
   if (v!==S.view) { S.q=''; S.status='open'; S.priority=''; S.meeting=''; S.sort='due'; S.person=''; S.searchOpen=false; S.mSearch=false;
@@ -2701,9 +2742,11 @@ function renderPage(){
   if (S.view==='teamset') return done(renderTeamSettings(m));
   if (S.view==='review') return done(renderReview(m));
   if (S.view==='topics') return meltAsync(m, done(renderTopics(m)));
-  if (mkOnly() && ['marketing','more','settings'].indexOf(S.view)<0) S.view='marketing';
+  if (mkOnly() && ['marketing','more','settings','reports','report'].indexOf(S.view)<0) S.view='marketing';
   if (S.view==='meetings') return meltAsync(m, done(renderMeetings(m)));
   if (S.view==='marketing') return meltAsync(m, done(renderMarketing(m)));
+  if (S.view==='reports') return done(renderReports(m));   // Nov 17: Marketing › Reports
+  if (S.view==='report') return done(renderReport(m));
   if (S.view==='live') return done(renderLive(m));
   if (S.view==='deleted') return meltAsync(m, done(renderDeleted(m)));
   if (S.view==='settings') return done(renderSettings(m));
@@ -3004,7 +3047,7 @@ function mkDeliveriesHtml(){
     +'<div class="mk-due-list">'+due.slice(0, S.kAllDue?99:5).map(o=>'<button type="button" data-act="dl-new" data-office="'+esc(o.name)+'">'+esc(o.name)+'<small>'+(o.days_since==null?'Never visited':o.days_since+' days')+'</small></button>').join('')
     +(due.length>5 && !S.kAllDue ? '<button type="button" class="linkbtn" data-act="k-all-due">'+(due.length-5)+' More</button>' : '')+'</div></div>' : '';
   const body=mkGroups(groups, '<button type="button" class="capsule" data-act="dl-new">＋ New Delivery</button>');
-  return (S.kq ? '' : refWatchHtml()+mkBudgetHtml()) + dueCard + body + (!list.length && !S.kq ? '<p class="none">No deliveries yet. Tap ＋ New Delivery to plan the first one.</p>' : list.length ? '' : '<p class="none">No matches.</p>');
+  return (S.kq ? '' : refReportsCard()+refWatchHtml()+mkBudgetHtml()) + dueCard + body + (!list.length && !S.kq ? '<p class="none">No deliveries yet. Tap ＋ New Delivery to plan the first one.</p>' : list.length ? '' : '<p class="none">No matches.</p>');
 }
 // ===== Referrals (Nov 17, Brayden: option B "Watch List", sheets sync option Y) =====
 // S.mkt.referrals (from the Referral Tracker sheet, read every 5 minutes by the server): { year, last (latest month with
@@ -3055,8 +3098,8 @@ function refWatchHtml(){
 // Gifts that went to this doctor (their last name in the office line) or to their office, newest first (as the server).
 function refLastName(n){ let t=String(n||'').replace(/\(.*?\)/g,'').replace(/^dr\.?\s+/i,'').trim(); t=t.indexOf(',')>=0 ? t.split(',')[0] : t.split(' ').pop(); return t.toLowerCase().replace(/[^a-z'-]/g,''); }
 function refGifts(r){
-  const ln=refLastName(r.d), off=String(r.o||'').trim().toLowerCase(), re=ln.length>2 ? new RegExp('\\b'+ln.replace(/[-']/g,'.')+'\\b','i') : null;
-  return (S.mkt.deliveries||[]).filter(d=>d.date && d.status!=='Canceled' && d.status!=='Idea' && ((re && re.test(d.office)) || (off.length>2 && String(d.office).trim().toLowerCase()===off)))
+  const ln=refLastName(r.d), off=String(r.o||'').trim().toLowerCase(), re=ln.length>2 ? new RegExp('\\b'+ln.replace(/[-']/g,'.')+'\\b','i') : null, doc=String(r.d).trim().toLowerCase();
+  return (S.mkt.deliveries||[]).filter(d=>d.date && d.status!=='Canceled' && d.status!=='Idea' && (d.doctor ? String(d.doctor).trim().toLowerCase()===doc : ((re && re.test(d.office)) || (off.length>2 && String(d.office).trim().toLowerCase()===off))))
     .sort((a,b)=>String(b.date).localeCompare(String(a.date)));
 }
 function refOfficeSheet(){
@@ -3090,6 +3133,233 @@ function refAllList(){
       +groups[t].sort((a,b)=>refYtd(b[0])-refYtd(a[0])).map(row).join('')+'</div>'; }).join('')
     +(rows.length ? '' : '<p class="none">No matches.</p>');
 }
+// ===== Marketing Reports (Nov 17, Brayden: layout A "Report Cards"; Design Picks/Marketing Reports Options) =====
+// Marketing › Referrals › Reports opens a page of report cards (view 'reports'); each opens its report (view 'report',
+// S.repKind). Everything is worked out here from S.mkt.referrals (the Referral Tracker: this year and last year by doctor
+// and month, plus the Historical Data tab's practice totals in hist). Filters (S.rf): time (This Year vs the same months
+// last year, Last 3 Months vs the same 3 last year, or Last Year), areas and tiers. Tapping a chart opens the doctors behind
+// it (sheet 'repdrill'). "Cases" = completed treatments from the PBS report, as the tracker counts them.
+const AREA_NAMES={ PRC:'Prescott', PV:'Prescott Valley', EAST:'East of Mingus', CV:'Chino Valley', PHX:'Phoenix', BAGDAD:'Bagdad', 'SELF REFERRED':'Self-Referred' };
+const AREA_COLORS=['#0A345A','#2F5F8A','#C6A85C','#2E7D4F','#7C9CBB','#D9822B','#9AA5B1','#B8C7D6'];
+const TIER_COLORS={ 1:'#2E7D4F', 2:'#C6A85C', 3:'#D9822B', 4:'#B3261E', 5:'#8E6BB0', 0:'#9AA5B1' };
+const REPORTS=[['pulse','Referral Pulse','This year vs last year'],['moving','Who\'s Moving','Biggest gains and drops'],['dependent','How Dependent','Where cases come from'],
+  ['tiers','Tiers & Areas','By tier and by location'],['offices','Offices','Every office, all its doctors']];
+function areaOf(r){ const k=String(r.l||'').trim().toUpperCase(); return AREA_NAMES[k] || (k ? String(r.l).trim().replace(/\b\w/g,c=>c.toUpperCase()) : 'Unknown'); }
+function s24(r){ return (r.p && r.p.length===12 ? r.p : new Array(12).fill(0)).concat(r.m||new Array(12).fill(0)); }
+function rsum(r, idx){ const s=s24(r); return idx.reduce((a,i)=>a+(i>=0 && i<24 ? (s[i]||0) : 0), 0); }
+function rf(){ return S.rf=S.rf||{ range:'ytd', areas:[], tiers:[] }; }
+function repRows(){ const R=S.mkt.referrals, f=rf(); return R.rows.filter(r=>(!f.areas.length || f.areas.indexOf(areaOf(r))>=0) && (!f.tiers.length || f.tiers.indexOf(String(r.t||0))>=0)); }
+function repRange(){
+  const R=S.mkt.referrals, L=Math.max(0,R.last), f=rf(), mo=i=>MON_SHORT[((i%12)+12)%12], y=R.year;
+  const seq=(a,b)=>{ const o=[]; for (let i=a;i<=b;i++) o.push(i); return o; };
+  if (f.range==='3m') { const cur=seq(12+L-2, 12+L); return { cur, cmp:cur.map(i=>i-12), label:mo(L-2)+'–'+mo(L)+(L<2?'':' '+y), cmpLabel:'same 3 months a year earlier', short:'Last 3 Months' }; }
+  if (f.range==='ly') return { cur:seq(0,11), cmp:null, label:String(y-1), cmpLabel:'', short:'Last Year' };
+  return { cur:seq(12, 12+L), cmp:seq(0, L), label:(L ? 'Jan–'+MON_SHORT[L] : 'Jan')+' '+y, cmpLabel:'same months '+(y-1), short:'This Year' };
+}
+function pctCh(a, b){ return b ? Math.round((a-b)/b*1000)/10 : null; }
+function chTag(p, suffix){ if (p==null) return ''; return mkTag(p>=0?'g':'r', (p>=0?'▲ ':'▼ ')+Math.abs(p)+'%'+(suffix||'')); }
+function repCard(lab, inner, cls){ return '<div class="card rep-card'+(cls?' '+cls:'')+'"><h3 class="sec-h">'+lab+'</h3>'+inner+'</div>'; }
+function repBig(v, sub, cls){ return '<div class="rep-big"><b class="'+(cls||'')+'">'+v+'</b>'+(sub?'<span>'+sub+'</span>':'')+'</div>'; }
+// The Reports card at the top of Referrals: this year vs last, and how many doctors are on the Watch List.
+function refReportsCard(){
+  const R=S.mkt && S.mkt.referrals; if (!R || !R.rows || R.last<0) return '';
+  const L=R.last, ytd=R.rows.reduce((a,r)=>a+r.m.slice(0,L+1).reduce((x,y)=>x+y,0),0), then=R.rows.reduce((a,r)=>a+(r.p||[]).slice(0,L+1).reduce((x,y)=>x+y,0),0), p=pctCh(ytd, then);
+  const slip=(R.watch||[]).filter(w=>w.kind==='slip'||w.kind==='dormant').length;
+  return '<button type="button" class="card rep-entry" data-act="go" data-view="reports" data-back="Marketing"><span><b>Reports</b><small>Cases '+(p==null?ytd.toLocaleString()+' this year':(p>=0?'▲ ':'▼ ')+Math.abs(p)+'% this year')+(slip?' · '+slip+' doctor'+(slip===1?'':'s')+' slipping':'')+'</small></span><span class="chev" aria-hidden="true">›</span></button>';
+}
+function repFilterChips(){
+  const f=rf(), rg=repRange();
+  const chip=(label, on)=>'<button type="button" class="rep-chip'+(on?' on':'')+'" data-act="rep-filter">'+esc(label)+' ▾</button>';
+  return '<div class="rep-chips">'+chip(rg.short, true)+chip(f.areas.length ? (f.areas.length===1 ? f.areas[0] : f.areas.length+' Areas') : 'All Areas', !!f.areas.length)
+    +chip(f.tiers.length ? (f.tiers.length===1 ? (f.tiers[0]==='0'?'No Tier':'Tier '+f.tiers[0]) : f.tiers.length+' Tiers') : 'All Tiers', !!f.tiers.length)+'</div>';
+}
+function renderReports(m){
+  const R=S.mkt && S.mkt.referrals;
+  if (!S.mkt) { m.innerHTML=backLink()+'<h2>Reports</h2><div class="skel" style="height:120px"></div>'; mkLoad().then(()=>{ if (S.view==='reports') render(); }).catch(()=>{ if (S.view==='reports') m.innerHTML=backLink()+'<h2>Reports</h2>'+loadFail('Reports'); }); return; }
+  if (!R || !R.rows || R.last<0) { m.innerHTML=backLink()+'<h2>Reports</h2><div class="empty"><b>No Numbers Yet</b>Reports fill in once the Referral Tracker has cases for this year.</div>'; return; }
+  const L=R.last, ytd=R.rows.reduce((a,r)=>a+r.m.slice(0,L+1).reduce((x,y)=>x+y,0),0), then=R.rows.reduce((a,r)=>a+(r.p||[]).slice(0,L+1).reduce((x,y)=>x+y,0),0);
+  const hint={ pulse:chTag(pctCh(ytd,then),' vs last year'), moving:'', dependent:'', tiers:'', offices:'' };
+  const icons={ pulse:'📈', moving:'↕︎', dependent:'🎯', tiers:'🏷', offices:'🏢' };
+  m.innerHTML=backLink()+'<h2>Reports</h2>'
+    +repCard(MON_NAMES[L].toUpperCase()+' · YEAR TO DATE', repBig(ytd.toLocaleString(),'cases')+'<div class="mt-s">'+chTag(pctCh(ytd,then),' vs '+then.toLocaleString()+' last year')+'</div>')
+    +'<div class="rep-grid">'+REPORTS.map(([k,t,s])=>'<button type="button" class="card rep-tile" data-act="rep-open" data-val="'+k+'"><i aria-hidden="true">'+icons[k]+'</i><b>'+esc(t)+'</b><small>'+esc(s)+'</small>'+(hint[k]?'<span class="mt-s">'+hint[k]+'</span>':'')+'</button>').join('')
+    +'<button type="button" class="card rep-tile" data-act="rep-monthly"><i aria-hidden="true">🗞</i><b>Monthly Report</b><small>'+esc(MON_NAMES[L])+' on one page · print or PDF</small></button></div>'
+    +'<p class="set-note">From the Referral Tracker, through '+esc(MON_NAMES[L])+'. "Cases" are completed treatments, as the tracker counts them. Spend reports come next.</p>';
+}
+function renderReport(m){
+  const R=S.mkt && S.mkt.referrals, k=S.repKind||'pulse', title=(REPORTS.find(x=>x[0]===k)||[])[1]||'Report';
+  if (!S.mkt) { m.innerHTML=backLink()+'<h2>'+esc(title)+'</h2><div class="skel" style="height:160px"></div>'; mkLoad().then(()=>{ if (S.view==='report') render(); }).catch(()=>{}); return; }
+  if (!R || !R.rows || R.last<0) { go('reports', 'Marketing'); return; }
+  const body={ pulse:repPulse, moving:repMoving, dependent:repDependent, tiers:repTiers, offices:repOffices }[k]();
+  m.innerHTML=backLink()+'<h2>'+esc(title)+'</h2>'+repFilterChips()+body;
+}
+// SVG helpers. Every chart is drawn here (no outside library) so it's fast on phones and follows dark mode.
+function repLine(a, b, drill){
+  const w=300, h=118, all=a.concat(b).filter(v=>v!=null), lo=Math.min(...all)*0.9, hi=Math.max(...all)*1.04||1, sp=(hi-lo)||1;
+  const X=i=>16+(w-26)*i/11, Y=v=>h-18-(h-28)*(v-lo)/sp, pts=arr=>arr.map((v,i)=>v==null?null:X(i).toFixed(1)+','+Y(v).toFixed(1)).filter(Boolean).join(' ');
+  const n=b.filter(v=>v!=null).length;
+  return '<svg class="rep-svg" viewBox="0 0 '+w+' '+h+'" width="100%" height="'+h+'" role="img" aria-label="Cases by month, this year against last year">'
+    +'<polyline class="l-prev" points="'+pts(a)+'"/>'+(n ? '<polygon class="a-cur" points="'+X(0).toFixed(1)+','+(h-18)+' '+pts(b)+' '+X(n-1).toFixed(1)+','+(h-18)+'"/><polyline class="l-cur" points="'+pts(b)+'"/><circle class="d-cur" cx="'+X(n-1).toFixed(1)+'" cy="'+Y(b[n-1]).toFixed(1)+'" r="3.5"/>' : '')
+    +MON_SHORT.map((mo,i)=>'<text x="'+X(i).toFixed(1)+'" y="'+(h-4)+'" text-anchor="middle">'+mo[0]+'</text>'+(drill && i<n ? '<rect class="hit" data-act="rep-drill" data-kind="month" data-i="'+i+'" x="'+(X(i)-11).toFixed(1)+'" y="0" width="22" height="'+(h-14)+'"/>' : '')).join('')+'</svg>';
+}
+function repStacked(series, cols, n){
+  const w=300, h=124, tot=series[0].map((_,i)=>series.reduce((a,s)=>a+s[i],0)), hi=Math.max(1,...tot), bw=(w-8)/12;
+  let out='';
+  for (let i=0;i<n;i++){ let y=h-16; series.forEach((s,j)=>{ const hh=(h-24)*s[i]/hi; y-=hh; if (hh>0) out+='<rect x="'+(4+i*bw+2).toFixed(1)+'" y="'+y.toFixed(1)+'" width="'+(bw-4).toFixed(1)+'" height="'+hh.toFixed(1)+'" fill="'+cols[j]+'"/>'; });
+    out+='<rect class="hit" data-act="rep-drill" data-kind="month" data-i="'+i+'" x="'+(4+i*bw).toFixed(1)+'" y="0" width="'+bw.toFixed(1)+'" height="'+(h-14)+'"/>'; }
+  return '<svg class="rep-svg" viewBox="0 0 '+w+' '+h+'" width="100%" height="'+h+'">'+out+MON_SHORT.map((mo,i)=>'<text x="'+(4+i*bw+bw/2).toFixed(1)+'" y="'+(h-3)+'" text-anchor="middle">'+mo[0]+'</text>').join('')+'</svg>';
+}
+function repDonut(parts){
+  const size=124, th=20, r=(size-th)/2, c=2*Math.PI*r, tot=parts.reduce((a,p)=>a+p[1],0)||1; let off=0;
+  return '<svg class="rep-donut" width="'+size+'" height="'+size+'" viewBox="0 0 '+size+' '+size+'" aria-hidden="true">'+parts.map(p=>{ const seg=c*p[1]/tot, el='<circle cx="62" cy="62" r="'+r+'" fill="none" stroke="'+p[2]+'" stroke-width="'+th+'" stroke-dasharray="'+Math.max(0,seg-2).toFixed(1)+' '+(c-seg+2).toFixed(1)+'" stroke-dashoffset="'+(-off).toFixed(1)+'" transform="rotate(-90 62 62)"/>'; off+=seg; return el; }).join('')
+    +'<text x="62" y="64" text-anchor="middle" class="dn-n">'+tot.toLocaleString()+'</text><text x="62" y="80" text-anchor="middle" class="dn-l">cases</text></svg>';
+}
+function repHbar(label, sub, v, max, right, cls, act){
+  return '<'+(act?'button type="button" '+act:'div')+' class="rep-hbar"><span class="hb-t"><b>'+label+'</b>'+(sub?' <small>'+sub+'</small>':'')+'</span><b class="hb-v">'+right+'</b><span class="hb-bar"><i class="'+(cls||'')+'" style="width:'+(max?Math.max(1,v/max*100):0).toFixed(1)+'%"></i></span></'+(act?'button':'div')+'>';
+}
+function repDoctorRow(r, right, sub){ const i=S.mkt.referrals.rows.indexOf(r);
+  return '<button type="button" class="set-row ref-row" data-act="ref-open" data-i="'+i+'"><span class="mk-main">'+esc(r.d)+(r.t?' '+refTierTag(r.t):'')+'<small>'+esc(sub!=null?sub:(r.o||areaOf(r)))+'</small></span><b class="rep-n">'+right+'</b><span class="chev" aria-hidden="true">›</span></button>'; }
+// 1. Referral Pulse
+function repPulse(){
+  const R=S.mkt.referrals, rows=repRows(), rg=repRange(), L=R.last, f=rf();
+  const cur=rows.reduce((a,r)=>a+rsum(r,rg.cur),0), cmp=rg.cmp ? rows.reduce((a,r)=>a+rsum(r,rg.cmp),0) : null;
+  const yrNow=MON_SHORT.map((_,i)=>i<=L ? rows.reduce((a,r)=>a+(r.m[i]||0),0) : null), yrPrev=MON_SHORT.map((_,i)=>rows.reduce((a,r)=>a+((r.p||[])[i]||0),0));
+  const H=R.hist||{}, years=Object.keys(H).sort(), avg=MON_SHORT.map((_,i)=>{ const v=years.map(y=>H[y][i]).filter(x=>x>0); return v.length ? Math.round(v.reduce((a,b)=>a+b,0)/v.length) : 0; });
+  let pace='';
+  if (f.range==='ytd' && L<11) { const full=avg.reduce((a,b)=>a+b,0), part=avg.slice(0,L+1).reduce((a,b)=>a+b,0); const est=full && part ? Math.round(cur*full/part) : Math.round(cur/(L+1)*12); pace=mkTag('b','On pace for '+est.toLocaleString()); }
+  let heat='';
+  if (years.length) { const lo=Math.min(...avg.filter(Boolean)), hi=Math.max(...avg), t=v=>hi>lo?(v-lo)/(hi-lo):0;
+    const low=avg.indexOf(lo), drop=Math.round((1-lo/(avg.reduce((a,b)=>a+b,0)/12))*100);
+    heat=repCard('USUAL MONTH ('+years[0]+'–'+years[years.length-1]+' AVERAGE, WHOLE PRACTICE)', '<div class="rep-heat">'+avg.map((v,i)=>'<span><b style="--t:'+t(v).toFixed(2)+'" class="'+(t(v)>.45?'dk':'')+'">'+v+'</b><small>'+MON_SHORT[i]+'</small></span>').join('')+'</div>'
+      +(drop>3 ? '<p class="rep-note">'+MON_NAMES[low]+' usually runs '+drop+'% below an average month.</p>' : '')); }
+  return repCard(rg.label.toUpperCase(), repBig(cur.toLocaleString(),'cases')+'<div class="rep-tags">'+(cmp!=null?chTag(pctCh(cur,cmp),' vs '+cmp.toLocaleString()+' ('+rg.cmpLabel+')'):'')+pace+'</div>')
+    +repCard('BY MONTH · '+R.year+' VS '+(R.year-1), repLine(yrPrev, yrNow, true)+'<p class="rep-key"><i class="k-cur"></i>'+R.year+' <i class="k-prev"></i>'+(R.year-1)+' · tap a month to see who sent cases</p>')
+    +heat;
+}
+// 2. Who's Moving (Brayden: the bars on top, then both lists, then new and gone quiet)
+function repMoving(){
+  const rg=repRange(); if (!rg.cmp) return '<p class="none">Pick This Year or Last 3 Months to compare with a year earlier.</p>';
+  const rows=repRows().map(r=>({ r:r, now:rsum(r,rg.cur), then:rsum(r,rg.cmp) })).map(x=>Object.assign(x,{ d:x.now-x.then }));
+  const up=rows.filter(x=>x.d>0).sort((a,b)=>b.d-a.d), down=rows.filter(x=>x.d<0).sort((a,b)=>a.d-b.d);
+  const bars=up.slice(0,4).concat(down.slice(0,4).reverse()), mx=Math.max(1,...bars.map(x=>Math.abs(x.d)));
+  const fresh=rows.filter(x=>x.then===0 && x.now>0), quiet=rows.filter(x=>x.then>=2 && x.now===0 && !/no longer|retired|moved|closed/i.test(x.r.s||''));
+  S.repLists={ up:up, down:down, fresh:fresh, quiet:quiet };
+  const list=(arr, key, cls)=>'<div class="set-card mrows">'+(arr.length ? arr.slice(0, S.repAll===key?999:8).map(x=>repDoctorRow(x.r, '<span class="'+cls+'">'+(x.d>0?'▲ ':'▼ ')+Math.abs(x.d)+'</span>', (x.r.o||areaOf(x.r))+' · '+x.now+' vs '+x.then)).join('') : '<p class="none">None.</p>')
+    +(arr.length>8 && S.repAll!==key ? '<button type="button" class="set-row more-row" data-act="rep-all" data-val="'+key+'"><span>Show All '+arr.length+'</span><span class="chev" aria-hidden="true">›</span></button>' : '')+'</div>';
+  return repCard('BIGGEST CHANGES · '+rg.label.toUpperCase()+' VS '+rg.cmpLabel.toUpperCase(), bars.length ? '<div class="rep-div">'+bars.map(x=>{ const w=(Math.abs(x.d)/mx*50).toFixed(1);
+      return '<button type="button" class="dv" data-act="ref-open" data-i="'+S.mkt.referrals.rows.indexOf(x.r)+'"><span class="dv-n"><b>'+esc(x.r.d.split(',')[0])+'</b><small>'+esc(x.r.o||areaOf(x.r))+'</small></span><span class="dv-bar"><i class="'+(x.d>0?'up':'dn')+'" style="width:'+w+'%"></i></span><b class="dv-v '+(x.d>0?'up':'dn')+'">'+(x.d>0?'+':'')+x.d+'</b></button>'; }).join('')+'</div>' : '<p class="none">No changes.</p>')
+    +'<div class="rep-two"><button type="button" class="card rep-mini" data-act="rep-drill" data-kind="fresh"><h3 class="sec-h">NEW</h3>'+repBig(String(fresh.length),'doctors','up')+'<small>None in the '+esc(rg.cmpLabel)+'</small></button>'
+    +'<button type="button" class="card rep-mini" data-act="rep-drill" data-kind="quiet"><h3 class="sec-h">WENT QUIET</h3>'+repBig(String(quiet.length),'doctors','dn')+'<small>2+ before, none now</small></button></div>'
+    +'<h3 class="set-sec">Up the Most</h3>'+list(up,'up','up')+'<h3 class="set-sec">Down the Most</h3>'+list(down,'down','dn');
+}
+// 3. How Dependent (Brayden: the split bar on top, no curve)
+function repDependent(){
+  const R=S.mkt.referrals, rg=repRange(), rows=repRows().map(r=>({ r:r, n:rsum(r,rg.cur) })).filter(x=>x.n>0).sort((a,b)=>b.n-a.n), tot=rows.reduce((a,x)=>a+x.n,0)||1;
+  const cuts=[['Top 10',0,10,'#0A345A'],['Next 20',10,30,'#2F5F8A'],['Next 40',30,70,'#7C9CBB'],['Everyone else',70,99999,'#B8C7D6']].map(c=>{ const g=rows.slice(c[1],c[2]); return { label:c[0]+(c[0]==='Everyone else'?' ('+g.length+')':''), n:g.reduce((a,x)=>a+x.n,0), rows:g, col:c[3] }; }).filter(c=>c.rows.length);
+  S.repLists={ cuts:cuts };
+  const L=R.last, months=rg.cur.length, top=rows[0];
+  let whatIf='';
+  if (top) { const perMo=Math.round(top.n/months), areas={}; R.rows.forEach(r=>{ const a=areaOf(r); areas[a]=(areas[a]||0)+rsum(r,rg.cur)/months; });
+    const smaller=Object.keys(areas).filter(a=>a!=='Unknown' && areas[a]<perMo).sort((a,b)=>areas[b]-areas[a])[0];
+    whatIf=repCard('IF THE BIGGEST SOURCE STOPPED', '<p class="rep-p">Losing <b>'+esc(top.r.d)+'</b> alone would mean about <b class="dn">'+perMo+' cases a month</b>'+(smaller?', more than all of '+esc(smaller)+' sends':'')+'.</p>'); }
+  const act3=n=>R.rows.filter(r=>rsum(r,n)>0).length, nowA=act3([12+L-2,12+L-1,12+L]), thenA=L>=2 ? act3([L-2,L-1,L]) : null;
+  return repCard('WHERE CASES COME FROM · '+rg.label.toUpperCase(), '<div class="rep-split">'+cuts.map((c,i)=>'<button type="button" style="width:'+Math.max(4,c.n/tot*100).toFixed(1)+'%;background:'+c.col+'" data-act="rep-drill" data-kind="cut" data-i="'+i+'" aria-label="'+esc(c.label)+': '+Math.round(c.n/tot*100)+'%">'+(c.n/tot>.08?Math.round(c.n/tot*100)+'%':'')+'</button>').join('')+'</div>'
+      +'<div class="rep-legend">'+cuts.map((c,i)=>'<button type="button" data-act="rep-drill" data-kind="cut" data-i="'+i+'"><i style="background:'+c.col+'"></i>'+esc(c.label)+' <b>'+Math.round(c.n/tot*100)+'%</b><small>'+c.n.toLocaleString()+' cases</small></button>').join('')+'</div>')
+    +repCard('BIGGEST SINGLE SOURCES', rows.slice(0,5).map(x=>repHbar(esc(x.r.d.split(',')[0]), esc(x.r.o||''), x.n, rows[0].n, (Math.round(x.n/tot*1000)/10)+'%', '', 'data-act="ref-open" data-i="'+R.rows.indexOf(x.r)+'"')).join(''))
+    +whatIf
+    +repCard('ACTIVE REFERRERS', repBig(String(nowA),'sent 1+ case in the last 3 months')+(thenA!=null?'<div class="rep-tags">'+chTag(pctCh(nowA,thenA),' vs '+thenA+' a year earlier')+'</div>':''));
+}
+// 4. Tiers & Areas
+function repTiers(){
+  const R=S.mkt.referrals, rows=repRows(), rg=repRange(), L=R.last, ly=rf().range==='ly';
+  const tiers=[1,2,3,4,5,0].filter(t=>rows.some(r=>(r.t||0)===t)), name=t=>t ? 'Tier '+t : 'No tier';
+  const series=tiers.map(t=>MON_SHORT.map((_,i)=>rows.filter(r=>(r.t||0)===t).reduce((a,r)=>a+((ly?(r.p||[]):r.m)[i]||0),0)));
+  const areas={}; rows.forEach(r=>{ const a=areaOf(r); areas[a]=(areas[a]||0)+rsum(r,rg.cur); });
+  const parts=Object.keys(areas).filter(a=>areas[a]>0).sort((a,b)=>areas[b]-areas[a]).map((a,i)=>[a, areas[a], AREA_COLORS[i%AREA_COLORS.length]]);
+  S.repLists={ areas:parts.map(p=>p[0]) };
+  const recent=r=>{ const idx=[]; for (let i=12+L-5;i<=12+L;i++) idx.push(i); return rsum(r,idx)/6; };
+  const wrong=rows.map(r=>({ r:r, a:recent(r) })).filter(x=>(x.r.t!==1 && x.a>=8) || (x.r.t===1 && x.a<2) || (x.r.t===2 && x.a<0.5)).sort((a,b)=>b.a-a.a).slice(0,10);
+  return repCard('CASES BY TIER · '+(ly?R.year-1:R.year), repStacked(series, tiers.map(t=>TIER_COLORS[t]), ly?12:L+1)+'<p class="rep-key">'+tiers.map(t=>'<i style="background:'+TIER_COLORS[t]+'"></i>'+name(t)).join(' ')+'</p>')
+    +repCard('BY AREA · '+rg.label.toUpperCase(), '<div class="rep-area">'+repDonut(parts)+'<div class="rep-legend col">'+parts.map((p,i)=>'<button type="button" data-act="rep-drill" data-kind="area" data-i="'+i+'"><i style="background:'+p[2]+'"></i>'+esc(p[0])+' <b>'+p[1].toLocaleString()+'</b></button>').join('')+'</div></div>')
+    +(wrong.length ? '<h3 class="set-sec">Maybe in the Wrong Tier</h3><div class="set-card mrows">'+wrong.map(x=>repDoctorRow(x.r, mkTag(x.r.t===1||(x.r.t===2&&x.a<0.5)?'r':'g', x.r.t===1||(x.r.t===2&&x.a<0.5)?'Review':'Move Up?'), name(x.r.t||0)+' · '+(Math.round(x.a*10)/10)+' a month lately')).join('')+'</div><p class="set-note">Tier 1 is the top 10–15 offices; Tier 2 sends 2–10 a month. Tiers come from the Office cell colors in the tracker.</p>' : '');
+}
+// 5. Offices (all of an office's doctors added up)
+function repOffices(){
+  const rg=repRange(), by={};
+  repRows().forEach(r=>{ const k=String(r.o||r.d).trim().toLowerCase(); const o=by[k]||(by[k]={ name:r.o||r.d, rows:[], now:0, then:0, gift:'' });
+    o.rows.push(r); o.now+=rsum(r,rg.cur); if (rg.cmp) o.then+=rsum(r,rg.cmp); const g=refGifts(r)[0]; if (g && g.date>o.gift) o.gift=g.date; });
+  const list=Object.keys(by).map(k=>by[k]).filter(o=>o.now||o.then).sort((a,b)=>b.now-a.now);
+  S.repLists={ offices:list };
+  return '<div class="set-card mrows">'+list.slice(0, S.repAll==='offices'?999:25).map((o,i)=>{ const p=rg.cmp?pctCh(o.now,o.then):null;
+      return '<button type="button" class="set-row ref-row" data-act="rep-drill" data-kind="office" data-i="'+i+'"><span class="mk-main">'+esc(o.name)+'<small>'+o.rows.length+' doctor'+(o.rows.length===1?'':'s')+' · last gift '+(o.gift?esc(fmtDate(o.gift)):'none logged')+'</small></span>'
+        +(p!=null?'<span class="rep-ch '+(p>=0?'up':'dn')+'">'+(p>=0?'▲ ':'▼ ')+Math.abs(p)+'%</span>':'')+'<b class="rep-n">'+o.now+'</b><span class="chev" aria-hidden="true">›</span></button>'; }).join('')
+    +(list.length>25 && S.repAll!=='offices' ? '<button type="button" class="set-row more-row" data-act="rep-all" data-val="offices"><span>Show All '+list.length+'</span><span class="chev" aria-hidden="true">›</span></button>' : '')+'</div>'
+    +'<p class="set-note">'+esc(rg.label)+(rg.cmp?', change vs the '+esc(rg.cmpLabel):'')+'. Tap an office for its doctors.</p>';
+}
+// The doctors behind a tapped chart piece.
+function repDrill(kind, i){
+  const R=S.mkt.referrals, rows=repRows(), L=R.last, ly=rf().range==='ly', rg=repRange(); let title='', list=[];
+  if (kind==='month') { const idx=(ly?0:12)+i; title=MON_NAMES[i]+' '+(ly?R.year-1:R.year); list=rows.map(r=>[r, s24(r)[idx]||0]); }
+  else if (kind==='cut') { const c=(S.repLists.cuts||[])[i]; if (!c) return; title=c.label; list=c.rows.map(x=>[x.r, x.n]); }
+  else if (kind==='area') { const a=(S.repLists.areas||[])[i]; title=a+' · '+rg.short; list=rows.filter(r=>areaOf(r)===a).map(r=>[r, rsum(r,rg.cur)]); }
+  else if (kind==='office') { const o=(S.repLists.offices||[])[i]; if (!o) return; title=o.name; list=o.rows.map(r=>[r, rsum(r,rg.cur)]); }
+  else if (kind==='fresh' || kind==='quiet') { title=kind==='fresh'?'New':'Went Quiet'; list=(S.repLists[kind]||[]).map(x=>[x.r, kind==='fresh'?x.now:x.then]); }
+  list=list.filter(x=>x[1]>0).sort((a,b)=>b[1]-a[1]);
+  const tot=list.reduce((a,x)=>a+x[1],0);
+  S.repDrill={ title:title+' · '+tot.toLocaleString()+' case'+(tot===1?'':'s'), rows:list, note:kind==='quiet'?'Cases in the '+rg.cmpLabel+'.':'' };
+  S.sheet='repdrill'; showSheet();
+}
+function repDrillSheet(){
+  const D=S.repDrill||{ rows:[] };
+  return '<div class="grab"></div><div class="sheet-head"><h3>'+esc(D.title||'')+'</h3><button type="button" class="btn ghost sm" data-act="close-sheet">Done</button></div>'
+    +'<div class="set-card mrows">'+(D.rows.length ? D.rows.slice(0,150).map(x=>repDoctorRow(x[0], String(x[1]))).join('') : '<p class="none">No cases.</p>')+'</div>'+(D.note?'<p class="set-note">'+esc(D.note)+'</p>':'');
+}
+function repFilterSheet(){
+  const f=rf(), R=S.mkt.referrals, areas=[...new Set(R.rows.map(areaOf))].sort((a,b)=>a==='Unknown'?1:b==='Unknown'?-1:a.localeCompare(b)), tiers=[...new Set(R.rows.map(r=>String(r.t||0)))].sort();
+  const chip=(field, v, label)=>'<button type="button" class="'+(f[field].indexOf(v)>=0?'on':'')+'" data-act="rep-f" data-field="'+field+'" data-val="'+esc(v)+'">'+esc(label)+'</button>';
+  return '<div class="grab"></div><div class="sheet-head"><button type="button" class="btn ghost sm" data-act="rep-f-reset">Reset</button><h3>Filter</h3><button type="button" class="btn primary sm" data-act="close-sheet">Done</button></div>'
+    +'<div class="form"><label>Time</label><div class="seg wrap" role="group">'+[['ytd','This Year'],['3m','Last 3 Months'],['ly','Last Year']].map(([k,l])=>'<button type="button" class="'+(f.range===k?'on':'')+'" data-act="rep-range" data-val="'+k+'">'+l+'</button>').join('')+'</div>'
+    +'<label>Area</label><div class="chips" role="group">'+areas.map(a=>chip('areas', a, a)).join('')+'</div>'
+    +'<label>Tier</label><div class="chips" role="group">'+tiers.map(t=>chip('tiers', t, t==='0'?'No tier':'Tier '+t)).join('')+'</div></div>'
+    +'<p class="set-note">Applies to every report. "This Year" compares with the same months last year.</p>';
+}
+// The Monthly Referral Report on the report screen (the same page the leadership team gets by email), with Print.
+function openRefReport(){
+  closeReport();
+  const el=document.createElement('div'); el.id='report'; el.className='report-screen';
+  el.setAttribute('role','dialog'); el.setAttribute('aria-modal','true'); el.setAttribute('aria-label','Monthly Referral Report');
+  el.innerHTML='<div class="rp-load" role="status" aria-label="Loading"><i class="spin"></i></div>';
+  document.body.appendChild(el); document.body.classList.add('printing-report');
+  motion(el, [{ transform:'translateY(100%)' }, { transform:'none' }], { duration:420, easing:EASE.ios });
+  const mine=el, done=r=>{ if (document.getElementById('report')!==mine) return;
+    mine.innerHTML='<div class="rp-bar"><button type="button" class="btn ghost sm" data-act="report-close">Close</button><b>Monthly Referral Report'+(r&&r.month?' · '+esc(r.month):'')+'</b><button type="button" class="btn primary sm" data-act="report-print">Print</button></div>'
+      +'<div class="rp-paper ref-paper">'+((r&&r.html)||'')+'</div>'; fadeIn(mine.querySelector('.rp-paper'), 220); };
+  (S.mktFrom==='sample' ? Promise.resolve({ html:'<p>Sample data: the real report is built from the Referral Tracker each month.</p>', month:'' }) : call('apiReferralReport')).then(done)
+    .catch(err=>{ if (document.getElementById('report')!==mine) return; mine.innerHTML='<div class="rp-bar"><button type="button" class="btn ghost sm" data-act="report-close">Close</button><b>Monthly Referral Report</b></div><div class="rp-err"><p>The report didn\'t load. '+esc(errText(err))+'</p></div>'; });
+}
+function repClick(a, el, v){
+  if (a==='rep-open') { S.repKind=v; S.repAll=''; go('report', 'Reports'); return true; }
+  if (a==='rep-monthly') { openRefReport(); return true; }
+  if (a==='rep-filter') { S.sheet='repfilter'; showSheet(); return true; }
+  if (a==='rep-range') { rf().range=v; renderSheet(); render(); return true; }
+  if (a==='rep-f') { const f=rf(), arr=f[el.dataset.field], i=arr.indexOf(v); if (i>=0) arr.splice(i,1); else arr.push(v); renderSheet(); render(); return true; }
+  if (a==='rep-f-reset') { S.rf={ range:'ytd', areas:[], tiers:[] }; renderSheet(); render(); return true; }
+  if (a==='rep-drill') { repDrill(el.dataset.kind, Number(el.dataset.i)); return true; }
+  if (a==='rep-all') { S.repAll=v; render(); return true; }
+  return false;
+}
+// The gift pick-list (Nov 17): typing in a delivery's Office field lists matching doctors and offices from the Referral
+// Tracker; picking one sets the office and (for a doctor) the exact doctor, so Reports and the office page count it right.
+function mkPickMatches(q){
+  const R=S.mkt && S.mkt.referrals; q=String(q||'').trim().toLowerCase(); if (!R || !R.rows || q.length<2) return [];
+  const offices={}, out=[];
+  R.rows.forEach(r=>{ if (r.o) offices[r.o.toLowerCase()]=offices[r.o.toLowerCase()]||{ o:r.o, docs:[] }; if (r.o) offices[r.o.toLowerCase()].docs.push(r); });
+  Object.keys(offices).forEach(k=>{ const x=offices[k]; if (x.docs.length>1 && k.indexOf(q)>=0) out.push({ office:x.o, doctor:'', label:x.o, sub:'Whole office · '+x.docs.length+' doctors' }); });
+  R.rows.forEach(r=>{ if ((r.d+' '+(r.o||'')).toLowerCase().indexOf(q)>=0) out.push({ office:r.o||r.d, doctor:r.d, label:r.d, sub:[r.o, r.t?'Tier '+r.t:'', areaOf(r)].filter(Boolean).join(' · ') }); });
+  return out.slice(0,6);
+}
+function mkPickHtml(){ const el=document.getElementById('mk-office'), list=mkPickMatches(el && el.value);
+  return list.length ? list.map((x,i)=>'<button type="button" class="set-row" data-act="mk-pick-doc" data-i="'+i+'"><span>'+esc(x.label)+'<small>'+esc(x.sub)+'</small></span></button>').join('') : ''; }
 function platIcons(p){ const on=String(p||'').split(',').map(s=>s.trim()); const got=PLATS.filter(x=>on.indexOf(x[0])>=0);
   return '<span class="plats" aria-label="'+esc(got.map(x=>x[0]).join(', ')||'No place picked')+'">'+(got.length?got.map(x=>'<i class="plat '+x[1]+'">'+x[2]+'</i>').join(''):'<i class="plat none">?</i>')+'</span>'; }
 function postRow(p){
@@ -3148,7 +3418,9 @@ function mkSheet(){
     const offices=(S.mkt.offices||[]).map(o=>'<option value="'+esc(o.name)+'">').join('');
     const o=(S.mkt.offices||[]).find(z=>z.name.toLowerCase()===String(x.office||'').toLowerCase());
     return head(E.isNew?'New Delivery':'Delivery', E.isNew?'Add':'Save')
-      +'<div class="form"><label for="mk-office">Office</label><input type="text" id="mk-office" list="mk-offices" value="'+esc(x.office||'')+'" placeholder="Which referring office?" autocomplete="off"><datalist id="mk-offices">'+offices+'</datalist>'
+      +'<div class="form"><label for="mk-office">Office or Doctor</label><input type="text" id="mk-office" '+(S.mkt.referrals?'':'list="mk-offices" ')+'value="'+esc(x.office||'')+'" placeholder="Type a doctor or office" autocomplete="off"><datalist id="mk-offices">'+offices+'</datalist>'
+      +'<div class="set-card mrows mk-picks" id="mk-picks"></div>'
+      +(x.doctor ? '<p class="mk-doc">For <b>'+esc(x.doctor)+'</b> <button type="button" class="linkbtn" data-act="mk-doc-clear">Whole office instead</button></p>' : '')
       +(o && o.last ? '<p class="small muted mt-s">Last visit: '+esc(fmtDate(o.last))+(o.days_since!=null?' ('+o.days_since+' days ago)':'')+'</p>' : '')
       +'<label for="mk-date">Date</label><input type="date" id="mk-date" value="'+esc(x.date||'')+'">'
       +'<label for="mk-gift">Gift or Treat</label><input type="text" id="mk-gift" value="'+esc(x.gift||'')+'" placeholder="Pumpkin bread, coffee and donuts…">'
@@ -3198,7 +3470,7 @@ function mkSheet(){
 // What the panel's fields say now.
 function mkRead(){
   const E=S.mk, x=Object.assign({}, E.item), v=id=>{ const el=document.getElementById(id); return el ? el.value : undefined; };
-  if (E.kind==='delivery') { x.office=(v('mk-office')||'').trim(); x.date=v('mk-date')||''; x.gift=v('mk-gift')||''; x.cost=v('mk-cost')||''; x.notes=v('mk-notes')||''; }
+  if (E.kind==='delivery') { x.office=(v('mk-office')||'').trim(); if (E.item.doctor && x.office!==E.pickedOffice) x.doctor=''; x.date=v('mk-date')||''; x.gift=v('mk-gift')||''; x.cost=v('mk-cost')||''; x.notes=v('mk-notes')||''; }
   if (E.kind==='post') { x.title=(v('mk-title')||'').trim(); x.caption=v('mk-caption')||''; x.post_on=v('mk-date')||''; x.link=(v('mk-link')||'').trim(); x.notes=v('mk-notes')||''; }
   if (E.kind==='idea' && v('mk-text')!==undefined) { x.text=(v('mk-text')||'').trim(); x.details=v('mk-details')||''; }
   E.item=x; return x;
@@ -3247,6 +3519,9 @@ function mkClick(a, el, v){
   if (a==='k-task-new') { if (S.mktFrom==='sample') { toast('This is sample data. Turn it off in Account to add real tasks.'); return true; } newTask(); S.edit.task.area='marketing'; renderSheet(); return true; }
   if (a==='mk-pick') { mkRead(); const f=el.dataset.field; S.mk.item[f]= f!=='status' && S.mk.item[f]===v ? '' : v; renderSheet(); return true; }
   if (a==='mk-plat') { mkRead(); const on=String(S.mk.item.platforms||'').split(',').map(s=>s.trim()).filter(Boolean), i=on.indexOf(v); if (i>=0) on.splice(i,1); else on.push(v); S.mk.item.platforms=PLATS.map(p=>p[0]).filter(p=>on.indexOf(p)>=0).join(', '); renderSheet(); return true; }
+  if (a==='mk-pick-doc') { const x=mkPickMatches((document.getElementById('mk-office')||{}).value)[Number(el.dataset.i)]; if (!x) return true;
+    mkRead(); S.mk.item.office=x.office; S.mk.item.doctor=x.doctor; S.mk.pickedOffice=x.office; renderSheet(); return true; }
+  if (a==='mk-doc-clear') { mkRead(); S.mk.item.doctor=''; renderSheet(); return true; }
   if (a==='mk-save') { mkSave(el); return true; }
   if (a==='mk-delivered') { mkSave(el, { status:'Delivered' }, ()=>toast('Marked delivered')); return true; }
   if (a==='mk-stage') { const to=v; mkSave(el, { stage:to }, ()=>toast(to==='Needs Approval' ? (mkIsApprover()?'Saved':'Sent to '+(firstName(mkApprover())||'the approver')+' for approval') : to==='Approved' ? 'Approved' : to==='Posted' ? 'Marked posted' : 'Saved')); return true; }
@@ -3324,7 +3599,8 @@ function sampleReferrals(t){
     { d:'Ortiz, Ray', o:'Lynx Lake Family Dental', s:'', l:'PV', t:4, m:[0,0,1,0,0,0,0,0,0,0], p:[0,0,0,0,0,1,0,0,0,0,0,0] },
     { d:'Hughes, Ann', o:'Sundog Dental', s:'', l:'CV', t:0, m:[2,1,2,3,1,2,2,1,2,3], p:[1,2,1,2,2,1,2,1,2,1,2,1] }
   ].map(r=>Object.assign(r, { m:fill(r.m.slice(0,last+1)), g:'' }));
-  return { year:y, last:last, at:'', tot:[], ptot:[],
+  const hist={}; [2018,2019,2020,2021,2022,2023,2024].forEach((yr,k)=>{ hist[yr]=[264,213,245,289,263,254,262,265,213,250,223,229].map((v,i)=>v+k*12+((i*7+k*3)%11)); });
+  return { year:y, last:last, at:'', tot:[], ptot:[], hist:hist,
     tiers:[{ tier:1, name:'Strategic Partners', note:'top 10-15 offices', goal:'Protect + Grow' }, { tier:2, name:'Growth Accounts', note:'2-10 a month', goal:'Increase Share of Referrals' },
       { tier:4, name:'Competitive Accounts', note:'', goal:'Conquest' }],
     rows:rows,
@@ -3343,7 +3619,7 @@ function MkLocal(store){
       return { deliveries:deliveries, posts:store.posts.filter(live), ideas:store.ideas.filter(live), offices:mkOffices(deliveries, []), approver:ap(), me:me, referrals:store.referrals||null, sheet:store.sheet||null, ramp:store.ramp||null }; },
     apiSaveDelivery(me, d){ const cur=d.id?findIn('deliveries', d.id):null; if (d.id && !cur) throw new Error('That delivery isn\'t there any more.');
       const out=cur||{ id:id('d'), created_at:now(), created_by:me }; if (!cur) store.deliveries.push(out);
-      ['office','date','gift','who','notes','status'].forEach(k=>{ if (d[k]!=null) out[k]=String(d[k]); });
+      ['office','date','gift','who','notes','status','doctor'].forEach(k=>{ if (d[k]!=null) out[k]=String(d[k]); });
       if (d.cost!=null) { const c=String(d.cost).replace(/[$,\s]/g,''); out.cost=c && isFinite(Number(c)) ? String(Math.round(Number(c)*100)/100) : ''; }
       if (!out.status) out.status='Planned'; if (out.status==='Delivered' && !out.date) out.date=S.data.today;
       if (!out.office) throw new Error('Pick the office first.'); out.updated_at=now(); out.updated_by=me; return out; },
@@ -3875,6 +4151,8 @@ function renderSheetBody(){
   if (S.sheet==='mk' && S.mk) { el.innerHTML=mkSheet(); el.scrollTop=top; return; }
   if (S.sheet==='refoffice') { el.innerHTML=refOfficeSheet(); el.scrollTop=top; return; }
   if (S.sheet==='refall') { el.innerHTML=refAllSheet(); el.scrollTop=top; return; }
+  if (S.sheet==='repdrill') { el.innerHTML=repDrillSheet(); el.scrollTop=top; return; }
+  if (S.sheet==='repfilter') { el.innerHTML=repFilterSheet(); el.scrollTop=top; return; }
   if (S.sheet==='ask') {
     const q=S.ask;
     el.innerHTML='<div class="otter-pop"><h3>'+(q.hat?ALF_HAT:'')+esc(q.title)+'</h3><p>'+q.body+'</p>'
@@ -5813,7 +6091,7 @@ async function liveAddItem(el){
 /* ---------- Alfred chat bubble ---------- */
 // The conversation lives only in this page (S.alf) and is gone after a reload. Every message carries the screen
 // context below, and the screenshot taken when the bubble was tapped, so nobody has to describe where they were.
-const APP_VERSION = '2026.11.17-budget';
+const APP_VERSION = '2026.11.17-reports2';
 const H2C_URL = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
 const DIAG = { errors:[], actions:[] };   // last 10 of each, for bug reports
 function pushDiag(list, item){ list.push(item); if (list.length>10) list.shift(); }
@@ -6605,7 +6883,7 @@ function softAct(fn, box, fadeContent, tapped){
 }
 function actClick(e, el){
   const a=el.dataset.act, id=el.dataset.id, v=el.dataset.val;
-  if (S.data && mkClick(a, el, v)) return;
+  if (S.data && (mkClick(a, el, v) || repClick(a, el, v))) return;
   if (S.data && agClick(a, el, v)) return;
   breadcrumb(el);
   if (a==='boot-retry') { document.getElementById('main').innerHTML='<div class="list"><div class="skel" style="height:92px"></div><div class="skel" style="height:92px"></div></div>'; load(); return; }
@@ -6989,6 +7267,7 @@ document.addEventListener('touchend', ()=>{
 });
 
 document.addEventListener('input', e=>{
+  if (e.target.id==='mk-office') { const b=document.getElementById('mk-picks'); if (b) b.innerHTML=mkPickHtml(); }
   if (e.target.id==='dc-text' || e.target.id==='tp-new') { const b=document.querySelector('#sheet [data-act="'+(e.target.id==='dc-text'?'dec-add':'topic-add')+'"]'); if (b) b.disabled=!e.target.value.trim(); }
   const k=e.target.dataset && e.target.dataset.input; if (!k) return;
   if (k==='q') { S.q=e.target.value; renderResults(); return; }
@@ -7543,6 +7822,7 @@ function makeMock(REAL){
     apiDecisions:()=>decisions.filter(d=>!d.deleted_at),
     apiSetFocus:(r,o,n)=>{ const l=v=>String(v||'').split('\n').map(s=>s.trim()).filter(Boolean); S.data.focus={ rally:String(r||'').trim(), objectives:l(o), anchors:l(n), status:(S.data.focus&&S.data.focus.status)||{} }; return S.data.focus; },
     apiScorecard:()=>JSON.parse(JSON.stringify(Mock._sc)),
+    apiReferralReport:()=>({ html:'<p>Sample data: the real Monthly Referral Report is built from the Referral Tracker each month and emailed to the leadership team.</p>', month:'' }),
     apiSetScorecardGoal:(n,g)=>{ const x=Mock._sc.items.find(i=>i.name===n); if (g==='') delete x.goal; else { x.goal=Number(g); x.foot=String(x.foot||'').replace(/( · )?No goal set yet/,''); } return JSON.parse(JSON.stringify(Mock._sc)); },
     apiSetObjectiveStatus:(t,st)=>{ const m=Object.assign({}, S.data.focus.status||{}); if (st) m[t]=st; else delete m[t]; return { status:m }; },
     apiActivity:()=>[{kind:'mention',at:d(0)+' 09:12',by:E.EP,by_name:'Erin',task_id:'t1',title:'Call the three top referring offices about the new scheduling line',text:'@Becky Dr. Patel\'s office prefers email. I can send you their contact.'},
