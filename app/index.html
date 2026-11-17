@@ -19,7 +19,7 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" type="image/png" href="icon-192.png">
-<script>window.HUDDLE_WEB={"api":"https://script.google.com/macros/s/AKfycbzM8K_-XRMDdOJYJ3THn_FhyZkRreMddHIBAOFCFVoq5S_Y7MnsfFLsl7ac_fyDPrch/exec","clientId":"473377418367-cqmmnfum4kshq16973m4sj2jqqfa55p0.apps.googleusercontent.com","build":"4f18eff","push":{"config":{"apiKey":"AIzaSyBON-0KvTXPD_MV6ykhYvCoBRiECEHyE9c","authDomain":"huddle-e2548.firebaseapp.com","projectId":"huddle-e2548","storageBucket":"huddle-e2548.firebasestorage.app","messagingSenderId":"554653922065","appId":"1:554653922065:web:87de53b4cb11b36835d2b0"},"vapidKey":"BHKeDoBmW7vL-qAT3ocyTaMaZ27Ca66jvQtTes2NC4CPoWFiPBJcga7wVd-RD1IuyhBki0oKXwPBGSNq002s8o8"}};document.documentElement.classList.add('web');</script>
+<script>window.HUDDLE_WEB={"api":"https://script.google.com/macros/s/AKfycbzM8K_-XRMDdOJYJ3THn_FhyZkRreMddHIBAOFCFVoq5S_Y7MnsfFLsl7ac_fyDPrch/exec","clientId":"473377418367-cqmmnfum4kshq16973m4sj2jqqfa55p0.apps.googleusercontent.com","build":"8ae2b17","push":{"config":{"apiKey":"AIzaSyBON-0KvTXPD_MV6ykhYvCoBRiECEHyE9c","authDomain":"huddle-e2548.firebaseapp.com","projectId":"huddle-e2548","storageBucket":"huddle-e2548.firebasestorage.app","messagingSenderId":"554653922065","appId":"1:554653922065:web:87de53b4cb11b36835d2b0"},"vapidKey":"BHKeDoBmW7vL-qAT3ocyTaMaZ27Ca66jvQtTes2NC4CPoWFiPBJcga7wVd-RD1IuyhBki0oKXwPBGSNq002s8o8"}};document.documentElement.classList.add('web');</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <!-- The fonts load without holding up the first paint; the page shows in the phone's own font for a moment if needed. -->
@@ -2524,8 +2524,9 @@ function render(){
   const snap=(same && !mv && !REDUCED && !S.vt && !document.hidden && document.body.animate) ? flipSnap() : null;
   const first=S.flipKey==null;   // the very first draw replaces the loading placeholder, so it melts in too
   S.flipKey=key;
-  const m=document.getElementById('main');
+  const m=document.getElementById('main'), keepY = same && S.view==='live' ? window.scrollY : null;
   if (same || first) melt(m, renderPage); else renderPage();
+  if (keepY!=null && Math.abs(window.scrollY-keepY)>2) window.scrollTo(0, keepY);   // Nov 17: no jump while reviewing
   updateSynced();
   placeSegs();   // pill highlights are in place before anything animates
   if (snap) flipPlay(snap);
@@ -3444,7 +3445,8 @@ function setStatus(id, status, opts){
   t.status=status; t.completed_at = status==='Done' ? S.data.today : '';
   const row=document.querySelector('article.task[data-id="'+id+'"]'), card=document.querySelector('.mm-card[data-id="'+id+'"]');
   if (status==='Done' && !(opts && opts.quiet)) haptic();   // a tap you can feel (the box tap does its own)
-  if (status==='Done' && row && !S.sheet && !REDUCED) finishRow(row);
+  if (opts && opts.stay) { if (status==='Done' && card && !REDUCED) card.classList.add('celebrate'); }   // Nov 17: the caller redraws just its card
+  else if (status==='Done' && row && !S.sheet && !REDUCED) finishRow(row);
   else if (status==='Done' && card && !REDUCED) { card.classList.add('celebrate'); setTimeout(render, 750); }
   else if (row && !S.sheet && !REDUCED) {
     // MO-4: the box changes where you tapped it (its fill eases in, with a small spring), then the list catches up.
@@ -4274,7 +4276,9 @@ function saveTaskEdit(t){
       // Fields this person hasn't touched pick up what a teammate changed meanwhile.
       const b=S.edit.base||{}; TASK_FIELDS.forEach(f=>{ if (String(S.edit.task[f]==null?'':S.edit.task[f])===String(b[f]==null?'':b[f]) && saved[f]!==undefined) { S.edit.task[f]=saved[f]; b[f]=saved[f]; } });
     }
-    if (S.view==='mine'||S.view==='team') renderResults(); else if (!S.sheet) render();
+    if (S.view==='mine'||S.view==='team') renderResults();
+    else if (S.view==='live') { if (!rvPatch(saved.id) && Date.now()-(S.lastLiveTap||0)>3000) render(); }   // Nov 17: no full redraw mid-review
+    else if (!S.sheet) render();
   }).catch(e=>{
     const open=S.sheet==='task' && S.edit && S.edit.task.id===t.id;
     if (isNetErr(e)) { queueEdit(t); if (open) { S.edit.unsaved=false; setSaveState('Saved on this phone'); } return; }
@@ -4393,14 +4397,32 @@ function reviewSet(id, ch){
   const prev=st.review[id], v=rvView(t, prev);
   const e={ due_before: prev ? prev.due_before : t.due, status_before: prev ? prev.status_before : t.status, note: prev ? prev.note||'' : '', status_after:v.status, new_due:'' };
   if (ch.note!=null) e.note=String(ch.note).trim().slice(0,200);
-  if (ch.status) { e.status_after=ch.status; if (ch.status!==t.status) setStatus(id, ch.status, { undo:false }); }
+  if (ch.status) { e.status_after=ch.status; if (ch.status!==t.status) setStatus(id, ch.status, { undo:false, stay:true }); }
   // #11 (Nov 16): not done and still due today or earlier: Next Tactical fills in at once (tap another date to change it).
   if (ch.status && ch.status!=='Done' && ch.due==null && (!v.due || v.due<=S.data.today)) ch.due=S.data.defaultDue;
   let due=v.due;
   if (ch.due!=null) { due=ch.due; if (ch.due!==t.due) { t.due=ch.due; saveTaskEdit({ id:t.id, due:ch.due }); } }
   e.new_due = due && due!==e.due_before ? due : '';
   st.review[id]=e;
-  liveMark('review', id, e);
+  // Nov 17 (Brayden: "it jumps around the page and sometimes reloads"): a tap here used to redraw the whole meeting screen
+  // three or four times (status save, date save, meeting save, each reply). Now only this card changes, in place, and
+  // redraws from other phones wait until the taps stop (S.lastLiveTap, applyLive).
+  S.lastLiveTap=Date.now();
+  rvPatch(id);
+  liveWrite('apiLiveMark', 'review', id, e, null);
+}
+// Redraw one Accountability card (and the person's tags) where it is.
+function rvPatch(id){
+  const st=S.live, t=find(id), el=document.querySelector('#main .mm-card.rv-item[data-id="'+id+'"]');
+  if (!st || !t || !el || S.view!=='live') return false;
+  const P=S.data.people, p=P[Math.min(st.person||0, P.length-1)], can=isHost(st) || owners(t).indexOf(S.data.me)>=0;
+  const tmp=document.createElement('div'); tmp.innerHTML=reviewCard(t, (st.review||{})[id], can, p.email);
+  const fresh=tmp.firstElementChild; if (el.classList.contains('celebrate')) fresh.classList.add('celebrate');
+  el.replaceWith(fresh);
+  const tags=document.querySelector('#main .acct .tags');
+  if (tags) { const x=reviewItems(p.email, st); tags.innerHTML='<span class="tag">'+x.open.length+' to Review</span>'+(x.left?'<span class="tag gold">'+x.left+' Need'+(x.left===1?'s':'')+' a New Date</span>':'')
+    +(x.done.length?'<span class="tag done">'+x.done.length+' Done Since Last Tactical</span>':''); }
+  return true;
 }
 // The saved review (LiveLogs review_list) for a meeting summary: totals, then each person's items.
 function reviewOf(l){ if (!l) return []; if (Array.isArray(l.review_list)) return l.review_list; try { const v=JSON.parse(l.review_list||'[]'); return Array.isArray(v)?v:[]; } catch(e){ return []; } }
@@ -4688,7 +4710,14 @@ function applyLive(res){
   if (S.live && S.live.id===st.id && liveHost(S.live)===S.data.me && liveHost(st)!==S.data.me) toast(firstName(liveHost(st))+' is the host now. You\'re following along.');
   S.live = st;
   if (!changed) return;
-  if (S.view==='live') { const a=document.activeElement; if (!(a && /^(INPUT|TEXTAREA)$/.test(a.tagName))) render(); }
+  if (S.view==='live') {
+    const a=document.activeElement; if (a && /^(INPUT|TEXTAREA)$/.test(a.tagName)) return;
+    // Nov 17: while someone is tapping through their items, a redraw of the same step waits until 2.5 s after the last tap
+    // (a new step or person still shows at once).
+    const quietFor=Date.now()-(S.lastLiveTap||0), was=S.liveShown, now=livePos(st);
+    if (quietFor<2500 && was && now && was.i===now.i && was.p===now.p && was.done===now.done) { clearTimeout(S.liveRT); S.liveRT=setTimeout(()=>{ if (S.view==='live' && !S.sheet) render(); }, 2600-quietFor); return; }
+    render();
+  }
   else renderLivebar();
 }
 // Nov 16 (#46): while the meeting connection blinks (two or more empty answers), say so instead of freezing silently.
@@ -5497,7 +5526,7 @@ async function liveAddItem(el){
 /* ---------- Alfred chat bubble ---------- */
 // The conversation lives only in this page (S.alf) and is gone after a reload. Every message carries the screen
 // context below, and the screenshot taken when the bubble was tapped, so nobody has to describe where they were.
-const APP_VERSION = '2026.11.17-alfgap';
+const APP_VERSION = '2026.11.17-steady';
 const H2C_URL = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
 const DIAG = { errors:[], actions:[] };   // last 10 of each, for bug reports
 function pushDiag(list, item){ list.push(item); if (list.length>10) list.shift(); }
