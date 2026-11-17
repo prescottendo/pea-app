@@ -19,7 +19,7 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" type="image/png" href="icon-192.png">
-<script>window.HUDDLE_WEB={"api":"https://script.google.com/macros/s/AKfycbzM8K_-XRMDdOJYJ3THn_FhyZkRreMddHIBAOFCFVoq5S_Y7MnsfFLsl7ac_fyDPrch/exec","clientId":"473377418367-cqmmnfum4kshq16973m4sj2jqqfa55p0.apps.googleusercontent.com","build":"1fb540c","push":{"config":{"apiKey":"AIzaSyBON-0KvTXPD_MV6ykhYvCoBRiECEHyE9c","authDomain":"huddle-e2548.firebaseapp.com","projectId":"huddle-e2548","storageBucket":"huddle-e2548.firebasestorage.app","messagingSenderId":"554653922065","appId":"1:554653922065:web:87de53b4cb11b36835d2b0"},"vapidKey":"BHKeDoBmW7vL-qAT3ocyTaMaZ27Ca66jvQtTes2NC4CPoWFiPBJcga7wVd-RD1IuyhBki0oKXwPBGSNq002s8o8"}};document.documentElement.classList.add('web');</script>
+<script>window.HUDDLE_WEB={"api":"https://script.google.com/macros/s/AKfycbzM8K_-XRMDdOJYJ3THn_FhyZkRreMddHIBAOFCFVoq5S_Y7MnsfFLsl7ac_fyDPrch/exec","clientId":"473377418367-cqmmnfum4kshq16973m4sj2jqqfa55p0.apps.googleusercontent.com","build":"a5c148e","push":{"config":{"apiKey":"AIzaSyBON-0KvTXPD_MV6ykhYvCoBRiECEHyE9c","authDomain":"huddle-e2548.firebaseapp.com","projectId":"huddle-e2548","storageBucket":"huddle-e2548.firebasestorage.app","messagingSenderId":"554653922065","appId":"1:554653922065:web:87de53b4cb11b36835d2b0"},"vapidKey":"BHKeDoBmW7vL-qAT3ocyTaMaZ27Ca66jvQtTes2NC4CPoWFiPBJcga7wVd-RD1IuyhBki0oKXwPBGSNq002s8o8"}};document.documentElement.classList.add('web');</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <!-- The fonts load without holding up the first paint; the page shows in the phone's own font for a moment if needed. -->
@@ -664,6 +664,7 @@
   .bud-bar { height:8px; border-radius:4px; background:var(--line-soft); margin-top:4px; overflow:hidden; } .bud-bar i { display:block; height:100%; border-radius:4px; background:var(--heading); }
   .bud-bar i.g { background:var(--green); } .bud-bar i.a { background:var(--gold); } .bud-bar i.r { background:var(--red); }
   .bud-sub { font-size:var(--fs-cap); color:var(--muted); margin:3px 0 0; }
+  .ramp-recent { display:block; margin-top:4px; } .ramp-recent span { display:block; } .ramp-recent b { color:var(--ink); font-weight:600; }
   .ref-head { display:flex; align-items:center; gap:8px; flex-wrap:wrap; font-size:var(--fs-sub); color:var(--muted); }
   .ref-sub { margin:6px 0 0; font-size:var(--fs-sub); color:var(--ink); } .ref-why { margin:6px 0 0; font-size:var(--fs-sub); font-weight:600; }
   .ref-stats { display:grid; grid-template-columns:repeat(3,1fr); padding:12px 8px; margin-top:12px; text-align:center; } .ref-stats b { display:block; font-family:var(--serif); font-size:24px; color:var(--heading); } .ref-stats small { font-size:var(--fs-cap); color:var(--muted); }
@@ -3021,15 +3022,20 @@ function refYtd(r){ const L=S.mkt.referrals.last; return r.m.slice(0, L+1).reduc
 function money(n){ n=Number(n)||0; return '$'+(Math.round(n)===n ? n.toLocaleString('en-US') : n.toLocaleString('en-US',{ minimumFractionDigits:2, maximumFractionDigits:2 })); }
 // The month's two budgets from the sheet: the all-office delivery (its plan row) and thank-yous / birthdays (gifts this month).
 function mkBudgetHtml(){
-  const B=S.mkt && S.mkt.sheet; if (!B || (B.thanksBudget==null && B.planBudget==null)) return '';
+  const B=(S.mkt && S.mkt.sheet)||{}, RP=S.mkt && S.mkt.ramp; if (B.thanksBudget==null && B.planBudget==null && !RP) return '';
   const mi=Number(S.data.today.slice(5,7))-1, plan=(B.plan||[]).find(p=>p.m===mi);
   const bar=(label, used, of, sub)=>{ const pct=of ? Math.min(100, used/of*100) : 0, cls=!of ? '' : used>of ? 'r' : used>of*.8 ? 'a' : 'g';
     return '<div class="bud-row"><span>'+label+'</span><b>'+money(used)+(of?' of '+money(of):'')+'</b></div><div class="bud-bar"><i class="'+cls+'" style="width:'+pct.toFixed(1)+'%"></i></div>'+(sub?'<p class="bud-sub">'+sub+'</p>':''); };
   return '<div class="card bud-card"><h3 class="sec-h">'+esc(MON_NAMES[mi])+' Budget</h3>'
     +(B.planBudget!=null ? bar('Monthly delivery', plan && plan.cost || 0, B.planBudget, plan && plan.items ? esc(plan.items) : 'Nothing in the plan for '+esc(MON_NAMES[mi])+' yet') : '')
     +(B.thanksBudget!=null ? bar('Thank-yous and birthdays', B.thanksSpent||0, B.thanksBudget, 'Planned and delivered gifts this month') : '')
+    // Nov 17 (Brayden): Ashley's Ramp card, read from Ramp every 30 minutes (Code.gs "Ramp").
+    +(RP ? bar(esc(RP.name ? firstWord(RP.name)+'\'s Ramp card' : 'Ramp card'), RP.spent||0, RP.limit,
+        (RP.limit==null ? 'No monthly limit set in Ramp' : RP.interval && RP.interval!=='monthly' ? esc(RP.interval)+' limit' : '')
+        +((RP.recent||[]).length ? '<span class="ramp-recent">'+RP.recent.slice(0,3).map(t=>'<span>'+esc(fmtDate(t.date))+' · '+esc(t.merchant)+' <b>'+money(t.amount)+'</b></span>').join('')+'</span>' : '')) : '')
     +'</div>';
 }
+function firstWord(n){ return String(n||'').trim().split(/\s+/)[0]; }
 const MON_NAMES=['January','February','March','April','May','June','July','August','September','October','November','December'];
 function refWatchHtml(){
   const R=S.mkt && S.mkt.referrals; if (!R || !R.rows) return '';
@@ -3289,6 +3295,7 @@ function sampleMkt(){
       { id:'si5', text:'Meet the Team posts, one leader each week', details:'', suggested_by:becky, likes:[erin,jared].join(','), status:'Used', became:'post:sp1' }
     ].map((x,i)=>Object.assign({ created_at:at(-3-i), updated_at:at(-1) }, x)),
     // Nov 17: made-up referral numbers and budgets (the real ones come from the sheets after sign-in, never from this page).
+    ramp:{ name:'Ashley Sample', spent:412.6, limit:1500, interval:'monthly', fund:'Marketing', recent:[{ date:d(-1), merchant:'Sweet Treats Bakery', amount:186.4 }, { date:d(-3), merchant:'Safeway', amount:42.18 }, { date:d(-6), merchant:'Michaels', amount:61.02 }] },
     referrals:sampleReferrals(t), sheet:{ thanksBudget:833, thanksSpent:640, planBudget:3500,
       plan:[{ m:Number(t.slice(5,7))-1, items:'Pumpkin bread with a thank-you card', cost:1180, notes:'' }],
       notes:{ alvarez:{ name:'Dr Alvarez', notes:['Loves the Diamondbacks', 'Coffee, no sugar', 'Runs the Whiskey Row Marathon'] } } },
@@ -3327,7 +3334,7 @@ function MkLocal(store){
   const ap=()=>store.approver;
   return {
     apiMarketing(me){ const deliveries=store.deliveries.filter(live);
-      return { deliveries:deliveries, posts:store.posts.filter(live), ideas:store.ideas.filter(live), offices:mkOffices(deliveries, []), approver:ap(), me:me, referrals:store.referrals||null, sheet:store.sheet||null }; },
+      return { deliveries:deliveries, posts:store.posts.filter(live), ideas:store.ideas.filter(live), offices:mkOffices(deliveries, []), approver:ap(), me:me, referrals:store.referrals||null, sheet:store.sheet||null, ramp:store.ramp||null }; },
     apiSaveDelivery(me, d){ const cur=d.id?findIn('deliveries', d.id):null; if (d.id && !cur) throw new Error('That delivery isn\'t there any more.');
       const out=cur||{ id:id('d'), created_at:now(), created_by:me }; if (!cur) store.deliveries.push(out);
       ['office','date','gift','who','notes','status'].forEach(k=>{ if (d[k]!=null) out[k]=String(d[k]); });
@@ -5800,7 +5807,7 @@ async function liveAddItem(el){
 /* ---------- Alfred chat bubble ---------- */
 // The conversation lives only in this page (S.alf) and is gone after a reload. Every message carries the screen
 // context below, and the screenshot taken when the bubble was tapped, so nobody has to describe where they were.
-const APP_VERSION = '2026.11.17-sampleall';
+const APP_VERSION = '2026.11.17-ramp';
 const H2C_URL = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
 const DIAG = { errors:[], actions:[] };   // last 10 of each, for bug reports
 function pushDiag(list, item){ list.push(item); if (list.length>10) list.shift(); }
