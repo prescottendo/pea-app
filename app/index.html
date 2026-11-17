@@ -19,7 +19,7 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" type="image/png" href="icon-192.png">
-<script>window.HUDDLE_WEB={"api":"https://script.google.com/macros/s/AKfycbzM8K_-XRMDdOJYJ3THn_FhyZkRreMddHIBAOFCFVoq5S_Y7MnsfFLsl7ac_fyDPrch/exec","clientId":"473377418367-cqmmnfum4kshq16973m4sj2jqqfa55p0.apps.googleusercontent.com","build":"f7f63cb","push":{"config":{"apiKey":"AIzaSyBON-0KvTXPD_MV6ykhYvCoBRiECEHyE9c","authDomain":"huddle-e2548.firebaseapp.com","projectId":"huddle-e2548","storageBucket":"huddle-e2548.firebasestorage.app","messagingSenderId":"554653922065","appId":"1:554653922065:web:87de53b4cb11b36835d2b0"},"vapidKey":"BHKeDoBmW7vL-qAT3ocyTaMaZ27Ca66jvQtTes2NC4CPoWFiPBJcga7wVd-RD1IuyhBki0oKXwPBGSNq002s8o8"}};document.documentElement.classList.add('web');</script>
+<script>window.HUDDLE_WEB={"api":"https://script.google.com/macros/s/AKfycbzM8K_-XRMDdOJYJ3THn_FhyZkRreMddHIBAOFCFVoq5S_Y7MnsfFLsl7ac_fyDPrch/exec","clientId":"473377418367-cqmmnfum4kshq16973m4sj2jqqfa55p0.apps.googleusercontent.com","build":"9f22a67","push":{"config":{"apiKey":"AIzaSyBON-0KvTXPD_MV6ykhYvCoBRiECEHyE9c","authDomain":"huddle-e2548.firebaseapp.com","projectId":"huddle-e2548","storageBucket":"huddle-e2548.firebasestorage.app","messagingSenderId":"554653922065","appId":"1:554653922065:web:87de53b4cb11b36835d2b0"},"vapidKey":"BHKeDoBmW7vL-qAT3ocyTaMaZ27Ca66jvQtTes2NC4CPoWFiPBJcga7wVd-RD1IuyhBki0oKXwPBGSNq002s8o8"}};document.documentElement.classList.add('web');</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <!-- The fonts load without holding up the first paint; the page shows in the phone's own font for a moment if needed. -->
@@ -161,7 +161,7 @@
   :root { --top-safe:calc(env(safe-area-inset-top, 0px) + 24px); }
   nav.bottom { display:none; position:fixed; left:0; right:0; bottom:0; z-index:25; background:var(--card); border-top:1px solid var(--line);
     padding:10px max(14px, env(safe-area-inset-right, 0px)) var(--nav-under) max(14px, env(safe-area-inset-left, 0px)); }
-  nav.bottom .tabs { --ntabs:3; display:grid; grid-template-columns:repeat(var(--ntabs), 1fr); max-width:520px; margin:0 auto; }
+  nav.bottom .tabs { --ntabs:4; display:grid; grid-template-columns:repeat(var(--ntabs), 1fr); max-width:520px; margin:0 auto; }
   nav.bottom button { background:none; border:none; display:grid; justify-items:center; gap:4px; padding:8px 0 8px; color:var(--muted); font-size:var(--fs-cap); font-weight:600; position:relative; }
   nav.bottom button svg { width:24px; height:24px; }
   nav.bottom button span { font-size:min(var(--fs-cap), 13px); white-space:nowrap; }   /* layout #8: like iOS, tab labels don't grow */
@@ -624,6 +624,32 @@
   .sc-key { display:flex; gap:14px; justify-content:center; padding-top:10px; border-top:1px solid var(--line-soft); font-size:var(--fs-cap); color:var(--muted); }
   .sc-key span::before { content:""; display:inline-block; width:8px; height:8px; border-radius:50%; margin-right:5px; vertical-align:0; }
   .sc-key .chg::before { display:none; } .sc-key { flex-wrap:wrap; row-gap:4px; } .sc-key .on::before { background:var(--green); } .sc-key .near::before { background:var(--gold); } .sc-key .off::before { background:var(--red); }
+  /* Nov 17: Marketing */
+  body.mk-only nav.bottom, body.mk-only #navTop { display:none !important; }
+  .mk-row { display:flex !important; align-items:center; gap:12px; text-align:left; }
+  .set-row.mk-row > span.mk-date, .set-row.mk-row > span.plats { flex:0 0 auto; } .set-row.mk-row > .mk-main { flex:1 1 auto; min-width:0; }
+  .mk-main { flex:1; min-width:0; font-weight:600; color:var(--ink); line-height:1.3; } .mk-main small { display:block; font-weight:400; color:var(--muted); font-size:var(--fs-cap); margin-top:2px; }
+  .mk-date { width:38px; text-align:center; flex:none; } .mk-date b { display:block; font-family:var(--serif); font-size:20px; color:var(--heading); line-height:1; } .mk-date small { font-size:10px; font-weight:700; letter-spacing:.06em; color:var(--muted); }
+  .mtag { font-size:11px; font-weight:700; padding:3px 8px; border-radius:999px; white-space:nowrap; flex:none; }
+  .mtag.g { background:var(--green-soft); color:var(--green); } .mtag.a { background:rgba(198,168,92,.22); color:var(--gold-ink); } .mtag.r { background:var(--red-soft); color:var(--red); }
+  .mtag.b { background:rgba(47,95,138,.14); color:var(--heading); } .mtag.n { background:var(--line-soft); color:var(--muted); }
+  .plats { display:flex; flex:none; } .plat { width:26px; height:26px; border-radius:8px; display:grid; place-items:center; color:#fff; font-size:12px; font-weight:800; font-style:normal; }
+  .plats .plat + .plat { margin-left:-8px; box-shadow:0 0 0 2px var(--card); }
+  .plat.fb { background:#1877F2; } .plat.ig { background:linear-gradient(135deg,#F58529,#DD2A7B,#8134AF); } .plat.gb { background:#fff; border:1px solid var(--line); color:#4285F4; } .plat.none { background:var(--line-soft); color:var(--muted); }
+  .like { border:1px solid var(--line); background:var(--card); border-radius:999px; padding:5px 10px; font-weight:600; font-size:var(--fs-cap); color:var(--muted); flex:none; min-height:32px; }
+  .like.on { border-color:var(--gold); color:var(--gold-ink); background:rgba(198,168,92,.14); }
+  .mk-due { background:var(--card); border:1px solid var(--line); border-left:4px solid var(--gold); border-radius:12px; padding:12px 14px; margin:0 0 4px; }
+  .mk-due-h b { color:var(--heading); } .mk-due-h small { display:block; color:var(--muted); font-size:var(--fs-cap); margin-top:2px; }
+  .mk-due-list { display:flex; flex-wrap:wrap; gap:6px; margin-top:10px; }
+  .mk-due-list > button:not(.linkbtn) { border:1px solid var(--line); background:var(--page); border-radius:10px; padding:5px 9px; font-weight:600; font-size:var(--fs-sub); color:var(--ink); text-align:left; }
+  .mk-due-list > button small { display:block; font-weight:400; font-size:var(--fs-cap); color:var(--red); }
+  .mk-steps { display:flex; gap:4px; margin:4px 0 14px; } .mk-steps span { flex:1; font-size:10px; font-weight:600; color:var(--muted); text-align:center; }
+  .mk-steps i { display:block; height:5px; border-radius:3px; background:var(--line-soft); margin-bottom:4px; } .mk-steps .d i { background:var(--green); } .mk-steps .c i { background:var(--gold); } .mk-steps .c { color:var(--gold-ink); }
+  .mk-note { background:var(--red-soft); border-radius:12px; padding:10px 12px; font-size:var(--fs-sub); margin-bottom:12px; color:var(--ink); }
+  .mk-acts .btn { width:100%; } .mk-acts .btn-row { display:flex; gap:8px; } .mk-acts .btn-row .btn { flex:1; }
+  .btn.ok-btn { background:var(--green); color:var(--on-green); border-color:var(--green); width:100%; }
+  .mk-read { margin:0; font-size:var(--fs-body); color:var(--ink); white-space:pre-wrap; }
+  .more-row { color:var(--heading) !important; }
   .sample-note { display:flex; align-items:center; gap:8px; background:var(--card); border:1px dashed var(--gold); border-radius:12px; padding:8px 12px; margin:0 0 16px; font-size:var(--fs-sub); color:var(--ink); }
   .sample-note svg { width:18px; height:18px; color:var(--gold); flex:none; } .sample-note span { flex:1; } .sample-note .linkbtn { flex:none; }
   .focus-card + .set-sec { margin-top:24px; }
@@ -1611,7 +1637,7 @@
 const S = { view:'home', layout:pref('lt-layout','list'), q:'', status:'open', priority:'', meeting:'', sort:'due', quick:'', person:'', searchOpen:false, back:null,
             data:null, sheet:null, edit:null, saveTimer:null, pending:0, undo:null, topics:null, meetings:null, lastSync:0, swiped:false, outbox:[] };
 // Nov 17 (Brayden): My Tasks and Team Tasks became one Tasks tab with a Personal | Team switch (views 'mine' and 'team').
-const TABS = [['home','Huddle'],['mine','Tasks'],['review','Review'],['meetings','Meetings']];
+const TABS = [['home','Huddle'],['mine','Tasks'],['review','Review'],['meetings','Meetings'],['marketing','Marketing']];
 function tabKey(v){ return v==='team' ? 'mine' : v; }
 // Strategy Topics live on the Meetings screen (Meetings | Decisions | Topics); the old 'topics' view opens that tab.
 function onTopics(){ return S.view==='topics' || (S.view==='meetings' && S.mtab==='topics'); }
@@ -1711,7 +1737,7 @@ function call(fn, ...args){
   if (MOCK) return new Promise((ok,fail)=>setTimeout(()=>{ try { if (S.mockOffline) throw new Error('NetworkError: Connection failure due to HTTP 0'); ok(JSON.parse(JSON.stringify(Mock[fn](...JSON.parse(JSON.stringify(args)))))); } catch(e){ fail(e); } }, 120));
   return new Promise((ok,fail)=>google.script.run.withSuccessHandler(ok).withFailureHandler(e=>{ if (typeof clientError==='function') clientError(e && e.message || e, fn); fail(e); })[fn](...args));
 }
-function person(email){ return S.data.people.find(p=>p.email===email); }
+function person(email){ return S.data.people.find(p=>p.email===email) || (S.data.members||[]).find(p=>p.email===email) || (email==='ashley@sample' ? { name:'Ashley (Sample)', email:email } : undefined); }
 function nameOf(email){ const p=person(email); return p ? p.name : email; }
 function firstName(email){ const n=nameOf(email); return n.indexOf('Dr.')===0 ? n : n.split(' ')[0]; }
 function initials(email){ const n=nameOf(email); if (n.indexOf('Dr.')===0) return 'CS'; const p=n.split(' '); return (p[0][0]+(p[1]?p[1][0]:'')).toUpperCase(); }
@@ -1723,6 +1749,7 @@ function avatar(email, size){
     +'<circle cx="'+h+'" cy="'+h+'" r="'+(h-1)+'" stroke-width="2"/><text x="'+h+'" y="'+y+'" text-anchor="middle" font-size="'+fs+'">'+esc(initials(email))+'</text></svg>';
 }
 function isPriv(t){ return t && t.private==='yes'; }
+ICON.marketing='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10v4a1 1 0 0 0 1 1h3l6 4V5L7 9H4a1 1 0 0 0-1 1z"/><path d="M17 8.5a5 5 0 0 1 0 7"/><path d="M19.5 6a8.5 8.5 0 0 1 0 12"/></svg>';
 ICON.home='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V20a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1V9.5"/></svg>';
 ICON.sort='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M7 12h10M10 17h4"/></svg>';
 ICON.bell='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>';
@@ -1951,7 +1978,7 @@ async function paintBoot(){
 // Critique 4 (#27): before anything loads, the tab bar is drawn (Huddle lit), so the app opens on its own frame.
 function paintFrame(){
   const nb=document.getElementById('navBottom'); if (!nb || nb.querySelector('.tabs')) return;
-  const BT=[['home','Huddle'],['mine','Tasks'],['meetings','Meetings']];
+  const BT=[['home','Huddle'],['mine','Tasks'],['meetings','Meetings'],['marketing','Marketing']];
   nb.innerHTML='<div class="tabs"><span class="ind" aria-hidden="true"></span>'+BT.map(([k,l])=>'<button type="button" data-act="go" data-view="'+k+'"'+(k==='home'?' class="on" aria-current="page"':'')+'>'+ICON[k]+'<span>'+l+'</span></button>').join('')+'</div>';
 }
 async function load(){
@@ -2010,7 +2037,7 @@ function startParam(){
     // ?meeting=ID (the summary email's link) opens that meeting's summary on the Meetings screen.
     const pick=(v,mtg,task)=>{ v=String(v||''); if (task) S.startTask=String(task);
       if (v==='live') { S.startLive=true; v='meetings'; }   // a "meeting started" notification
-      const allowed=['mine','team','meetings','topics','settings','requests','deleted'].concat(S.data.isApprover?['review','admin']:[]);
+      const allowed=['mine','team','meetings','topics','marketing','settings','requests','deleted'].concat(S.data.isApprover?['review','admin']:[]);
       if (mtg && S.data.meetings && S.data.meetings[mtg]) { S.startMeeting=String(mtg); v='meetings'; }
       if (v==='report') { S.startReport=true; v='team'; }   // the report email's link (?view=report) on the web address
       ok(allowed.indexOf(v)>=0?v:''); };
@@ -2027,7 +2054,7 @@ function startParam(){
 // color Google's page, so on phones in that mode the very top of the header is the same light gray: the fade lands on a
 // matching color and the navy starts cleanly below it. (Moving Huddle to its own web address removes this for good.)
 // (markStandalone, the old Google-frame strip, was removed on Nov 10.)
-function maybeWelcome(){ if (pref('lt-tour','')==='5' || S.view==='live' || S.sheet) return; setPref('lt-tour','5'); setPref('lt-welcomed','1'); startCoach(); }
+function maybeWelcome(){ if (mkOnly() || pref('lt-tour','')==='5' || S.view==='live' || S.sheet) return; setPref('lt-tour','5'); setPref('lt-welcomed','1'); startCoach(); }
 const BOX={ todo:'<i class="tbox"></i>', prog:'<i class="tbox prog"></i>', blk:'<i class="tbox blk"></i>', done:'<i class="tbox on">'+'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></i>' };
 // Nov 16 (Brayden: "the tour got cut down too far"): a step-by-step tour of each tab. Before a step on another tab, the
 // dimming fades away and the tour shows that tab's button being pressed, then the tab opens and the tour carries on there.
@@ -2044,6 +2071,7 @@ const COACH=[
   { view:'meetings', sel:'.mtab', h:'Meetings', b:'<p>Three lists: past <b>Meetings</b>, every <b>Decision</b>, and the <b>Parking Lot</b> of bigger topics. Search looks inside every summary and transcript.</p>' },
   { view:'meetings', sel:'#main .capsule', h:'Start a Meeting', b:'<p>Tap <b>＋ Start Meeting</b> for the weekly tactical (start the Otter recording first). Whoever starts it runs it; everyone else follows along, and a gold bar lets anyone join from any tab.</p>' },
   { view:'meetings', sel:'#mResults .set-row', h:'Read a Meeting', b:'<p>Tap any meeting for its summary: the decisions and your tasks come first, then the full notes.</p>' },
+  { view:'marketing', sel:'.ktab', h:'Marketing', b:'<p><b>Deliveries</b> to referring offices (a gold card shows who\'s due for a visit), <b>Posts</b> waiting for Becky\'s approval, and <b>To-Dos</b>: the team\'s marketing ideas and tasks. Anyone can add an idea.</p>' },
   { view:'home', sel:'.alf-fab', h:'Alfred', b:'<p>The hat is <b>Alfred</b>, your assistant. Ask about meetings and tasks, have him make a small change, or tell him about a problem or an idea. Drag him anywhere.</p>' },
   { view:'home', sel:'.ptitle .mebtn, #me .mebtn', h:'Your Account', b:'<p>Your initials open <b>Notifications</b>, Appearance, Recently Deleted, this tour and Sign Out.</p>' }
 ];
@@ -2170,7 +2198,7 @@ function dateChips(cur, act, withToday, extra){
 function quickDates(list){ const seen={}; return list.filter(([l,v])=>{ if (v==='' ) return true; if (seen[v]) return false; seen[v]=1; return true; }); }
 function newCid(){ return 'c'+Date.now().toString(36)+Math.random().toString(36).slice(2,10); }
 // DI-1: the fields of a task panel that changed since it opened (or since the last save), plus the id.
-const TASK_FIELDS=['title','details','owners','status','priority','due','private','waiting_on'];
+const TASK_FIELDS=['title','details','owners','status','priority','due','private','waiting_on','area'];
 function taskChanges(base, now){ const c={ id:now.id }; TASK_FIELDS.forEach(f=>{ if (String(now[f]==null?'':now[f])!==String(base[f]==null?'':base[f])) c[f]=now[f]; }); return c; }
 function isTmp(id){ return String(id||'').indexOf('tmp-')===0; }
 function queueEdit(t){
@@ -2238,7 +2266,7 @@ function renderNav(){
   renderLivebar();
   const inMeet = S.view==='meetings' || S.view==='live';
   // The tab bar is drawn once; after that only the highlight moves, so nothing flashes and the highlight slides.
-  const BT=[['home','Huddle'],['mine','Tasks'],['meetings','Meetings']], nb=document.getElementById('navBottom');
+  const BT=[['home','Huddle'],['mine','Tasks'],['meetings','Meetings'],['marketing','Marketing']], nb=document.getElementById('navBottom');
   let tabs=nb.querySelector('.tabs');
   if (!tabs) {
     nb.innerHTML='<div class="tabs"><span class="ind" aria-hidden="true"></span>'+BT.map(([k,l])=>'<button type="button" data-act="go" data-view="'+k+'">'+ICON[k]+'<span>'+l+'</span></button>').join('')+'</div>';
@@ -2278,9 +2306,9 @@ function morph(fn, kind){
   catch (err) { S.vt=null; fn(); }
 }
 // Where a screen sits, left to right, so a tab change knows which way to slide.
-const NAV_ORDER={ home:-1, mine:0, team:0, review:2, meetings:3, live:3, more:4, requests:4, deleted:4, settings:4, teamset:4, admin:4 };
-const BOTTOM_TABS={ home:1, mine:1, team:1, meetings:1 };
-const TAB_VIEWS={ home:'Huddle', mine:'Tasks', team:'Tasks', meetings:'Meetings', review:'Review' };
+const NAV_ORDER={ home:-1, mine:0, team:0, review:2, marketing:3.5, meetings:3, live:3, more:4, requests:4, deleted:4, settings:4, teamset:4, admin:4 };
+const BOTTOM_TABS={ home:1, mine:1, team:1, meetings:1, marketing:1 };
+const TAB_VIEWS={ home:'Huddle', mine:'Tasks', team:'Tasks', meetings:'Meetings', marketing:'Marketing', review:'Review' };
 // Your initials (header on computers, title row on phones) open your page; a gold dot means meeting tasks wait in Review.
 function meBtn(rc){ return '<button type="button" class="mebtn" data-act="me-open" aria-label="Your account'+(rc?', '+rc+' to review':'')+'" title="Account">'+avatar(S.data.me, 32)+(rc?'<span class="rdot" aria-hidden="true"></span>':'')+'</button>'; }
 function renderMe(rc){ const el=document.getElementById('me'); if (el) el.innerHTML=meBtn(rc); S.meRc=rc; }
@@ -2297,6 +2325,7 @@ function navKind(el){
 // back: the screen this one was reached from ('More', 'Settings', 'My Tasks'), shown as "‹ More" above the title (AP-1).
 function go(v, back){
   if (v==='topics') { v='meetings'; S.mtab='topics'; back=null; }
+  if (mkOnly() && ['marketing','more','settings'].indexOf(v)<0) { v='marketing'; back=null; }   // Nov 17: Ashley sees only Marketing
   if (S.tv && v!=='live') { S.tv=false; document.body.classList.remove('tv'); }
   // Each visit to a screen starts with no filters, so a person or priority picked on Team Tasks doesn't follow you around (BUG-12).
   if (v!==S.view) { S.q=''; S.status='open'; S.priority=''; S.meeting=''; S.sort='due'; S.person=''; S.searchOpen=false; S.mSearch=false;
@@ -2304,7 +2333,7 @@ function go(v, back){
   const t0=performance.now();
   if (v==='live' && S.view!=='live') { S.liveAt=Date.now(); if (S.live && !isHost(S.live)) setTimeout(maybePushAsk, 2500); }
   // Each tab remembers where you'd scrolled (AP-6); screens you push into start at the top.
-  const TABV={ home:1, mine:1, team:1, meetings:1 }; S.scrollMem=S.scrollMem||{};
+  const TABV={ home:1, mine:1, team:1, meetings:1, marketing:1 }; S.scrollMem=S.scrollMem||{};
   if (TABV[S.view] && !S.back) S.scrollMem[S.view]=window.scrollY;
   // NF-3: leaving Team Tasks (or opening it the first time) counts as having looked.
   try { if ((S.view==='team' && v!=='team') || (v==='team' && !localStorage.getItem('lt-team-seen'))) localStorage.setItem('lt-team-seen', stampNow()); } catch(e){}
@@ -2474,6 +2503,7 @@ function renderPage(){
   fab.title = isPhone() ? '' : 'New Task (N)';   // WD-7: the keyboard shortcut, on computers
   [...document.body.classList].forEach(c=>{ if (c.indexOf('v-')===0) document.body.classList.remove(c); });
   document.body.classList.add('v-'+S.view);
+  document.body.classList.toggle('mk-only', mkOnly());
   setNavH();
   if (window.HUDDLE_WEB) webTint();
   if (S.view!=='live') { renderLiveCtl(); S.liveShown=null; }
@@ -2487,7 +2517,9 @@ function renderPage(){
   if (S.view==='teamset') return done(renderTeamSettings(m));
   if (S.view==='review') return done(renderReview(m));
   if (S.view==='topics') return meltAsync(m, done(renderTopics(m)));
+  if (mkOnly() && ['marketing','more','settings'].indexOf(S.view)<0) S.view='marketing';
   if (S.view==='meetings') return meltAsync(m, done(renderMeetings(m)));
+  if (S.view==='marketing') return meltAsync(m, done(renderMarketing(m)));
   if (S.view==='live') return done(renderLive(m));
   if (S.view==='deleted') return meltAsync(m, done(renderDeleted(m)));
   if (S.view==='settings') return done(renderSettings(m));
@@ -2552,12 +2584,15 @@ function nextTacticalCard(){
 // and tapping a sample row just says it's sample data.
 function sampleOn(){ return pref('lt-sample','')==='on'; }
 const SAMPLE_HOME={
+  // Nov 17: Brayden's Monthly Results Scorecard (Google Sheet). Completed cases and turnover are their real numbers
+  // (Jan–Oct); eNPS has only October; Team Judgment and Profitability have no data yet, so those are made up. No goals are
+  // set yet, so the goals here are examples.
   scorecard:[
-    { name:'New Referrals', note:'This week', value:46, goal:40, unit:'', better:'up', trend:[31,35,38,34,41,39,44,46] },
-    { name:'Scheduled Within 48 Hours', note:'Of new referrals', value:82, goal:90, unit:'%', better:'up', trend:[74,77,80,79,84,85,83,82] },
-    { name:'Cases Completed', note:'This week', value:118, goal:110, unit:'', better:'up', trend:[96,104,99,108,112,107,115,118] },
-    { name:'Days to Consult', note:'Average wait', value:6, goal:5, unit:'', better:'down', trend:[9,9,8,8,7,7,6,6] },
-    { name:'Google Rating', note:'All locations', value:4.9, goal:4.8, unit:'', better:'up', trend:[4.7,4.7,4.8,4.8,4.8,4.9,4.9,4.9] }
+    { name:'Completed Cases', note:'October · 12-mo avg 318', value:327, goal:320, unit:'', better:'up', period:'month', trend:[377,307,342,326,297,330,316,325,303,327].slice(-8) },
+    { name:'Turnover Rate', note:'October', value:3.7, goal:3, unit:'%', better:'down', period:'month', trend:[3.6,0,0,3.6,3.7,3.7,3.7] },
+    { name:'eNPS', note:'Employee Net Promoter · 30+ is strong', value:47, goal:30, unit:'', better:'up', period:'month', trend:[] },
+    { name:'Team Judgment', note:'1 to 5 · sample', value:4.2, goal:4, unit:'', better:'up', period:'month', trend:[3.8,3.9,4.1,4,4.2] },
+    { name:'Profitability Percentile', note:'sample', value:72, goal:75, unit:'th', better:'up', period:'month', trend:[64,66,70,69,72] }
   ],
   focus:{ rally:'Every referring office knows our new scheduling line by Dec 31',
     anchors:['Referring doctors come first', 'Same-week care for every patient', 'One team across both offices'],
@@ -2581,8 +2616,8 @@ function scorecardHtml(list){
     const up=prev!=null && v>prev, down=prev!=null && v<prev, arrow=up?'▲':down?'▼':'';
     return '<div class="sc-row '+st+'"><div class="sc-name">'+esc(x.name)+'<small>'+esc(x.note||'')+(x.goal!=null?' · Goal '+esc(String(x.goal))+esc(x.unit||''):'')+'</small></div>'
       +(t.length>1?sparkline(t.map(Number), x.goal!=null?Number(x.goal):null):'<span></span>')
-      +'<div class="sc-val"><b>'+esc(String(x.value))+esc(x.unit||'')+'</b><small'+(arrow?' title="Change from last week"':'')+'>'+(arrow?arrow+' '+esc(String(Math.round(Math.abs(v-prev)*10)/10)):'&nbsp;')+'</small></div></div>'; }).join('')
-    +'<div class="sc-key"><span class="on">Meets goal</span><span class="near">Within 10%</span><span class="off">Behind</span><span class="chg">▲▼ vs last week</span></div></div>';
+      +'<div class="sc-val"><b>'+esc(String(x.value))+esc(x.unit||'')+'</b><small'+(arrow?' title="Change from last '+(x.period==='month'?'month':'week')+'"':'')+'>'+(arrow?arrow+' '+esc(String(Math.round(Math.abs(v-prev)*10)/10)):'&nbsp;')+'</small></div></div>'; }).join('')
+    +'<div class="sc-key"><span class="on">Meets goal</span><span class="near">Within 10%</span><span class="off">Behind</span><span class="chg">▲▼ vs last '+(list[0] && list[0].period==='month'?'month':'week')+'</span></div></div>';
 }
 function renderHome(m){
   if (sampleOn()) return renderHomeSample(m);
@@ -2616,6 +2651,360 @@ function renderHomeSample(m){
     +'<button type="button" class="card start-card next-tac" data-act="sample-tap"><span class="sec">Next Tactical · Tomorrow</span><b>'+esc(fmtDate(next))+' · '+TACTICAL_TIME+'</b><span class="go">3 of your items come up · Update ›</span></button>';
 }
 
+/* ---------- Marketing (Nov 17, Brayden: option A) ---------- */
+// A fourth tab with a Deliveries | Posts | To-Dos switch. Deliveries: gifts and treats taken to referring offices, with a
+// gold card for offices due for a visit. Posts: Facebook, Instagram and Google Business posts by stage; Becky (the
+// approver, S.mkt.approver) approves each one. To-Dos: the team's Ideas (anyone adds one and thumbs-up the good ones;
+// Becky turns one into a post, delivery or task), then tasks tagged Marketing (area = marketing). Marketing-only people
+// (S.data.access === 'marketing', Ashley) see only this tab; the server enforces it.
+// With Account › Show Sample Data on, the tab shows SAMPLE data kept in memory (MkLocal on S.mkSample), so every
+// button works and nothing is saved.
+const MK_TABS=[['deliveries','Deliveries'],['posts','Posts'],['todos','To-Dos']];
+const DL_TAG={ Idea:'n', Planned:'a', Delivered:'g', Canceled:'n' }, POST_TAG={ 'Idea':'n', 'Drafted':'n', 'Needs Approval':'a', 'Approved':'b', 'Posted':'g' };
+const POST_STAGE_LIST=['Idea','Drafted','Needs Approval','Approved','Posted'];
+const PLATS=[['Facebook','fb','f'],['Instagram','ig','◎'],['Google Business','gb','G']];
+function mkOnly(){ return !!(S.data && S.data.access==='marketing'); }
+function mkApprover(){ return (S.mkt && S.mkt.approver) || S.data.marketingApprover || ''; }
+function mkIsApprover(){ return !!S.data && mkApprover()===S.data.me; }
+function mkMembers(){ const l=(S.data.members && S.data.members.length ? S.data.members : S.data.people).slice(); if (S.mktFrom==='sample' && !l.some(p=>p.marketing)) l.push({ name:'Ashley (Sample)', email:'ashley@sample', marketing:true }); return l; }
+function mkCall(fn, ...args){
+  if (S.mktFrom==='sample') { try { const r=MkLocal(S.mkSample)[fn](S.data.me, ...JSON.parse(JSON.stringify(args))); return Promise.resolve(JSON.parse(JSON.stringify(r===undefined?null:r))); } catch(e){ return Promise.reject(e); } }
+  return call(fn, ...args);
+}
+function mkLoad(force){
+  if (sampleOn()) { if (!S.mkSample) S.mkSample=sampleMkt(); S.mkt=MkLocal(S.mkSample).apiMarketing(S.data.me); S.mktFrom='sample'; return Promise.resolve(S.mkt); }
+  if (S.mktFrom==='sample') { S.mkt=null; S.mktFrom=''; }
+  if (S.mkt && !force) return Promise.resolve(S.mkt);
+  return call('apiMarketing').then(r=>{ S.mkt=r; S.mktAt=Date.now(); S.mktFrom='live'; return r; });
+}
+// Swap in one saved row and recount the offices (same rules as the server's mktOffices_).
+function mkPut(kind, row){
+  const k=kind+'s'==='deliverys' ? 'deliveries' : kind+'s', list=S.mkt[k]||(S.mkt[k]=[]), i=list.findIndex(x=>x.id===row.id);
+  if (i>=0) list[i]=row; else list.push(row);
+  if (kind==='delivery') S.mkt.offices=mkOffices(S.mkt.deliveries, S.mkt.offices);
+}
+function mkDrop(kind, id){ const k=kind==='delivery'?'deliveries':kind+'s'; S.mkt[k]=(S.mkt[k]||[]).filter(x=>x.id!==id); if (kind==='delivery') S.mkt.offices=mkOffices(S.mkt.deliveries, S.mkt.offices); }
+function daysBetween(a, b){ return Math.round((new Date(b+'T12:00:00')-new Date(a+'T12:00:00'))/864e5); }
+function mkOffices(deliveries, old){
+  const today=S.data.today, by={}, key=n=>String(n||'').trim().toLowerCase();
+  (old||[]).forEach(o=>{ by[key(o.name)]=Object.assign({}, o, { last:'', next:'' }); });
+  deliveries.forEach(d=>{ const k=key(d.office); if (!k) return; const o=by[k]||(by[k]={ name:d.office, visit_days:45, last:'', next:'' });
+    if (d.status==='Delivered' && d.date && d.date>o.last) o.last=d.date;
+    if (d.status==='Planned' && d.date && (!o.next || d.date<o.next)) o.next=d.date; });   // booked, even if it's running late
+  return Object.keys(by).map(k=>{ const o=by[k], days=o.last ? daysBetween(o.last, today) : null; return Object.assign(o, { days_since:days, due:!o.next && (days==null || days>(Number(o.visit_days)||45)) }); })
+    .sort((a,b)=>a.name.localeCompare(b.name));
+}
+function mkHead(){
+  const tab=S.ktab||'deliveries', open=S.kSearch || S.kq;
+  return '<div class="head-row"><h2>Marketing</h2><button type="button" class="tool-ico" data-act="k-search" aria-label="Search Marketing">'+ICON.search+'</button></div>'
+    +'<span class="synced compact-sync" id="synced"></span>'
+    +(sampleOn() ? '<div class="sample-note">'+ICON.tour+'<span>Showing <b>sample data</b>. Changes here aren\'t saved.</span><button type="button" class="linkbtn" data-act="sample-off">Turn Off</button></div>' : '')
+    +'<div class="mtab-band"><div class="seg mtab ktab" role="group" aria-label="Show">'+MK_TABS.map(([k,l])=>'<button type="button" class="'+(tab===k?'on':'')+'" data-act="ktab" data-val="'+k+'" aria-pressed="'+(tab===k)+'">'+l+'</button>').join('')+'</div></div>'
+    +(open ? '<div class="search-row msearch"><label class="search">'+ICON.search+'<input type="search" id="kq" data-input="kq" placeholder="Search '+esc((MK_TABS.find(x=>x[0]===tab)||[])[1]||'')+'" value="'+esc(S.kq||'')+'" aria-label="Search Marketing">'
+      +'<button type="button" class="search-x" data-act="k-search-close" aria-label="Close search">'+ICON.x+'</button></label></div>' : '');
+}
+async function renderMarketing(m){
+  if (!S.mkt || (sampleOn()!==(S.mktFrom==='sample'))) {
+    m.innerHTML=mkHead()+'<div class="list"><div class="skel" style="height:70px"></div><div class="skel" style="height:140px"></div></div>';
+    try { await mkLoad(true); } catch(e){ if (S.view==='marketing') m.innerHTML=mkHead()+loadFail('Marketing'); return; }
+    if (S.view!=='marketing') return;
+  }
+  m.innerHTML=mkHead()+'<div id="kResults"></div>';
+  renderMkResults();
+}
+function renderMkResults(){
+  const box=document.getElementById('kResults'); if (!box || !S.mkt) return;
+  const tab=S.ktab||'deliveries';
+  box.innerHTML = tab==='posts' ? mkPostsHtml() : tab==='todos' ? mkTodosHtml() : mkDeliveriesHtml();
+}
+function mkHit(...parts){ const q=String(S.kq||'').trim().toLowerCase(); return !q || parts.join(' ').toLowerCase().indexOf(q)>=0; }
+function mkGroups(groups, capHtml){
+  groups=groups.filter(g=>g.items.length);
+  if (!groups.length) return '<div class="mg-head mg-only">'+capHtml+'</div>';
+  return groups.map((g,i)=>'<div class="mg-head"><h3 class="set-sec">'+g.label+'</h3>'+(i===0?capHtml:'')+'</div><div class="set-card mrows">'+g.items.join('')+'</div>').join('');
+}
+function mkDate(d){ if (!d) return '<span class="mk-date"><b>–</b><small>NO DATE</small></span>'; const x=new Date(d+'T12:00:00');
+  return '<span class="mk-date"><b>'+x.getDate()+'</b><small>'+x.toLocaleDateString('en-US',{ month:'short' }).toUpperCase()+'</small></span>'; }
+function mkTag(cls, txt){ return '<span class="mtag '+cls+'">'+esc(txt)+'</span>'; }
+function dlRow(d){
+  const who=d.who ? firstName(d.who) : '', cost=d.status==='Delivered' && d.cost ? '$'+d.cost : '';
+  return '<button type="button" class="set-row mk-row" data-act="dl-open" data-id="'+esc(d.id)+'">'+mkDate(d.date)
+    +'<span class="mk-main">'+esc(d.office)+'<small>'+[esc(d.gift||''), esc(who), cost].filter(Boolean).join(' · ')+'</small></span>'
+    +mkTag(DL_TAG[d.status]||'n', d.status)+'<span class="chev" aria-hidden="true">›</span></button>';
+}
+function mkDeliveriesHtml(){
+  const K=S.mkt, today=S.data.today, wk=addDays(today, 6);
+  const list=(K.deliveries||[]).filter(d=>mkHit(d.office, d.gift, d.notes, d.who?nameOf(d.who):''));
+  const by=(a,b)=>String(a.date||'9').localeCompare(String(b.date||'9'));
+  const planned=list.filter(d=>d.status==='Planned' || (d.status==='Idea' && d.date)).sort(by);
+  const groups=[
+    { label:'Past Due', items:planned.filter(d=>d.date && d.date<today).map(dlRow) },
+    { label:'This Week', items:planned.filter(d=>d.date>=today && d.date<=wk).map(dlRow) }
+  ];
+  const later={}; planned.filter(d=>d.date>wk).forEach(d=>{ const k=d.date.slice(0,7); (later[k]=later[k]||[]).push(dlRow(d)); });
+  Object.keys(later).sort().forEach(k=>groups.push({ label:monthLabel(k), items:later[k] }));
+  groups.push({ label:'Ideas', items:list.filter(d=>d.status==='Idea' && !d.date).map(dlRow) });
+  const done=list.filter(d=>d.status==='Delivered').sort((a,b)=>by(b,a)), showAll=S.kAllDone || S.kq;
+  groups.push({ label:'Delivered', items:(showAll?done:done.slice(0,8)).map(dlRow).concat(!showAll && done.length>8 ? ['<button type="button" class="set-row more-row" data-act="k-all-done"><span>Show All '+done.length+'</span><span class="chev" aria-hidden="true">›</span></button>'] : []) });
+  groups.push({ label:'Canceled', items:S.kq ? list.filter(d=>d.status==='Canceled').map(dlRow) : [] });
+  const due=(K.offices||[]).filter(o=>o.due).sort((a,b)=>(b.days_since==null?1e9:b.days_since)-(a.days_since==null?1e9:a.days_since));
+  const dueCard=due.length && !S.kq ? '<div class="mk-due"><div class="mk-due-h"><b>Due for a Visit · '+due.length+'</b><small>No delivery in '+(due[0].visit_days||45)+' days and nothing booked. Tap one to plan it.</small></div>'
+    +'<div class="mk-due-list">'+due.slice(0, S.kAllDue?99:5).map(o=>'<button type="button" data-act="dl-new" data-office="'+esc(o.name)+'">'+esc(o.name)+'<small>'+(o.days_since==null?'Never visited':o.days_since+' days')+'</small></button>').join('')
+    +(due.length>5 && !S.kAllDue ? '<button type="button" class="linkbtn" data-act="k-all-due">'+(due.length-5)+' More</button>' : '')+'</div></div>' : '';
+  const body=mkGroups(groups, '<button type="button" class="capsule" data-act="dl-new">＋ New Delivery</button>');
+  return dueCard + body + (!list.length && !S.kq ? '<p class="none">No deliveries yet. Tap ＋ New Delivery to plan the first one.</p>' : list.length ? '' : '<p class="none">No matches.</p>');
+}
+function platIcons(p){ const on=String(p||'').split(',').map(s=>s.trim()); const got=PLATS.filter(x=>on.indexOf(x[0])>=0);
+  return '<span class="plats" aria-label="'+esc(got.map(x=>x[0]).join(', ')||'No place picked')+'">'+(got.length?got.map(x=>'<i class="plat '+x[1]+'">'+x[2]+'</i>').join(''):'<i class="plat none">?</i>')+'</span>'; }
+function postRow(p){
+  const when=p.post_on ? fmtDate(p.post_on) : (p.stage==='Posted' && p.posted_at ? fmtDate(String(p.posted_at).slice(0,10)) : 'No date');
+  return '<button type="button" class="set-row mk-row" data-act="post-open" data-id="'+esc(p.id)+'">'+platIcons(p.platforms)
+    +'<span class="mk-main">'+esc(p.title)+'<small>'+[esc(when), p.writer?esc(firstName(p.writer)):''].filter(Boolean).join(' · ')+(p.review_note && p.stage==='Drafted'?' · <span class="od">Sent back</span>':'')+'</small></span>'
+    +mkTag(POST_TAG[p.stage]||'n', p.stage==='Needs Approval' ? (mkIsApprover()?'Approve':'Waiting') : p.stage)+'<span class="chev" aria-hidden="true">›</span></button>';
+}
+function mkPostsHtml(){
+  const list=(S.mkt.posts||[]).filter(p=>mkHit(p.title, p.caption, p.platforms, p.writer?nameOf(p.writer):''));
+  const by=(a,b)=>String(a.post_on||'9').localeCompare(String(b.post_on||'9'));
+  const ap=mkApprover(), apName=ap ? firstName(ap) : 'the approver';
+  const posted=list.filter(p=>p.stage==='Posted').sort((a,b)=>String(b.post_on||b.posted_at).localeCompare(String(a.post_on||a.posted_at))), showAll=S.kAllPosted || S.kq;
+  const groups=[
+    { label:mkIsApprover() ? 'Needs Your Approval' : 'Waiting for '+esc(apName), items:list.filter(p=>p.stage==='Needs Approval').sort(by).map(postRow) },
+    { label:'Approved · Ready to Post', items:list.filter(p=>p.stage==='Approved').sort(by).map(postRow) },
+    { label:'Ideas and Drafts', items:list.filter(p=>p.stage==='Idea' || p.stage==='Drafted').sort(by).map(postRow) },
+    { label:'Posted', items:(showAll?posted:posted.slice(0,8)).map(postRow).concat(!showAll && posted.length>8 ? ['<button type="button" class="set-row more-row" data-act="k-all-posted"><span>Show All '+posted.length+'</span><span class="chev" aria-hidden="true">›</span></button>'] : []) }
+  ];
+  return mkGroups(groups, '<button type="button" class="capsule" data-act="post-new">＋ New Post</button>')
+    + (!list.length ? '<p class="none">'+(S.kq?'No matches.':'No posts yet. Every post goes to '+esc(apName)+' for approval before it goes up.')+'</p>' : '');
+}
+function likesOf(i){ return String(i.likes||'').split(',').map(s=>s.trim()).filter(Boolean); }
+function ideaRow(i){
+  const likes=likesOf(i), mine=likes.indexOf(S.data.me)>=0, used=i.status==='Used', arch=i.status==='Archived';
+  return '<div class="set-row mk-row idea-row" role="button" tabindex="0" data-act="idea-open" data-id="'+esc(i.id)+'">'
+    +'<span class="mk-main">'+esc(i.text)+'<small>'+esc(firstName(i.suggested_by)||'')+' · '+esc(fmtDate(String(i.created_at).slice(0,10)))+(used?' · '+mkBecame(i):'')+'</small></span>'
+    +(used||arch ? mkTag(used?'g':'n', used?'Used':'Archived') : '')
+    +'<button type="button" class="like'+(mine?' on':'')+'" data-act="idea-like" data-id="'+esc(i.id)+'" aria-pressed="'+mine+'" aria-label="'+(mine?'Unlike':'Like')+', '+likes.length+' like'+(likes.length===1?'':'s')+'">👍'+(likes.length?' '+likes.length:'')+'</button></div>';
+}
+function mkBecame(i){ const m=/^(post|delivery|task):/.exec(i.became||''); return m ? 'Became a '+m[1] : 'Used'; }
+function mkTasks(){ return (S.data.tasks||[]).filter(t=>t.area==='marketing' && t.status!=='Needs Review' && (isOpen(t) || (t.status==='Done' && String(t.completed_at||'').slice(0,10)>=addDays(S.data.today,-7)))); }
+function mkTodosHtml(){
+  const ideas=(S.mkt.ideas||[]).filter(i=>mkHit(i.text, i.details, nameOf(i.suggested_by||'')));
+  const open=ideas.filter(i=>i.status==='Open').sort((a,b)=>likesOf(b).length-likesOf(a).length || String(b.created_at).localeCompare(String(a.created_at)));
+  const rest=ideas.filter(i=>i.status!=='Open').sort((a,b)=>String(b.updated_at).localeCompare(String(a.updated_at)));
+  const all=S.kAllIdeas || S.kq, shown=all ? open.concat(rest) : open.slice(0,5);
+  const more=!all && (open.length>5 || rest.length) ? '<button type="button" class="set-row more-row" data-act="k-all-ideas"><span>See All '+ideas.length+' Ideas</span><span class="chev" aria-hidden="true">›</span></button>' : '';
+  let html='<div class="mg-head"><h3 class="set-sec">Ideas'+(open.length?' · '+open.length:'')+'</h3><button type="button" class="capsule" data-act="idea-new">＋ Add Idea</button></div>'
+    +(shown.length||more ? '<div class="set-card mrows">'+shown.map(ideaRow).join('')+more+'</div>' : '<p class="none">No ideas yet. Anyone on the team can add one; '+esc(firstName(mkApprover())||'the approver')+' turns the best into posts, deliveries and tasks.</p>');
+  const tasks=S.mktFrom==='sample' ? (S.mkSample.tasks||[]) : sortTasks(mkTasks().filter(t=>mkHit(t.title, t.details)));
+  html+='<div class="mg-head"><h3 class="set-sec">Marketing Tasks'+(tasks.length?' · '+tasks.filter(t=>t.status!=='Done').length:'')+'</h3><button type="button" class="capsule" data-act="k-task-new">＋ New Task</button></div>';
+  if (S.mktFrom==='sample') html+='<div class="set-card mrows">'+tasks.map(t=>'<button type="button" class="set-row mk-row" data-act="sample-tap"><i class="tbox'+(t.status==='Done'?' on':'')+'"></i><span class="mk-main">'+esc(t.title)+'<small>'+esc(t.due?fmtDate(t.due):'No date')+' · '+esc(firstName(t.owners))+'</small></span></button>').join('')+'</div>';
+  else html+=tasks.length ? taskRows(tasks, 'stack') : '<p class="none">No Marketing tasks. Turn on <b>Marketing</b> in any task, or tap ＋ New Task here.</p>';
+  return html;
+}
+
+// ----- the panels (S.sheet 'mk', S.mk = { kind, item, isNew })
+function mkOpen(kind, item, isNew){ S.mk={ kind:kind, item:Object.assign({}, item), isNew:!!isNew, base:Object.assign({}, item) }; S.sheet='mk'; showSheet(); }
+function mkSheet(){
+  const E=S.mk, x=E.item;
+  const head=(title, saveLabel)=>'<div class="grab"></div><div class="sheet-head"><button type="button" class="btn ghost sm" data-act="close-sheet">Cancel</button><h3>'+title+'</h3><button type="button" class="btn primary sm" data-act="mk-save">'+saveLabel+'</button></div><div class="err" id="f-err" role="alert"></div>';
+  const whoChips=(field, val)=>'<div class="chips" role="group">'+mkMembers().map(p=>'<button type="button" class="'+(val===p.email?'on':'')+'" data-act="mk-pick" data-field="'+field+'" data-val="'+esc(p.email)+'">'+esc(firstName(p.email))+'</button>').join('')+'</div>';
+  const del=(label)=>E.isNew ? '' : '<div class="set-card mt-l"><button type="button" class="set-row del-row" data-act="mk-del"><span>'+label+'</span></button></div>';
+  if (E.kind==='delivery') {
+    const offices=(S.mkt.offices||[]).map(o=>'<option value="'+esc(o.name)+'">').join('');
+    const o=(S.mkt.offices||[]).find(z=>z.name.toLowerCase()===String(x.office||'').toLowerCase());
+    return head(E.isNew?'New Delivery':'Delivery', E.isNew?'Add':'Save')
+      +'<div class="form"><label for="mk-office">Office</label><input type="text" id="mk-office" list="mk-offices" value="'+esc(x.office||'')+'" placeholder="Which referring office?" autocomplete="off"><datalist id="mk-offices">'+offices+'</datalist>'
+      +(o && o.last ? '<p class="small muted mt-s">Last visit: '+esc(fmtDate(o.last))+(o.days_since!=null?' ('+o.days_since+' days ago)':'')+'</p>' : '')
+      +'<label for="mk-date">Date</label><input type="date" id="mk-date" value="'+esc(x.date||'')+'">'
+      +'<label for="mk-gift">Gift or Treat</label><input type="text" id="mk-gift" value="'+esc(x.gift||'')+'" placeholder="Pumpkin bread, coffee and donuts…">'
+      +'<label>Who Delivers</label>'+whoChips('who', x.who||'')
+      +'<label for="mk-cost">Cost</label><input type="text" id="mk-cost" inputmode="decimal" value="'+esc(x.cost?'$'+x.cost:'')+'" placeholder="$0">'
+      +'<label>Status</label><div class="seg wrap" role="group">'+['Idea','Planned','Delivered','Canceled'].map(v=>'<button type="button" class="'+((x.status||'Planned')===v?'on':'')+'" data-act="mk-pick" data-field="status" data-val="'+v+'">'+v+'</button>').join('')+'</div>'
+      +'<label for="mk-notes">Notes</label><textarea id="mk-notes" rows="3" placeholder="Who to ask for, what to mention">'+esc(x.notes||'')+'</textarea></div>'
+      +(!E.isNew && x.status!=='Delivered' ? '<button type="button" class="btn ok-btn mt-l" data-act="mk-delivered">Mark Delivered</button>' : '')
+      +(x.who ? '<p class="small muted mt-s">'+esc(firstName(x.who))+' gets a reminder the day before.</p>' : '')
+      +del('Delete Delivery');
+  }
+  if (E.kind==='post') {
+    const st=x.stage||'Idea', si=POST_STAGE_LIST.indexOf(st), ap=mkApprover(), apName=firstName(ap)||'the approver', isAp=mkIsApprover(), on=String(x.platforms||'').split(',').map(s=>s.trim());
+    const steps='<div class="mk-steps" aria-label="Stage: '+esc(st)+'">'+POST_STAGE_LIST.map((s,i)=>'<span class="'+(i<si?'d':i===si?'c':'')+'"><i></i>'+s+'</span>').join('')+'</div>';
+    let acts='';
+    if (!E.isNew) {
+      if (st==='Idea' || st==='Drafted') acts='<button type="button" class="btn primary" data-act="mk-stage" data-val="Needs Approval">'+(isAp?'Save as Ready':'Ask '+esc(apName)+' to Approve')+'</button>';
+      if (st==='Needs Approval') acts=isAp ? '<div class="btn-row"><button type="button" class="btn ghost" data-act="mk-sendback">Send Back</button><button type="button" class="btn ok-btn" data-act="mk-stage" data-val="Approved">Approve</button></div>'
+        : '<p class="small muted">Waiting for '+esc(apName)+'\'s approval. Changing the words or picture after approval sends it back to '+esc(apName)+'.</p>';
+      if (st==='Approved') acts='<button type="button" class="btn ok-btn" data-act="mk-stage" data-val="Posted">Mark Posted</button>'+(isAp?'<button type="button" class="linkbtn mt-s" data-act="mk-sendback">Send Back</button>':'');
+    }
+    return head(E.isNew?'New Post':'Post', E.isNew?'Add':'Save')+(E.isNew?'':steps)
+      +(x.review_note && st==='Drafted' ? '<div class="mk-note"><b>'+esc(apName)+' sent this back:</b> '+esc(x.review_note)+'</div>' : '')
+      +'<div class="form"><label for="mk-title">Title</label><input type="text" id="mk-title" value="'+esc(x.title||'')+'" placeholder="Meet Dr. Smith, Holiday Hours…">'
+      +'<label for="mk-caption">Caption</label><textarea id="mk-caption" rows="5" placeholder="The words that go with the post (Alfred can help write them)">'+esc(x.caption||'')+'</textarea>'
+      +'<label>Where</label><div class="chips" role="group">'+PLATS.map(p=>'<button type="button" class="'+(on.indexOf(p[0])>=0?'on':'')+'" data-act="mk-plat" data-val="'+p[0]+'">'+p[0]+'</button>').join('')+'</div>'
+      +'<label for="mk-date">Post On</label><input type="date" id="mk-date" value="'+esc(x.post_on||'')+'">'
+      +'<label>Written By</label>'+whoChips('writer', x.writer||'')
+      +'<label for="mk-link">Picture Link</label><input type="text" id="mk-link" inputmode="url" value="'+esc(x.link||'')+'" placeholder="https://… (Canva, Google Drive)">'
+      +(x.link && /^https?:\/\//.test(x.link) ? '<a class="linkbtn mt-s" href="'+esc(x.link)+'" target="_blank" rel="noopener">Open the Picture ›</a>' : '')
+      +'<label for="mk-notes">Notes</label><textarea id="mk-notes" rows="2">'+esc(x.notes||'')+'</textarea></div>'
+      +(acts?'<div class="mk-acts mt-l">'+acts+'</div>':'')
+      +del('Delete Post');
+  }
+  // idea
+  const can=E.isNew || x.suggested_by===S.data.me || mkIsApprover(), likes=likesOf(x);
+  return (can ? head(E.isNew?'New Idea':'Idea', E.isNew?'Add':'Save') : '<div class="grab"></div><div class="sheet-head"><h3>Idea</h3><button type="button" class="btn ghost sm" data-act="close-sheet">Done</button></div>')
+    +'<div class="form"><label for="mk-text">Idea</label>'+(can?'<textarea id="mk-text" rows="2" placeholder="A delivery, a post, an event, a contest…">'+esc(x.text||'')+'</textarea>':'<p class="mk-read">'+esc(x.text)+'</p>')
+    +'<label for="mk-details">Details</label>'+(can?'<textarea id="mk-details" rows="3" placeholder="Optional">'+esc(x.details||'')+'</textarea>':'<p class="mk-read">'+(x.details?esc(x.details):'<span class="muted">None</span>')+'</p>')+'</div>'
+    +(E.isNew ? '' : '<p class="small muted mt-s">Suggested by '+esc(nameOf(x.suggested_by))+' · '+esc(fmtDate(String(x.created_at).slice(0,10)))+(likes.length?' · 👍 '+esc(listNames(likes.map(firstName))):'')+(x.status==='Used'?' · '+mkBecame(x):'')+'</p>')
+    +(!E.isNew && mkIsApprover() && x.status==='Open' ? '<h3 class="set-sec mt-l">Turn It Into</h3><div class="set-card"><button type="button" class="set-row" data-act="idea-make" data-val="post"><span>A Post</span><span class="chev" aria-hidden="true">›</span></button><button type="button" class="set-row" data-act="idea-make" data-val="delivery"><span>A Delivery</span><span class="chev" aria-hidden="true">›</span></button><button type="button" class="set-row" data-act="idea-make" data-val="task"><span>A Marketing Task</span><span class="chev" aria-hidden="true">›</span></button></div>' : '')
+    +(!E.isNew && can ? '<div class="set-card mt-l">'+(x.status==='Open' ? '<button type="button" class="set-row" data-act="idea-status" data-val="Archived"><span>Archive<small>Keeps it in See All, out of the way</small></span></button>' : '<button type="button" class="set-row" data-act="idea-status" data-val="Open"><span>Move Back to Open</span></button>')
+      +'<button type="button" class="set-row del-row" data-act="mk-del"><span>Delete Idea</span></button></div>' : '');
+}
+// What the panel's fields say now.
+function mkRead(){
+  const E=S.mk, x=Object.assign({}, E.item), v=id=>{ const el=document.getElementById(id); return el ? el.value : undefined; };
+  if (E.kind==='delivery') { x.office=(v('mk-office')||'').trim(); x.date=v('mk-date')||''; x.gift=v('mk-gift')||''; x.cost=v('mk-cost')||''; x.notes=v('mk-notes')||''; }
+  if (E.kind==='post') { x.title=(v('mk-title')||'').trim(); x.caption=v('mk-caption')||''; x.post_on=v('mk-date')||''; x.link=(v('mk-link')||'').trim(); x.notes=v('mk-notes')||''; }
+  if (E.kind==='idea' && v('mk-text')!==undefined) { x.text=(v('mk-text')||'').trim(); x.details=v('mk-details')||''; }
+  E.item=x; return x;
+}
+function mkErr(t){ const er=document.getElementById('f-err'); if (er) er.textContent=t; }
+const MK_SAVE={ delivery:'apiSaveDelivery', post:'apiSavePost', idea:'apiSaveIdea' };
+async function mkSave(el, extra, after){
+  const E=S.mk; if (!E) return; const x=Object.assign(mkRead(), extra||{});
+  if (E.kind==='delivery' && !x.office) return mkErr('Pick the office first.');
+  if (E.kind==='post' && !x.title) return mkErr('Give the post a title first.');
+  if (E.kind==='idea' && !x.text) return mkErr('Type the idea first.');
+  if (E.isNew) x.cid=x.cid||newCid();
+  const fromIdea=E.isNew && E.kind!=='idea' && S.mkFromIdea ? S.mkFromIdea.done : null;
+  const r=await saving(el, E.isNew?'Adding…':'Saving…', ()=>mkCall(MK_SAVE[E.kind], x)); if (!r) return;
+  mkPut(E.kind, r); const kind=E.kind;
+  if (S.mk===E) closeSheet();
+  if (fromIdea) fromIdea(r);
+  if (after) after(r); else if (kind==='idea' && E.isNew) toast('Idea added. Thanks!');
+  renderMkResults();
+}
+function mkDelete(el){
+  const E=S.mk; if (!E) return; const kind=E.kind, id=E.item.id, fn={ delivery:'apiDeleteDelivery', post:'apiDeletePost', idea:'apiDeleteIdea' }[kind];
+  saving(el, 'Deleting…', ()=>mkCall(fn, id)).then(r=>{ if (!r) return; mkDrop(kind, id); closeSheet(); renderMkResults();
+    toast((kind==='delivery'?'Delivery':kind==='post'?'Post':'Idea')+' deleted', ()=>mkCall('apiRestoreMarketing', kind, id).then(row=>{ if (row && row.id) mkPut(kind, row); renderMkResults(); toast('Restored'); }).catch(e=>toast('Couldn\'t restore. '+errText(e))), { label:'Undo' }); });
+}
+function mkClick(a, el, v){
+  if (a==='ktab') { S.ktab=v; S.kAllDone=S.kAllPosted=S.kAllIdeas=false; render(); return true; }
+  if (a==='k-search') { S.kSearch=true; render(); const i=document.getElementById('kq'); if (i) i.focus(); return true; }
+  if (a==='k-search-close') { S.kSearch=false; S.kq=''; render(); return true; }
+  if (a==='k-all-done') { S.kAllDone=true; renderMkResults(); return true; }
+  if (a==='k-all-posted') { S.kAllPosted=true; renderMkResults(); return true; }
+  if (a==='k-all-ideas') { S.kAllIdeas=true; renderMkResults(); return true; }
+  if (a==='k-all-due') { S.kAllDue=true; renderMkResults(); return true; }
+  if (a==='dl-new') { mkOpen('delivery', { office:el.dataset.office||'', date:'', gift:'', who:(mkMembers().find(p=>p.marketing)||{}).email||'', cost:'', status:'Planned', notes:'' }, true); return true; }
+  if (a==='dl-open') { const d=(S.mkt.deliveries||[]).find(x=>x.id===el.dataset.id); if (d) mkOpen('delivery', d); return true; }
+  if (a==='post-new') { mkOpen('post', { title:'', caption:'', platforms:'', post_on:'', writer:S.data.me, stage:'Idea', link:'', notes:'' }, true); return true; }
+  if (a==='post-open') { const p=(S.mkt.posts||[]).find(x=>x.id===el.dataset.id); if (p) mkOpen('post', p); return true; }
+  if (a==='idea-new') { mkOpen('idea', { text:'', details:'' }, true); setTimeout(()=>{ const f=document.getElementById('mk-text'); if (f) f.focus(); }, 320); return true; }
+  if (a==='idea-open') { const i=(S.mkt.ideas||[]).find(x=>x.id===el.dataset.id); if (i) mkOpen('idea', i); return true; }
+  if (a==='idea-like') { const id=el.dataset.id; mkCall('apiLikeIdea', id).then(r=>{ mkPut('idea', r); renderMkResults(); }).catch(e=>toast('Couldn\'t save. '+errText(e))); return true; }
+  if (a==='k-task-new') { if (S.mktFrom==='sample') { toast('This is sample data. Turn it off in Account to add real tasks.'); return true; } newTask(); S.edit.task.area='marketing'; renderSheet(); return true; }
+  if (a==='mk-pick') { mkRead(); const f=el.dataset.field; S.mk.item[f]= f!=='status' && S.mk.item[f]===v ? '' : v; renderSheet(); return true; }
+  if (a==='mk-plat') { mkRead(); const on=String(S.mk.item.platforms||'').split(',').map(s=>s.trim()).filter(Boolean), i=on.indexOf(v); if (i>=0) on.splice(i,1); else on.push(v); S.mk.item.platforms=PLATS.map(p=>p[0]).filter(p=>on.indexOf(p)>=0).join(', '); renderSheet(); return true; }
+  if (a==='mk-save') { mkSave(el); return true; }
+  if (a==='mk-delivered') { mkSave(el, { status:'Delivered' }, ()=>toast('Marked delivered')); return true; }
+  if (a==='mk-stage') { const to=v; mkSave(el, { stage:to }, ()=>toast(to==='Needs Approval' ? (mkIsApprover()?'Saved':'Sent to '+(firstName(mkApprover())||'the approver')+' for approval') : to==='Approved' ? 'Approved' : to==='Posted' ? 'Marked posted' : 'Saved')); return true; }
+  if (a==='mk-sendback') { mkRead(); const note=window.prompt('What should change? (sent with the post)', ''); if (note===null) return true;
+    mkSave(el, { stage:'Drafted', review_note:note.trim() }, ()=>toast('Sent back')); return true; }
+  if (a==='mk-del') { mkDelete(el); return true; }
+  if (a==='idea-status') { mkSave(el, { status:v }, ()=>toast(v==='Archived'?'Archived':'Moved back to Open')); return true; }
+  if (a==='idea-make') { const idea=S.mk.item, kind=v; closeSheet(true);
+    const done=r=>{ if (!r) return; mkCall('apiSaveIdea', { id:idea.id, status:'Used', became:kind+':'+r.id }).then(ir=>{ mkPut('idea', ir); renderMkResults(); }).catch(()=>{}); };
+    S.mkFromIdea={ done:done };
+    if (kind==='post') { S.ktab='posts'; render(); mkOpen('post', { title:idea.text.slice(0,120), caption:idea.details||'', platforms:'', post_on:'', writer:S.data.me, stage:'Idea', link:'', notes:'' }, true); }
+    else if (kind==='delivery') { S.ktab='deliveries'; render(); mkOpen('delivery', { office:'', date:'', gift:idea.text.slice(0,200), who:'', cost:'', status:'Planned', notes:idea.details||'' }, true); }
+    else { if (S.mktFrom==='sample') { done({ id:'sample-task' }); toast('This is sample data, so no real task was made.'); S.mkFromIdea=null; return true; }
+      newTask(); S.edit.task.area='marketing'; S.edit.task.title=idea.text; S.edit.task.details=idea.details||''; S.edit.fromIdea=done; renderSheet(); }
+    return true; }
+  return false;
+}
+
+// Sample data for the Marketing tab (Account › Show Sample Data): dates move with today.
+function sampleMkt(){
+  const t=S.data.today, d=n=>addDays(t, n), ppl=S.data.people||[], em=n=>{ const p=ppl.find(x=>x.name.indexOf(n)===0); return p ? p.email : S.data.me; };
+  const becky=em('Becky'), erin=em('Erin'), jared=em('Jared'), drs=em('Dr.'), ash='ashley@sample';
+  const at=n=>d(n)+' 09:00';
+  return {
+    approver:becky, ashley:ash,
+    deliveries:[
+      { id:'sd1', office:'Thumb Butte Dental', date:d(1), gift:'Pumpkin bread', who:ash, cost:'42', status:'Planned', notes:'Front desk is Karen. Mention the new scheduling line.' },
+      { id:'sd2', office:'Willow Creek Family Dentistry', date:d(3), gift:'Coffee and donuts', who:ash, cost:'', status:'Planned', notes:'' },
+      { id:'sd3', office:'Prescott Valley Smiles', date:d(9), gift:'Thanksgiving pies', who:ash, cost:'', status:'Planned', notes:'' },
+      { id:'sd4', office:'Lynx Lake Dental', date:d(-2), gift:'Lunch for the team', who:ash, cost:'', status:'Planned', notes:'Moved from last week.' },
+      { id:'sd5', office:'Sundog Dental', date:d(-6), gift:'Fall candles', who:ash, cost:'64', status:'Delivered', notes:'' },
+      { id:'sd6', office:'Granite Dell Dentistry', date:d(-46), gift:'Cookie tins', who:ash, cost:'48', status:'Delivered', notes:'' },
+      { id:'sd7', office:'Bradshaw Smiles', date:d(-50), gift:'Fruit basket', who:ash, cost:'55', status:'Delivered', notes:'' },
+      { id:'sd8', office:'Prescott Family Dental', date:d(-62), gift:'Cupcakes', who:ash, cost:'39', status:'Delivered', notes:'' },
+      { id:'sd9', office:'Mingus Mountain Dental', date:'', gift:'Hot cocoa bar for their staff meeting', who:'', cost:'', status:'Idea', notes:'' }
+    ].map(x=>Object.assign({ created_at:at(-10), created_by:becky, updated_at:at(-1), updated_by:becky }, x)),
+    posts:[
+      { id:'sp1', title:'Meet Dr. Smith', caption:'Meet Dr. Smith! Twenty years of saving smiles in Prescott. Ask him about his famous lunchtime walks. #PrescottEndo', platforms:'Facebook, Instagram', post_on:d(3), writer:erin, stage:'Needs Approval' },
+      { id:'sp2', title:'Thanksgiving Thank-You', caption:'We\'re thankful for every referring office and patient who trusts us. Happy Thanksgiving!', platforms:'Instagram', post_on:d(8), writer:erin, stage:'Needs Approval' },
+      { id:'sp3', title:'New Scheduling Line', caption:'Referring offices: our new scheduling line gets your patients in within 48 hours. Call (928) 555-0142.', platforms:'Google Business', post_on:d(2), writer:erin, stage:'Approved', approved_by:becky },
+      { id:'sp4', title:'Root Canal Myths, Part 2', caption:'Myth: a root canal hurts. Truth: it feels like getting a filling.', platforms:'Facebook', post_on:'', writer:erin, stage:'Drafted', review_note:'Love it. Can we add a line about same-week appointments?' },
+      { id:'sp5', title:'Holiday Hours', caption:'', platforms:'Facebook, Google Business', post_on:'', writer:becky, stage:'Idea' },
+      { id:'sp6', title:'Veterans Day Thank-You', caption:'Thank you to every veteran in our community.', platforms:'Facebook', post_on:d(-6), writer:erin, stage:'Posted', posted_at:at(-6) }
+    ].map(x=>Object.assign({ link:'', notes:'', created_at:at(-12), created_by:x.writer, updated_at:at(-1), updated_by:x.writer, review_note:'', approved_by:'' }, x)),
+    ideas:[
+      { id:'si1', text:'Thanksgiving pie delivery to our top 10 referring offices', details:'Order from Sweet Treats by Nov 20.', suggested_by:jared, likes:[becky,erin,drs].join(','), status:'Open' },
+      { id:'si2', text:'Lunch-and-learn on cracked teeth for front desk teams', details:'', suggested_by:drs, likes:[becky].join(','), status:'Open' },
+      { id:'si3', text:'"Root Canal Myths" video series with Dr. Smith', details:'Short phone videos, 30 seconds each.', suggested_by:erin, likes:[jared].join(','), status:'Open' },
+      { id:'si4', text:'Holiday card contest for referring offices\' kids', details:'', suggested_by:becky, likes:'', status:'Open' },
+      { id:'si5', text:'Meet the Team posts, one leader each week', details:'', suggested_by:becky, likes:[erin,jared].join(','), status:'Used', became:'post:sp1' }
+    ].map((x,i)=>Object.assign({ created_at:at(-3-i), updated_at:at(-1) }, x)),
+    tasks:[
+      { title:'Order holiday cards for referring offices', due:d(0), owners:becky, status:'Not Done' },
+      { title:'Get the office list from the referral report', due:d(2), owners:becky, status:'Not Done' },
+      { title:'Pick up the pie order', due:d(7), owners:ash, status:'Not Done' },
+      { title:'Plan the spring lunch-and-learn', due:'', owners:becky, status:'Not Done' }
+    ]
+  };
+}
+// The Marketing calls, run in memory (sample data and the preview). Same rules as the server, simplified.
+function MkLocal(store){
+  const now=()=>{ const d=new Date(), z=n=>String(n).padStart(2,'0'); return d.toISOString().slice(0,10)+' '+z(d.getHours())+':'+z(d.getMinutes()); };
+  const id=p=>p+Date.now().toString(36)+Math.random().toString(36).slice(2,6);
+  const live=r=>!r.deleted_at;
+  const findIn=(k,x)=>(store[k]||[]).find(r=>r.id===x && live(r));
+  const ap=()=>store.approver;
+  return {
+    apiMarketing(me){ const deliveries=store.deliveries.filter(live);
+      return { deliveries:deliveries, posts:store.posts.filter(live), ideas:store.ideas.filter(live), offices:mkOffices(deliveries, []), approver:ap(), me:me }; },
+    apiSaveDelivery(me, d){ const cur=d.id?findIn('deliveries', d.id):null; if (d.id && !cur) throw new Error('That delivery isn\'t there any more.');
+      const out=cur||{ id:id('d'), created_at:now(), created_by:me }; if (!cur) store.deliveries.push(out);
+      ['office','date','gift','who','notes','status'].forEach(k=>{ if (d[k]!=null) out[k]=String(d[k]); });
+      if (d.cost!=null) { const c=String(d.cost).replace(/[$,\s]/g,''); out.cost=c && isFinite(Number(c)) ? String(Math.round(Number(c)*100)/100) : ''; }
+      if (!out.status) out.status='Planned'; if (out.status==='Delivered' && !out.date) out.date=S.data.today;
+      if (!out.office) throw new Error('Pick the office first.'); out.updated_at=now(); out.updated_by=me; return out; },
+    apiDeleteDelivery(me, x){ const r=findIn('deliveries', x); if (r) { r.deleted_at=now(); r.deleted_by=me; } return { ok:true }; },
+    apiSavePost(me, p){ const cur=p.id?findIn('posts', p.id):null; if (p.id && !cur) throw new Error('That post isn\'t there any more.');
+      const out=cur||{ id:id('p'), created_at:now(), created_by:me, stage:'Idea', writer:me }; const isAp=me===ap(), from=cur?cur.stage:'';
+      let changed=false; ['title','caption','link','platforms'].forEach(k=>{ if (p[k]!=null && String(p[k])!==String(out[k]||'')) { out[k]=String(p[k]); changed=true; } });
+      ['post_on','writer','notes'].forEach(k=>{ if (p[k]!=null) out[k]=String(p[k]); });
+      if (!out.title) throw new Error('Give the post a title first.');
+      const to=p.stage!=null ? p.stage : (cur ? cur.stage : (out.caption?'Drafted':'Idea'));
+      if (to!==from) { if (to==='Approved' && !isAp) throw new Error('Only '+firstName(ap())+' can approve posts.');
+        if (to==='Approved') { out.approved_by=me; out.review_note=''; }
+        if (to==='Drafted' && p.review_note!=null) out.review_note=String(p.review_note);
+        if (to==='Posted') out.posted_at=now(); out.stage=to; }
+      else if (changed && (from==='Approved' || from==='Needs Approval') && !isAp) out.stage='Needs Approval';
+      if (!cur) store.posts.push(out); out.updated_at=now(); out.updated_by=me; return out; },
+    apiDeletePost(me, x){ const r=findIn('posts', x); if (r) { r.deleted_at=now(); r.deleted_by=me; } return { ok:true }; },
+    apiSaveIdea(me, i){ const cur=i.id?findIn('ideas', i.id):null; if (i.id && !cur) throw new Error('That idea isn\'t there any more.');
+      if (cur && cur.suggested_by!==me && me!==ap()) throw new Error('Only '+firstName(cur.suggested_by)+' or '+firstName(ap())+' can change this idea.');
+      const out=cur||{ id:id('i'), created_at:now(), suggested_by:me, likes:'', status:'Open', became:'' }; if (!cur) store.ideas.push(out);
+      ['text','details','status','became'].forEach(k=>{ if (i[k]!=null) out[k]=String(i[k]); });
+      if (!out.text) throw new Error('Type the idea first.'); out.updated_at=now(); out.updated_by=me; return out; },
+    apiLikeIdea(me, x){ const r=findIn('ideas', x); if (!r) throw new Error('That idea isn\'t there any more.');
+      const l=String(r.likes||'').split(',').filter(Boolean), i=l.indexOf(me); if (i>=0) l.splice(i,1); else l.push(me); r.likes=l.join(','); return r; },
+    apiDeleteIdea(me, x){ const r=findIn('ideas', x); if (r) { r.deleted_at=now(); r.deleted_by=me; } return { ok:true }; },
+    apiRestoreMarketing(me, kind, x){ const k={ delivery:'deliveries', post:'posts', idea:'ideas' }[kind]; const r=(store[k]||[]).find(z=>z.id===x); if (r) { r.deleted_at=''; r.deleted_by=''; } return r||{ ok:true }; }
+  };
+}
+
 /* ---------- More (a page since Nov 10, Batch 2) ---------- */
 // LB-2: one grouped list. Each row pushes its screen; "‹ More" pops back here. Phones also get Review (approvers);
 // computers have Review as a top tab.
@@ -2630,10 +3019,9 @@ function renderMore(m){
     +['auto','light','dark'].map(v=>'<button type="button" class="'+(theme()===v?'on':'')+'" data-act="theme-set" data-val="'+v+'"><span class="th-ico">'+THEME_ICON[v]+'</span> '+THEME_NAME[v]+'</button>').join('')+'</div></div>'
     +'<div class="menu more-menu mt-l">'
     +gr('settings',ICON.bell,'Notifications', pushState()==='on'?'<span class="small muted">On</span>':'')
-    +gr('deleted',ICON.deleted,'Recently Deleted')
-    +row('data-act="tour-open"',ICON.tour,'Welcome Tour')+'</div>'
+    +(mkOnly() ? '' : gr('deleted',ICON.deleted,'Recently Deleted')+row('data-act="tour-open"',ICON.tour,'Welcome Tour'))+'</div>'
     +'<div class="set-card mt-l">'+switchRow('sample', sampleOn(), 'Show Sample Data', 'Made-up numbers on the Huddle tab so you can see every card working. Only on this device; nothing is saved.')+'</div>'
-    +(S.data.isApprover ? '<h3 class="set-sec">For Approvers</h3><div class="menu more-menu">'
+    +(S.data.isApprover && !mkOnly() ? '<h3 class="set-sec">For Approvers</h3><div class="menu more-menu">'
       +gr('review',ICON.review,'Review', rc?'<span class="count" data-num="more-review">'+rc+'</span>':'')
       +gr('teamset',GEAR,'Team Settings')
       +gr('admin',ICON.tools,'Admin Tools')+'</div>' : '')
@@ -3064,7 +3452,7 @@ function closeSheet(silent){
   if (S.sheet==='task' && S.edit && !S.edit.isNew && (S.saveTimer || S.edit.unsaved)) flushSave();
   const draftId=S.sheet==='task' && S.edit && !S.edit.isNew && commentDraft(S.edit.task.id) && !(S.posting && S.posting[S.edit.task.id]) && find(S.edit.task.id) ? S.edit.task.id : null;
   if (S.sheet==='topic' && (S.topicTimer || (S.topicEdit && S.topicEdit.unsaved))) flushTopic();
-  S.sheet=null; S.edit=null; S.topicEdit=null; S.confirmDel=false; S.decEdit=null;
+  S.sheet=null; S.edit=null; S.topicEdit=null; S.confirmDel=false; S.decEdit=null; S.mk=null; S.mkFromIdea=null;
   document.body.style.overflow=''; document.body.classList.remove('sheet-on');
   const w=document.getElementById('sheetWrap'), sh=document.getElementById('sheet');
   if (!w.hidden) {
@@ -3115,6 +3503,7 @@ function renderSheetBody(){
   const el=document.getElementById('sheet'), top=el.scrollTop;
   document.getElementById('sheetWrap').classList.toggle('dialog', S.sheet==='otter' || S.sheet==='ask');
   if (S.sheet==='sortfilter') { el.innerHTML=sortFilterSheet(); return; }
+  if (S.sheet==='mk' && S.mk) { el.innerHTML=mkSheet(); el.scrollTop=top; return; }
   if (S.sheet==='ask') {
     const q=S.ask;
     el.innerHTML='<div class="otter-pop"><h3>'+esc(q.title)+'</h3><p>'+q.body+'</p>'
@@ -3222,7 +3611,7 @@ function renderSheetBody(){
   const t=S.edit.task, sel=owners(t), d=S.edit.detail, isNew=S.edit.isNew, E=S.edit;
   const seg=(field,list)=>'<div class="seg wrap'+(field==='status'?' st4':'')+'" role="group">'+list.map(v=>'<button type="button" class="'+(t[field]===v?'on':'')+'" data-act="set" data-field="'+field+'" data-val="'+v+'">'+(field==='priority'?MARKS[v]+' '+v:label(v))+'</button>').join('')+'</div>';
   // #32: Only Me is the last owner chip.
-  const ownerChips='<div class="chips">'+S.data.people.map(p=>'<button type="button" class="'+(!isPriv(t) && sel.indexOf(p.email)>=0?'on':'')+'" data-act="owner" data-email="'+esc(p.email)+'">'+esc(firstName(p.email))+'</button>').join('')
+  const ownerChips='<div class="chips">'+(t.area==='marketing' || mkOnly() ? mkMembers() : S.data.people).map(p=>'<button type="button" class="'+(!isPriv(t) && sel.indexOf(p.email)>=0?'on':'')+'" data-act="owner" data-email="'+esc(p.email)+'">'+esc(firstName(p.email))+'</button>').join('')
     +(canPrivate(t)?'<button type="button" class="'+(isPriv(t)?'on':'')+'" data-act="priv-chip">'+LOCK+' Only Me</button>':'')+'</div>'
     +(E.confirmPriv?'<div class="priv-confirm" role="alert"><p>Remove '+esc(listNames(owners(t).filter(o=>o!==S.data.me).map(firstName)))+' and make this private?</p>'
       +'<div class="acts"><button type="button" class="btn primary sm" data-act="private-yes">Remove and Make Private</button><button type="button" class="btn ghost sm" data-act="private-no">Cancel</button></div></div>':'');
@@ -3243,7 +3632,8 @@ function renderSheetBody(){
       +(E.live?'<p class="small muted live-link">This task is part of the '+esc(S.live?S.live.title:'meeting')+'.</p>':'')
       +'<div class="owners-box mt-m"><label>Owners</label>'+ownerChips+'</div>'
       +'<label>Priority</label>'+seg('priority',['High','Medium','Low'])
-      +'<label>Due Date</label>'+dates+'</div>';
+      +'<label>Due Date</label>'+dates
+      +(mkOnly() ? '' : '<div class="set-card mt-m">'+switchRow('task-area', t.area==='marketing', 'Marketing', 'Also shows on Marketing › To-Dos')+'</div>')+'</div>';
     el.innerHTML=html; el.scrollTop=top; return;
   }
   // #8 (Nov 16): an open task reads first, like Reminders: the title in large type, four rows that open a picker in place,
@@ -3261,6 +3651,7 @@ function renderSheetBody(){
     +row('due','Due', t.due?esc(fmtDate(t.due)):'No Date')+pick('due', dates)
     +row('priority','Priority', t.priority?MARKS[t.priority]+' '+esc(t.priority):'None')+pick('priority', seg('priority',['High','Medium','Low']))
     +row('owners','Owners', isPriv(t)?LOCK+' Only Me':esc(listNames(sel.map(firstName))||'No one'))+pick('owners', ownerChips)
+    +(mkOnly() || isPriv(t) ? '' : switchRow('task-area', t.area==='marketing', 'Marketing', 'Also shows on Marketing › To-Dos'))
     +'</div>';
   const people=S.data.people.filter(p=>p.email!==S.data.me), q=E.mentionQ;
   const sugg=q==null||isPriv(t) ? '' : people.filter(p=>firstName(p.email).toLowerCase().indexOf(q.toLowerCase())===0);
@@ -3366,7 +3757,7 @@ async function restoreTopic(id, el){
 // NN-3: at most one morning email a day. The report and Your Week replace that day's reminder; nothing goes out on the
 // tactical day or the day before. Day names follow Team Settings (dayName).
 // #3 (Nov 16): one switch per kind of news. Each goes to your phone when Huddle notifications are on, otherwise by email.
-const NOTIFY_OPTS = [['assigned','New Tasks'],['mentions','Mentions'],['meeting','Meeting Started'],['waiting','Waiting on You'],['reminders','Overdue Tasks']];
+const NOTIFY_OPTS = [['assigned','New Tasks'],['mentions','Mentions'],['meeting','Meeting Started'],['waiting','Waiting on You'],['reminders','Overdue Tasks'],['marketing','Marketing']];
 const EMAIL_OPTS = [
   ['digest','Monday “Your Week”','Your week at a glance and the Accountability Report before the tactical'],
   ['summary','Meeting Summaries','The full summary after each meeting (it\'s also posted in Connecteam)']
@@ -3483,7 +3874,7 @@ function renderSettings(m){
   m.innerHTML='<div class="settings">'+backLink()+'<h2>Notifications</h2>'
     +allow
     +'<h3 class="set-sec">Notify Me About</h3><div class="set-card">'
-    +NOTIFY_OPTS.map(([k,l])=>switchRow('email-toggle', em[k]!==false, l, '', 'data-kind="'+k+'"')).join('')
+    +NOTIFY_OPTS.filter(([k])=>!mkOnly() || k==='marketing' || k==='assigned' || k==='mentions').map(([k,l])=>switchRow('email-toggle', em[k]!==false, l, k==='marketing'?'Posts to approve, deliveries tomorrow, offices due for a visit':'', 'data-kind="'+k+'"')).join('')
     +'</div><p class="set-note">'+(st==='on' ? 'Sent to this '+(dev==='iPhone'?dev:dev.toLowerCase())+'.' : 'Sent by email until you allow notifications on your phone.')+' Meeting Started is only a phone notification.</p>'
     +'<h3 class="set-sec">Emails</h3><div class="set-card">'
     +EMAIL_OPTS.map(([k,l,d])=>switchRow('email-toggle', em[k]!==false, l, d, 'data-kind="'+k+'"')).join('')
@@ -3750,6 +4141,7 @@ async function addTask(el){
   if (netDown) { queueNew(t); if (S.edit===edit) closeSheet(); toast('Task added. It will send when you\'re back online.'); return; }
   if (!saved) return;
   replaceTask(saved);
+  if (edit.fromIdea) edit.fromIdea(saved);
   if (edit.live && S.live) { S.live.items=(S.live.items||[]).concat([saved.id]); liveMark('items', saved.id, true); }
   if (S.edit===edit) closeSheet();
   if (isPriv(saved) && S.view!=='mine') toast('Added to your Personal tasks as Only Me.');   // #17: the new row shows it was added
@@ -4744,7 +5136,7 @@ async function liveAddItem(el){
 /* ---------- Alfred chat bubble ---------- */
 // The conversation lives only in this page (S.alf) and is gone after a reload. Every message carries the screen
 // context below, and the screenshot taken when the bubble was tapped, so nobody has to describe where they were.
-const APP_VERSION = '2026.11.17-sample';
+const APP_VERSION = '2026.11.17-marketing';
 const H2C_URL = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
 const DIAG = { errors:[], actions:[] };   // last 10 of each, for bug reports
 function pushDiag(list, item){ list.push(item); if (list.length>10) list.shift(); }
@@ -5531,6 +5923,7 @@ function softAct(fn, box, fadeContent, tapped){
 }
 function actClick(e, el){
   const a=el.dataset.act, id=el.dataset.id, v=el.dataset.val;
+  if (S.data && mkClick(a, el, v)) return;
   breadcrumb(el);
   if (a==='boot-retry') { document.getElementById('main').innerHTML='<div class="list"><div class="skel" style="height:92px"></div><div class="skel" style="height:92px"></div></div>'; load(); return; }
   if (!S.data) return;
@@ -5902,6 +6295,7 @@ document.addEventListener('input', e=>{
   if (k==='dq') { S.dq=e.target.value; renderDecisionResults(); return; }
   if (k==='mq') { S.mq=e.target.value; searchMeetings(); return; }
   if (k==='tq') { S.tq=e.target.value; renderTopicResults(); return; }
+  if (k==='kq') { S.kq=e.target.value; renderMkResults(); return; }
   if (k==='title' && /\n/.test(e.target.value)) e.target.value=e.target.value.replace(/\n/g,' ');
   if (k==='tp-title' || k==='tp-ctx' || k==='tp-out') { if (S.topicEdit) { S.topicEdit[{ 'tp-title':'topic', 'tp-ctx':'context', 'tp-out':'outcome' }[k]]=e.target.value; queueTopic(800); } return; }
   if (S.edit) { S.edit.task[k]=e.target.value; queueSave(800); }
@@ -5909,6 +6303,7 @@ document.addEventListener('input', e=>{
 // Settings switches are real checkboxes (AP-3), so they report a change instead of a tap.
 function switchChanged(a, el){
   breadcrumb(el);
+  if (a==='task-area') { if (S.edit) { S.edit.task.area=el.checked ? 'marketing' : ''; if (S.edit.isNew) renderSheet(); else queueSave(0); } return; }
   if (a==='sample') { setPref('lt-sample', el.checked ? 'on' : ''); toast(el.checked ? 'Sample data is on. Open the Huddle tab to see it.' : 'Sample data is off.'); return; }
   if (a==='private-toggle') togglePrivate();
   else if (a==='sf-done') { S.status = S.status==='' ? 'open' : ''; closeSheet(); }
