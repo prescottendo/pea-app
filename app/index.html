@@ -19,7 +19,7 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" type="image/png" href="icon-192.png">
-<script>window.HUDDLE_WEB={"api":"https://script.google.com/macros/s/AKfycbzM8K_-XRMDdOJYJ3THn_FhyZkRreMddHIBAOFCFVoq5S_Y7MnsfFLsl7ac_fyDPrch/exec","clientId":"473377418367-cqmmnfum4kshq16973m4sj2jqqfa55p0.apps.googleusercontent.com","build":"cb16ed0","push":{"config":{"apiKey":"AIzaSyBON-0KvTXPD_MV6ykhYvCoBRiECEHyE9c","authDomain":"huddle-e2548.firebaseapp.com","projectId":"huddle-e2548","storageBucket":"huddle-e2548.firebasestorage.app","messagingSenderId":"554653922065","appId":"1:554653922065:web:87de53b4cb11b36835d2b0"},"vapidKey":"BHKeDoBmW7vL-qAT3ocyTaMaZ27Ca66jvQtTes2NC4CPoWFiPBJcga7wVd-RD1IuyhBki0oKXwPBGSNq002s8o8"}};document.documentElement.classList.add('web');</script>
+<script>window.HUDDLE_WEB={"api":"https://script.google.com/macros/s/AKfycbzM8K_-XRMDdOJYJ3THn_FhyZkRreMddHIBAOFCFVoq5S_Y7MnsfFLsl7ac_fyDPrch/exec","clientId":"473377418367-cqmmnfum4kshq16973m4sj2jqqfa55p0.apps.googleusercontent.com","build":"4f18eff","push":{"config":{"apiKey":"AIzaSyBON-0KvTXPD_MV6ykhYvCoBRiECEHyE9c","authDomain":"huddle-e2548.firebaseapp.com","projectId":"huddle-e2548","storageBucket":"huddle-e2548.firebasestorage.app","messagingSenderId":"554653922065","appId":"1:554653922065:web:87de53b4cb11b36835d2b0"},"vapidKey":"BHKeDoBmW7vL-qAT3ocyTaMaZ27Ca66jvQtTes2NC4CPoWFiPBJcga7wVd-RD1IuyhBki0oKXwPBGSNq002s8o8"}};document.documentElement.classList.add('web');</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <!-- The fonts load without holding up the first paint; the page shows in the phone's own font for a moment if needed. -->
@@ -5497,7 +5497,7 @@ async function liveAddItem(el){
 /* ---------- Alfred chat bubble ---------- */
 // The conversation lives only in this page (S.alf) and is gone after a reload. Every message carries the screen
 // context below, and the screenshot taken when the bubble was tapped, so nobody has to describe where they were.
-const APP_VERSION = '2026.11.17-heard';
+const APP_VERSION = '2026.11.17-alfgap';
 const H2C_URL = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
 const DIAG = { errors:[], actions:[] };   // last 10 of each, for bug reports
 function pushDiag(list, item){ list.push(item); if (list.length>10) list.shift(); }
@@ -5547,9 +5547,13 @@ function alfBounds(side){
 }
 // The bottom edge of the area fixed buttons are placed in, measured the way the + and the tab bar see it.
 function alfViewportBottom(){
-  const plus=document.getElementById('fab'), nav=document.getElementById('navBottom');
+  const plus=document.getElementById('fab'), nav=document.getElementById('navBottom'), ctl=document.getElementById('liveCtl');
   if (plus && !plus.hidden && getComputedStyle(plus).display!=='none') return plus.offsetTop+plus.offsetHeight+(parseFloat(getComputedStyle(plus).bottom)||0);
   if (nav && getComputedStyle(nav).display!=='none') return nav.getBoundingClientRect().bottom;
+  // Nov 17 (Brayden's screenshot): in a meeting neither the + nor the tab bar is showing, and on an iPhone Home Screen app
+  // the page height is about 34pt off from where fixed things sit (the home-indicator strip), so Alfred sank into the
+  // meeting bar. Measure from the meeting bar instead: same ruler as the bar's top that alfBounds uses.
+  if (ctl && !ctl.hidden && getComputedStyle(ctl).display!=='none') return ctl.getBoundingClientRect().bottom+(parseFloat(getComputedStyle(ctl).bottom)||0);
   return document.documentElement.clientHeight;
 }
 function alfSaved(){ try { const p=JSON.parse(localStorage.getItem('lt-alf-pos2')||'null'); if (p && (p.side==='left'||p.side==='right')) return p; } catch(e){} return null; }

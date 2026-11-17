@@ -6,7 +6,7 @@
 // new files and then waits. The page applies it straight away when the app was only just opened, or shows
 // "Update Ready · Reload"; Reload sends "skip-waiting".
 
-const BUILD = "cb16ed0";
+const BUILD = "4f18eff";
 const CACHE = 'huddle-' + BUILD;
 const SHELL = ['./', 'index.html', 'manifest.webmanifest', 'icon-192.png', 'icon-512.png', 'apple-touch-icon.png'];
 
