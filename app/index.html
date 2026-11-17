@@ -19,7 +19,7 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" type="image/png" href="icon-192.png">
-<script>window.HUDDLE_WEB={"api":"https://script.google.com/macros/s/AKfycbzM8K_-XRMDdOJYJ3THn_FhyZkRreMddHIBAOFCFVoq5S_Y7MnsfFLsl7ac_fyDPrch/exec","clientId":"473377418367-cqmmnfum4kshq16973m4sj2jqqfa55p0.apps.googleusercontent.com","build":"4108fa4","push":{"config":{"apiKey":"AIzaSyBON-0KvTXPD_MV6ykhYvCoBRiECEHyE9c","authDomain":"huddle-e2548.firebaseapp.com","projectId":"huddle-e2548","storageBucket":"huddle-e2548.firebasestorage.app","messagingSenderId":"554653922065","appId":"1:554653922065:web:87de53b4cb11b36835d2b0"},"vapidKey":"BHKeDoBmW7vL-qAT3ocyTaMaZ27Ca66jvQtTes2NC4CPoWFiPBJcga7wVd-RD1IuyhBki0oKXwPBGSNq002s8o8"}};document.documentElement.classList.add('web');</script>
+<script>window.HUDDLE_WEB={"api":"https://script.google.com/macros/s/AKfycbzM8K_-XRMDdOJYJ3THn_FhyZkRreMddHIBAOFCFVoq5S_Y7MnsfFLsl7ac_fyDPrch/exec","clientId":"473377418367-cqmmnfum4kshq16973m4sj2jqqfa55p0.apps.googleusercontent.com","build":"01522ce","push":{"config":{"apiKey":"AIzaSyBON-0KvTXPD_MV6ykhYvCoBRiECEHyE9c","authDomain":"huddle-e2548.firebaseapp.com","projectId":"huddle-e2548","storageBucket":"huddle-e2548.firebasestorage.app","messagingSenderId":"554653922065","appId":"1:554653922065:web:87de53b4cb11b36835d2b0"},"vapidKey":"BHKeDoBmW7vL-qAT3ocyTaMaZ27Ca66jvQtTes2NC4CPoWFiPBJcga7wVd-RD1IuyhBki0oKXwPBGSNq002s8o8"}};document.documentElement.classList.add('web');</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <!-- The fonts load without holding up the first paint; the page shows in the phone's own font for a moment if needed. -->
@@ -3704,7 +3704,7 @@ function needsDate(t, e){ const v=rvView(t, e); return v.status!=='Done' && (!v.
 function reviewItems(email, st){
   const rv=(st && st.review)||{}, today=S.data.today, last=S.data.lastTactical||addDays(today,-7);
   const mine=S.data.tasks.filter(t=>isReviewItem(t) && owners(t).indexOf(email)>=0 && t.status!=='Needs Review');
-  const open=mine.filter(t=>rv[t.id] || (isOpen(t) && t.due && t.due<=today))
+  const open=mine.filter(t=>rv[t.id] || (isOpen(t) && (!t.due || t.due<=today)))   // Nov 16 (Brayden): tasks with no due date come up too
     .sort((a,b)=>String((rv[a.id]&&rv[a.id].due_before)||a.due||'9999').localeCompare(String((rv[b.id]&&rv[b.id].due_before)||b.due||'9999')));
   const done=mine.filter(t=>t.status==='Done' && !rv[t.id] && String(t.completed_at||'').slice(0,10)>last);
   return { open:open, done:done, left:open.filter(t=>needsDate(t, rv[t.id])).length };
@@ -4274,7 +4274,7 @@ document.addEventListener('visibilitychange', ()=>{ if (!document.hidden) S.wake
 // so you can update them ahead of time. A Done item or one with a date after the tactical won't hold up the Accountability step.
 function prepItems(){
   const next=S.data.defaultDue; if (!next) return [];
-  return S.data.tasks.filter(t=>isReviewItem(t) && isOpen(t) && t.status!=='Needs Review' && t.due && t.due<=next && owners(t).indexOf(S.data.me)>=0)
+  return S.data.tasks.filter(t=>isReviewItem(t) && isOpen(t) && t.status!=='Needs Review' && (!t.due || t.due<=next) && owners(t).indexOf(S.data.me)>=0)
     .sort((a,b)=>String(a.due).localeCompare(String(b.due)));
 }
 function prepCard(){
@@ -4644,7 +4644,7 @@ async function liveAddItem(el){
 /* ---------- Alfred chat bubble ---------- */
 // The conversation lives only in this page (S.alf) and is gone after a reload. Every message carries the screen
 // context below, and the screenshot taken when the bubble was tapped, so nobody has to describe where they were.
-const APP_VERSION = '2026.11.16-alftitle';
+const APP_VERSION = '2026.11.16-nodue';
 const H2C_URL = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
 const DIAG = { errors:[], actions:[] };   // last 10 of each, for bug reports
 function pushDiag(list, item){ list.push(item); if (list.length>10) list.shift(); }
@@ -4681,6 +4681,11 @@ function alfBounds(side){
   let pr=null, ghost=false;
   if (plus && !plus.hidden) pr={ top:plus.offsetTop, height:plus.offsetHeight };   // Nov 12: the +'s own spot, not its animated (shrunk) box
   else if (plus && nav && getComputedStyle(nav).display!=='none') { plus.style.visibility='hidden'; plus.hidden=false; pr={ top:plus.offsetTop, height:plus.offsetHeight }; plus.hidden=true; plus.style.visibility=''; ghost=true; }
+  // Nov 16 (Brayden): in a meeting the hat sits the same distance above the meeting bar as it normally sits above the tab bar.
+  // The usual gap is measured on the regular screens (the tab bar is hidden during a meeting) and remembered.
+  const navR=nav && getComputedStyle(nav).display!=='none' ? nav.getBoundingClientRect() : null;
+  if (pr && navR && !(ctl && !ctl.hidden)) S.alfGap=Math.max(gap, Math.round(navR.top-(pr.top+pr.height)));
+  if (ctl && !ctl.hidden) return { size, minTop, maxTop:Math.max(minTop, Math.round(ctl.getBoundingClientRect().top-(S.alfGap||17)-size)), left:edge, right:W-size-edge };
   if (pr) {
     // Right side (opposite the +): the lowest spot is level with the + . Left side: it stays above the + (or level with its spot when there's none).
     maxTop = side==='left' && !ghost ? Math.min(maxTop, pr.top-size-gap) : Math.min(maxTop, Math.round(pr.top+(pr.height-size)/2));
