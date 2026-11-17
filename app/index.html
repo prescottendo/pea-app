@@ -19,7 +19,7 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" type="image/png" href="icon-192.png">
-<script>window.HUDDLE_WEB={"api":"https://script.google.com/macros/s/AKfycbzM8K_-XRMDdOJYJ3THn_FhyZkRreMddHIBAOFCFVoq5S_Y7MnsfFLsl7ac_fyDPrch/exec","clientId":"473377418367-cqmmnfum4kshq16973m4sj2jqqfa55p0.apps.googleusercontent.com","build":"1a0743a","push":{"config":{"apiKey":"AIzaSyBON-0KvTXPD_MV6ykhYvCoBRiECEHyE9c","authDomain":"huddle-e2548.firebaseapp.com","projectId":"huddle-e2548","storageBucket":"huddle-e2548.firebasestorage.app","messagingSenderId":"554653922065","appId":"1:554653922065:web:87de53b4cb11b36835d2b0"},"vapidKey":"BHKeDoBmW7vL-qAT3ocyTaMaZ27Ca66jvQtTes2NC4CPoWFiPBJcga7wVd-RD1IuyhBki0oKXwPBGSNq002s8o8"}};document.documentElement.classList.add('web');</script>
+<script>window.HUDDLE_WEB={"api":"https://script.google.com/macros/s/AKfycbzM8K_-XRMDdOJYJ3THn_FhyZkRreMddHIBAOFCFVoq5S_Y7MnsfFLsl7ac_fyDPrch/exec","clientId":"473377418367-cqmmnfum4kshq16973m4sj2jqqfa55p0.apps.googleusercontent.com","build":"74bb586","push":{"config":{"apiKey":"AIzaSyBON-0KvTXPD_MV6ykhYvCoBRiECEHyE9c","authDomain":"huddle-e2548.firebaseapp.com","projectId":"huddle-e2548","storageBucket":"huddle-e2548.firebasestorage.app","messagingSenderId":"554653922065","appId":"1:554653922065:web:87de53b4cb11b36835d2b0"},"vapidKey":"BHKeDoBmW7vL-qAT3ocyTaMaZ27Ca66jvQtTes2NC4CPoWFiPBJcga7wVd-RD1IuyhBki0oKXwPBGSNq002s8o8"}};document.documentElement.classList.add('web');</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <!-- The fonts load without holding up the first paint; the page shows in the phone's own font for a moment if needed. -->
@@ -341,6 +341,7 @@
   .set-field .seg { display:flex; width:100%; margin-top:12px; }
   .set-field .seg button { flex:1; padding:8px 4px; }
   .set-field.dim { opacity:.5; }
+  .otter-pop .ask-hat { width:1.15em; height:1.15em; vertical-align:-.17em; margin-right:.35em; color:inherit; }
   .set-sec, .sec-h { display:block; font-family:var(--sans); font-size:var(--fs-cap); font-weight:600; line-height:1.35; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); margin:24px 4px 8px; }
   h2 + .set-sec, .back + h2 + .set-sec { margin-top:8px; }
   .set-card { background:var(--card); border:1px solid var(--line); border-radius:12px; overflow:hidden; }
@@ -3202,10 +3203,10 @@ function renderMore(m){
     // Nov 16 (Brayden): Appearance came back (Automatic, Light, Dark); saved on this device.
     +'<h3 class="set-sec">Appearance</h3><div class="set-card set-pad"><div class="seg" role="group" aria-label="Appearance">'
     +['auto','light','dark'].map(v=>'<button type="button" class="'+(theme()===v?'on':'')+'" data-act="theme-set" data-val="'+v+'"><span class="th-ico">'+THEME_ICON[v]+'</span> '+THEME_NAME[v]+'</button>').join('')+'</div></div>'
-    +'<div class="menu more-menu mt-l">'
+    +'<h3 class="set-sec">General</h3><div class="menu more-menu">'   // Nov 17 (Brayden): the group's name
     +gr('settings',ICON.bell,'Notifications', pushState()==='on'?'<span class="small muted">On</span>':'')
     +(mkOnly() ? '' : gr('deleted',ICON.deleted,'Recently Deleted')+row('data-act="tour-open"',ICON.tour,'Welcome Tour'))+'</div>'
-    +'<div class="set-card mt-l">'+switchRow('sample', sampleOn(), 'Show Sample Data', 'Made-up numbers on the Huddle tab so you can see every card working. Only on this device; nothing is saved.')+'</div>'
+    +'<div class="set-card mt-s">'+switchRow('sample', sampleOn(), 'Show Sample Data', 'Made-up numbers on the Huddle tab so you can see every card working. Only on this device; nothing is saved.')+'</div>'
     +(S.data.isApprover && !mkOnly() ? '<h3 class="set-sec">For Approvers</h3><div class="menu more-menu">'
       +gr('review',ICON.review,'Review', rc?'<span class="count" data-num="more-review">'+rc+'</span>':'')
       +gr('teamset',GEAR,'Team Settings')
@@ -3692,7 +3693,7 @@ function renderSheetBody(){
   if (S.sheet==='mk' && S.mk) { el.innerHTML=mkSheet(); el.scrollTop=top; return; }
   if (S.sheet==='ask') {
     const q=S.ask;
-    el.innerHTML='<div class="otter-pop"><h3>'+esc(q.title)+'</h3><p>'+q.body+'</p>'
+    el.innerHTML='<div class="otter-pop"><h3>'+(q.hat?ALF_HAT:'')+esc(q.title)+'</h3><p>'+q.body+'</p>'
       +'<div class="step-actions"><button type="button" class="btn '+(q.danger?'danger-btn':'primary')+'" data-act="ask-ok">'+esc(q.ok)+'</button>'+(q.single?'':'<button type="button" class="btn ghost" data-act="ask-cancel">'+esc(q.no||'Cancel')+'</button>')+'</div></div>';
     return;
   }
@@ -5022,7 +5023,9 @@ function tacticalCard(){
 // A small yes/no dialog for Wrap Up, End Meeting and Take Over.
 // body is HTML (names inside it are escaped by the caller); fn runs on the first button.
 // opts.single: one button only (a notice, like "New Dates Needed").
-function askLive(title, body, ok, fn, cancel, opts){ S.ask={ title, body, ok, fn, cancel, single:!!(opts && opts.single), no:(opts && opts.no)||'Cancel', danger:!!(opts && opts.danger) }; S.sheet='ask'; showSheet(); }
+// Nov 17 (Brayden): Alfred's hat (the one on the glass button) can sit before his name in a popup title.
+const ALF_HAT='<svg class="ask-hat" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><path d="M9 6.7h14a1 1 0 0 1 1 1v8.2H8V7.7a1 1 0 0 1 1-1z"/><rect x="8" y="18.9" width="16" height="2.4"/><path d="M5 19.7Q16 21.7 27 19.7L27 21.68Q16 26.92 5 21.68Z"/></svg>';
+function askLive(title, body, ok, fn, cancel, opts){ S.ask={ title, body, ok, fn, cancel, hat:!!(opts && opts.hat), single:!!(opts && opts.single), no:(opts && opts.no)||'Cancel', danger:!!(opts && opts.danger) }; S.sheet='ask'; showSheet(); }
 // Changing the status of someone else's task asks first ("This Isn't Your Task"). Your own tasks, tasks with no owner, and
 // the host updating people during a guided meeting go straight through. From the task panel it asks over the panel (askOver).
 function mineOrConfirm(t, status, fn, onCancel){
@@ -5140,7 +5143,7 @@ function renderLive(m){
       S.listenAsked[st.id]=1;
       setTimeout(()=>{ if (S.view!=='live' || !S.live || S.sheet || agenda(S.live).listen) return;
         askLive('Alfred Needs to Listen', 'For the Real-Time Agenda and Discuss, Alfred listens and builds the agenda as you talk. Plug in the PanaCast and keep this phone on the meeting screen.',
-          'Start Listening', ()=>listenStart(), null, { no:'Not Now' }); }, 450);
+          'Start Listening', ()=>listenStart(), null, { no:'Not Now', hat:true }); }, 450);
     } }
   html += agSuggestions(st);
   const pace=paceTag(st);
@@ -5607,7 +5610,7 @@ async function liveAddItem(el){
 /* ---------- Alfred chat bubble ---------- */
 // The conversation lives only in this page (S.alf) and is gone after a reload. Every message carries the screen
 // context below, and the screenshot taken when the bubble was tapped, so nobody has to describe where they were.
-const APP_VERSION = '2026.11.17-simpler';
+const APP_VERSION = '2026.11.17-general';
 const H2C_URL = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
 const DIAG = { errors:[], actions:[] };   // last 10 of each, for bug reports
 function pushDiag(list, item){ list.push(item); if (list.length>10) list.shift(); }
