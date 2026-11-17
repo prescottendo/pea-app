@@ -19,7 +19,7 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" type="image/png" href="icon-192.png">
-<script>window.HUDDLE_WEB={"api":"https://script.google.com/macros/s/AKfycbzM8K_-XRMDdOJYJ3THn_FhyZkRreMddHIBAOFCFVoq5S_Y7MnsfFLsl7ac_fyDPrch/exec","clientId":"473377418367-cqmmnfum4kshq16973m4sj2jqqfa55p0.apps.googleusercontent.com","build":"20958d2","push":{"config":{"apiKey":"AIzaSyBON-0KvTXPD_MV6ykhYvCoBRiECEHyE9c","authDomain":"huddle-e2548.firebaseapp.com","projectId":"huddle-e2548","storageBucket":"huddle-e2548.firebasestorage.app","messagingSenderId":"554653922065","appId":"1:554653922065:web:87de53b4cb11b36835d2b0"},"vapidKey":"BHKeDoBmW7vL-qAT3ocyTaMaZ27Ca66jvQtTes2NC4CPoWFiPBJcga7wVd-RD1IuyhBki0oKXwPBGSNq002s8o8"}};document.documentElement.classList.add('web');</script>
+<script>window.HUDDLE_WEB={"api":"https://script.google.com/macros/s/AKfycbzM8K_-XRMDdOJYJ3THn_FhyZkRreMddHIBAOFCFVoq5S_Y7MnsfFLsl7ac_fyDPrch/exec","clientId":"473377418367-cqmmnfum4kshq16973m4sj2jqqfa55p0.apps.googleusercontent.com","build":"91cb56d","push":{"config":{"apiKey":"AIzaSyBON-0KvTXPD_MV6ykhYvCoBRiECEHyE9c","authDomain":"huddle-e2548.firebaseapp.com","projectId":"huddle-e2548","storageBucket":"huddle-e2548.firebasestorage.app","messagingSenderId":"554653922065","appId":"1:554653922065:web:87de53b4cb11b36835d2b0"},"vapidKey":"BHKeDoBmW7vL-qAT3ocyTaMaZ27Ca66jvQtTes2NC4CPoWFiPBJcga7wVd-RD1IuyhBki0oKXwPBGSNq002s8o8"}};document.documentElement.classList.add('web');</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <!-- The fonts load without holding up the first paint; the page shows in the phone's own font for a moment if needed. -->
@@ -899,6 +899,16 @@
   @keyframes alfdot { 0%, 60%, 100% { transform:none; opacity:.45; } 30% { transform:translateY(-4px); opacity:1; } }
   .alf-hello { color:var(--muted); font-size:var(--fs-sub); }
   .alf-hist-h { margin:4px 0 12px; }
+  /* Nov 17: past chats swipe left to show a red Delete; on a computer an x shows on hover. */
+  .chat-list .chat-swipe { position:relative; overflow:hidden; }
+  .chat-list .chat-swipe + .chat-swipe { border-top:1px solid var(--line-soft); }
+  .chat-list .chat-row { position:relative; z-index:1; border-top:none; background:var(--card); transition:transform .22s cubic-bezier(.2,.8,.2,1); }
+  .chat-list .chat-row.busy { opacity:.6; }
+  .chat-del { position:absolute; right:0; top:0; bottom:0; width:88px; border:none; background:var(--red); color:var(--card); font-weight:600; font-size:var(--fs-sub); }
+  .chat-swipe.open .chat-row { transform:translateX(-88px); }
+  .chat-x { display:none; width:28px; height:28px; border-radius:50%; place-items:center; color:var(--muted); flex:none; }
+  .chat-x svg { width:16px; height:16px; }
+  @media (hover:hover) { .chat-row:hover .chat-x { display:grid; } .chat-x:hover { color:var(--red); background:var(--red-soft); } }
   .alf-reqs + .alf-reqs { margin-top:-4px; }
   .alf-reqs { align-self:stretch; display:flex; justify-content:space-between; align-items:center; border:1px solid var(--line); background:var(--card); color:var(--heading);
     border-radius:12px; padding:10px 14px; min-height:44px; font-size:var(--fs-sub); font-weight:600; }
@@ -4661,7 +4671,7 @@ async function liveAddItem(el){
 /* ---------- Alfred chat bubble ---------- */
 // The conversation lives only in this page (S.alf) and is gone after a reload. Every message carries the screen
 // context below, and the screenshot taken when the bubble was tapped, so nobody has to describe where they were.
-const APP_VERSION = '2026.11.17-band';
+const APP_VERSION = '2026.11.17-chats';
 const H2C_URL = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
 const DIAG = { errors:[], actions:[] };   // last 10 of each, for bug reports
 function pushDiag(list, item){ list.push(item); if (list.length>10) list.shift(); }
@@ -4849,20 +4859,95 @@ function showAlfred(){
 // finger let go.
 // Nov 16 (Brayden): closing Alfred starts the next open fresh: no messages, nothing pointed at, no old screenshot.
 // Only the moments Alfred steps aside on purpose (pointing at something, retaking the picture) keep the chat (keep=true).
-// Nov 16 (Brayden): past chats. A chat with at least one answer is kept on this device when it closes (lt-alf-history, the
-// last 20, only for the person signed in; cleared on Sign Out). "Past Chats" at the top of a new chat lists them; tapping one
-// reopens it to read or continue (the old screenshot isn't kept, so Alfred no longer sees that screen).
+// Past chats (Nov 16), saved to your account since Nov 17 (Brayden): a chat with at least one answer is saved when it
+// closes, to this device first (lt-alf-history, cleared on Sign Out) and then to the AlfredChats tab (apiChatSave), so it
+// follows you to every device and through Sign Out. The clock lists your last 50 (apiChats); a chat whose messages aren't
+// on this device is fetched when you tap it (apiChatGet). Swipe a chat left (or hover on a computer) to delete it, with
+// Undo. Chats kept on a phone before Nov 17 (no v:2) go up to the account once, on the first save or list after the update.
+const CHAT_KEEP=50, CHAT_MSGS_KEEP=20;
 function alfHistory(v){
-  if (v===undefined) { try { const h=JSON.parse(localStorage.getItem('lt-alf-history')||'null'); return h && h.me===(S.data&&S.data.me) && Array.isArray(h.chats) ? h.chats : []; } catch(e){ return []; } }
-  try { localStorage.setItem('lt-alf-history', JSON.stringify({ me:S.data.me, chats:v.slice(0,20) })); } catch(e){}
+  if (v===undefined) { try { const h=JSON.parse(localStorage.getItem('lt-alf-history')||'null'); if (!h || h.me!==(S.data&&S.data.me) || !Array.isArray(h.chats)) return [];
+      if (h.v!==2) return h.chats.filter(c=>c && c.id && Array.isArray(c.msgs)).map(c=>Object.assign({}, c, { n:c.msgs.filter(m=>m.role==='user').length, pending:true }));
+      return h.chats; } catch(e){ return []; } }
+  try { const out=v.slice(0,CHAT_KEEP).map((c,i)=>i<CHAT_MSGS_KEEP || c.pending ? c : { id:c.id, at:c.at, title:c.title, n:c.n });
+    localStorage.setItem('lt-alf-history', JSON.stringify({ me:S.data.me, v:2, chats:out })); } catch(e){}
 }
 function alfSaveChat(){
   const A=S.alf; if (!S.data || !A.msgs.some(m=>m.role==='assistant' && m.text)) return;
-  const first=A.msgs.find(m=>m.role==='user'), id=A.chatId||('c'+Date.now());
-  const entry={ id:id, at:new Date().toISOString(), title:String(first ? first.text : 'Chat').slice(0,80),
-    msgs:A.msgs.filter(m=>(m.role==='user' && !m.failed) || (m.role==='assistant' && m.text)).map(m=>({ role:m.role, text:m.text })) };   // Critique 4 (Sec #19): no hidden app context
-  alfHistory([entry].concat(alfHistory().filter(x=>x.id!==id)));
+  const msgs=A.msgs.filter(m=>(m.role==='user' && !m.failed) || (m.role==='assistant' && m.text)).map(m=>({ role:m.role, text:m.text }));   // Critique 4 (Sec #19): no hidden app context
+  const list=alfHistory(), id=A.chatId||('c'+Date.now()), old=list.find(x=>x.id===id);
+  A.chatId=id;
+  if (old && old.msgs && JSON.stringify(old.msgs)===JSON.stringify(msgs)) return;   // only reread: it stays where it was
+  const first=msgs.find(m=>m.role==='user');
+  const entry={ id:id, at:new Date().toISOString(), title:String(first ? first.text : 'Chat').slice(0,80), n:msgs.filter(m=>m.role==='user').length, msgs:msgs, pending:true };
+  alfHistory([entry].concat(list.filter(x=>x.id!==id)));
+  chatSync();
 }
+// Sends chats saved on this device that the account doesn't have yet. One send at a time; a failure waits for the next try.
+function chatSync(){
+  if (chatSync.busy || !S.data || !navigator.onLine) return;
+  const up=alfHistory().filter(c=>c.pending && Array.isArray(c.msgs)); if (!up.length) return;
+  chatSync.busy=true;
+  call('apiChatSave', up.map(c=>({ id:c.id, at:c.at, title:c.title, msgs:c.msgs }))).then(()=>{
+    const sent={}; up.forEach(c=>{ sent[c.id]=c.at; });
+    alfHistory(alfHistory().map(c=>{ if (sent[c.id]!==c.at) return c; const o=Object.assign({}, c); delete o.pending; return o; }));
+  }, ()=>{}).then(()=>{ chatSync.busy=false; });
+}
+// The account's list wins: a chat continued on another device drops the old copy here; one deleted elsewhere goes away.
+function chatRefresh(){
+  if (!S.data) return; chatSync();
+  call('apiChats').then(list=>{
+    if (!Array.isArray(list)) return;
+    const local=alfHistory(), byId={}, gone=S.alf.gone||{}; local.forEach(c=>{ byId[c.id]=c; });
+    const merged=list.filter(r=>!gone[r.id]).map(r=>{ const c=byId[r.id]; return c && (c.pending || String(c.at)>=String(r.at)) ? c : { id:r.id, at:r.at, title:r.title, n:Number(r.n)||0 }; });
+    local.filter(c=>c.pending && !list.some(r=>r.id===c.id)).forEach(c=>merged.push(c));
+    merged.sort((a,b)=>String(b.at).localeCompare(String(a.at)));
+    alfHistory(merged);
+    if (S.alf.open && S.alf.view==='history') renderAlfred();
+  }, ()=>{});
+}
+function chatDelete(id){
+  const list=alfHistory(), i=list.findIndex(c=>c.id===id); if (i<0) return;
+  const c=list[i]; S.alf.gone=S.alf.gone||{}; S.alf.gone[id]=1;
+  alfHistory(list.filter(x=>x.id!==id)); renderAlfred();
+  toast('Chat deleted', ()=>{ delete S.alf.gone[id]; const l=alfHistory().filter(x=>x.id!==id); l.splice(Math.min(i, l.length), 0, c); alfHistory(l); renderAlfred(); },
+    { after:()=>{ call('apiChatDelete', id).catch(()=>{}).then(()=>{ if (S.alf.gone) delete S.alf.gone[id]; }); } });
+}
+function openPastChat(id, el){
+  const x=alfHistory().find(c=>c.id===id); if (!x) return;
+  const open=msgs=>{ alfSaveChat(); S.alf.msgs=msgs.map(m=>Object.assign({}, m)); S.alf.chatId=id; S.alf.view=null; S.alf.shot=null; S.alf.shotUsed=true; S.alf.scrollDown=true; renderAlfred(); };
+  if (Array.isArray(x.msgs)) return open(x.msgs);
+  if (el) { el.disabled=true; el.classList.add('busy'); }
+  call('apiChatGet', id).then(r=>{
+    const l=alfHistory(), c=l.find(z=>z.id===id); if (c && !c.pending) { c.msgs=r.msgs; c.at=r.at; c.n=(r.msgs||[]).filter(m=>m.role==='user').length; alfHistory(l); }
+    if (S.alf.open && S.alf.view==='history') open(r.msgs||[]);
+  }, e=>{ if (el) { el.disabled=false; el.classList.remove('busy'); } toast('Couldn\'t open that chat. '+errText(e)); });
+}
+// Swipe a past chat left to show Delete (phones). A tap anywhere else closes it again.
+(function(){
+  let d=null;
+  const W=88, closeAll=except=>document.querySelectorAll('.chat-swipe.open').forEach(w=>{ if (w!==except) { w.classList.remove('open'); w.querySelector('.chat-row').style.transform=''; } });
+  document.addEventListener('touchstart', e=>{
+    const row=e.target.closest && e.target.closest('.chat-row');
+    if (!row) { if (!(e.target.closest && e.target.closest('.chat-del'))) closeAll(null); d=null; return; }
+    const w=row.parentElement; closeAll(w);
+    d={ row, w, x:e.touches[0].clientX, y:e.touches[0].clientY, base:w.classList.contains('open') ? -W : 0, on:false, dx:0 };
+  }, { passive:true });
+  document.addEventListener('touchmove', e=>{
+    if (!d) return;
+    const dx=e.touches[0].clientX-d.x, dy=e.touches[0].clientY-d.y;
+    if (!d.on) { if (Math.abs(dy)>8 && Math.abs(dy)>Math.abs(dx)) { d=null; return; } if (Math.abs(dx)<8) return; d.on=true; d.row.style.transition='none'; }
+    e.preventDefault(); e.stopPropagation();
+    d.dx=dx; d.row.style.transform='translateX('+Math.min(0, Math.max(-W-30, d.base+dx))+'px)';
+  }, { passive:false, capture:true });
+  const end=()=>{
+    if (!d) return; const g=d; d=null; if (!g.on) return;
+    g.row.style.transition=''; const open=g.base+g.dx < -W/2;
+    g.w.classList.toggle('open', open); g.row.style.transform=open ? 'translateX(-'+W+'px)' : '';
+    g.row.dataset.moved='1'; setTimeout(()=>{ delete g.row.dataset.moved; }, 350);
+  };
+  document.addEventListener('touchend', end); document.addEventListener('touchcancel', end);
+})();
 function alfReset(){
   alfSaveChat();
   const A=S.alf; A.epoch=(A.epoch||0)+1; A.chatId=null; A.view=null; A.msgs=[]; A.tapped=null; A.shot=null; A.shotP=null; A.shotUsed=false; A.sending=false; A.progress='';
@@ -5011,12 +5096,16 @@ function renderAlfred(){
   if (S.data && S.data.alfred && !S.data.alfred.ready) html+='<div class="alf-msg err">Alfred isn\'t available yet. Brayden is setting it up.</div>';
   if (A.view==='history') {
     const list=alfHistory();
+    if (!renderAlfred.listed) { renderAlfred.listed=true; chatRefresh(); setTimeout(()=>{ renderAlfred.listed=false; }, 3000); }
     // Critique 4 (#8): the clock opens this view: Your Requests first, then Past Chats.
     box.innerHTML='<button type="button" class="back" data-act="alf-hist-back">‹ New Chat</button>'
       +'<div class="set-card mt-s"><button type="button" class="set-row" data-act="alf-requests"><span>Your Requests<small>Problems and ideas you sent, and where each one stands</small></span><span class="chev" aria-hidden="true">›</span></button></div>'
       +'<h3 class="alf-hist-h">Past Chats</h3>'
-      +(list.length?'<div class="set-card">'+list.map(x=>'<button type="button" class="set-row" data-act="alf-past" data-id="'+esc(x.id)+'"><span>'+esc(x.title)+'<small>'+esc(fmtDate(x.at.slice(0,10)))+' · '+x.msgs.filter(m=>m.role==='user').length+' question'+(x.msgs.filter(m=>m.role==='user').length===1?'':'s')+'</small></span><span class="chev" aria-hidden="true">›</span></button>').join('')+'</div>'
-        +'<p class="small muted mt-m">Kept on this device: your last 20 chats.</p>' : '<p class="none">No past chats yet.</p>');
+      +(list.length?'<div class="set-card chat-list">'+list.map(x=>{ const n=x.n!=null ? x.n : (x.msgs||[]).filter(m=>m.role==='user').length;
+          return '<div class="chat-swipe"><button type="button" class="chat-del" data-act="alf-chat-del" data-id="'+esc(x.id)+'" tabindex="-1">Delete</button>'
+            +'<button type="button" class="set-row chat-row" data-act="alf-past" data-id="'+esc(x.id)+'"><span>'+esc(x.title)+'<small>'+esc(fmtDate(String(x.at).slice(0,10)))+' · '+n+' question'+(n===1?'':'s')+'</small></span>'
+            +'<span class="chat-x" role="button" data-act="alf-chat-del" data-id="'+esc(x.id)+'" aria-label="Delete this chat" title="Delete">'+ICON.x+'</span><span class="chev" aria-hidden="true">›</span></button></div>'; }).join('')+'</div>'
+        +'<p class="small muted mt-m">Saved to your account: your last 50 chats, on every device. Swipe one left to delete it.</p>' : '<p class="none">No past chats yet.</p>');
     return;
   }
   if (!A.msgs.length) html+='<div class="alf-hello" data-k="hello"><b>Good '+partOfDay()+', '+esc(firstName(S.data.me))+'</b>Ask about meetings and tasks, or tell me about a problem. I can see the screen you\'re on.'
@@ -5178,7 +5267,8 @@ function alfredClick(a, el){
   else if (a==='alf-suggest') sendAlfred(el.dataset.val);
   else if (a==='alf-history') { S.alf.view='history'; renderAlfred(); }
   else if (a==='alf-hist-back') { S.alf.view=null; renderAlfred(); }
-  else if (a==='alf-past') { const x=alfHistory().find(c=>c.id===el.dataset.id); if (x) { alfSaveChat(); S.alf.msgs=x.msgs.map(m=>Object.assign({}, m)); S.alf.chatId=x.id; S.alf.view=null; S.alf.shot=null; S.alf.shotUsed=true; S.alf.scrollDown=true; renderAlfred(); } }
+  else if (a==='alf-past') { if (el.dataset.moved) return; const w=el.closest('.chat-swipe.open'); if (w) { w.classList.remove('open'); el.style.transform=''; return; } openPastChat(el.dataset.id, el); }
+  else if (a==='alf-chat-del') chatDelete(el.dataset.id);
   else if (a==='alf-requests') { closeAlfred(); go('requests', TAB_VIEWS[S.view] || 'Back'); }   // #19: your requests live with Alfred
   else if (a==='alf-retry') sendAlfred('', Number(el.dataset.val));
   else if (a==='alf-pick') startPick();
