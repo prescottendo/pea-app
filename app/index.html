@@ -19,7 +19,7 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" type="image/png" href="icon-192.png">
-<script>window.HUDDLE_WEB={"api":"https://script.google.com/macros/s/AKfycbzM8K_-XRMDdOJYJ3THn_FhyZkRreMddHIBAOFCFVoq5S_Y7MnsfFLsl7ac_fyDPrch/exec","clientId":"473377418367-cqmmnfum4kshq16973m4sj2jqqfa55p0.apps.googleusercontent.com","build":"d7b7f7c","push":{"config":{"apiKey":"AIzaSyBON-0KvTXPD_MV6ykhYvCoBRiECEHyE9c","authDomain":"huddle-e2548.firebaseapp.com","projectId":"huddle-e2548","storageBucket":"huddle-e2548.firebasestorage.app","messagingSenderId":"554653922065","appId":"1:554653922065:web:87de53b4cb11b36835d2b0"},"vapidKey":"BHKeDoBmW7vL-qAT3ocyTaMaZ27Ca66jvQtTes2NC4CPoWFiPBJcga7wVd-RD1IuyhBki0oKXwPBGSNq002s8o8"}};document.documentElement.classList.add('web');</script>
+<script>window.HUDDLE_WEB={"api":"https://script.google.com/macros/s/AKfycbzM8K_-XRMDdOJYJ3THn_FhyZkRreMddHIBAOFCFVoq5S_Y7MnsfFLsl7ac_fyDPrch/exec","clientId":"473377418367-cqmmnfum4kshq16973m4sj2jqqfa55p0.apps.googleusercontent.com","build":"1a0743a","push":{"config":{"apiKey":"AIzaSyBON-0KvTXPD_MV6ykhYvCoBRiECEHyE9c","authDomain":"huddle-e2548.firebaseapp.com","projectId":"huddle-e2548","storageBucket":"huddle-e2548.firebasestorage.app","messagingSenderId":"554653922065","appId":"1:554653922065:web:87de53b4cb11b36835d2b0"},"vapidKey":"BHKeDoBmW7vL-qAT3ocyTaMaZ27Ca66jvQtTes2NC4CPoWFiPBJcga7wVd-RD1IuyhBki0oKXwPBGSNq002s8o8"}};document.documentElement.classList.add('web');</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <!-- The fonts load without holding up the first paint; the page shows in the phone's own font for a moment if needed. -->
@@ -717,6 +717,26 @@
   .c-green.ag-bar, .c-green.ag-dot, .ag-chip.c-green { background:var(--green); border-color:var(--green); }
   .ag-chip { display:inline-block; width:10px; height:10px; border-radius:50%; border:2px solid var(--line); vertical-align:-1px; }
   .btn.park-btn { background:#C6A85C; color:#fff; border-color:#C6A85C; }
+  .ag-card { background:var(--card); border:1px solid var(--line); border-left:5px solid var(--line); border-radius:12px; margin:10px 0 0; overflow:hidden; }
+  .ag-card.e-red { border-left-color:var(--red); } .ag-card.e-yellow { border-left-color:#E2B63A; } .ag-card.e-green { border-left-color:var(--green); }
+  .ag-card-h { display:flex; align-items:center; gap:8px; padding:9px 12px 5px; } .ag-card-h b { flex:1; color:var(--heading); font-size:var(--fs-sub); }
+  .ag-rate { border:1px dashed var(--line); background:none; border-radius:999px; font-size:11px; font-weight:600; color:var(--muted); padding:2px 8px; position:relative; }
+  .ag-rate::after { content:""; position:absolute; inset:-8px -6px; }
+  .ag-rate.r-red { border:none; background:var(--red-soft); color:var(--red); } .ag-rate.r-yellow { border:none; background:rgba(226,182,58,.22); color:var(--gold-ink); } .ag-rate.r-green { border:none; background:var(--green-soft); color:var(--green); }
+  .ag-row { display:flex; align-items:center; gap:10px; padding:10px 12px; border-top:1px solid var(--line-soft); cursor:pointer; }
+  .ag-row.done { opacity:.55; } .ag-row.done .ag-text { text-decoration:line-through; text-decoration-color:var(--muted); }
+  .ag-dot2 { width:12px; height:12px; border-radius:50%; border:2px solid var(--line); background:none; padding:0; flex:none; position:relative; }
+  .ag-dot2::after { content:""; position:absolute; inset:-14px; }
+  .c-red.ag-dot2 { background:var(--red); border-color:var(--red); } .c-yellow.ag-dot2 { background:#E2B63A; border-color:#E2B63A; } .c-green.ag-dot2 { background:var(--green); border-color:var(--green); }
+  .ag-by { flex:none; font-size:var(--fs-cap); font-weight:600; color:var(--muted); max-width:30%; text-align:right; }
+  .ag-empty { display:block; width:100%; text-align:left; border:none; border-top:1px solid var(--line-soft); background:none; padding:9px 12px; color:var(--muted); font-size:var(--fs-sub); }
+  .ag-all { display:block; margin:12px auto 2px; background:none; border:none; color:var(--heading); font-weight:600; font-size:var(--fs-sub); }
+  .ag-listen.slim { background:none; padding:0 2px; margin:6px 0 2px; font-size:var(--fs-cap); color:var(--muted); }
+  .ag-heard { display:flex; align-items:center; gap:8px; width:100%; margin:12px 0 0; padding:9px 12px; border-radius:10px; border:1px solid rgba(198,168,92,.55); background:rgba(198,168,92,.12); color:var(--heading); font-weight:600; font-size:var(--fs-sub); text-align:left; }
+  .ag-heard b { background:#C6A85C; color:#fff; border-radius:999px; padding:0 7px; font-size:var(--fs-cap); } .ag-heard span:not(.chev) { flex:1; }
+  .ag-next { display:flex; align-items:center; gap:8px; background:#0A345A; color:#fff; border-radius:12px; padding:11px 12px; margin:0 0 10px; }
+  .ag-next .t { flex:1; min-width:0; font-weight:600; line-height:1.3; } .ag-next .t small { display:block; font-weight:400; color:#C4C8CC; font-size:var(--fs-cap); }
+  .ag-next .go { background:#fff; color:#0A345A; border:none; border-radius:999px; font-size:var(--fs-cap); font-weight:700; padding:6px 10px; flex:none; }
   .ag-sugg { padding:12px 14px; } .ag-sugg h3 { margin:0 0 8px; }
   .ag-s { display:flex; align-items:center; gap:8px; padding:8px 0; border-top:1px solid var(--line-soft); } .ag-s:first-of-type { border-top:none; }
   .ag-s-t { flex:1; min-width:0; font-weight:600; line-height:1.3; } .ag-s-t small { display:block; font-weight:400; color:var(--muted); font-size:var(--fs-cap); }
@@ -3678,6 +3698,7 @@ function renderSheetBody(){
   }
   if (S.sheet==='liveitem') { el.innerHTML=liveItemSheet(); return; }
   if (S.sheet==='agenda' && S.agEdit) { el.innerHTML=agSheet(); return; }
+  if (S.sheet==='heard') { if (!S.live) { closeSheet(true); return; } el.innerHTML=agHeardSheet(S.live); return; }
   if (S.sheet==='prep') { el.innerHTML=prepSheet(); return; }
   if (S.sheet==='otter') {
     const t=TEMPLATES[S.pendingType];
@@ -4711,6 +4732,7 @@ function applyLive(res){
   if (S.live && S.live.id===st.id && liveHost(S.live)===S.data.me && liveHost(st)!==S.data.me) toast(firstName(liveHost(st))+' is the host now. You\'re following along.');
   S.live = st;
   if (st.agenda) agAnnounce(st);   // Nov 17: Alfred took an item off or parked it
+  if (S.sheet==='heard') renderSheet();
   if (!changed) return;
   if (S.view==='live') {
     const a=document.activeElement; if (a && /^(INPUT|TEXTAREA)$/.test(a.tagName)) return;
@@ -5183,36 +5205,61 @@ function agenda(st){ return (st && st.agenda) || { items:[], areaColors:{}, sugg
 function agAreas(){ const f=S.data.focus||{}; return { defining:(f.objectives||[]).slice(), operating:(f.operating||[]).slice() }; }
 function agColorName(c){ const x=AG_COLORS.find(y=>y[0]===c); return x ? x[1] : 'No Color'; }
 function agendaStep(step){ return step && /agenda/i.test(step.title||'') && step.kind!=='discuss'; }
+// Nov 17 (Brayden, option B "Area Cards"): one card per area that has items. The card's edge takes the color of its most
+// urgent item (red > yellow > green; no color = neutral). Rows: the item's color dot (tap to change), the item, and who
+// raised it on the far right. Park It and Remove are inside the item's panel. The area's own rating (said or tapped) is
+// a small word in the card's header. While building the agenda, Show All Areas brings back the empty ones; Discuss never
+// shows them.
+const AG_RANK={ red:3, yellow:2, green:1 };
+function agByRank(list){ return list.map((x,i)=>[x,i]).sort((p,q)=>(q[0].done?-1:AG_RANK[q[0].color]||0)-(p[0].done?-1:AG_RANK[p[0].color]||0) || p[1]-q[1]).map(p=>p[0]); }
+// Up Next (Discuss, host, no topic running): the most urgent item not discussed yet, with Start buttons.
+function agUpNext(st){
+  if (!isHost(st) || st.topic) return '';
+  const items=(agenda(st).items||[]).filter(x=>!x.done); if (!items.length) return '';
+  const A=agAreas(), order=A.defining.concat(A.operating, [LIGHTNING]);
+  const x=items.map((y,i)=>[y,i]).sort((p,q)=>(AG_RANK[q[0].color]||0)-(AG_RANK[p[0].color]||0) || order.indexOf(p[0].area)-order.indexOf(q[0].area) || p[1]-q[1])[0][0];
+  return '<div class="ag-next"><span class="t">'+esc(x.text)+'<small>Up Next · '+esc(x.area)+(x.color?' · '+esc(agColorName(x.color)):'')+(x.by?' · '+esc(x.by):'')+'</small></span>'
+    +'<button type="button" class="go" data-act="ag-start" data-id="'+esc(x.id)+'" data-val="5">Start 5</button><button type="button" class="go" data-act="ag-start" data-id="'+esc(x.id)+'" data-val="10">10</button></div>';
+}
+function agWorst(list){ let c=''; list.forEach(x=>{ if (x.color && (!c || AG_RANK[x.color]>AG_RANK[c])) c=x.color; }); return c; }
 function agItemRow(x, discuss){
-  return '<div class="ag-item'+(x.done?' done':'')+'" role="button" tabindex="0" data-act="ag-open" data-id="'+esc(x.id)+'">'
-    +'<button type="button" class="ag-bar c-'+(x.color||'none')+'" data-act="ag-color" data-id="'+esc(x.id)+'" aria-label="'+esc(agColorName(x.color))+'. Tap to change"></button>'
-    +'<span class="ag-text">'+esc(x.text)+'<small>'+[x.by?esc(x.by):'', x.src==='alfred'?'Added by Alfred':'', x.done && x.secs ? 'Discussed '+fmtClock(x.secs).replace('+','') : ''].filter(Boolean).join(' · ')+'</small></span>'
+  return '<div class="ag-row'+(x.done?' done':'')+'" role="button" tabindex="0" data-act="ag-open" data-id="'+esc(x.id)+'">'
+    +'<button type="button" class="ag-dot2 c-'+(x.color||'none')+'" data-act="ag-color" data-id="'+esc(x.id)+'" aria-label="'+esc(agColorName(x.color))+'. Tap to change"></button>'
+    +'<span class="ag-text">'+esc(x.text)+(x.done && x.secs ? '<small>Discussed '+fmtClock(x.secs).replace('+','')+'</small>' : '')+'</span>'
+    +(x.by ? '<span class="ag-by">'+esc(x.by)+'</span>' : '')
     +(discuss && !x.done && isHost(S.live) ? '<span class="ag-go" aria-hidden="true">›</span>' : '')+'</div>';
 }
 function agendaBoard(st, discuss){
-  const a=agenda(st), A=agAreas(), items=a.items||[], me=S.data.me, L=a.listen;
-  const area=(name)=>{ const list=items.filter(x=>x.area===name), c=(a.areaColors||{})[name]||'';
-    if (discuss && !list.length) return '';   // Nov 17 (Brayden): on Discuss, only areas with something to talk about
-    return '<div class="ag-area"><button type="button" class="ag-dot c-'+(c||'none')+'" data-act="ag-area-color" data-area="'+esc(name)+'" aria-label="'+esc(name)+': '+esc(agColorName(c))+'. Tap to change"></button>'
-      +'<b>'+esc(name)+'</b>'+(list.length?'<span class="ag-n">'+list.length+'</span>':'')+'</div>'+list.map(x=>agItemRow(x, discuss)).join(''); };
-  const listenRow = L ? '<div class="ag-listen on"><i class="rec" aria-hidden="true"></i><span>Alfred is listening'+(L.by===me ? (LISTEN.mic?' · '+esc(LISTEN.mic):'') : ' on '+esc(firstName(L.by))+'\'s phone')+'</span>'
-      +(L.by===me ? '<button type="button" class="linkbtn" data-act="ag-listen-stop">Stop</button>' : '')+'</div>'
-    : '<div class="ag-listen"><span>Alfred can listen and build the agenda as you talk.</span><button type="button" class="btn primary sm" data-act="ag-listen-start">Listen</button></div>';
-  const lightning=items.filter(x=>x.area===LIGHTNING);
+  const a=agenda(st), A=agAreas(), items=a.items||[], me=S.data.me, L=a.listen, all=!discuss && S.agShowAll;
+  const card=(name)=>{ const list=items.filter(x=>x.area===name), c=(a.areaColors||{})[name]||'', edge=agWorst(list);
+    if (!list.length && !all) return '';
+    return '<div class="ag-card'+(edge?' e-'+edge:'')+'"><div class="ag-card-h"><b>'+esc(name)+'</b>'
+      +(name===LIGHTNING || (discuss && !c) ? '' : '<button type="button" class="ag-rate'+(c?' r-'+c:'')+'" data-act="ag-area-color" data-area="'+esc(name)+'" aria-label="'+esc(name)+': '+esc(agColorName(c))+'. Tap to change">'+(c?esc(agColorName(c)):'Rate')+'</button>')+'</div>'
+      +(list.length ? (discuss ? agByRank(list) : list).map(x=>agItemRow(x, discuss)).join('') : '<button type="button" class="ag-empty" data-act="ag-add" data-area="'+esc(name)+'">＋ Add to '+esc(name)+'</button>')+'</div>'; };
+  const listenRow = L ? '<div class="ag-listen slim"><i class="rec" aria-hidden="true"></i><span>Listening'+(L.by===me ? (LISTEN.mic?' · '+esc(LISTEN.mic):'') : ' on '+esc(firstName(L.by))+'\'s phone')+'</span></div>'
+    : (discuss ? '' : '<div class="ag-listen"><span>Alfred can listen and build the agenda as you talk.</span><button type="button" class="btn primary sm" data-act="ag-listen-start">Listen</button></div>');
+  let names=A.defining.concat(A.operating, [LIGHTNING]);
+  // Discuss (Brayden's pick): the cards and the items in them go red first, then yellow, then green, then the rest (spoken order within).
+  if (discuss) { const rk=n=>AG_RANK[agWorst(items.filter(x=>x.area===n))]||0; names=names.map((n,i)=>[n,i]).sort((x,y)=>rk(y[0])-rk(x[0]) || x[1]-y[1]).map(x=>x[0]); }
+  const cards=names.map(card).join(''), empties=names.filter(n=>!items.some(x=>x.area===n)).length;
   return '<div class="card ag-board"><div class="ag-top"><h3>Agenda</h3><span class="muted">'+items.length+' item'+(items.length===1?'':'s')+'</span><button type="button" class="capsule" data-act="ag-add">＋ Add</button></div>'
-    +listenRow
-    +((()=>{ const d=A.defining.map(area).join(''), o=A.operating.map(area).join('');
-      return (d ? '<div class="ag-sec">Defining Objectives</div>'+d : '')+(o ? '<div class="ag-sec">Standard Operating Objectives</div>'+o : ''); })())
-    +(lightning.length || !discuss ? '<div class="ag-sec">Lightning Round</div>'+(lightning.length ? lightning.map(x=>agItemRow(x, discuss)).join('') : '<p class="none">Anything that doesn\'t fit an area above.</p>') : '')
-    +(discuss && !items.length ? '<p class="none">Nothing on the agenda yet.</p>' : '')
+    +listenRow+cards
+    +(!items.length && !all ? '<p class="none">'+(discuss?'Nothing on the agenda yet.':'Items show here as they come up, under their area.')+'</p>' : '')
+    +(!discuss && empties ? '<button type="button" class="ag-all" data-act="ag-all">'+(all?'Hide Empty Areas':'Show All '+names.length+' Areas')+'</button>' : '')
     +(discuss ? '<p class="small muted mt-s">'+(isHost(st)?'Tap an item to discuss it with a timer.':'The host picks the next item.')+'</p>' : '')
     +'</div>';
 }
+// Nov 17 (Brayden's pick): one gold line ("2 Heard by Alfred ›") that opens the suggestions in a panel.
 function agSuggestions(st){
-  const list=(agenda(st).sugg||[]).filter(s=>!s.state); if (!list.length) return '';
-  return '<div class="card ag-sugg"><h3>Heard by Alfred</h3>'+list.slice(-6).reverse().map(s=>'<div class="ag-s"><span class="tag '+(s.kind==='task'?'':'gold')+'">'+(s.kind==='task'?'Task':'Decision')+'</span>'
+  const n=(agenda(st).sugg||[]).filter(s=>!s.state).length; if (!n) return '';
+  return '<button type="button" class="ag-heard" data-act="ag-heard"><b>'+n+'</b><span>Heard by Alfred</span><span class="chev" aria-hidden="true">›</span></button>';
+}
+function agHeardSheet(st){
+  const list=(agenda(st).sugg||[]).filter(s=>!s.state);
+  return '<div class="grab"></div><div class="sheet-head"><h3>Heard by Alfred</h3><button type="button" class="btn ghost sm" data-act="close-sheet">Done</button></div>'
+    +(list.length ? '<div class="card ag-sugg">' : '<p class="none">Nothing new. Tasks and decisions Alfred hears show here.</p>')+list.slice(-6).reverse().map(s=>'<div class="ag-s"><span class="tag '+(s.kind==='task'?'':'gold')+'">'+(s.kind==='task'?'Task':'Decision')+'</span>'
     +'<span class="ag-s-t">'+esc(s.text)+(s.owner||s.due?'<small>'+[esc(s.owner||''), s.due?esc(fmtDate(s.due)):''].filter(Boolean).join(' · ')+'</small>':'')+'</span>'
-    +'<button type="button" class="btn primary sm" data-act="ag-sugg-add" data-id="'+esc(s.id)+'">Add</button><button type="button" class="iconbtn" data-act="ag-sugg-x" data-id="'+esc(s.id)+'" aria-label="Dismiss">'+ICON.x+'</button></div>').join('')+'</div>';
+    +'<button type="button" class="btn primary sm" data-act="ag-sugg-add" data-id="'+esc(s.id)+'">Add</button><button type="button" class="iconbtn" data-act="ag-sugg-x" data-id="'+esc(s.id)+'" aria-label="Dismiss">'+ICON.x+'</button></div>').join('')+(list.length?'</div>':'');
 }
 // Every change goes to the server at once (merged one at a time, like ratings), then the meeting redraws.
 function agSend(op, quiet){ return call('apiLiveAgenda', op).then(res=>{ applyLive(Object.assign(res, { fromWrite:true })); return res; }).catch(e=>{ if (!quiet) toast('Couldn\'t save. '+errText(e)); throw e; }); }
@@ -5236,18 +5283,21 @@ function agSheet(){
     +'<label for="ag-area">Area</label><select id="ag-area" class="box">'
       +(A.defining.length?'<optgroup label="Defining Objectives">'+A.defining.map(opt).join('')+'</optgroup>':'')
       +(A.operating.length?'<optgroup label="Standard Operating Objectives">'+A.operating.map(opt).join('')+'</optgroup>':'')+opt(LIGHTNING)+'</select>'
+    +'<label>Raised By</label><div class="chips" role="group">'+S.data.people.map(p=>{ const n=firstName(p.email); return '<button type="button" class="'+((E.by||'')===n?'on':'')+'" data-act="ag-by" data-val="'+esc(n)+'">'+esc(n)+'</button>'; }).join('')+'</div>'
     +'<label>Status</label><div class="seg wrap" role="group">'+AG_COLORS.concat([['','None']]).map(([c,l])=>'<button type="button" class="'+((E.color||'')===c?'on':'')+'" data-act="ag-pick" data-val="'+c+'"><i class="ag-chip c-'+(c||'none')+'"></i> '+l+'</button>').join('')+'</div></div>'
     +(E.id && discuss && isHost(st) && !st.topic && !E.done ? '<div class="mk-acts mt-l"><div class="btn-row"><button type="button" class="btn primary" data-act="ag-discuss" data-val="5">Discuss · 5 Min</button><button type="button" class="btn primary" data-act="ag-discuss" data-val="10">Discuss · 10 Min</button></div></div>' : '')
     +(E.id ? '<div class="mk-acts mt-l"><div class="btn-row"><button type="button" class="btn park-btn" data-act="ag-park">Park It</button><button type="button" class="btn ghost" data-act="ag-del">Remove</button></div></div>'
       +(E.done?'<div class="set-card mt-m"><button type="button" class="set-row" data-act="ag-undone"><span>Mark Not Discussed</span></button></div>':'') : '');
 }
 function agClick(a, el, v){
-  if (a==='ag-add') { S.agEdit={ text:'', area:LIGHTNING, color:'' }; S.sheet='agenda'; showSheet(); setTimeout(()=>{ const f=document.getElementById('ag-text'); if (f) f.focus(); }, 300); return true; }
+  if (a==='ag-all') { S.agShowAll=!S.agShowAll; render(); return true; }
+  if (a==='ag-add') { S.agEdit={ text:'', area:el.dataset.area||LIGHTNING, color:'', by:firstName(S.data.me) }; S.sheet='agenda'; showSheet(); setTimeout(()=>{ const f=document.getElementById('ag-text'); if (f) f.focus(); }, 300); return true; }
   if (a==='ag-open') { const x=agFind(el.dataset.id); if (x) { S.agEdit=Object.assign({}, x); S.sheet='agenda'; showSheet(); } return true; }
+  if (a==='ag-by') { S.agEdit.text=(document.getElementById('ag-text')||{}).value||S.agEdit.text; S.agEdit.area=(document.getElementById('ag-area')||{}).value||S.agEdit.area; S.agEdit.by=S.agEdit.by===v?'':v; renderSheet(); return true; }
   if (a==='ag-pick') { S.agEdit.text=(document.getElementById('ag-text')||{}).value||S.agEdit.text; S.agEdit.area=(document.getElementById('ag-area')||{}).value||S.agEdit.area; S.agEdit.color=v; renderSheet(); return true; }
   if (a==='ag-save') { const E=S.agEdit, text=(document.getElementById('ag-text').value||'').trim(), ar=document.getElementById('ag-area').value;
     if (!text) { document.getElementById('f-err').textContent='Type the item first.'; return true; }
-    saving(el, 'Saving…', ()=>agSend(E.id ? { op:'edit', id:E.id, text:text, area:ar, color:E.color||'' } : { op:'add', text:text, area:ar, color:E.color||'' })).then(r=>{ if (r) closeSheet(); }); return true; }
+    saving(el, 'Saving…', ()=>agSend(E.id ? { op:'edit', id:E.id, text:text, area:ar, color:E.color||'', by:E.by||'' } : { op:'add', text:text, area:ar, color:E.color||'', by:E.by||'' })).then(r=>{ if (r) closeSheet(); }); return true; }
   if (a==='ag-del' || a==='ag-park') { const id=S.agEdit.id, park=a==='ag-park', text=S.agEdit.text; closeSheet(); agLocal(g=>{ g.items=g.items.filter(x=>x.id!==id); });
     agSeen(id); agSend({ op:park?'park':'del', id:id }, true).then(()=>{ if (park) S.topics=null;
       toast(park ? 'Parked in the Parking Lot' : 'Removed from the agenda', ()=>agSend({ op:'restore', id:id }).then(()=>{ S.topics=null; toast('Back on the agenda'); }).catch(()=>{}), { label:'Undo' }); })
@@ -5257,6 +5307,8 @@ function agClick(a, el, v){
     agLocal(g=>{ const y=g.items.find(z=>z.id===x.id); if (y) y.color=c; }); haptic(); agSend({ op:'edit', id:x.id, color:c }, true).catch(()=>toast('Couldn\'t save the color.')); return true; }
   if (a==='ag-area-color') { const ar=el.dataset.area, c=AG_NEXT[(agenda(S.live).areaColors||{})[ar]||''];
     agLocal(g=>{ g.areaColors=g.areaColors||{}; if (c) g.areaColors[ar]=c; else delete g.areaColors[ar]; }); haptic(); agSend({ op:'area_color', area:ar, color:c }, true).catch(()=>toast('Couldn\'t save the color.')); return true; }
+  if (a==='ag-start') { const x=agFind(el.dataset.id); if (x) liveAct(st=>{ st.topic={ mins:Number(v), start:srvNow(), extra:0, agendaId:x.id, title:x.text }; }); return true; }
+  if (a==='ag-heard') { S.sheet='heard'; showSheet(); return true; }
   if (a==='ag-discuss') { const x=S.agEdit; closeSheet(); liveAct(st=>{ st.topic={ mins:Number(v), start:srvNow(), extra:0, agendaId:x.id, title:x.text }; }); return true; }
   if (a==='ag-sugg-x') { const id=el.dataset.id; agLocal(g=>{ const s=g.sugg.find(y=>y.id===id); if (s) s.state='dismissed'; }); agSend({ op:'sugg', id:id, state:'dismissed' }, true).catch(()=>{}); return true; }
   if (a==='ag-sugg-add') { const s=(agenda(S.live).sugg||[]).find(y=>y.id===el.dataset.id); if (!s) return true;
@@ -5431,7 +5483,7 @@ function liveBody(st, step){
     } else {
       h+='<div class="card reading"><p>Waiting for '+esc(firstName(liveHost(st)))+' to start Topic '+n+'.</p></div>';
     }
-    if (board) h+=agendaBoard(st, true);
+    if (board) h+=agUpNext(st)+agendaBoard(st, true);
     if (st.topics.length) h+='<div class="card reading"><h3>Topics Discussed</h3>'+st.topics.map((t,n)=>'<div class="rd"><b>'+(t.title ? esc(t.title) : 'Topic '+(n+1))+'</b><span class="'+(t.secs>t.mins*60?'over-t':'ok-t')+'">'+fmtClock(t.secs).replace('+','')+' of '+t.mins+' min</span></div>').join('')+'</div>';
     h+='<div class="card reading"><h3>Too Big for Today?</h3><div class="addrow"><input type="text" id="lv-park" placeholder="Park it in the Parking Lot" aria-label="Park it in the Parking Lot"><button type="button" class="btn ghost sm" data-act="lv-park">Park</button></div></div>';
     return h;
@@ -5482,6 +5534,8 @@ function liveMenuSheet(){
     +(host ? (run ? item('lv-pause', st.pausedAt?'Resume Timer':'Pause Timer') + (!st.topic ? item('lv-plus','Add 5 Minutes') : '') + item('lv-wrap-ask','Wrap Up Early') : '')
         + tv + item('lv-chime', pref('lt-chime','on')==='off'?'Turn the Chime On':'Mute the Chime')
       : item('lv-takeover-ask','Take Over as Host') + tv)
+    // Nov 17: listening lives here too (Stop moved off the agenda)
+    +(run ? (LISTEN.on ? item('ag-listen-stop','Stop Listening') : !agenda(st).listen ? item('ag-listen-start','Start Listening') : '') : '')
     +'</div>'+(host ? '<div class="menu mt-l">'+item('lv-cancel-ask','Cancel Meeting','danger-row-btn')+'</div>' : '');
 }
 function cancelCard(host){
@@ -5553,7 +5607,7 @@ async function liveAddItem(el){
 /* ---------- Alfred chat bubble ---------- */
 // The conversation lives only in this page (S.alf) and is gone after a reload. Every message carries the screen
 // context below, and the screenshot taken when the bubble was tapped, so nobody has to describe where they were.
-const APP_VERSION = '2026.11.17-park';
+const APP_VERSION = '2026.11.17-simpler';
 const H2C_URL = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
 const DIAG = { errors:[], actions:[] };   // last 10 of each, for bug reports
 function pushDiag(list, item){ list.push(item); if (list.length>10) list.shift(); }
@@ -6452,6 +6506,7 @@ function actClick(e, el){
   else if (a==='lv-pause') liveAct(livePause);
   else if (a==='lv-menu') { S.sheet='livemenu'; showSheet(); }
   else if (a==='lv-chime') { setPref('lt-chime', pref('lt-chime','on')==='off' ? 'on' : 'off'); toast(pref('lt-chime','on')==='off' ? 'Chime muted on this device' : 'Chime on'); }
+  else if (a==='lvm' && /^ag-listen-/.test(el.dataset.do)) { const d=el.dataset.do; closeSheet(true); if (d==='ag-listen-start') listenStart(); else listenStop(true); }   // Nov 17: the microphone must start inside the tap
   else if (a==='lvm') { const d=el.dataset.do; closeSheet(true); setTimeout(()=>{ const b=document.createElement('button'); b.type='button'; b.dataset.act=d; b.hidden=true; document.body.appendChild(b); b.click(); b.remove(); }, 60); }
   else if (a==='lv-next') { const gate=reviewGate(S.live); if (gate) askLive('New Dates Needed', gate, 'OK', null, null, { single:true }); else liveAct(st=>liveStep(st, 1)); }
   else if (a==='rv-status') reviewSet(id, { status:v });
