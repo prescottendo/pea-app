@@ -19,7 +19,7 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" type="image/png" href="icon-192.png">
-<script>window.HUDDLE_WEB={"api":"https://script.google.com/macros/s/AKfycbzM8K_-XRMDdOJYJ3THn_FhyZkRreMddHIBAOFCFVoq5S_Y7MnsfFLsl7ac_fyDPrch/exec","clientId":"473377418367-cqmmnfum4kshq16973m4sj2jqqfa55p0.apps.googleusercontent.com","build":"882e57e","push":{"config":{"apiKey":"AIzaSyBON-0KvTXPD_MV6ykhYvCoBRiECEHyE9c","authDomain":"huddle-e2548.firebaseapp.com","projectId":"huddle-e2548","storageBucket":"huddle-e2548.firebasestorage.app","messagingSenderId":"554653922065","appId":"1:554653922065:web:87de53b4cb11b36835d2b0"},"vapidKey":"BHKeDoBmW7vL-qAT3ocyTaMaZ27Ca66jvQtTes2NC4CPoWFiPBJcga7wVd-RD1IuyhBki0oKXwPBGSNq002s8o8"}};document.documentElement.classList.add('web');</script>
+<script>window.HUDDLE_WEB={"api":"https://script.google.com/macros/s/AKfycbzM8K_-XRMDdOJYJ3THn_FhyZkRreMddHIBAOFCFVoq5S_Y7MnsfFLsl7ac_fyDPrch/exec","clientId":"473377418367-cqmmnfum4kshq16973m4sj2jqqfa55p0.apps.googleusercontent.com","build":"6d5d746","push":{"config":{"apiKey":"AIzaSyBON-0KvTXPD_MV6ykhYvCoBRiECEHyE9c","authDomain":"huddle-e2548.firebaseapp.com","projectId":"huddle-e2548","storageBucket":"huddle-e2548.firebasestorage.app","messagingSenderId":"554653922065","appId":"1:554653922065:web:87de53b4cb11b36835d2b0"},"vapidKey":"BHKeDoBmW7vL-qAT3ocyTaMaZ27Ca66jvQtTes2NC4CPoWFiPBJcga7wVd-RD1IuyhBki0oKXwPBGSNq002s8o8"}};document.documentElement.classList.add('web');</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <!-- The fonts load without holding up the first paint; the page shows in the phone's own font for a moment if needed. -->
@@ -1379,10 +1379,9 @@
   .print-btn { position:relative; margin-left:0; width:40px; height:40px; border-radius:50%; border:none; background:none; color:var(--heading); display:grid; place-items:center; flex:none; padding:0; }
   .print-btn svg { width:22px; height:22px; }
   .print-btn:active { transform:scale(.94); }
-  /* Nov 17 (Brayden): "Updated 2 min ago", centered under the title on every tab that refreshes on its own. */
-  .synced.compact-sync { display:block; text-align:center; margin:-4px 0 10px; line-height:1.3; }
-  .synced.compact-sync:empty { display:none; }
-  .head-row + .compact-sync { margin-top:-4px; }
+  /* Nov 17 (Brayden): "Updated 2 min ago" at the bottom of the page, centered, on every tab that refreshes on its own. */
+  .synced.foot-sync { display:block; text-align:center; margin:24px 0 0; line-height:1.3; }
+  .synced.foot-sync:empty { display:none; }
 
   /* Search: an x inside the field instead of a Cancel button. */
   .search .search-x { position:absolute; right:4px; top:50%; transform:translateY(-50%); width:36px; height:36px; border:none; background:none; color:var(--muted); display:grid; place-items:center; padding:0; }
@@ -2316,8 +2315,14 @@ function syncedAt(){
   if (S.view==='home' && sampleOn()) return 0;
   return S.lastSync || 0;
 }
+// Nov 17 (Brayden): the note sits at the bottom of the page (like Mail), not under the title, so the switches and ＋ buttons
+// never move from tab to tab. It's kept as the last thing in #main on the tabs that refresh on their own.
+const SYNC_VIEWS={ home:1, mine:1, team:1, meetings:1, marketing:1 };
 function updateSynced(){
-  const el=document.getElementById('synced'); if (!el) return;
+  const m=document.getElementById('main'); if (!m) return;
+  let el=document.getElementById('synced');
+  if (!SYNC_VIEWS[S.view]) { if (el) el.remove(); return; }
+  if (!el || el.parentNode!==m || el.nextElementSibling) { if (el) el.remove(); m.insertAdjacentHTML('beforeend', '<p class="synced foot-sync" id="synced" role="status"></p>'); el=document.getElementById('synced'); }
   const at=syncedAt(); if (!at) { el.textContent=''; return; }
   const mins=Math.floor((Date.now()-at)/60000), ago=mins<1 ? 'just now' : mins<60 ? mins+' min ago' : Math.floor(mins/60)+' hr ago';
   el.textContent = (!navigator.onLine ? 'Offline · updated ' : 'Updated ')+ago;
@@ -2584,7 +2589,7 @@ function renderPage(){
   syncWakeLock();
   updateAlfredFab();
   const m=document.getElementById('main');
-  const after=r=>{ decorateTitle(); setBadge(); return r; };
+  const after=r=>{ decorateTitle(); setBadge(); updateSynced(); return r; };
   const done=r=>r && typeof r.then==='function' ? r.then(after) : after(r);
   if (S.view==='home') return done(renderHome(m));
   if (S.view==='more') return done(renderMore(m));
@@ -2756,7 +2761,7 @@ function renderHome(m){
     +(today?row('data-act="go-today"','Due Today',today,''):'')
     +(waiting.length?row('data-act="home-waiting"','Waiting on You',waiting.length,'gold'):'')
     +(rc?row('data-act="go" data-view="review" data-back="Huddle"','To Review',rc,'gold'):'');
-  m.innerHTML='<div class="head-row home-title"><h2>Huddle</h2></div><span class="synced compact-sync" id="synced"></span>'   // Nov 16 (Brayden): the Home tab's page is titled Huddle
+  m.innerHTML='<div class="head-row home-title"><h2>Huddle</h2></div>'   // Nov 16 (Brayden): the Home tab's page is titled Huddle
     // Nov 16 (Brayden): Scorecard first, then the Rally Cry card, then For You, then the meeting card.
     // Critique 4 (#1): the Scorecard shows once it has numbers (S.data.scorecard).
     +(S.data.scorecard && S.data.scorecard.length ? '<h3 class="set-sec">Team Scorecard</h3>'+scorecardHtml(S.data.scorecard, S.data.scorecardMonth) : '')
@@ -2822,7 +2827,6 @@ function mkOffices(deliveries, old){
 function mkHead(){
   const tab=S.ktab||'deliveries', open=S.kSearch || S.kq;
   return '<div class="head-row"><h2>Marketing</h2><button type="button" class="tool-ico" data-act="k-search" aria-label="Search Marketing">'+ICON.search+'</button></div>'
-    +'<span class="synced compact-sync" id="synced"></span>'
     +(sampleOn() ? '<div class="sample-note">'+ICON.tour+'<span>Showing <b>sample data</b>. Changes here aren\'t saved.</span><button type="button" class="linkbtn" data-act="sample-off">Turn Off</button></div>' : '')
     +'<div class="mtab-band"><div class="seg mtab ktab" role="group" aria-label="Show">'+MK_TABS.map(([k,l])=>'<button type="button" class="'+(tab===k?'on':'')+'" data-act="ktab" data-val="'+k+'" aria-pressed="'+(tab===k)+'">'+l+'</button>').join('')+'</div></div>'
     +(open ? '<div class="search-row msearch"><label class="search">'+ICON.search+'<input type="search" id="kq" data-input="kq" placeholder="Search '+esc((MK_TABS.find(x=>x[0]===tab)||[])[1]||'')+'" value="'+esc(S.kq||'')+'" aria-label="Search Marketing">'
@@ -3174,7 +3178,7 @@ function renderTasks(m){
   // Nov 16 (Brayden): the printer comes first, so search and sort sit in the same spot on every tab.
   const icons=(mine||phone?'':printBtn)+(phone?'<button type="button" class="tool-ico" data-act="search-open" aria-label="Search tasks">'+ICON.search+'</button>'
       +'<button type="button" class="tool-ico sort-ico" data-act="sortfilter" aria-haspopup="dialog" aria-label="Sort and filter'+(nf0?', '+nf0+' on':'')+'">'+ICON.sort+(nf0?'<span class="rdot" aria-hidden="true"></span>':'')+'</button>':'');
-  html+='<div class="head-row team-head"><h2>Tasks</h2>'+icons+'</div><span class="synced compact-sync" id="synced"></span>'
+  html+='<div class="head-row team-head"><h2>Tasks</h2>'+icons+'</div>'
     +'<div class="mtab-band"><div class="seg mtab tside" role="group" aria-label="Show">'+[['mine','Personal'],['team','Team']].map(([k,l])=>'<button type="button" class="'+(S.view===k?'on':'')+'" data-act="tside" data-val="'+k+'" aria-pressed="'+(S.view===k)+'">'+l+'</button>').join('')+'</div></div>';
   if (mine) {
     // #13: one notice at a time: the meeting (live or ready to start), then Review, then "Before Thursday's Tactical".
@@ -4436,7 +4440,6 @@ function mHead(){
   return '<div class="head-row"><h2>Meetings</h2>'
     +'<button type="button" class="tool-ico" data-act="m-search" aria-label="Search">'+ICON.search+'</button>'
     +'<button type="button" class="tool-ico sort-ico" data-act="m-filter" aria-haspopup="dialog" aria-label="Filter'+(nf?', '+nf+' on':'')+'">'+ICON.sort+(nf?'<span class="rdot" aria-hidden="true"></span>':'')+'</button></div>'
-    +'<span class="synced compact-sync" id="synced"></span>'   // Nov 17 (Brayden): the same "Updated 3 min ago" note as the task tabs
     +'<div class="mtab-band">'+meetingsSeg()+'</div>'
     +(open?'<div class="search-row msearch"><label class="search">'+ICON.search+'<input type="search" id="'+q[0]+'" data-input="'+q[0]+'" placeholder="'+q[1]+'" value="'+esc(S[q[0]]||'')+'" aria-label="'+q[1]+'">'
       +'<button type="button" class="search-x" data-act="m-search-close" aria-label="Close search">'+ICON.x+'</button></label></div>':'')
@@ -5261,7 +5264,7 @@ async function liveAddItem(el){
 /* ---------- Alfred chat bubble ---------- */
 // The conversation lives only in this page (S.alf) and is gone after a reload. Every message carries the screen
 // context below, and the screenshot taken when the bubble was tapped, so nobody has to describe where they were.
-const APP_VERSION = '2026.11.17-treetab';
+const APP_VERSION = '2026.11.17-footsync';
 const H2C_URL = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
 const DIAG = { errors:[], actions:[] };   // last 10 of each, for bug reports
 function pushDiag(list, item){ list.push(item); if (list.length>10) list.shift(); }
