@@ -19,7 +19,7 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" type="image/png" href="icon-192.png">
-<script>window.HUDDLE_WEB={"api":"https://script.google.com/macros/s/AKfycbzM8K_-XRMDdOJYJ3THn_FhyZkRreMddHIBAOFCFVoq5S_Y7MnsfFLsl7ac_fyDPrch/exec","clientId":"473377418367-cqmmnfum4kshq16973m4sj2jqqfa55p0.apps.googleusercontent.com","build":"cde3d34","push":{"config":{"apiKey":"AIzaSyBON-0KvTXPD_MV6ykhYvCoBRiECEHyE9c","authDomain":"huddle-e2548.firebaseapp.com","projectId":"huddle-e2548","storageBucket":"huddle-e2548.firebasestorage.app","messagingSenderId":"554653922065","appId":"1:554653922065:web:87de53b4cb11b36835d2b0"},"vapidKey":"BHKeDoBmW7vL-qAT3ocyTaMaZ27Ca66jvQtTes2NC4CPoWFiPBJcga7wVd-RD1IuyhBki0oKXwPBGSNq002s8o8"}};document.documentElement.classList.add('web');</script>
+<script>window.HUDDLE_WEB={"api":"https://script.google.com/macros/s/AKfycbzM8K_-XRMDdOJYJ3THn_FhyZkRreMddHIBAOFCFVoq5S_Y7MnsfFLsl7ac_fyDPrch/exec","clientId":"473377418367-cqmmnfum4kshq16973m4sj2jqqfa55p0.apps.googleusercontent.com","build":"fc573b6","push":{"config":{"apiKey":"AIzaSyBON-0KvTXPD_MV6ykhYvCoBRiECEHyE9c","authDomain":"huddle-e2548.firebaseapp.com","projectId":"huddle-e2548","storageBucket":"huddle-e2548.firebasestorage.app","messagingSenderId":"554653922065","appId":"1:554653922065:web:87de53b4cb11b36835d2b0"},"vapidKey":"BHKeDoBmW7vL-qAT3ocyTaMaZ27Ca66jvQtTes2NC4CPoWFiPBJcga7wVd-RD1IuyhBki0oKXwPBGSNq002s8o8"}};document.documentElement.classList.add('web');</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <!-- The fonts load without holding up the first paint; the page shows in the phone's own font for a moment if needed. -->
@@ -672,23 +672,27 @@
   .more-row { color:var(--heading) !important; }
   .sample-note { display:flex; align-items:center; gap:8px; background:var(--card); border:1px dashed var(--gold); border-radius:12px; padding:8px 12px; margin:0 0 16px; font-size:var(--fs-sub); color:var(--ink); }
   .sample-note svg { width:18px; height:18px; color:var(--gold); flex:none; } .sample-note span { flex:1; } .sample-note .linkbtn { flex:none; }
-  /* Nov 17 (option A): Rally Cry on a full-width navy band; Anchors and Objectives on their own white cards. */
-  .rally-band { background:#0A345A; color:#fff; margin:20px calc(50% - 50vw) 8px; padding:16px max(22px, calc(50vw - 50% + 6px)) 20px; }
-  .rb-top { display:flex; align-items:center; justify-content:space-between; }
-  .rb-label { font-size:var(--fs-cap); font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:#C6A85C; }
-  .rb-edit { background:none; border:none; color:#E6D7AE; font-weight:600; font-size:var(--fs-sub); padding:4px 0 4px 12px; }
-  .rb-rule { display:block; width:28px; height:2px; background:#C6A85C; border-radius:1px; margin:8px 0 10px; }
-  .rb-text { margin:0; font-family:var(--serif); font-weight:600; font-size:calc(var(--fs-title) * 1.12); line-height:1.2; color:#fff; }
-  @media (min-width:700px) { .rally-band { margin:16px 0 8px; padding:18px 22px 22px; border-radius:14px; } }
-  .anchors, .objectives { list-style:none; margin:0 0 8px; padding:0; }
-  .anchors li, .objectives li { display:flex; align-items:center; gap:12px; padding:13px 16px; border-top:1px solid var(--line-soft); font-weight:600; color:var(--heading); line-height:1.3; }
-  .anchors li:first-child, .objectives li:first-child { border-top:none; }
-  .an-n { font-family:var(--serif); font-weight:600; font-size:calc(var(--fs-title) * .95); color:var(--gold); width:18px; flex:none; text-align:center; }
-  .objectives li { color:var(--ink); font-weight:500; } .objectives li > span:not(.mtag) { flex:1; min-width:0; }
-  .ob-dot { width:18px; height:18px; border-radius:50%; border:2px solid var(--line); flex:none; }
-  .ob-dot.on { border-color:var(--green); background:radial-gradient(circle, var(--green) 0 4px, transparent 4.5px); } .ob-dot.behind { border-color:var(--red); }
-  .ob-tag { background:none; border:none; padding:0; flex:none; }
-  .objectives + .set-sec, .anchors + .set-sec { margin-top:20px; }
+  /* Nov 17 (option C): one navy block for the Rally Cry, Strategic Anchors and Defining Objectives, split by gold rules. */
+  .strat-block { background:#0A345A; color:#fff; border-radius:14px; padding:0 18px; margin:20px 0 8px; }
+  :root[data-theme="dark"] .strat-block { box-shadow:inset 0 0 0 1px rgba(198,168,92,.35); }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .strat-block { box-shadow:inset 0 0 0 1px rgba(198,168,92,.35); } }
+  .sb-sec { padding:16px 0; border-top:1px solid #C6A85C; } .sb-sec:first-child { border-top:none; padding-top:18px; }
+  .sb-k { display:flex; justify-content:space-between; align-items:center; gap:8px; font-size:var(--fs-cap); font-weight:700; letter-spacing:.14em; text-transform:uppercase; color:#C6A85C; margin-bottom:9px; }
+  .sb-edit { background:none; border:none; color:#E6D7AE; font-weight:600; font-size:var(--fs-sub); letter-spacing:0; text-transform:none; padding:2px 0 2px 12px; }
+  .sb-chip { font-size:10px; letter-spacing:.02em; text-transform:none; border:1px dashed #C6A85C; border-radius:999px; padding:1px 7px; }
+  .sb-cry { margin:0; font-family:var(--serif); font-weight:600; font-size:calc(var(--fs-title) * 1.12); line-height:1.16; color:#fff; }
+  .sb-an, .sb-ob { list-style:none; margin:0; padding:0; }
+  .sb-an li { display:flex; gap:12px; align-items:baseline; padding:5px 0; font-weight:500; line-height:1.3; }
+  .sb-an i { font-style:normal; font-family:var(--serif); font-weight:600; color:#C6A85C; width:22px; flex:none; font-size:1.1em; }
+  .sb-ob li { padding:7px 0; }
+  .sb-tx { display:block; font-weight:500; line-height:1.3; }
+  .sb-st { display:inline-flex; align-items:center; gap:6px; margin-top:5px; font-size:var(--fs-cap); color:#C4C8CC; background:none; border:none; padding:0; }
+  button.sb-st { min-height:28px; margin-top:2px; }
+  .sb-st i { width:8px; height:8px; border-radius:50%; border:1.5px solid #C6A85C; flex:none; }
+  .sb-st.on i { background:#6FCF97; border-color:#6FCF97; } .sb-st.on span { color:#B9E6C9; }
+  .sb-st.behind i { background:#C6A85C; } .sb-st.behind span { color:#E6C77A; font-weight:600; }
+  .sb-st.none span { color:#9AA3AD; }
+  .strat-block + .set-sec { margin-top:20px; }
   .home-row { display:grid; grid-template-columns:1fr auto auto; gap:10px; align-items:center; }
   .hcount { min-width:28px; height:24px; padding:0 8px; border-radius:999px; display:inline-grid; place-items:center; font-weight:600; font-size:var(--fs-sub); background:var(--line-soft); color:var(--ink); }
   .hcount.late { background:var(--p-high, #D64545); color:#fff; } .hcount.gold { background:var(--gold); color:#142640; }
@@ -1301,7 +1305,6 @@
     .head-tools { display:flex; align-items:center; gap:4px; flex:none; }
     .head-tools .tool-ico { width:40px; height:40px; }
     .compact-sync:empty { display:none; }
-    .compact-sync { display:block; margin:-8px 0 12px; }
     body.v-mine .start-card { margin-bottom:12px; }
   }
   .meta .mb.nl .dot { display:none; }
@@ -1373,7 +1376,10 @@
   .print-btn { position:relative; margin-left:0; width:40px; height:40px; border-radius:50%; border:none; background:none; color:var(--heading); display:grid; place-items:center; flex:none; padding:0; }
   .print-btn svg { width:22px; height:22px; }
   .print-btn:active { transform:scale(.94); }
-  .head-row + .compact-sync { margin-top:8px; }
+  /* Nov 17 (Brayden): "Updated 2 min ago", centered under the title on every tab that refreshes on its own. */
+  .synced.compact-sync { display:block; text-align:center; margin:-4px 0 10px; line-height:1.3; }
+  .synced.compact-sync:empty { display:none; }
+  .head-row + .compact-sync { margin-top:-4px; }
 
   /* Search: an x inside the field instead of a Cancel button. */
   .search .search-x { position:absolute; right:4px; top:50%; transform:translateY(-50%); width:36px; height:36px; border:none; background:none; color:var(--muted); display:grid; place-items:center; padding:0; }
@@ -2095,7 +2101,7 @@ const BOX={ todo:'<i class="tbox"></i>', prog:'<i class="tbox prog"></i>', blk:'
 // Nov 16 (Brayden: "the tour got cut down too far"): a step-by-step tour of each tab. Before a step on another tab, the
 // dimming fades away and the tour shows that tab's button being pressed, then the tab opens and the tour carries on there.
 const COACH=[
-  { view:'home', sel:'#main .rally-band, #main .anchors', h:'Welcome to Huddle', b:'<p>This is the <b>Huddle</b> tab, your home base: the Team Scorecard, then the team\'s <b>Rally Cry</b>, <b>Strategic Anchors</b> and <b>Defining Objectives</b>, always in view.</p>' },
+  { view:'home', sel:'#main .strat-block', h:'Welcome to Huddle', b:'<p>This is the <b>Huddle</b> tab, your home base: the Team Scorecard, then the team\'s <b>Rally Cry</b>, <b>Strategic Anchors</b> and <b>Defining Objectives</b>, always in view.</p>' },
   { view:'home', sel:'#main .set-card', h:'For You', b:'<p>What needs you today: anything <b>overdue</b>, <b>due today</b>, or a teammate <b>waiting on you</b>. Tap a row to go straight there.</p>' },
   { view:'home', sel:'#main .start-card', h:'The Next Meeting', b:'<p>The weekly tactical: when it is, and how many of your items will come up. Tap it during the week to update them before the meeting.</p>' },
   { view:'mine', sel:'article.task .circ', h:'Finish a Task', b:'<p>Tap the box when a task is <b>done</b> (Undo shows for a few seconds). <b>Hold</b> it for In Progress, Blocked or Not Started. You can also swipe a task to the right.</p>' },
@@ -2194,6 +2200,23 @@ function busy(){
   const a=document.activeElement;
   return document.hidden || S.sheet || S.pending>0 || (a && /^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName));
 }
+// The list on screen (Meetings, Decisions, Parking Lot or Marketing) is fetched again at most once a minute while it's open;
+// it redraws only when something changed and nobody is typing or has a panel open.
+function refreshOpenList(){
+  if (refreshOpenList.busy) return;
+  const now=Date.now(), view=S.view, tab=S.mtab||'meetings';
+  let job=null;
+  if (view==='marketing' && S.mkt && S.mktFrom==='live' && now-(S.mktAt||0)>=55000)
+    job=call('apiMarketing').then(r=>{ const same=JSON.stringify(r)===JSON.stringify(S.mkt); S.mktAt=Date.now(); if (!same) { S.mkt=r; return true; } });
+  else if (view==='meetings' && now-(S.mtgSyncAt||S.listsAt||0)>=55000) {
+    if (tab==='decisions' && S.decisions) job=call('apiDecisions').then(r=>{ const same=JSON.stringify(r)===JSON.stringify(S.decisions); S.mtgSyncAt=Date.now(); if (!same) { S.decisions=r; saveLists(); return true; } });
+    else if (tab==='topics' && S.topics) job=call('apiTopics').then(r=>{ const same=JSON.stringify(r)===JSON.stringify(S.topics); S.mtgSyncAt=Date.now(); if (!same) { S.topics=r; saveLists(); return true; } });
+    else if (tab==='meetings' && S.meetings && !S.mq) job=Promise.all([call('apiMeetings'), call('apiLiveLogs')]).then(r=>{ const was=JSON.stringify([S.meetings, S.liveLogs]); setMeetingLists(r); S.mtgSyncAt=Date.now(); if (JSON.stringify([S.meetings, S.liveLogs])!==was) { saveLists(); return true; } });
+  }
+  if (!job) return;
+  refreshOpenList.busy=true;
+  job.then(changed=>{ if (changed && S.view===view && !busy() && !S.touching) render(); else updateSynced(); }).catch(()=>{}).then(()=>{ refreshOpenList.busy=false; });
+}
 async function refresh(){
   if (!S.data) return;
   if (S.stale) { retryStale(); return; }   // bug #1
@@ -2201,6 +2224,7 @@ async function refresh(){
   if (S.outbox.length) { flushOutbox(); return; }   // send waiting changes first, so the list doesn't flip back
   if (busy() || !navigator.onLine) return;
   try {
+    refreshOpenList();
     const tasks = await call('apiTasks');
     S.lastSync = Date.now(); updateSynced();
     if (busy() || JSON.stringify(tasks)===JSON.stringify(S.data.tasks)) return;
@@ -2278,11 +2302,20 @@ async function flushOutbox(){
 window.addEventListener('offline', updateOffline);
 window.addEventListener('online', ()=>{ updateOffline(); flushOutbox(); retryStale(); });
 
+// Nov 17 (Brayden): every tab that refreshes on its own shows when it last did, centered under the title: Huddle and
+// Tasks (S.lastSync, every 20 seconds), Meetings, Decisions and Parking Lot (S.mtgSyncAt) and Marketing (S.mktAt) while
+// you're on them (refreshOpenList). Sample data says nothing.
+function syncedAt(){
+  if (S.view==='meetings') return S.mtgSyncAt || S.listsAt || 0;
+  if (S.view==='marketing') return S.mktFrom==='sample' ? 0 : (S.mktAt || 0);
+  if (S.view==='home' && sampleOn()) return 0;
+  return S.lastSync || 0;
+}
 function updateSynced(){
-  const el=document.getElementById('synced'); if (!el || !S.lastSync) return;
-  const mins=Math.floor((Date.now()-S.lastSync)/60000);
-  // LB-12: say nothing while things are fresh; only when the connection is down or the list is getting old.
-  el.textContent = !navigator.onLine ? 'Offline · updated '+(mins<1?'just now':mins+' min ago') : mins>=2 ? 'Updated '+mins+' min ago' : '';
+  const el=document.getElementById('synced'); if (!el) return;
+  const at=syncedAt(); if (!at) { el.textContent=''; return; }
+  const mins=Math.floor((Date.now()-at)/60000), ago=mins<1 ? 'just now' : mins<60 ? mins+' min ago' : Math.floor(mins/60)+' hr ago';
+  el.textContent = (!navigator.onLine ? 'Offline · updated ' : 'Updated ')+ago;
 }
 // Runs 4x a second: the live meeting timers, plus the "Updated" note every few seconds.
 function tick(){
@@ -2590,24 +2623,27 @@ function agoText(at){
   return mins<1?'Just now':mins<60?mins+' min ago':mins<1440?Math.round(mins/60)+' hr ago':fmtDate(String(at).slice(0,10),{weekday:'short'});
 }
 // Nov 16 (Brayden): the Rally Cry, Defining Objectives and Strategic Anchors at the top of Home. Approvers can edit them.
-// Nov 17 (Brayden, option A "Navy Banner"): the Rally Cry, Strategic Anchors and Defining Objectives are always open, each
-// in its own section: the Rally Cry in large white type on a full-width navy band (a card on a computer), the Anchors
-// numbered in gold on a white card, and the Objectives on a white card with an On Track / Behind tag. Approvers tap a tag
-// to change it (On Track → Behind → none; apiSetObjectiveStatus) and Edit on the band to change the words. Empty sections
-// are left out (approvers see one "Add Your Rally Cry" row when nothing is set).
-const OBJ_TAG={ on:['On Track','g'], behind:['Behind','r'] };
+// Nov 17 (Brayden, option C "Navy Strategy Block"; he tried A, the navy banner, first): the Rally Cry, Strategic Anchors
+// and Defining Objectives are always open, in one navy block split by gold rules with gold labels. The Rally Cry in large
+// serif type, the Anchors numbered I, II, III in gold, each Objective with its status under it. Approvers tap the status
+// to change it (On Track → Behind → none; apiSetObjectiveStatus) and Edit beside "Rally Cry" to change the words. Empty
+// sections are left out (approvers see one "Add Your Rally Cry" row when nothing is set).
+const OBJ_TAG={ on:'On Track', behind:'Behind' };
+function roman(n){ return ['I','II','III','IV','V','VI','VII','VIII','IX','X'][n-1] || String(n); }
 function focusCard(f, opts){
   f=f||S.data.focus; opts=opts||{}; if (!f) return '';
   const has=a=>a && a.length, ap=S.data.isApprover && !opts.sample, st=f.status||{};
   if (!f.rally && !has(f.anchors) && !has(f.objectives)) return ap ? '<div class="set-card"><button type="button" class="set-row" data-act="focus-edit"><span>Add Your Rally Cry</span><span class="chev" aria-hidden="true">›</span></button></div>' : '';
-  const ex=opts.sample ? ' <span class="t-chip">Sample</span>' : '';
-  return (f.rally ? '<section class="rally-band" aria-label="Rally Cry"><div class="rb-top"><span class="rb-label">Rally Cry</span>'+(ap?'<button type="button" class="rb-edit" data-act="focus-edit">Edit</button>':'')+'</div>'
-      +'<i class="rb-rule" aria-hidden="true"></i><p class="rb-text">'+esc(f.rally)+'</p></section>' : '')
-    +(has(f.anchors) ? '<h3 class="set-sec">Strategic Anchors'+ex+'</h3><ol class="card anchors">'+f.anchors.map((x,i)=>'<li><span class="an-n">'+(i+1)+'</span><span>'+esc(x)+'</span></li>').join('')+'</ol>' : '')
-    +(has(f.objectives) ? '<h3 class="set-sec">Defining Objectives'+ex+'</h3><ul class="card objectives">'+f.objectives.map(x=>{ const t=OBJ_TAG[st[x]];
-        const tag=t ? '<span class="mtag '+t[1]+'">'+t[0]+'</span>' : ap ? '<span class="mtag n">Set Status</span>' : '';
-        return '<li><i class="ob-dot'+(st[x]==='on'?' on':st[x]==='behind'?' behind':'')+'" aria-hidden="true"></i><span>'+esc(x)+'</span>'
-          +(ap ? '<button type="button" class="ob-tag" data-act="obj-status" data-text="'+esc(x)+'" aria-label="Status: '+(t?t[0]:'none')+'. Tap to change">'+tag+'</button>' : tag)+'</li>'; }).join('')+'</ul>' : '');
+  const ex=opts.sample ? '<span class="sb-chip">Sample</span>' : '';
+  const sec=(label, body, extra)=>'<div class="sb-sec"><div class="sb-k"><span>'+label+'</span>'+(extra||'')+'</div>'+body+'</div>';
+  return '<section class="strat-block" aria-label="Rally Cry, Strategic Anchors and Defining Objectives">'
+    +(f.rally ? sec('Rally Cry', '<p class="sb-cry">'+esc(f.rally)+'</p>', ap ? '<button type="button" class="sb-edit" data-act="focus-edit">Edit</button>' : ex) : '')
+    +(has(f.anchors) ? sec('Strategic Anchors', '<ol class="sb-an">'+f.anchors.map((x,i)=>'<li><i>'+roman(i+1)+'</i><span>'+esc(x)+'</span></li>').join('')+'</ol>', f.rally ? '' : ex) : '')
+    +(has(f.objectives) ? sec('Defining Objectives', '<ul class="sb-ob">'+f.objectives.map(x=>{ const v=st[x]||'', t=OBJ_TAG[v];
+        const line='<i class="'+(v||'none')+'" aria-hidden="true"></i><span>'+(t || (ap ? 'Set Status' : ''))+'</span>';
+        return '<li><span class="sb-tx">'+esc(x)+'</span>'+(ap ? '<button type="button" class="sb-st '+(v||'none')+'" data-act="obj-status" data-text="'+esc(x)+'" aria-label="Status: '+(t||'none')+'. Tap to change">'+line+'</button>'
+          : t ? '<span class="sb-st '+v+'">'+line+'</span>' : '')+'</li>'; }).join('')+'</ul>') : '')
+    +'</section>';
 }
 
 // Nov 16 (Brayden): Home (titled Huddle), top to bottom: Team Scorecard (a placeholder until Brayden sends the details), the
@@ -2715,7 +2751,7 @@ function renderHome(m){
     +(today?row('data-act="go-today"','Due Today',today,''):'')
     +(waiting.length?row('data-act="home-waiting"','Waiting on You',waiting.length,'gold'):'')
     +(rc?row('data-act="go" data-view="review" data-back="Huddle"','To Review',rc,'gold'):'');
-  m.innerHTML='<div class="head-row home-title"><h2>Huddle</h2></div>'   // Nov 16 (Brayden): the Home tab's page is titled Huddle
+  m.innerHTML='<div class="head-row home-title"><h2>Huddle</h2></div><span class="synced compact-sync" id="synced"></span>'   // Nov 16 (Brayden): the Home tab's page is titled Huddle
     // Nov 16 (Brayden): Scorecard first, then the Rally Cry card, then For You, then the meeting card.
     // Critique 4 (#1): the Scorecard shows once it has numbers (S.data.scorecard).
     +(S.data.scorecard && S.data.scorecard.length ? '<h3 class="set-sec">Team Scorecard</h3>'+scorecardHtml(S.data.scorecard, S.data.scorecardMonth) : '')
@@ -4341,7 +4377,7 @@ function topicsHead(){ return mHead(); }
 async function renderTopics(m){
   if (!S.topics) {
     m.innerHTML=topicsHead()+'<div class="list"><div class="skel" style="height:80px"></div><div class="skel" style="height:80px"></div></div>';
-    try { S.topics=await call('apiTopics'); saveLists(); } catch(e){ if (onTopics()) m.innerHTML=topicsHead()+loadFail('the Parking Lot'); return; }
+    try { S.topics=await call('apiTopics'); S.mtgSyncAt=Date.now(); saveLists(); } catch(e){ if (onTopics()) m.innerHTML=topicsHead()+loadFail('the Parking Lot'); return; }
     if (!onTopics()) return;
   }
   const order={Open:0,Scheduled:1,Discussed:2,Dropped:3};
@@ -4419,7 +4455,7 @@ async function renderDecisions(m){
   const head=mHead();
   if (!S.decisions) {
     m.innerHTML=head+'<div class="list"><div class="skel" style="height:70px"></div><div class="skel" style="height:70px"></div></div>';
-    try { S.decisions=await call('apiDecisions'); saveLists(); } catch(e){ if (S.view==='meetings' && S.mtab==='decisions') m.innerHTML=head+loadFail('Decisions'); return; }
+    try { S.decisions=await call('apiDecisions'); S.mtgSyncAt=Date.now(); saveLists(); } catch(e){ if (S.view==='meetings' && S.mtab==='decisions') m.innerHTML=head+loadFail('Decisions'); return; }
     if (S.view!=='meetings' || S.mtab!=='decisions') return;
   }
   m.innerHTML=head+'<div id="decResults"></div>';
@@ -4449,7 +4485,7 @@ async function renderMeetings(m){
   if (S.mtab==='topics') return renderTopics(m);
   if (!S.meetings) { m.innerHTML=mHead()+'<div class="list"><div class="skel" style="height:90px"></div><div class="skel" style="height:90px"></div></div>';
     let r; try { r=await Promise.all([call('apiMeetings'), call('apiLiveLogs')]); } catch(e){ if (S.view==='meetings') m.innerHTML=mHead()+loadFail('Meetings'); return; }
-    setMeetingLists(r); saveLists(); if (S.view!=='meetings') return; }
+    setMeetingLists(r); S.mtgSyncAt=Date.now(); saveLists(); if (S.view!=='meetings') return; }
   m.innerHTML=mHead()+'<div id="mResults"></div>';
   renderMeetingResults();
 }
@@ -5220,7 +5256,7 @@ async function liveAddItem(el){
 /* ---------- Alfred chat bubble ---------- */
 // The conversation lives only in this page (S.alf) and is gone after a reload. Every message carries the screen
 // context below, and the screenshot taken when the bubble was tapped, so nobody has to describe where they were.
-const APP_VERSION = '2026.11.17-rally';
+const APP_VERSION = '2026.11.17-strategy';
 const H2C_URL = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
 const DIAG = { errors:[], actions:[] };   // last 10 of each, for bug reports
 function pushDiag(list, item){ list.push(item); if (list.length>10) list.shift(); }
