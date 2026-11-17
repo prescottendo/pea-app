@@ -19,7 +19,7 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" type="image/png" href="icon-192.png">
-<script>window.HUDDLE_WEB={"api":"https://script.google.com/macros/s/AKfycbzM8K_-XRMDdOJYJ3THn_FhyZkRreMddHIBAOFCFVoq5S_Y7MnsfFLsl7ac_fyDPrch/exec","clientId":"473377418367-cqmmnfum4kshq16973m4sj2jqqfa55p0.apps.googleusercontent.com","build":"cd1a728","push":{"config":{"apiKey":"AIzaSyBON-0KvTXPD_MV6ykhYvCoBRiECEHyE9c","authDomain":"huddle-e2548.firebaseapp.com","projectId":"huddle-e2548","storageBucket":"huddle-e2548.firebasestorage.app","messagingSenderId":"554653922065","appId":"1:554653922065:web:87de53b4cb11b36835d2b0"},"vapidKey":"BHKeDoBmW7vL-qAT3ocyTaMaZ27Ca66jvQtTes2NC4CPoWFiPBJcga7wVd-RD1IuyhBki0oKXwPBGSNq002s8o8"}};document.documentElement.classList.add('web');</script>
+<script>window.HUDDLE_WEB={"api":"https://script.google.com/macros/s/AKfycbzM8K_-XRMDdOJYJ3THn_FhyZkRreMddHIBAOFCFVoq5S_Y7MnsfFLsl7ac_fyDPrch/exec","clientId":"473377418367-cqmmnfum4kshq16973m4sj2jqqfa55p0.apps.googleusercontent.com","build":"d279eff","push":{"config":{"apiKey":"AIzaSyBON-0KvTXPD_MV6ykhYvCoBRiECEHyE9c","authDomain":"huddle-e2548.firebaseapp.com","projectId":"huddle-e2548","storageBucket":"huddle-e2548.firebasestorage.app","messagingSenderId":"554653922065","appId":"1:554653922065:web:87de53b4cb11b36835d2b0"},"vapidKey":"BHKeDoBmW7vL-qAT3ocyTaMaZ27Ca66jvQtTes2NC4CPoWFiPBJcga7wVd-RD1IuyhBki0oKXwPBGSNq002s8o8"}};document.documentElement.classList.add('web');</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <!-- The fonts load without holding up the first paint; the page shows in the phone's own font for a moment if needed. -->
@@ -3025,18 +3025,17 @@ function refYtd(r){ const L=S.mkt.referrals.last; return r.m.slice(0, L+1).reduc
 function money(n){ n=Number(n)||0; return '$'+(Math.round(n)===n ? n.toLocaleString('en-US') : n.toLocaleString('en-US',{ minimumFractionDigits:2, maximumFractionDigits:2 })); }
 // The month's two budgets from the sheet: the all-office delivery (its plan row) and thank-yous / birthdays (gifts this month).
 function mkBudgetHtml(){
-  const B=(S.mkt && S.mkt.sheet)||{}, RP=S.mkt && S.mkt.ramp; if (B.thanksBudget==null && B.planBudget==null && !RP) return '';
-  const mi=Number(S.data.today.slice(5,7))-1, plan=(B.plan||[]).find(p=>p.m===mi);
+  // Nov 17 (Brayden): only each office's Ramp Marketing fund (the sheet's monthly delivery and thank-you budgets were dropped).
+  const RP=S.mkt && S.mkt.ramp; if (!RP || !(RP.accounts||[]).length) return '';
+  const mi=Number(S.data.today.slice(5,7))-1;
   const bar=(label, used, of, sub)=>{ const pct=of ? Math.min(100, used/of*100) : 0, cls=!of ? '' : used>of ? 'r' : used>of*.8 ? 'a' : 'g';
     return '<div class="bud-row"><span>'+label+'</span><b>'+money(used)+(of?' of '+money(of):'')+'</b></div><div class="bud-bar"><i class="'+cls+'" style="width:'+pct.toFixed(1)+'%"></i></div>'+(sub?'<p class="bud-sub">'+sub+'</p>':''); };
   return '<div class="card bud-card"><h3 class="sec-h">'+esc(MON_NAMES[mi])+' Budget</h3>'
-    +(B.planBudget!=null ? bar('Monthly delivery', plan && plan.cost || 0, B.planBudget, plan && plan.items ? esc(plan.items) : 'Nothing in the plan for '+esc(MON_NAMES[mi])+' yet') : '')
-    +(B.thanksBudget!=null ? bar('Thank-yous and birthdays', B.thanksSpent||0, B.thanksBudget, 'Planned and delivered gifts this month') : '')
     // Nov 17 (Brayden): each office's "Marketing" fund in Ramp (each office is its own Ramp company): what's been charged to it
     // this period by anyone, against its limit, and what's left. Read from Ramp every 5 minutes (Code.gs "Ramp").
     +(RP ? RP.accounts.map(A=>(A.cards||[]).map(c=>{ const left=c.limit!=null ? c.limit-(c.spent||0) : null, per=c.interval && c.interval!=='monthly' ? ' this '+esc(c.interval.replace(/ly$/,'').replace(/^dai$/,'day')) : ' this month';
         const recent=(c.recent||[]).length ? '<span class="ramp-recent">'+c.recent.slice(0,3).map(t=>'<span>'+esc(fmtDate(t.date))+' · '+esc(t.merchant)+(t.who?' · '+esc(t.who):'')+' <b>'+money(t.amount)+'</b></span>').join('')+'</span>' : '';
-        return bar(esc((c.fund||'Marketing')+' Fund · '+A.label), c.spent||0, c.limit,
+        return bar(esc(A.label+((A.cards||[]).length>1 && c.fund ? ' · '+c.fund : '')), c.spent||0, c.limit,
           (left==null ? 'No limit set in Ramp' : left>=0 ? '<b class="left">'+money(Math.round(left*100)/100)+' left</b>'+per : '<b class="over">'+money(Math.round(-left*100)/100)+' over</b>'+per)+recent); }).join('')).join('') : '')
     +'</div>';
 }
@@ -3301,8 +3300,8 @@ function sampleMkt(){
     ].map((x,i)=>Object.assign({ created_at:at(-3-i), updated_at:at(-1) }, x)),
     // Nov 17: made-up referral numbers and budgets (the real ones come from the sheets after sign-in, never from this page).
     ramp:{ accounts:[
-      { label:'PRC', cards:[{ fund:'Marketing', limit:1500, interval:'monthly', spent:412.6, recent:[{ date:d(-1), merchant:'Sweet Treats Bakery', amount:186.4, who:'Ashley' }, { date:d(-3), merchant:'Safeway', amount:42.18, who:'Becky' }] }] },
-      { label:'PV', cards:[{ fund:'Marketing', limit:1000, interval:'monthly', spent:880, recent:[{ date:d(-2), merchant:'Costco', amount:312.55, who:'Ashley' }, { date:d(-6), merchant:'Michaels', amount:61.02, who:'Ashley' }] }] }] },
+      { label:'Prescott', cards:[{ fund:'Marketing', limit:1500, interval:'monthly', spent:412.6, recent:[{ date:d(-1), merchant:'Sweet Treats Bakery', amount:186.4, who:'Ashley' }, { date:d(-3), merchant:'Safeway', amount:42.18, who:'Becky' }] }] },
+      { label:'Prescott Valley', cards:[{ fund:'Marketing', limit:1000, interval:'monthly', spent:880, recent:[{ date:d(-2), merchant:'Costco', amount:312.55, who:'Ashley' }, { date:d(-6), merchant:'Michaels', amount:61.02, who:'Ashley' }] }] }] },
     referrals:sampleReferrals(t), sheet:{ thanksBudget:833, thanksSpent:640, planBudget:3500,
       plan:[{ m:Number(t.slice(5,7))-1, items:'Pumpkin bread with a thank-you card', cost:1180, notes:'' }],
       notes:{ alvarez:{ name:'Dr Alvarez', notes:['Loves the Diamondbacks', 'Coffee, no sugar', 'Runs the Whiskey Row Marathon'] } } },
@@ -5814,7 +5813,7 @@ async function liveAddItem(el){
 /* ---------- Alfred chat bubble ---------- */
 // The conversation lives only in this page (S.alf) and is gone after a reload. Every message carries the screen
 // context below, and the screenshot taken when the bubble was tapped, so nobody has to describe where they were.
-const APP_VERSION = '2026.11.17-every5';
+const APP_VERSION = '2026.11.17-budget';
 const H2C_URL = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
 const DIAG = { errors:[], actions:[] };   // last 10 of each, for bug reports
 function pushDiag(list, item){ list.push(item); if (list.length>10) list.shift(); }
