@@ -8,7 +8,7 @@
 <head>
 <base target="_top">
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://accounts.google.com/gsi/client https://cdnjs.cloudflare.com/ajax/libs/html2canvas/ https://www.gstatic.com/firebasejs/; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://accounts.google.com/gsi/style; font-src https://fonts.gstatic.com; img-src 'self' data: blob: https://*.googleusercontent.com https://*.gstatic.com; connect-src 'self' https://script.google.com/macros/s/AKfycbzM8K_-XRMDdOJYJ3THn_FhyZkRreMddHIBAOFCFVoq5S_Y7MnsfFLsl7ac_fyDPrch/exec https://script.googleusercontent.com/macros/echo https://accounts.google.com/gsi/ https://firebaseinstallations.googleapis.com https://fcmregistrations.googleapis.com; frame-src https://accounts.google.com/gsi/; worker-src 'self'; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://accounts.google.com/gsi/client https://cdnjs.cloudflare.com/ajax/libs/html2canvas/ https://www.gstatic.com/firebasejs/; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://accounts.google.com/gsi/style; font-src https://fonts.gstatic.com; img-src 'self' data: blob: https://*.googleusercontent.com https://*.gstatic.com; connect-src 'self' https://script.google.com/macros/s/AKfycbzM8K_-XRMDdOJYJ3THn_FhyZkRreMddHIBAOFCFVoq5S_Y7MnsfFLsl7ac_fyDPrch/exec https://script.googleusercontent.com/macros/echo https://accounts.google.com/gsi/ wss://api.deepgram.com https://firebaseinstallations.googleapis.com https://fcmregistrations.googleapis.com; frame-src https://accounts.google.com/gsi/; worker-src 'self'; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'none'">
 <title>Huddle</title>
 <meta name="robots" content="noindex">
 <meta name="theme-color" content="#EBE6D9">
@@ -19,7 +19,7 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" type="image/png" href="icon-192.png">
-<script>window.HUDDLE_WEB={"api":"https://script.google.com/macros/s/AKfycbzM8K_-XRMDdOJYJ3THn_FhyZkRreMddHIBAOFCFVoq5S_Y7MnsfFLsl7ac_fyDPrch/exec","clientId":"473377418367-cqmmnfum4kshq16973m4sj2jqqfa55p0.apps.googleusercontent.com","build":"5fbe50d","push":{"config":{"apiKey":"AIzaSyBON-0KvTXPD_MV6ykhYvCoBRiECEHyE9c","authDomain":"huddle-e2548.firebaseapp.com","projectId":"huddle-e2548","storageBucket":"huddle-e2548.firebasestorage.app","messagingSenderId":"554653922065","appId":"1:554653922065:web:87de53b4cb11b36835d2b0"},"vapidKey":"BHKeDoBmW7vL-qAT3ocyTaMaZ27Ca66jvQtTes2NC4CPoWFiPBJcga7wVd-RD1IuyhBki0oKXwPBGSNq002s8o8"}};document.documentElement.classList.add('web');</script>
+<script>window.HUDDLE_WEB={"api":"https://script.google.com/macros/s/AKfycbzM8K_-XRMDdOJYJ3THn_FhyZkRreMddHIBAOFCFVoq5S_Y7MnsfFLsl7ac_fyDPrch/exec","clientId":"473377418367-cqmmnfum4kshq16973m4sj2jqqfa55p0.apps.googleusercontent.com","build":"ccea2e1","push":{"config":{"apiKey":"AIzaSyBON-0KvTXPD_MV6ykhYvCoBRiECEHyE9c","authDomain":"huddle-e2548.firebaseapp.com","projectId":"huddle-e2548","storageBucket":"huddle-e2548.firebasestorage.app","messagingSenderId":"554653922065","appId":"1:554653922065:web:87de53b4cb11b36835d2b0"},"vapidKey":"BHKeDoBmW7vL-qAT3ocyTaMaZ27Ca66jvQtTes2NC4CPoWFiPBJcga7wVd-RD1IuyhBki0oKXwPBGSNq002s8o8"}};document.documentElement.classList.add('web');</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <!-- The fonts load without holding up the first paint; the page shows in the phone's own font for a moment if needed. -->
@@ -691,8 +691,35 @@
   .sb-st { display:inline-flex; align-items:center; gap:6px; margin-top:5px; font-size:var(--fs-cap); color:#C4C8CC; background:none; border:none; padding:0; }
   button.sb-st { min-height:28px; margin-top:2px; }
   .sb-st i { width:8px; height:8px; border-radius:50%; border:1.5px solid #C6A85C; flex:none; }
-  .sb-st.on i { background:#6FCF97; border-color:#6FCF97; } .sb-st.on span { color:#B9E6C9; }
-  .sb-st.behind i { background:#C6A85C; } .sb-st.behind span { color:#E6C77A; font-weight:600; }
+  .sb-st.green i { background:#6FCF97; border-color:#6FCF97; } .sb-st.green span { color:#B9E6C9; }
+  .sb-st.yellow i { background:#E8C547; border-color:#E8C547; } .sb-st.yellow span { color:#F1DB8A; font-weight:600; }
+  .sb-st.red i { background:#F08A80; border-color:#F08A80; } .sb-st.red span { color:#F6B3AC; font-weight:600; }
+  /* Nov 17: the live agenda (meeting screen) */
+  .ag-board { padding:14px 14px 10px; }
+  .ag-top { display:flex; align-items:center; gap:8px; } .ag-top h3 { margin:0; } .ag-top .muted { flex:1; font-size:var(--fs-cap); }
+  .ag-listen { display:flex; align-items:center; gap:10px; margin:10px 0 4px; padding:8px 10px; border-radius:10px; background:var(--line-soft); font-size:var(--fs-sub); }
+  .ag-listen span { flex:1; } .ag-listen.on { background:var(--red-soft); color:var(--ink); }
+  .ag-listen .rec { width:10px; height:10px; border-radius:50%; background:var(--red); flex:none; animation:recpulse 1.4s ease-in-out infinite; }
+  @keyframes recpulse { 50% { opacity:.35; } }
+  .ag-sec { font-size:var(--fs-cap); font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); margin:16px 2px 4px; }
+  .ag-area { display:flex; align-items:center; gap:10px; padding:8px 2px 4px; } .ag-area b { flex:1; font-weight:600; color:var(--heading); font-size:var(--fs-sub); }
+  .ag-n { font-size:var(--fs-cap); color:var(--muted); }
+  .ag-dot { width:16px; height:16px; border-radius:50%; border:2px solid var(--line); background:none; padding:0; flex:none; position:relative; }
+  .ag-dot::after { content:""; position:absolute; inset:-12px; }
+  .ag-item { display:flex; align-items:center; gap:10px; margin:0 0 6px 8px; padding:9px 10px 9px 0; background:var(--card); border:1px solid var(--line); border-radius:10px; cursor:pointer; }
+  .ag-item.done { opacity:.55; } .ag-item.done .ag-text { text-decoration:line-through; text-decoration-color:var(--muted); }
+  .ag-bar { width:5px; align-self:stretch; min-height:28px; border-radius:3px; border:none; padding:0; margin-left:6px; flex:none; position:relative; background:var(--line); }
+  .ag-bar::after { content:""; position:absolute; inset:-8px -12px; }
+  .ag-text { flex:1; min-width:0; font-weight:600; color:var(--ink); line-height:1.3; } .ag-text small { display:block; font-weight:400; color:var(--muted); font-size:var(--fs-cap); margin-top:2px; }
+  .ag-go { color:var(--muted); font-size:1.2em; }
+  .c-red.ag-bar, .c-red.ag-dot, .ag-chip.c-red { background:var(--red); border-color:var(--red); }
+  .c-yellow.ag-bar, .c-yellow.ag-dot, .ag-chip.c-yellow { background:#E2B63A; border-color:#E2B63A; }
+  .c-green.ag-bar, .c-green.ag-dot, .ag-chip.c-green { background:var(--green); border-color:var(--green); }
+  .ag-chip { display:inline-block; width:10px; height:10px; border-radius:50%; border:2px solid var(--line); vertical-align:-1px; }
+  .ag-sugg { padding:12px 14px; } .ag-sugg h3 { margin:0 0 8px; }
+  .ag-s { display:flex; align-items:center; gap:8px; padding:8px 0; border-top:1px solid var(--line-soft); } .ag-s:first-of-type { border-top:none; }
+  .ag-s-t { flex:1; min-width:0; font-weight:600; line-height:1.3; } .ag-s-t small { display:block; font-weight:400; color:var(--muted); font-size:var(--fs-cap); }
+  .ag-s .iconbtn { width:36px; height:36px; display:grid; place-items:center; background:none; border:none; color:var(--muted); } .ag-s .iconbtn svg { width:16px; height:16px; }
   .sb-st.none span { color:#9AA3AD; }
   .strat-block + .set-sec { margin-top:20px; }
   .home-row { display:grid; grid-template-columns:1fr auto auto; gap:10px; align-items:center; }
@@ -2059,7 +2086,7 @@ function startLoops(){
   load.started = true;
   document.addEventListener('visibilitychange', ()=>{ if (!document.hidden && Date.now()-(S.listsAt||0)>120000) prefetchLists(); });
   setInterval(tick, 250);
-  setInterval(livePoll, 2500); livePoll();
+  setInterval(livePoll, 2500); livePoll(); setInterval(livePollFast, 1000);
   setInterval(refresh, 20000);
   document.addEventListener('visibilitychange', ()=>{ if (!document.hidden) refresh(); });
   // ER-6: fetch the screenshot tool in the background, so the first tap on Alfred opens quickly.
@@ -2640,21 +2667,25 @@ function agoText(at){
 // serif type, the Anchors numbered I, II, III in gold, each Objective with its status under it. Approvers tap the status
 // to change it (On Track → Behind → none; apiSetObjectiveStatus) and Edit beside "Rally Cry" to change the words. Empty
 // sections are left out (approvers see one "Add Your Rally Cry" row when nothing is set).
-const OBJ_TAG={ on:'On Track', behind:'Behind' };
+// Nov 17: objectives carry the meeting colors: green On Track, yellow Needs Attention, red Off Track (they used to be On
+// Track / Behind). The Standard Operating Objectives have their own section. Area colors set in a meeting are saved here.
+const OBJ_TAG={ green:'On Track', yellow:'Needs Attention', red:'Off Track' };
 function roman(n){ return ['I','II','III','IV','V','VI','VII','VIII','IX','X'][n-1] || String(n); }
 function focusCard(f, opts){
   f=f||S.data.focus; opts=opts||{}; if (!f) return '';
   const has=a=>a && a.length, ap=S.data.isApprover && !opts.sample, st=f.status||{};
-  if (!f.rally && !has(f.anchors) && !has(f.objectives)) return ap ? '<div class="set-card"><button type="button" class="set-row" data-act="focus-edit"><span>Add Your Rally Cry</span><span class="chev" aria-hidden="true">›</span></button></div>' : '';
+  if (!f.rally && !has(f.anchors) && !has(f.objectives) && !has(f.operating)) return ap ? '<div class="set-card"><button type="button" class="set-row" data-act="focus-edit"><span>Add Your Rally Cry</span><span class="chev" aria-hidden="true">›</span></button></div>' : '';
   const ex=opts.sample ? '<span class="sb-chip">Sample</span>' : '';
   const sec=(label, body, extra)=>'<div class="sb-sec"><div class="sb-k"><span>'+label+'</span>'+(extra||'')+'</div>'+body+'</div>';
-  return '<section class="strat-block" aria-label="Rally Cry, Strategic Anchors and Defining Objectives">'
+  const obList=list=>'<ul class="sb-ob">'+list.map(x=>{ const v=st[x]||'', t=OBJ_TAG[v];
+    const line='<i class="'+(v||'none')+'" aria-hidden="true"></i><span>'+(t || (ap ? 'Set Status' : ''))+'</span>';
+    return '<li><span class="sb-tx">'+esc(x)+'</span>'+(ap ? '<button type="button" class="sb-st '+(v||'none')+'" data-act="obj-status" data-text="'+esc(x)+'" aria-label="Status: '+(t||'none')+'. Tap to change">'+line+'</button>'
+      : t ? '<span class="sb-st '+v+'">'+line+'</span>' : '')+'</li>'; }).join('')+'</ul>';
+  return '<section class="strat-block" aria-label="Rally Cry, Strategic Anchors and Objectives">'
     +(f.rally ? sec('Rally Cry', '<p class="sb-cry">'+esc(f.rally)+'</p>', ap ? '<button type="button" class="sb-edit" data-act="focus-edit">Edit</button>' : ex) : '')
     +(has(f.anchors) ? sec('Strategic Anchors', '<ol class="sb-an">'+f.anchors.map((x,i)=>'<li><i>'+roman(i+1)+'</i><span>'+esc(x)+'</span></li>').join('')+'</ol>', f.rally ? '' : ex) : '')
-    +(has(f.objectives) ? sec('Defining Objectives', '<ul class="sb-ob">'+f.objectives.map(x=>{ const v=st[x]||'', t=OBJ_TAG[v];
-        const line='<i class="'+(v||'none')+'" aria-hidden="true"></i><span>'+(t || (ap ? 'Set Status' : ''))+'</span>';
-        return '<li><span class="sb-tx">'+esc(x)+'</span>'+(ap ? '<button type="button" class="sb-st '+(v||'none')+'" data-act="obj-status" data-text="'+esc(x)+'" aria-label="Status: '+(t||'none')+'. Tap to change">'+line+'</button>'
-          : t ? '<span class="sb-st '+v+'">'+line+'</span>' : '')+'</li>'; }).join('')+'</ul>') : '')
+    +(has(f.objectives) ? sec('Defining Objectives', obList(f.objectives)) : '')
+    +(has(f.operating) ? sec('Standard Operating Objectives', obList(f.operating)) : '')
     +'</section>';
 }
 
@@ -2689,7 +2720,8 @@ const SAMPLE_HOME={
   focus:{ rally:'Every referring office knows our new scheduling line by Dec 31',
     anchors:['Referring doctors come first', 'Same-week care for every patient', 'One team across both offices'],
     objectives:['Visit all 40 referring offices this quarter', 'Answer every referral call within 2 rings', 'Move to the new scheduling line by Dec 1', 'Train every front desk on the new script'],
-    status:{ 'Visit all 40 referring offices this quarter':'on', 'Answer every referral call within 2 rings':'behind', 'Move to the new scheduling line by Dec 1':'on' } },
+    operating:['Scheduling', 'HR', 'Operations', 'IT Systems', 'First Choice Partners (Marketing)', 'Finance', 'Quality'],
+    status:{ 'Visit all 40 referring offices this quarter':'green', 'Answer every referral call within 2 rings':'red', 'Move to the new scheduling line by Dec 1':'yellow', 'Scheduling':'yellow', 'IT Systems':'green', 'Finance':'red' } },
   rows:[['Overdue',2,'late'],['Due Today',1,''],['Waiting on You',1,'gold'],['To Review',3,'gold']]
 };
 // The Team Scorecard (Nov 17, Brayden: option B, "Health Ring and Tiles"). A ring on top counts the measures on track
@@ -3642,6 +3674,7 @@ function renderSheetBody(){
     return;
   }
   if (S.sheet==='liveitem') { el.innerHTML=liveItemSheet(); return; }
+  if (S.sheet==='agenda' && S.agEdit) { el.innerHTML=agSheet(); return; }
   if (S.sheet==='prep') { el.innerHTML=prepSheet(); return; }
   if (S.sheet==='otter') {
     const t=TEMPLATES[S.pendingType];
@@ -3688,6 +3721,7 @@ function renderSheetBody(){
       +'<label for="fc-rally">Rally Cry</label><textarea id="fc-rally" rows="2" placeholder="What is most important, right now?">'+esc(f.rally||'')+'</textarea>'
       +'<label for="fc-anc">Strategic Anchors</label><textarea id="fc-anc" rows="4" placeholder="One per line">'+esc((f.anchors||[]).join('\n'))+'</textarea>'
       +'<label for="fc-obj">Defining Objectives</label><textarea id="fc-obj" rows="5" placeholder="One per line">'+esc((f.objectives||[]).join('\n'))+'</textarea>'
+      +'<label for="fc-op">Standard Operating Objectives</label><textarea id="fc-op" rows="5" placeholder="One per line">'+esc((f.operating||[]).join('\n'))+'</textarea>'
       +'<p class="small muted">One item per line. Everyone sees these at the top of Home.</p></div>';
     return;
   }
@@ -4640,6 +4674,7 @@ function applyLive(res){
     const why = res.canceled && S.live && res.canceled.id===S.live.id ? res.canceled.by+' canceled the meeting' : 'The meeting has ended';
     if (S.startLive) { S.startLive=false; toast('That meeting has already ended.'); }
     try { sessionStorage.removeItem('lt-was-live'); } catch(e){}   // Critique 4 (bug #10)
+    if (LISTEN.on) listenStop(false);   // Nov 17: the meeting ended; stop the microphone
     if (S.live) { S.live=null; if (S.view==='live') { S.view='meetings'; toast(why); render(); } else { renderLivebar(); if (res.canceled) toast(why); } }
     return;
   }
@@ -4665,12 +4700,15 @@ function liveConn(){
 }
 function livePoll(){
   if (S.liveGone || document.getElementById("liveConn")) liveConn();
-  if (!S.data || document.hidden) return;
+  if (!S.data || document.hidden || livePoll.busy) return;
   const now=Date.now();
   if (S.view!=='live' && now-(S.liveChecked||0) < 20000) return;
-  S.liveChecked=now;
-  call('apiLiveGet').then(applyLive).catch(()=>{});
+  S.liveChecked=now; livePoll.busy=true;
+  call('apiLiveGet').then(applyLive).catch(()=>{}).then(()=>{ livePoll.busy=false; });
 }
+// Nov 17: while a phone is listening, everyone on the meeting screen checks every second (instead of 2.5 s), so new
+// agenda items show within about a second of Alfred adding them. The listening phone gets them in its own reply.
+function livePollFast(){ if (S.view==='live' && S.live && agenda(S.live).listen && !LISTEN.on) livePoll(); }
 // Every change: update this phone right away, then share it with everyone else (BUG-3).
 // The server refuses a change made from an out-of-date copy (another phone saved first) and sends back the latest one.
 // This phone then redoes the tap on the latest copy, unless the meeting has already moved on (another step, person or
@@ -5041,6 +5079,8 @@ function renderLive(m){
       :'<div class="timer-row"><div class="bigtimer" id="lvStep">'+fmtClock(stepLeft(st))+'</div>'+plus+'</div>')
     +(next && !compact?'<div class="small muted up-next">Up next: '+esc(next.title)+' · '+next.mins+' min</div>':'')+'</div>';
   if (step.kind!=='note') html += '<div class="step-body live-slide">'+liveBody(st, step)+'</div>';
+  else if (agendaStep(step)) html += '<div class="step-body live-slide">'+agendaBoard(st, false)+'</div>';   // Nov 17: the live agenda
+  html += agSuggestions(st);
   const pace=paceTag(st);
   html += '<details class="card agenda-fold"><summary><span>Agenda</span><span class="muted">Step '+(st.i+1)+' of '+st.steps.length+'</span><span class="tag pace '+pace.cls+'" id="lvPace">'+pace.txt+'</span><span class="chev" aria-hidden="true">›</span></summary>'+outline.replace('class="card outline"','class="outline"')+'</details>';
   m.innerHTML=html; liveTick();
@@ -5090,6 +5130,193 @@ function ratingCard(st){
     +'<div class="rate-sum">'+(avg?'<b>'+avg+'</b><span>average from '+votes.length+' of '+S.data.people.length+'</span><span class="avatars">'+votes.map(e=>avatar(e,24)).join('')+'</span>':'<span class="small muted">No Ratings Yet</span>')+'</div></div>';
 }
 
+/* ---------- Live agenda and listening (Nov 17, Brayden) ---------- */
+// The meeting's agenda (S.live.agenda, kept by the server in its own property): items grouped under the Defining
+// Objectives, the Standard Operating Objectives and the Lightning Round, each red (off track), yellow (needs attention)
+// or green (on track), like the priority bar on tasks. Alfred fills it from what he hears (one phone listens: LISTEN),
+// anyone can add, edit, recolor or remove an item, and on Discuss a tap starts that item's timer. Tasks and decisions
+// Alfred hears show as "Alfred Heard" suggestions with Add.
+const AG_COLORS=[['red','Off Track'],['yellow','Needs Attention'],['green','On Track']];
+const AG_NEXT={ '':'green', green:'yellow', yellow:'red', red:'' };
+const LIGHTNING='Lightning Round';
+function agenda(st){ return (st && st.agenda) || { items:[], areaColors:{}, sugg:[], listen:null }; }
+function agAreas(){ const f=S.data.focus||{}; return { defining:(f.objectives||[]).slice(), operating:(f.operating||[]).slice() }; }
+function agColorName(c){ const x=AG_COLORS.find(y=>y[0]===c); return x ? x[1] : 'No Color'; }
+function agendaStep(step){ return step && /agenda/i.test(step.title||'') && step.kind!=='discuss'; }
+function agItemRow(x, discuss){
+  return '<div class="ag-item'+(x.done?' done':'')+'" role="button" tabindex="0" data-act="ag-open" data-id="'+esc(x.id)+'">'
+    +'<button type="button" class="ag-bar c-'+(x.color||'none')+'" data-act="ag-color" data-id="'+esc(x.id)+'" aria-label="'+esc(agColorName(x.color))+'. Tap to change"></button>'
+    +'<span class="ag-text">'+esc(x.text)+'<small>'+[x.by?esc(x.by):'', x.src==='alfred'?'Heard by Alfred':'', x.done && x.secs ? 'Discussed '+fmtClock(x.secs).replace('+','') : ''].filter(Boolean).join(' · ')+'</small></span>'
+    +(discuss && !x.done && isHost(S.live) ? '<span class="ag-go" aria-hidden="true">›</span>' : '')+'</div>';
+}
+function agendaBoard(st, discuss){
+  const a=agenda(st), A=agAreas(), items=a.items||[], me=S.data.me, L=a.listen;
+  const area=(name)=>{ const list=items.filter(x=>x.area===name), c=(a.areaColors||{})[name]||'';
+    return '<div class="ag-area"><button type="button" class="ag-dot c-'+(c||'none')+'" data-act="ag-area-color" data-area="'+esc(name)+'" aria-label="'+esc(name)+': '+esc(agColorName(c))+'. Tap to change"></button>'
+      +'<b>'+esc(name)+'</b>'+(list.length?'<span class="ag-n">'+list.length+'</span>':'')+'</div>'+list.map(x=>agItemRow(x, discuss)).join(''); };
+  const listenRow = L ? '<div class="ag-listen on"><i class="rec" aria-hidden="true"></i><span>Alfred is listening'+(L.by===me ? (LISTEN.mic?' · '+esc(LISTEN.mic):'') : ' on '+esc(firstName(L.by))+'\'s phone')+'</span>'
+      +(L.by===me ? '<button type="button" class="linkbtn" data-act="ag-listen-stop">Stop</button>' : '')+'</div>'
+    : '<div class="ag-listen"><span>Alfred can listen and build the agenda as you talk.</span><button type="button" class="btn primary sm" data-act="ag-listen-start">Listen</button></div>';
+  const lightning=items.filter(x=>x.area===LIGHTNING);
+  return '<div class="card ag-board"><div class="ag-top"><h3>Agenda</h3><span class="muted">'+items.length+' item'+(items.length===1?'':'s')+'</span><button type="button" class="capsule" data-act="ag-add">＋ Add</button></div>'
+    +listenRow
+    +(A.defining.length ? '<div class="ag-sec">Defining Objectives</div>'+A.defining.map(area).join('') : '')
+    +(A.operating.length ? '<div class="ag-sec">Standard Operating Objectives</div>'+A.operating.map(area).join('') : '')
+    +'<div class="ag-sec">Lightning Round</div>'+(lightning.length ? lightning.map(x=>agItemRow(x, discuss)).join('') : '<p class="none">Anything that doesn\'t fit an area above.</p>')
+    +(discuss ? '<p class="small muted mt-s">'+(isHost(st)?'Tap an item to discuss it with a timer.':'The host picks the next item.')+'</p>' : '')
+    +'</div>';
+}
+function agSuggestions(st){
+  const list=(agenda(st).sugg||[]).filter(s=>!s.state); if (!list.length) return '';
+  return '<div class="card ag-sugg"><h3>Alfred Heard</h3>'+list.slice(-6).reverse().map(s=>'<div class="ag-s"><span class="tag '+(s.kind==='task'?'':'gold')+'">'+(s.kind==='task'?'Task':'Decision')+'</span>'
+    +'<span class="ag-s-t">'+esc(s.text)+(s.owner||s.due?'<small>'+[esc(s.owner||''), s.due?esc(fmtDate(s.due)):''].filter(Boolean).join(' · ')+'</small>':'')+'</span>'
+    +'<button type="button" class="btn primary sm" data-act="ag-sugg-add" data-id="'+esc(s.id)+'">Add</button><button type="button" class="iconbtn" data-act="ag-sugg-x" data-id="'+esc(s.id)+'" aria-label="Dismiss">'+ICON.x+'</button></div>').join('')+'</div>';
+}
+// Every change goes to the server at once (merged one at a time, like ratings), then the meeting redraws.
+function agSend(op, quiet){ return call('apiLiveAgenda', op).then(res=>{ applyLive(Object.assign(res, { fromWrite:true })); return res; }).catch(e=>{ if (!quiet) toast('Couldn\'t save. '+errText(e)); throw e; }); }
+function agFind(id){ return (agenda(S.live).items||[]).find(x=>x.id===id); }
+function agLocal(fn){ if (!S.live) return; S.live.agenda=JSON.parse(JSON.stringify(agenda(S.live))); fn(S.live.agenda); render(); }
+function agSheet(){
+  const E=S.agEdit||{}, A=agAreas(), all=A.defining.concat(A.operating, [LIGHTNING]), st=S.live, discuss=st && st.steps[st.i] && st.steps[st.i].kind==='discuss';
+  const opt=n=>'<option value="'+esc(n)+'"'+(E.area===n?' selected':'')+'>'+esc(n)+'</option>';
+  return '<div class="grab"></div><div class="sheet-head"><button type="button" class="btn ghost sm" data-act="close-sheet">Cancel</button><h3>'+(E.id?'Agenda Item':'Add to Agenda')+'</h3><button type="button" class="btn primary sm" data-act="ag-save">'+(E.id?'Save':'Add')+'</button></div>'
+    +'<div class="err" id="f-err" role="alert"></div><div class="form"><label for="ag-text">Item</label><input type="text" id="ag-text" value="'+esc(E.text||'')+'" placeholder="Holiday phone coverage">'
+    +'<label for="ag-area">Area</label><select id="ag-area" class="box">'
+      +(A.defining.length?'<optgroup label="Defining Objectives">'+A.defining.map(opt).join('')+'</optgroup>':'')
+      +(A.operating.length?'<optgroup label="Standard Operating Objectives">'+A.operating.map(opt).join('')+'</optgroup>':'')+opt(LIGHTNING)+'</select>'
+    +'<label>Status</label><div class="seg wrap" role="group">'+AG_COLORS.concat([['','None']]).map(([c,l])=>'<button type="button" class="'+((E.color||'')===c?'on':'')+'" data-act="ag-pick" data-val="'+c+'"><i class="ag-chip c-'+(c||'none')+'"></i> '+l+'</button>').join('')+'</div></div>'
+    +(E.id && discuss && isHost(st) && !st.topic && !E.done ? '<div class="mk-acts mt-l"><div class="btn-row"><button type="button" class="btn primary" data-act="ag-discuss" data-val="5">Discuss · 5 Min</button><button type="button" class="btn primary" data-act="ag-discuss" data-val="10">Discuss · 10 Min</button></div></div>' : '')
+    +(E.id ? '<div class="set-card mt-l">'+(E.done?'<button type="button" class="set-row" data-act="ag-undone"><span>Mark Not Discussed</span></button>':'')+'<button type="button" class="set-row del-row" data-act="ag-del"><span>Remove from Agenda</span></button></div>' : '');
+}
+function agClick(a, el, v){
+  if (a==='ag-add') { S.agEdit={ text:'', area:LIGHTNING, color:'' }; S.sheet='agenda'; showSheet(); setTimeout(()=>{ const f=document.getElementById('ag-text'); if (f) f.focus(); }, 300); return true; }
+  if (a==='ag-open') { const x=agFind(el.dataset.id); if (x) { S.agEdit=Object.assign({}, x); S.sheet='agenda'; showSheet(); } return true; }
+  if (a==='ag-pick') { S.agEdit.text=(document.getElementById('ag-text')||{}).value||S.agEdit.text; S.agEdit.area=(document.getElementById('ag-area')||{}).value||S.agEdit.area; S.agEdit.color=v; renderSheet(); return true; }
+  if (a==='ag-save') { const E=S.agEdit, text=(document.getElementById('ag-text').value||'').trim(), ar=document.getElementById('ag-area').value;
+    if (!text) { document.getElementById('f-err').textContent='Type the item first.'; return true; }
+    saving(el, 'Saving…', ()=>agSend(E.id ? { op:'edit', id:E.id, text:text, area:ar, color:E.color||'' } : { op:'add', text:text, area:ar, color:E.color||'' })).then(r=>{ if (r) closeSheet(); }); return true; }
+  if (a==='ag-del') { const id=S.agEdit.id; closeSheet(); agLocal(g=>{ g.items=g.items.filter(x=>x.id!==id); }); agSend({ op:'del', id:id }).catch(()=>{}); return true; }
+  if (a==='ag-undone') { const id=S.agEdit.id; closeSheet(); agSend({ op:'edit', id:id, done:false }).catch(()=>{}); return true; }
+  if (a==='ag-color') { const x=agFind(el.dataset.id); if (!x) return true; const c=AG_NEXT[x.color||''];
+    agLocal(g=>{ const y=g.items.find(z=>z.id===x.id); if (y) y.color=c; }); haptic(); agSend({ op:'edit', id:x.id, color:c }, true).catch(()=>toast('Couldn\'t save the color.')); return true; }
+  if (a==='ag-area-color') { const ar=el.dataset.area, c=AG_NEXT[(agenda(S.live).areaColors||{})[ar]||''];
+    agLocal(g=>{ g.areaColors=g.areaColors||{}; if (c) g.areaColors[ar]=c; else delete g.areaColors[ar]; }); haptic(); agSend({ op:'area_color', area:ar, color:c }, true).catch(()=>toast('Couldn\'t save the color.')); return true; }
+  if (a==='ag-discuss') { const x=S.agEdit; closeSheet(); liveAct(st=>{ st.topic={ mins:Number(v), start:srvNow(), extra:0, agendaId:x.id, title:x.text }; }); return true; }
+  if (a==='ag-sugg-x') { const id=el.dataset.id; agLocal(g=>{ const s=g.sugg.find(y=>y.id===id); if (s) s.state='dismissed'; }); agSend({ op:'sugg', id:id, state:'dismissed' }, true).catch(()=>{}); return true; }
+  if (a==='ag-sugg-add') { const s=(agenda(S.live).sugg||[]).find(y=>y.id===el.dataset.id); if (!s) return true;
+    if (s.kind==='decision') { saving(el, 'Adding…', ()=>call('apiAddDecision', s.text, 'Heard during '+S.live.title+'.', S.data.today, newCid())).then(r=>{ if (!r) return; S.decisions=null; agSend({ op:'sugg', id:s.id, state:'added' }, true).catch(()=>{}); toast('Decision added'); }); return true; }
+    const who=S.data.people.find(p=>s.owner && (firstName(p.email).toLowerCase()===s.owner.toLowerCase() || nameOf(p.email).toLowerCase()===s.owner.toLowerCase()));
+    S.lvTitle=s.text; S.lvOwners=who?[who.email]:[]; S.lvDue=s.due||null; S.lvSugg=s.id; openLiveItem(); return true; }
+  if (a==='ag-listen-start') { listenStart(); return true; }
+  if (a==='ag-listen-stop') { listenStop(true); return true; }
+  return false;
+}
+
+// ----- Listening: this phone streams the room's audio to Deepgram (16 kHz, 16-bit) with a one-minute key from
+// apiSttToken, collects finished sentences per speaker, and sends them to apiLiveListen every 5 seconds (one batch at a
+// time). It stops if the meeting ends, another phone starts listening, or the person taps Stop. In the preview (no
+// microphone or Deepgram) it plays a practice conversation instead.
+const LISTEN={ on:false, ws:null, ctx:null, stream:null, proc:null, src:null, buf:[], seq:0, sending:false, spokenAt:0, flushT:0, tries:0, proto:0, mic:'', fake:0 };
+async function listenStart(){
+  const st=S.live; if (!st || st.phase!=='running') { toast('Start the meeting first.'); return; }
+  if (LISTEN.on) return;
+  if (MOCK) return listenPractice();
+  if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) { toast('This browser can\'t use the microphone.'); return; }
+  let ctx;
+  try { ctx=new (window.AudioContext || window.webkitAudioContext)(); } catch(e){ toast('Couldn\'t start the microphone.'); return; }   // created inside the tap (iPhone rule)
+  try {
+    LISTEN.stream=await navigator.mediaDevices.getUserMedia({ audio:{ channelCount:1, echoCancellation:false, noiseSuppression:true, autoGainControl:true } });
+  } catch(e){ try { ctx.close(); } catch(x){} toast('Huddle needs the microphone. Allow it in Settings › Huddle (or Safari) and try again.'); return; }
+  const track=LISTEN.stream.getAudioTracks()[0]; LISTEN.mic=track ? track.label : '';
+  LISTEN.ctx=ctx; LISTEN.on=true; LISTEN.buf=[]; LISTEN.tries=0;
+  try { await ctx.resume(); } catch(e){}
+  LISTEN.src=ctx.createMediaStreamSource(LISTEN.stream);
+  LISTEN.proc=ctx.createScriptProcessor(4096, 1, 1);
+  LISTEN.proc.onaudioprocess=e=>{ const ws=LISTEN.ws; if (ws && ws.readyState===1) ws.send(pcm16(e.inputBuffer.getChannelData(0), ctx.sampleRate)); };
+  LISTEN.src.connect(LISTEN.proc); LISTEN.proc.connect(ctx.destination);
+  try { await agSend({ op:'listen', on:true, mic:LISTEN.mic }); } catch(e){ listenStop(false); return; }
+  listenConnect();
+  clearInterval(LISTEN.flushT); LISTEN.flushT=setInterval(listenFlush, 5000);
+  toast(LISTEN.mic ? 'Listening with '+LISTEN.mic : 'Listening');
+}
+// 48 kHz (or whatever the phone uses) float → 16 kHz 16-bit little-endian.
+function pcm16(f32, rate){
+  const ratio=rate/16000, n=Math.floor(f32.length/ratio), out=new Int16Array(n);
+  for (let i=0; i<n; i++) { const a=Math.floor(i*ratio), b=Math.min(f32.length, Math.floor((i+1)*ratio)); let s=0; for (let j=a; j<b; j++) s+=f32[j]; const v=Math.max(-1, Math.min(1, s/Math.max(1, b-a))); out[i]=v<0 ? v*0x8000 : v*0x7FFF; }
+  return out.buffer;
+}
+async function listenConnect(){
+  if (!LISTEN.on) return;
+  let t; try { t=await call('apiSttToken'); } catch(e){ toast(errText(e)); listenStop(true); return; }
+  if (!LISTEN.on) return;
+  const q=new URLSearchParams({ model:'nova-3', language:'en', encoding:'linear16', sample_rate:'16000', channels:'1', diarize:'true', punctuate:'true', smart_format:'true', interim_results:'false', endpointing:'400' });
+  (t.keyterms||[]).forEach(k=>q.append('keyterm', k));
+  // A temporary key goes in the WebSocket subprotocol ("bearer"); "token" is the fallback if Deepgram refuses it.
+  const protos=[['bearer', t.token], ['token', t.token]], opened={ v:false };
+  const ws=new WebSocket('wss://api.deepgram.com/v1/listen?'+q.toString(), protos[LISTEN.proto%2]);
+  ws.binaryType='arraybuffer'; LISTEN.ws=ws;
+  ws.onopen=()=>{ opened.v=true; LISTEN.tries=0; };
+  ws.onmessage=ev=>{ let d; try { d=JSON.parse(ev.data); } catch(e){ return; }
+    if (d.type==='Results' && d.is_final) listenWords(((d.channel||{}).alternatives||[])[0]); };
+  ws.onclose=()=>{ if (LISTEN.ws===ws) LISTEN.ws=null;
+    if (!LISTEN.on) return;
+    if (!opened.v) LISTEN.proto++;                 // refused before opening: try the other way of sending the key
+    LISTEN.tries++;
+    if (LISTEN.tries>6) { toast('Lost the connection for listening. Tap Listen to try again.'); listenStop(true); return; }
+    setTimeout(listenConnect, Math.min(8000, 700*LISTEN.tries)); };
+  ws.onerror=()=>{};
+}
+// Finished words → lines per speaker turn: "[S0] Let's add phones over Christmas."
+function listenWords(alt){
+  if (!alt || !alt.words || !alt.words.length) { if (alt && alt.transcript) { LISTEN.buf.push(alt.transcript); LISTEN.spokenAt=Date.now(); } return; }
+  let line='', spk=null;
+  alt.words.forEach(w=>{ const s=w.speaker==null ? 0 : w.speaker, word=w.punctuated_word||w.word;
+    if (spk!==s) { if (line) LISTEN.buf.push(line); line='[S'+s+'] '+word; spk=s; } else line+=' '+word; });
+  if (line) LISTEN.buf.push(line);
+  LISTEN.spokenAt=Date.now();
+  if (LISTEN.buf.join('\n').length>700) listenFlush();
+}
+function listenFlush(){
+  if (!LISTEN.on || LISTEN.sending || !LISTEN.buf.length) return;
+  const text=LISTEN.buf.join('\n'), spokenAt=LISTEN.spokenAt; LISTEN.buf=[]; LISTEN.seq=Math.max(LISTEN.seq+1, Date.now());
+  LISTEN.sending=true;
+  call('apiLiveListen', LISTEN.seq, text, spokenAt).then(res=>{ applyLive(Object.assign(res, { fromWrite:true }));
+      const L=res && res.state && res.state.agenda && res.state.agenda.listen;
+      if (res && res.state && (!L || L.by!==S.data.me)) { listenStop(false); toast(L ? firstName(L.by)+'\'s phone is listening now.' : 'Listening stopped.'); } })
+    .catch(()=>{ LISTEN.buf.unshift(text); })   // keep it for the next batch
+    .then(()=>{ LISTEN.sending=false; });
+}
+function listenStop(tell){
+  const was=LISTEN.on; LISTEN.on=false;
+  clearInterval(LISTEN.flushT); clearInterval(LISTEN.fake);
+  try { if (LISTEN.ws && LISTEN.ws.readyState===1) LISTEN.ws.send(JSON.stringify({ type:'CloseStream' })); } catch(e){}
+  try { if (LISTEN.ws) LISTEN.ws.close(); } catch(e){}
+  LISTEN.ws=null;
+  try { if (LISTEN.proc) LISTEN.proc.disconnect(); if (LISTEN.src) LISTEN.src.disconnect(); } catch(e){}
+  try { if (LISTEN.stream) LISTEN.stream.getTracks().forEach(t=>t.stop()); } catch(e){}
+  try { if (LISTEN.ctx) LISTEN.ctx.close(); } catch(e){}
+  LISTEN.proc=LISTEN.src=LISTEN.stream=LISTEN.ctx=null;
+  if (was && LISTEN.buf.length) { const text=LISTEN.buf.join('\n'); LISTEN.buf=[]; call('apiLiveListen', Date.now(), text, LISTEN.spokenAt).catch(()=>{}); }
+  if (tell && S.live) agSend({ op:'listen', on:false }, true).catch(()=>{});
+}
+// The phone went to the background (iPhones stop the microphone then): reconnect when it comes back.
+document.addEventListener('visibilitychange', ()=>{ if (!document.hidden && LISTEN.on && !MOCK && (!LISTEN.ws || LISTEN.ws.readyState>1)) { try { LISTEN.ctx && LISTEN.ctx.resume(); } catch(e){} listenConnect(); } });
+// Preview only: a short practice conversation, one line every 2.5 seconds.
+const PRACTICE=['[S0] Okay, let\'s build the agenda. Becky, what do you have?',
+  '[S1] Under scheduling, holiday phone coverage. That one\'s a yellow.',
+  '[S2] For raise fees, the retreatment fee proposal is ready to review. I\'d call it red, we\'re behind.',
+  '[S0] IT systems is green this week, nothing to add.',
+  '[S3] Lightning round, the parking lot needs restriping before winter.',
+  '[S1] I\'ll call the phone vendor about the holiday forwarding by Friday.',
+  '[S2] So we\'re agreed: the new retreatment fee starts January first.'];
+function listenPractice(){
+  LISTEN.on=true; LISTEN.mic='Practice conversation'; LISTEN.buf=[]; let i=0;
+  agSend({ op:'listen', on:true, mic:LISTEN.mic }).catch(()=>{});
+  LISTEN.fake=setInterval(()=>{ if (i>=PRACTICE.length) { clearInterval(LISTEN.fake); return; } LISTEN.buf.push(PRACTICE[i++]); LISTEN.spokenAt=Date.now(); }, 2500);
+  clearInterval(LISTEN.flushT); LISTEN.flushT=setInterval(listenFlush, 5000);
+  toast('Playing a practice conversation');
+}
+
 function liveBody(st, step){
   const k=step.kind;
   if (k==='note') return '<div class="card reading"><p>'+esc(step.note)+'</p></div>';
@@ -5133,20 +5360,23 @@ function liveBody(st, step){
       +'</div>';
   }
   if (k==='discuss') {
-    // The team writes its agenda on paper, so topics are numbered, not named.
-    const host=isHost(st), n=st.topics.length+1;
+    // Nov 17: topics come from the live agenda when there is one (a tap on an item starts it, named); otherwise numbered.
+    const host=isHost(st), n=st.topics.length+1, board=(agenda(st).items||[]).length || agenda(st).listen;
     let h='';
     if (st.topic) {
-      h+='<div class="card topic-timer"><div class="sec">Topic '+n+' · '+st.topic.mins+' min</div><div class="timer-row"><div class="bigtimer" id="lvTopic">'+fmtClock(topicLeft(st))+'</div>'
+      h+='<div class="card topic-timer"><div class="sec">'+(st.topic.title ? esc(st.topic.title) : 'Topic '+n)+' · '+st.topic.mins+' min</div><div class="timer-row"><div class="bigtimer" id="lvTopic">'+fmtClock(topicLeft(st))+'</div>'
         +(host?'<button type="button" class="btn ghost sm" data-act="lv-topic-plus">+5 Min</button>':'')+'</div><div class="nudge" id="lvNudge" hidden>Halfway. Is anyone holding back? The leader should mine for conflict.</div>'
         +'</div>';
+    } else if (board) {
+      h+='';
     } else if (host) {
       h+='<div class="card reading"><h3>Start Topic '+n+'</h3><p class="small muted">Pick 5 minutes for a quick one, 10 for something deeper.</p>'
         +'<div class="topic-pick"><button type="button" class="btn primary" data-act="lv-topic" data-val="5">5 Minutes</button><button type="button" class="btn primary" data-act="lv-topic" data-val="10">10 Minutes</button></div></div>';
     } else {
       h+='<div class="card reading"><p>Waiting for '+esc(firstName(liveHost(st)))+' to start Topic '+n+'.</p></div>';
     }
-    if (st.topics.length) h+='<div class="card reading"><h3>Topics Discussed</h3>'+st.topics.map((t,n)=>'<div class="rd"><b>Topic '+(n+1)+'</b><span class="'+(t.secs>t.mins*60?'over-t':'ok-t')+'">'+fmtClock(t.secs).replace('+','')+' of '+t.mins+' min</span></div>').join('')+'</div>';
+    if (board) h+=agendaBoard(st, true);
+    if (st.topics.length) h+='<div class="card reading"><h3>Topics Discussed</h3>'+st.topics.map((t,n)=>'<div class="rd"><b>'+(t.title ? esc(t.title) : 'Topic '+(n+1))+'</b><span class="'+(t.secs>t.mins*60?'over-t':'ok-t')+'">'+fmtClock(t.secs).replace('+','')+' of '+t.mins+' min</span></div>').join('')+'</div>';
     h+='<div class="card reading"><h3>Too Big for Today?</h3><div class="addrow"><input type="text" id="lv-park" placeholder="Park it in the Parking Lot" aria-label="Park it in the Parking Lot"><button type="button" class="btn ghost sm" data-act="lv-park">Park</button></div></div>';
     return h;
   }
@@ -5258,6 +5488,7 @@ async function liveAddItem(el){
   const t={ title:title, details:'Added live during '+S.live.title+'.', owners:owners.join(', '), status:'Not Done', priority:'Medium', due:S.lvDue||S.data.defaultDue, liveMeeting:S.live.title, cid:S.lvCid };
   const saved=await saving(el, 'Adding…', ()=>call('apiSaveTask', t)); if (!saved) return;
   replaceTask(saved); S.lvOwners=[]; S.lvDue=null; S.lvTitle=''; S.lvCid=null;
+  if (S.lvSugg) { agSend({ op:'sugg', id:S.lvSugg, state:'added' }, true).catch(()=>{}); S.lvSugg=null; }
   if (S.live) { S.live.items=(S.live.items||[]).concat([saved.id]); liveMark('items', saved.id, true); }
   if (S.sheet==='liveitem') closeSheet();
 
@@ -5266,7 +5497,7 @@ async function liveAddItem(el){
 /* ---------- Alfred chat bubble ---------- */
 // The conversation lives only in this page (S.alf) and is gone after a reload. Every message carries the screen
 // context below, and the screenshot taken when the bubble was tapped, so nobody has to describe where they were.
-const APP_VERSION = '2026.11.17-syncall';
+const APP_VERSION = '2026.11.17-listen';
 const H2C_URL = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
 const DIAG = { errors:[], actions:[] };   // last 10 of each, for bug reports
 function pushDiag(list, item){ list.push(item); if (list.length>10) list.shift(); }
@@ -6054,6 +6285,7 @@ function softAct(fn, box, fadeContent, tapped){
 function actClick(e, el){
   const a=el.dataset.act, id=el.dataset.id, v=el.dataset.val;
   if (S.data && mkClick(a, el, v)) return;
+  if (S.data && agClick(a, el, v)) return;
   breadcrumb(el);
   if (a==='boot-retry') { document.getElementById('main').innerHTML='<div class="list"><div class="skel" style="height:92px"></div><div class="skel" style="height:92px"></div></div>'; load(); return; }
   if (!S.data) return;
@@ -6080,7 +6312,7 @@ function actClick(e, el){
   else if (a==='reload-detail') { if (S.edit) { S.edit.detailErr=false; renderSheet(); loadDetail(S.edit.task.id); } }
   else if (a==='new') newTask();
   else if (a==='task') { if (document.getElementById('report')) closeReport(); openTask(id); }
-  else if (a==='close-sheet') { if (S.sheet==='liveitem') { S.lvOwners=[]; S.lvDue=null; S.lvCid=null; } closeSheet(); }
+  else if (a==='close-sheet') { if (S.sheet==='liveitem') { S.lvOwners=[]; S.lvDue=null; S.lvCid=null; S.lvSugg=null; } closeSheet(); }
   else if (a==='quick') { S.quick = S.quick===v ? '' : v; render(); }
   else if (a==='person') { S.person = S.person===el.dataset.email ? '' : el.dataset.email; render(); }
   else if (a==='layout') { S.layout=v; setPref('lt-layout', v); render(); }   // LB-4: computers remember the last choice
@@ -6128,10 +6360,10 @@ function actClick(e, el){
   else if (a==='report-open') openReport();
   else if (a==='focus-edit') { S.sheet='focus'; showSheet(); }
   else if (a==='obj-status') { const text=el.dataset.text, f=S.data.focus; if (!f) return; f.status=f.status||{};
-    const next={ '':'on', on:'behind', behind:'' }[f.status[text]||''], old=f.status[text]||''; if (next) f.status[text]=next; else delete f.status[text]; render();
+    const next={ '':'green', green:'yellow', yellow:'red', red:'', on:'yellow', behind:'' }[f.status[text]||''], old=f.status[text]||''; if (next) f.status[text]=next; else delete f.status[text]; render();
     call('apiSetObjectiveStatus', text, next).then(r=>{ if (r && r.status) { S.data.focus.status=r.status; saveBoot(); } }).catch(e=>{ if (old) f.status[text]=old; else delete f.status[text]; render(); toast('Couldn\'t save. '+errText(e)); }); }
-  else if (a==='focus-save') { const r=document.getElementById('fc-rally').value, o=document.getElementById('fc-obj').value, n=document.getElementById('fc-anc').value;
-    saving(el, 'Saving…', ()=>call('apiSetFocus', r, o, n)).then(f=>{ if (!f) return; S.data.focus=f; saveBoot(); closeSheet(); render(); }); }
+  else if (a==='focus-save') { const r=document.getElementById('fc-rally').value, o=document.getElementById('fc-obj').value, n=document.getElementById('fc-anc').value, op=document.getElementById('fc-op').value;
+    saving(el, 'Saving…', ()=>call('apiSetFocus', r, o, n, op)).then(f=>{ if (!f) return; S.data.focus=f; saveBoot(); closeSheet(); render(); }); }
   else if (a==='home-waiting') { const ids=S.data.tasks.filter(t=>t.status==='Blocked' && t.waiting_on===S.data.me).map(t=>t.id); if (ids.length===1) openTask(ids[0]); else { S.sheet='waitlist'; showSheet(); } }
   else if (a==='rp-tab') { const r=document.getElementById('report'); if (r) { S.rpTab=v; r.querySelectorAll('.rp-seg button').forEach(b=>b.classList.toggle('on', b.dataset.val===v));
       r.querySelector('.rp-paper').hidden=v!=='report'; r.querySelector('.rp-ones').hidden=v!=='ones'; const pb=r.querySelector('[data-act="report-print"]'); if (pb) pb.hidden=v!=='report'; renderReportOnes(); } }
@@ -6180,7 +6412,9 @@ function actClick(e, el){
   else if (a==='lv-plus') liveAct(st=>{ st.extra=(st.extra||0)+300; }, true);
   else if (a==='lv-topic') liveAct(st=>{ st.topic={ mins:Number(v), start:srvNow(), extra:0 }; });
   else if (a==='lv-topic-plus') liveAct(st=>{ if (st.topic) st.topic.extra=(st.topic.extra||0)+300; }, true);
-  else if (a==='lv-topic-done') liveAct(st=>{ if (st.topic) { st.topics.push({ mins:st.topic.mins, secs:Math.round((liveNow(st)-st.topic.start)/1000) }); st.topic=null; } });
+  else if (a==='lv-topic-done') { const tp=S.live && S.live.topic, secs=tp ? Math.round((liveNow(S.live)-tp.start)/1000) : 0;
+    liveAct(st=>{ if (st.topic) { st.topics.push({ mins:st.topic.mins, secs:Math.round((liveNow(st)-st.topic.start)/1000), title:st.topic.title||'' }); st.topic=null; } });
+    if (tp && tp.agendaId) agSend({ op:'edit', id:tp.agendaId, done:true, secs:secs }, true).catch(()=>{}); }
   else if (a==='lv-owner') { const l=S.lvOwners=S.lvOwners||[], i=l.indexOf(el.dataset.email); if (i>=0) l.splice(i,1); else l.push(el.dataset.email); renderSheet(); }
   else if (a==='lv-due') { S.lvDue=v; renderSheet(); }
   else if (a==='lv-add') liveAddItem(el);
