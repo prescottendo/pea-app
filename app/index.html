@@ -19,7 +19,7 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" type="image/png" href="icon-192.png">
-<script>window.HUDDLE_WEB={"api":"https://script.google.com/macros/s/AKfycbzM8K_-XRMDdOJYJ3THn_FhyZkRreMddHIBAOFCFVoq5S_Y7MnsfFLsl7ac_fyDPrch/exec","clientId":"473377418367-cqmmnfum4kshq16973m4sj2jqqfa55p0.apps.googleusercontent.com","build":"49c76eb","push":{"config":{"apiKey":"AIzaSyBON-0KvTXPD_MV6ykhYvCoBRiECEHyE9c","authDomain":"huddle-e2548.firebaseapp.com","projectId":"huddle-e2548","storageBucket":"huddle-e2548.firebasestorage.app","messagingSenderId":"554653922065","appId":"1:554653922065:web:87de53b4cb11b36835d2b0"},"vapidKey":"BHKeDoBmW7vL-qAT3ocyTaMaZ27Ca66jvQtTes2NC4CPoWFiPBJcga7wVd-RD1IuyhBki0oKXwPBGSNq002s8o8"}};document.documentElement.classList.add('web');</script>
+<script>window.HUDDLE_WEB={"api":"https://script.google.com/macros/s/AKfycbzM8K_-XRMDdOJYJ3THn_FhyZkRreMddHIBAOFCFVoq5S_Y7MnsfFLsl7ac_fyDPrch/exec","clientId":"473377418367-cqmmnfum4kshq16973m4sj2jqqfa55p0.apps.googleusercontent.com","build":"b978ee1","push":{"config":{"apiKey":"AIzaSyBON-0KvTXPD_MV6ykhYvCoBRiECEHyE9c","authDomain":"huddle-e2548.firebaseapp.com","projectId":"huddle-e2548","storageBucket":"huddle-e2548.firebasestorage.app","messagingSenderId":"554653922065","appId":"1:554653922065:web:87de53b4cb11b36835d2b0"},"vapidKey":"BHKeDoBmW7vL-qAT3ocyTaMaZ27Ca66jvQtTes2NC4CPoWFiPBJcga7wVd-RD1IuyhBki0oKXwPBGSNq002s8o8"}};document.documentElement.classList.add('web');</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <!-- The fonts load without holding up the first paint; the page shows in the phone's own font for a moment if needed. -->
@@ -557,7 +557,8 @@
   .agenda-fold { padding:0; margin-top:16px; }
   .agenda-fold summary { list-style:none; display:flex; align-items:center; gap:12px; padding:14px 16px; cursor:pointer; font-weight:600; color:var(--heading); }
   .agenda-fold summary::-webkit-details-marker { display:none; }
-  .agenda-fold summary .muted { margin-left:auto; font-weight:400; }
+  .agenda-fold summary .muted { font-weight:400; }
+  .agenda-fold summary .pace { margin-left:auto; white-space:nowrap; }
   .agenda-fold summary .chev { color:var(--muted); transition:transform .2s; } .agenda-fold[open] summary .chev { transform:rotate(90deg); }
   .agenda-fold .outline { padding:0 16px 12px; }
   .live-head .back { margin:0; }
@@ -3999,6 +4000,12 @@ function topicLeft(st){ const t=st.topic; return t.mins*60 + (t.extra||0) - (liv
 function personLeft(st){ return (PERSON_SECS[st.steps[st.i].kind]||30) - (liveNow(st)-st.personStart)/1000; }
 function totalElapsed(st){ return st.startedAt ? (liveNow(st)-st.startedAt-(st.pausedTotal||0))/1000 : 0; }
 function plannedTotal(st){ return st.steps.reduce((a,s)=>a+s.mins,0)*60; }
+// Nov 16 (Brayden, option A): how the meeting is doing on time so far, for the pill in the Agenda row. Seconds over (+) or
+// ahead (-): the finished steps' real time against their plan, plus however far the current step has run past its time.
+function livePace(st){ let d=0; (st.log||[]).forEach((l,k)=>{ if (l && k!==st.i) d+=(Number(l.secs)||0)-(Number(l.planned)||0); }); return d+Math.max(0, -stepLeft(st)); }
+function paceTag(st){ const d=livePace(st), m=Math.max(1, Math.round(Math.abs(d)/60));
+  if (d<=60) return { cls:'done', txt:d<=-60 ? m+' Min Ahead' : 'On Time' };
+  return { cls:d<=180 ? 'gold' : 'late', txt:m+' Min Over' }; }
 const SKIPPED_SECS = 15;   // a step tapped through faster than this counts as skipped (Code.gs uses the same number)
 
 function applyLive(res){
@@ -4178,6 +4185,7 @@ function liveTick(){
   }
   if (PERSON_SECS[st.steps[st.i].kind] && st.personStart) set('lvPerson', personLeft(st), null);
   const tot=document.getElementById('lvTotal'); if (tot) tot.textContent=fmtClock(totalElapsed(st)).replace('+','');
+  const pc=S.view==='live' && document.getElementById('lvPace'); if (pc) { const p=paceTag(st); if (pc.textContent!==p.txt) pc.textContent=p.txt; const cl='tag pace '+p.cls; if (pc.className!==cl) pc.className=cl; }
 }
 
 function liveBegin(st){ const n=srvNow(); st.phase='running'; st.startedAt=n; st.stepStart=n; st.personStart=n; st.pausedAt=null; }
@@ -4415,11 +4423,12 @@ function renderLive(m){
     +'<div class="card step-card live-slide'+(compact?' compact':'')+'">'+(st.pausedAt?'<div class="sec paused">Paused</div>':'')+'<div class="step-title">'+esc(step.title)+'</div>'
     // Critique 4 (#6): the step's instruction sits in this card, and there is one step clock ("1:53 left in step").
     +(step.kind==='note'?'<p class="step-note">'+esc(step.note)+'</p>':'')
-    +(compact?'<div class="step-line"><span><span id="lvStep" data-line="1">'+fmtClock(stepLeft(st)).replace('+','')+'</span> left in step'+(next?' · Up next: '+esc(next.title):'')+'</span>'+plus+'</div>'
+    +(compact?'<div class="step-line"><span><span id="lvStep" data-line="1">'+fmtClock(stepLeft(st)).replace('+','')+(stepLeft(st)<0?' over':' left')+'</span> in step'+(next?' · Up next: '+esc(next.title):'')+'</span>'+plus+'</div>'
       :'<div class="timer-row"><div class="bigtimer" id="lvStep">'+fmtClock(stepLeft(st))+'</div>'+plus+'</div>')
     +(next && !compact?'<div class="small muted up-next">Up next: '+esc(next.title)+' · '+next.mins+' min</div>':'')+'</div>';
   if (step.kind!=='note') html += '<div class="step-body live-slide">'+liveBody(st, step)+'</div>';
-  html += '<details class="card agenda-fold"><summary><span>Agenda</span><span class="muted">Step '+(st.i+1)+' of '+st.steps.length+'</span><span class="chev" aria-hidden="true">›</span></summary>'+outline.replace('class="card outline"','class="outline"')+'</details>';
+  const pace=paceTag(st);
+  html += '<details class="card agenda-fold"><summary><span>Agenda</span><span class="muted">Step '+(st.i+1)+' of '+st.steps.length+'</span><span class="tag pace '+pace.cls+'" id="lvPace">'+pace.txt+'</span><span class="chev" aria-hidden="true">›</span></summary>'+outline.replace('class="card outline"','class="outline"')+'</details>';
   m.innerHTML=html; liveTick();
 }
 
@@ -4643,7 +4652,7 @@ async function liveAddItem(el){
 /* ---------- Alfred chat bubble ---------- */
 // The conversation lives only in this page (S.alf) and is gone after a reload. Every message carries the screen
 // context below, and the screenshot taken when the bubble was tapped, so nobody has to describe where they were.
-const APP_VERSION = '2026.11.16-titleleft';
+const APP_VERSION = '2026.11.16-pace';
 const H2C_URL = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
 const DIAG = { errors:[], actions:[] };   // last 10 of each, for bug reports
 function pushDiag(list, item){ list.push(item); if (list.length>10) list.shift(); }
