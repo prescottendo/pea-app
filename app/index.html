@@ -19,7 +19,7 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" type="image/png" href="icon-192.png">
-<script>window.HUDDLE_WEB={"api":"https://script.google.com/macros/s/AKfycbzM8K_-XRMDdOJYJ3THn_FhyZkRreMddHIBAOFCFVoq5S_Y7MnsfFLsl7ac_fyDPrch/exec","clientId":"473377418367-cqmmnfum4kshq16973m4sj2jqqfa55p0.apps.googleusercontent.com","build":"74bb586","push":{"config":{"apiKey":"AIzaSyBON-0KvTXPD_MV6ykhYvCoBRiECEHyE9c","authDomain":"huddle-e2548.firebaseapp.com","projectId":"huddle-e2548","storageBucket":"huddle-e2548.firebasestorage.app","messagingSenderId":"554653922065","appId":"1:554653922065:web:87de53b4cb11b36835d2b0"},"vapidKey":"BHKeDoBmW7vL-qAT3ocyTaMaZ27Ca66jvQtTes2NC4CPoWFiPBJcga7wVd-RD1IuyhBki0oKXwPBGSNq002s8o8"}};document.documentElement.classList.add('web');</script>
+<script>window.HUDDLE_WEB={"api":"https://script.google.com/macros/s/AKfycbzM8K_-XRMDdOJYJ3THn_FhyZkRreMddHIBAOFCFVoq5S_Y7MnsfFLsl7ac_fyDPrch/exec","clientId":"473377418367-cqmmnfum4kshq16973m4sj2jqqfa55p0.apps.googleusercontent.com","build":"9479a55","push":{"config":{"apiKey":"AIzaSyBON-0KvTXPD_MV6ykhYvCoBRiECEHyE9c","authDomain":"huddle-e2548.firebaseapp.com","projectId":"huddle-e2548","storageBucket":"huddle-e2548.firebasestorage.app","messagingSenderId":"554653922065","appId":"1:554653922065:web:87de53b4cb11b36835d2b0"},"vapidKey":"BHKeDoBmW7vL-qAT3ocyTaMaZ27Ca66jvQtTes2NC4CPoWFiPBJcga7wVd-RD1IuyhBki0oKXwPBGSNq002s8o8"}};document.documentElement.classList.add('web');</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <!-- The fonts load without holding up the first paint; the page shows in the phone's own font for a moment if needed. -->
@@ -731,6 +731,8 @@
   .c-red.ag-dot2 { background:var(--red); border-color:var(--red); } .c-yellow.ag-dot2 { background:#E2B63A; border-color:#E2B63A; } .c-green.ag-dot2 { background:var(--green); border-color:var(--green); }
   .ag-by { flex:none; font-size:var(--fs-cap); font-weight:600; color:var(--muted); max-width:30%; text-align:right; }
   .ag-empty { display:block; width:100%; text-align:left; border:none; border-top:1px solid var(--line-soft); background:none; padding:9px 12px; color:var(--muted); font-size:var(--fs-sub); }
+  .ag-remove { color:var(--red) !important; }   /* Nov 17 (Brayden): Remove reads as red text */
+  #ag-text::placeholder { font-style:italic; color:var(--muted); opacity:.75; }   /* Nov 17: clearly a hint */
   .ag-all { display:block; margin:12px auto 2px; background:none; border:none; color:var(--heading); font-weight:600; font-size:var(--fs-sub); }
   .ag-listen.slim { background:none; padding:0 2px; margin:6px 0 2px; font-size:var(--fs-cap); color:var(--muted); }
   .ag-heard { display:flex; align-items:center; gap:8px; width:100%; margin:12px 0 0; padding:9px 12px; border-radius:10px; border:1px solid rgba(198,168,92,.55); background:rgba(198,168,92,.12); color:var(--heading); font-weight:600; font-size:var(--fs-sub); text-align:left; }
@@ -2784,11 +2786,14 @@ function scRing(states){
     +states.map((st,i)=>'<circle cx="34" cy="34" r="'+r+'" class="rs '+(st||'none')+'" stroke-dasharray="'+(seg-gap).toFixed(2)+' '+(cir-seg+gap).toFixed(2)+'" stroke-dashoffset="'+(-(i*seg)).toFixed(2)+'"/>').join('')
     +'</g><text x="34" y="40" text-anchor="middle">'+on+'/'+states.length+'</text></svg>';
 }
-function scorecardHtml(list, month){
-  const states=list.map(scoreState), on=states.filter(x=>x==='on').length;
+function scorecardHtml(list, month, opts){
+  opts=opts||{};
+  const states=list.map(scoreState), on=states.filter(x=>x==='on').length, rated=states.filter(Boolean).length, unrated=list.length-rated;
   const close=list.filter((x,i)=>states[i]==='near').map(x=>x.name), behind=list.filter((x,i)=>states[i]==='off').map(x=>x.name);
   const moved=list.filter(x=>x.viz==='trend' && (x.trend||[]).length>1).map(x=>({ x:x, d:Number(x.value)-Number(x.trend[x.trend.length-2]) })).sort((a,b)=>Math.abs(b.d)-Math.abs(a.d))[0];
-  const sub=[month||'', behind.length ? listNames(behind)+(behind.length===1?' is':' are')+' behind' : close.length ? listNames(close)+(close.length===1?' is':' are')+' close' : 'Everything meets its goal'].filter(Boolean).join(' · ')
+  // Nov 17: measures without a goal aren't counted as on or off track ("2 have no goal yet").
+  const sub=[month||'', !rated ? '' : behind.length ? listNames(behind)+(behind.length===1?' is':' are')+' behind' : close.length ? listNames(close)+(close.length===1?' is':' are')+' close' : unrated ? '' : 'Everything meets its goal',
+      unrated ? unrated+(unrated===1?' has':' have')+' no goal yet' : ''].filter(Boolean).join(' · ')
     +(moved && moved.d ? '<br>'+esc(moved.x.name.split(' ')[0])+' '+(moved.d>0?'▲':'▼')+' '+fmtNum(Math.abs(moved.d), moved.x.unit==='th'?'':moved.x.unit)+' from last month' : '');
   const chip=x=>x.sample ? '<span class="t-chip">Sample</span>' : '';
   const ex=x=>x.exampleGoal ? ' <span class="t-ex">example</span>' : '';
@@ -2803,10 +2808,11 @@ function scorecardHtml(list, month){
     else if (x.viz==='percentile') viz=scPct(v, x.goal!=null && x.goal!=='' ? Number(x.goal) : null);
     const pill=x.viz==='enps' ? '<span class="t-pill '+st+'">'+enpsBand(v)[2]+'</span>' : chip(x);
     const foot=[x.viz==='percentile' && x.goal!=null && v<x.goal ? fmtNum(x.goal-v,'')+' points under goal' : goalTxt, x.foot||''].filter(Boolean).join('<br>');
-    if (x.viz==='percentile') return '<div class="card sc-tile wide '+st+'"><div><div class="t-name">'+esc(x.name)+' '+pill+'</div><div class="t-num">'+fmtNum(v, x.unit)+'<small>'+esc(small)+'</small></div><div class="t-foot">'+foot+'</div></div><div class="t-wide-viz">'+viz+'</div></div>';
-    return '<div class="card sc-tile '+st+'"><div class="t-name">'+esc(x.name)+' '+pill+'</div><div class="t-num">'+fmtNum(v, x.unit)+'<small>'+esc(small)+'</small></div><div class="t-viz-box">'+viz+'</div><div class="t-foot">'+foot+'</div></div>';
+    const tap=(opts.edit?' data-act="sc-goal" data-name="'+esc(x.name)+'" role="button" tabindex="0" aria-label="'+esc(x.name)+': set its goal"':'');
+    if (x.viz==='percentile') return '<div class="card sc-tile wide '+st+'"'+tap+'><div><div class="t-name">'+esc(x.name)+' '+pill+'</div><div class="t-num">'+fmtNum(v, x.unit)+'<small>'+esc(small)+'</small></div><div class="t-foot">'+foot+'</div></div><div class="t-wide-viz">'+viz+'</div></div>';
+    return '<div class="card sc-tile '+st+'"'+tap+'><div class="t-name">'+esc(x.name)+' '+pill+'</div><div class="t-num">'+fmtNum(v, x.unit)+'<small>'+esc(small)+'</small></div><div class="t-viz-box">'+viz+'</div><div class="t-foot">'+foot+'</div></div>';
   }).join('');
-  return '<div class="card sc-health">'+scRing(states)+'<div><b>'+on+' of '+list.length+' On Track</b><small>'+sub+'</small></div></div><div class="sc-tiles">'+tiles+'</div>';
+  return '<div class="card sc-health">'+scRing(states)+'<div><b>'+(rated ? on+' of '+rated+' On Track' : 'No Goals Set Yet')+'</b><small>'+sub+'</small></div></div><div class="sc-tiles">'+tiles+'</div>';
 }
 function renderHome(m){
   if (sampleOn()) return renderHomeSample(m);
@@ -2820,8 +2826,9 @@ function renderHome(m){
     +(rc?row('data-act="go" data-view="review" data-back="Huddle"','To Review',rc,'gold'):'');
   m.innerHTML='<div class="head-row home-title"><h2>Huddle</h2></div>'   // Nov 16 (Brayden): the Home tab's page is titled Huddle
     // Nov 16 (Brayden): Scorecard first, then the Rally Cry card, then For You, then the meeting card.
-    // Critique 4 (#1): the Scorecard shows once it has numbers (S.data.scorecard).
-    +(S.data.scorecard && S.data.scorecard.length ? '<h3 class="set-sec">Team Scorecard</h3>'+scorecardHtml(S.data.scorecard, S.data.scorecardMonth) : '')
+    // Critique 4 (#1): the Scorecard shows once it has numbers. Nov 17: S.data.scorecard = { month, items } from the
+    // Monthly Results Scorecard sheet (scorecard_() in Code.gs); approvers tap a tile to set its goal.
+    +(S.data.scorecard && (S.data.scorecard.items||[]).length ? '<h3 class="set-sec">Team Scorecard</h3>'+scorecardHtml(S.data.scorecard.items, S.data.scorecard.month, { edit:!!S.data.isApprover }) : '')
     +focusCard()
     +'<h3 class="set-sec">For You</h3>'+(rows?'<div class="set-card">'+rows+'</div>':'<p class="none">You\'re all caught up.</p>')
     +nextTacticalCard();
@@ -3766,6 +3773,15 @@ function renderSheetBody(){
       +(de?'<div class="set-card mt-l"><button type="button" class="set-row del-row" data-act="dec-del"><span>Delete Decision<small>It waits in Recently Deleted, where it can be restored.</small></span></button></div>':'');
     return;
   }
+  if (S.sheet==='scgoal') {
+    const x=scGoalItem(); if (!x) { closeSheet(true); return; }
+    const hint={ 'Completed Cases':'Cases a month', 'Turnover Rate':'Percent a month; lower is better', 'eNPS':'−100 to 100; 30–50 is strong', 'Team Judgment':'1 to 5', 'Profitability':'Percentile, 0 to 100' }[x.name]||'';
+    el.innerHTML='<div class="grab"></div><div class="sheet-head"><button type="button" class="btn ghost sm" data-act="close-sheet">Cancel</button><h3>'+esc(x.name)+' Goal</h3><button type="button" class="btn primary sm" data-act="scg-save">Save</button></div>'
+      +'<div class="err" id="f-err" role="alert"></div><div class="form"><label for="scg-v">Goal'+(x.better==='down'?' (at most)':'')+'</label><input type="text" inputmode="decimal" id="scg-v" value="'+(x.goal!=null?esc(String(x.goal)):'')+'" placeholder="'+esc(hint)+'">'
+      +'<p class="set-note">'+esc(x.name)+' is '+fmtNum(x.value, x.unit)+(x.note?' ('+esc(x.note)+')':'')+'. '+esc(hint)+'.</p></div>'
+      +(x.goal!=null?'<div class="set-card mt-l"><button type="button" class="set-row del-row" data-act="scg-clear"><span>Clear Goal</span></button></div>':'');
+    return;
+  }
   if (S.sheet==='newtopic') {
     el.innerHTML='<div class="grab"></div><div class="sheet-head"><button type="button" class="btn ghost sm" data-act="close-sheet">Cancel</button><h3>New Topic</h3><button type="button" class="btn primary sm" data-act="topic-add" disabled>Add</button></div>'
       +'<div class="form"><label for="tp-new">Topic</label><textarea id="tp-new" rows="2" placeholder="An issue too big for a tactical"></textarea>'
@@ -3978,8 +3994,18 @@ function teamSettingsHtml(){
     +tog('report_email','on','off','Accountability Report in Monday\'s Email','Monday\'s Your Week also brings Since Last Tactical and the rest of the team\'s items, with a print link')
     +tog('alfred_chat','on','off','Alfred Chat','The hat button on every screen for questions and change requests. Off hides it for everyone')
     +'<div class="set-field">Tactical Day<small>Used for default due dates ("Next Tactical")</small>'+segRow('team-set', t.tactical_weekday, WEEKDAYS, 'tactical_weekday')+'</div>'
-    +'</div><p class="set-note">These change things for the whole team. Only approvers see this section.</p>';
+    +'</div><p class="set-note">These change things for the whole team. Only approvers see this section.</p>'
+    +scorecardGoalsHtml();
 }
+// Nov 17 (Brayden): the Team Scorecard's goals, one row per measure the sheet has numbers for. Also opened by tapping a tile.
+function scorecardGoalsHtml(){
+  const sc=S.data.scorecard, items=sc && sc.items || [];
+  if (!items.length) return '<h3 class="set-sec">Scorecard Goals</h3><div class="set-card set-pad"><p class="small">The Monthly Results Scorecard sheet hasn\'t been read yet. Its numbers show here within 30 minutes.</p></div>';
+  return '<h3 class="set-sec">Scorecard Goals</h3><div class="set-card">'
+    +items.map(x=>'<button type="button" class="set-row" data-act="sc-goal" data-name="'+esc(x.name)+'"><span>'+esc(x.name)+'</span><span class="small muted">'+(x.goal!=null ? (x.better==='down'?'≤ ':'')+fmtNum(x.goal, x.unit) : 'Not Set')+'</span><span class="chev" aria-hidden="true">›</span></button>').join('')
+    +'</div><p class="set-note">Numbers come from the Monthly Results Scorecard sheet. A tile is green when it meets its goal, gold within 10%, red behind.</p>';
+}
+function scGoalItem(){ const sc=S.data.scorecard; return S.scGoal && sc && (sc.items||[]).find(x=>x.name===S.scGoal) || null; }
 // Team settings change for everyone at once, so the message offers Undo for a few seconds (MP-8).
 function saveTeam(key, val, isUndo){
   const old=S.team[key]; S.team[key]=val;
@@ -5210,9 +5236,9 @@ function agColorName(c){ const x=AG_COLORS.find(y=>y[0]===c); return x ? x[1] : 
 function agendaStep(step){ return step && /agenda/i.test(step.title||'') && step.kind!=='discuss'; }
 // Nov 17 (Brayden, option B "Area Cards"): one card per area that has items. The card's edge takes the color of its most
 // urgent item (red > yellow > green; no color = neutral). Rows: the item's color dot (tap to change), the item, and who
-// raised it on the far right. Park It and Remove are inside the item's panel. The area's own rating (said or tapped) is
-// a small word in the card's header. While building the agenda, Show All Areas brings back the empty ones; Discuss never
-// shows them.
+// raised it on the far right. Park (Strategy) and Remove (red) are inside the item's panel. The area's own rating (said or tapped) is
+// a small word in the card's header. Show All Areas brings back the empty ones (while
+// building the agenda and on Discuss).
 const AG_RANK={ red:3, yellow:2, green:1 };
 function agByRank(list){ return list.map((x,i)=>[x,i]).sort((p,q)=>(q[0].done?-1:AG_RANK[q[0].color]||0)-(p[0].done?-1:AG_RANK[p[0].color]||0) || p[1]-q[1]).map(p=>p[0]); }
 // Up Next (Discuss, host, no topic running): the most urgent item not discussed yet, with Start buttons.
@@ -5233,7 +5259,7 @@ function agItemRow(x, discuss){
     +(discuss && !x.done && isHost(S.live) ? '<span class="ag-go" aria-hidden="true">›</span>' : '')+'</div>';
 }
 function agendaBoard(st, discuss){
-  const a=agenda(st), A=agAreas(), items=a.items||[], me=S.data.me, L=a.listen, all=!discuss && S.agShowAll;
+  const a=agenda(st), A=agAreas(), items=a.items||[], me=S.data.me, L=a.listen, all=!!S.agShowAll;   // Nov 17 (Brayden): Discuss can show every area too
   const card=(name)=>{ const list=items.filter(x=>x.area===name), c=(a.areaColors||{})[name]||'', edge=agWorst(list);
     if (!list.length && !all) return '';
     return '<div class="ag-card'+(edge?' e-'+edge:'')+'"><div class="ag-card-h"><b>'+esc(name)+'</b>'
@@ -5248,7 +5274,7 @@ function agendaBoard(st, discuss){
   return '<div class="card ag-board"><div class="ag-top"><h3>Agenda</h3><span class="muted">'+items.length+' item'+(items.length===1?'':'s')+'</span><button type="button" class="capsule" data-act="ag-add">＋ Add</button></div>'
     +listenRow+cards
     +(!items.length && !all ? '<p class="none">'+(discuss?'Nothing on the agenda yet.':'Items show here as they come up, under their area.')+'</p>' : '')
-    +(!discuss && empties ? '<button type="button" class="ag-all" data-act="ag-all">'+(all?'Hide Empty Areas':'Show All '+names.length+' Areas')+'</button>' : '')
+    +(empties || all ? '<button type="button" class="ag-all" data-act="ag-all">'+(all?'Hide Empty Areas':'Show All '+names.length+' Areas')+'</button>' : '')
     +(discuss ? '<p class="small muted mt-s">'+(isHost(st)?'Tap an item to discuss it with a timer.':'The host picks the next item.')+'</p>' : '')
     +'</div>';
 }
@@ -5282,14 +5308,14 @@ function agSheet(){
   const E=S.agEdit||{}, A=agAreas(), all=A.defining.concat(A.operating, [LIGHTNING]), st=S.live, discuss=st && st.steps[st.i] && st.steps[st.i].kind==='discuss';
   const opt=n=>'<option value="'+esc(n)+'"'+(E.area===n?' selected':'')+'>'+esc(n)+'</option>';
   return '<div class="grab"></div><div class="sheet-head"><button type="button" class="btn ghost sm" data-act="close-sheet">Cancel</button><h3>'+(E.id?'Agenda Item':'Add to Agenda')+'</h3><button type="button" class="btn primary sm" data-act="ag-save">'+(E.id?'Save':'Add')+'</button></div>'
-    +'<div class="err" id="f-err" role="alert"></div><div class="form"><label for="ag-text">Item</label><input type="text" id="ag-text" value="'+esc(E.text||'')+'" placeholder="Holiday phone coverage">'
+    +'<div class="err" id="f-err" role="alert"></div><div class="form"><label for="ag-text">Item</label><input type="text" id="ag-text" value="'+esc(E.text||'')+'" placeholder="e.g., Holiday phone coverage">'
     +'<label for="ag-area">Area</label><select id="ag-area" class="box">'
       +(A.defining.length?'<optgroup label="Defining Objectives">'+A.defining.map(opt).join('')+'</optgroup>':'')
       +(A.operating.length?'<optgroup label="Standard Operating Objectives">'+A.operating.map(opt).join('')+'</optgroup>':'')+opt(LIGHTNING)+'</select>'
     +'<label>Raised By</label><div class="chips" role="group">'+S.data.people.map(p=>{ const n=firstName(p.email); return '<button type="button" class="'+((E.by||'')===n?'on':'')+'" data-act="ag-by" data-val="'+esc(n)+'">'+esc(n)+'</button>'; }).join('')+'</div>'
     +'<label>Status</label><div class="seg wrap" role="group">'+AG_COLORS.concat([['','None']]).map(([c,l])=>'<button type="button" class="'+((E.color||'')===c?'on':'')+'" data-act="ag-pick" data-val="'+c+'"><i class="ag-chip c-'+(c||'none')+'"></i> '+l+'</button>').join('')+'</div></div>'
     +(E.id && discuss && isHost(st) && !st.topic && !E.done ? '<div class="mk-acts mt-l"><div class="btn-row"><button type="button" class="btn primary" data-act="ag-discuss" data-val="5">Discuss · 5 Min</button><button type="button" class="btn primary" data-act="ag-discuss" data-val="10">Discuss · 10 Min</button></div></div>' : '')
-    +(E.id ? '<div class="mk-acts mt-l"><div class="btn-row"><button type="button" class="btn park-btn" data-act="ag-park">Park It</button><button type="button" class="btn ghost" data-act="ag-del">Remove</button></div></div>'
+    +(E.id ? '<div class="mk-acts mt-l"><div class="btn-row"><button type="button" class="btn park-btn" data-act="ag-park">Park (Strategy)</button><button type="button" class="btn ghost ag-remove" data-act="ag-del">Remove</button></div></div>'
       +(E.done?'<div class="set-card mt-m"><button type="button" class="set-row" data-act="ag-undone"><span>Mark Not Discussed</span></button></div>':'') : '');
 }
 function agClick(a, el, v){
@@ -5610,7 +5636,7 @@ async function liveAddItem(el){
 /* ---------- Alfred chat bubble ---------- */
 // The conversation lives only in this page (S.alf) and is gone after a reload. Every message carries the screen
 // context below, and the screenshot taken when the bubble was tapped, so nobody has to describe where they were.
-const APP_VERSION = '2026.11.17-general';
+const APP_VERSION = '2026.11.17-scorecard';
 const H2C_URL = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
 const DIAG = { errors:[], actions:[] };   // last 10 of each, for bug reports
 function pushDiag(list, item){ list.push(item); if (list.length>10) list.shift(); }
@@ -6555,6 +6581,17 @@ function actClick(e, el){
     call('apiSetMyReminderDays', Number(v)).catch(()=>{ S.data.reminderDays=old; render(); toast('Could not save. Try again.'); }); }
   else if (a==='pref-set') { setPref(el.dataset.key, v); if (el.dataset.key==='lt-layout') S.layout=v; render(); }
   else if (a==='team-set') saveTeam(el.dataset.key, v);
+  // Nov 17: Team Scorecard goals (approvers). Opened from a tile on Huddle or Team Settings › Scorecard Goals.
+  else if (a==='sc-goal') { if (!S.data.isApprover) return; S.scGoal=el.dataset.name; S.sheet='scgoal'; showSheet(); setTimeout(()=>{ const i=document.getElementById('scg-v'); if (i && !isPhone()) i.focus(); }, 300); }
+  else if (a==='scg-save' || a==='scg-clear') {
+    const x=scGoalItem(); if (!x) return;
+    const val=a==='scg-clear' ? '' : String((document.getElementById('scg-v')||{}).value||'').trim().replace(/[%,\s]/g,'');
+    const err=document.getElementById('f-err');
+    if (val!=='' && !isFinite(Number(val))) { if (err) err.textContent='The goal has to be a number.'; return; }
+    el.disabled=true;
+    call('apiSetScorecardGoal', x.name, val).then(r=>{ if (r) S.data.scorecard=r; saveBoot(); closeSheet(); render(); toast(val==='' ? x.name+' goal cleared' : x.name+' goal saved'); })
+      .catch(e=>{ el.disabled=false; if (err) err.textContent='Couldn\'t save. '+errText(e); });
+  }
   else if (a==='admin') runAdmin(el.dataset.key);
   else if (a==='text-size') { setTextSize(v); render(); }
   else if (a==='push-on') pushOn();
