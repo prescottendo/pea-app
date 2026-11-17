@@ -19,7 +19,7 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" type="image/png" href="icon-192.png">
-<script>window.HUDDLE_WEB={"api":"https://script.google.com/macros/s/AKfycbzM8K_-XRMDdOJYJ3THn_FhyZkRreMddHIBAOFCFVoq5S_Y7MnsfFLsl7ac_fyDPrch/exec","clientId":"473377418367-cqmmnfum4kshq16973m4sj2jqqfa55p0.apps.googleusercontent.com","build":"51ad3f9","push":{"config":{"apiKey":"AIzaSyBON-0KvTXPD_MV6ykhYvCoBRiECEHyE9c","authDomain":"huddle-e2548.firebaseapp.com","projectId":"huddle-e2548","storageBucket":"huddle-e2548.firebasestorage.app","messagingSenderId":"554653922065","appId":"1:554653922065:web:87de53b4cb11b36835d2b0"},"vapidKey":"BHKeDoBmW7vL-qAT3ocyTaMaZ27Ca66jvQtTes2NC4CPoWFiPBJcga7wVd-RD1IuyhBki0oKXwPBGSNq002s8o8"}};document.documentElement.classList.add('web');</script>
+<script>window.HUDDLE_WEB={"api":"https://script.google.com/macros/s/AKfycbzM8K_-XRMDdOJYJ3THn_FhyZkRreMddHIBAOFCFVoq5S_Y7MnsfFLsl7ac_fyDPrch/exec","clientId":"473377418367-cqmmnfum4kshq16973m4sj2jqqfa55p0.apps.googleusercontent.com","build":"f7f63cb","push":{"config":{"apiKey":"AIzaSyBON-0KvTXPD_MV6ykhYvCoBRiECEHyE9c","authDomain":"huddle-e2548.firebaseapp.com","projectId":"huddle-e2548","storageBucket":"huddle-e2548.firebasestorage.app","messagingSenderId":"554653922065","appId":"1:554653922065:web:87de53b4cb11b36835d2b0"},"vapidKey":"BHKeDoBmW7vL-qAT3ocyTaMaZ27Ca66jvQtTes2NC4CPoWFiPBJcga7wVd-RD1IuyhBki0oKXwPBGSNq002s8o8"}};document.documentElement.classList.add('web');</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <!-- The fonts load without holding up the first paint; the page shows in the phone's own font for a moment if needed. -->
@@ -610,7 +610,22 @@
   .pulse .stat b { font-family:var(--serif); font-size:var(--fs-title); color:var(--heading); }
   .pulse .stat span { font-size:var(--fs-sub); font-weight:600; color:var(--ink); }
   .pulse .stat small { display:block; font-weight:400; color:var(--muted); font-size:var(--fs-cap); }
-  .scorecard { padding:16px; margin-bottom:16px; }
+  .scorecard { padding:4px 16px 12px; margin-bottom:16px; }
+  /* Nov 17: the Team Scorecard: name and goal, the last 8 weeks (dashed line = goal), this week's number. */
+  .sc-row { display:grid; grid-template-columns:1fr auto 56px; gap:12px; align-items:center; padding:12px 0; border-top:1px solid var(--line-soft); }
+  .sc-row:first-child { border-top:none; }
+  .sc-name { font-weight:600; color:var(--ink); font-size:var(--fs-sub); line-height:1.25; min-width:0; } .sc-name small { display:block; font-weight:400; color:var(--muted); font-size:var(--fs-cap); margin-top:2px; }
+  .sc-val { text-align:right; } .sc-val b { font-family:var(--serif); font-size:calc(var(--fs-title) * .8); color:var(--heading); display:block; line-height:1.1; font-variant-numeric:tabular-nums; }
+  .sc-val small { font-size:calc(var(--fs-cap) * .92); color:var(--muted); white-space:nowrap; }
+  .sc-row.on .sc-val b { color:var(--green); } .sc-row.off .sc-val b { color:var(--red); } .sc-row.near .sc-val b { color:var(--gold-ink, #8A6418); }
+  .spark { display:block; overflow:visible; } .sp-line { fill:none; stroke:var(--heading); stroke-width:1.8; stroke-linejoin:round; stroke-linecap:round; opacity:.75; }
+  .sp-goal { stroke:var(--muted); stroke-width:1; stroke-dasharray:3 3; opacity:.7; } .sp-dot { fill:var(--heading); }
+  .sc-row.on .sp-dot { fill:var(--green); } .sc-row.off .sp-dot { fill:var(--red); } .sc-row.near .sp-dot { fill:var(--gold); }
+  .sc-key { display:flex; gap:14px; justify-content:center; padding-top:10px; border-top:1px solid var(--line-soft); font-size:var(--fs-cap); color:var(--muted); }
+  .sc-key span::before { content:""; display:inline-block; width:8px; height:8px; border-radius:50%; margin-right:5px; vertical-align:0; }
+  .sc-key .chg::before { display:none; } .sc-key { flex-wrap:wrap; row-gap:4px; } .sc-key .on::before { background:var(--green); } .sc-key .near::before { background:var(--gold); } .sc-key .off::before { background:var(--red); }
+  .sample-note { display:flex; align-items:center; gap:8px; background:var(--card); border:1px dashed var(--gold); border-radius:12px; padding:8px 12px; margin:0 0 16px; font-size:var(--fs-sub); color:var(--ink); }
+  .sample-note svg { width:18px; height:18px; color:var(--gold); flex:none; } .sample-note span { flex:1; } .sample-note .linkbtn { flex:none; }
   .focus-card + .set-sec { margin-top:24px; }
   .home-row { display:grid; grid-template-columns:1fr auto auto; gap:10px; align-items:center; }
   .hcount { min-width:28px; height:24px; padding:0 8px; border-radius:999px; display:inline-grid; place-items:center; font-weight:600; font-size:var(--fs-sub); background:var(--line-soft); color:var(--ink); }
@@ -2532,7 +2547,45 @@ function nextTacticalCard(){
   return '<button type="button" class="card start-card next-tac" data-act="'+(n?'prep-open':'go')+'"'+(n?'':' data-view="meetings"')+'><span class="sec">Next Tactical · '+esc(when)+'</span>'
     +'<b>'+esc(fmtDate(next))+' · '+TACTICAL_TIME+'</b><span class="go">'+(n?n+' of your item'+(n===1?'':'s')+' come up · Update ›':'Nothing of yours comes up ✓')+'</span></button>';
 }
+// Nov 17 (Brayden): Account › Sample Data fills the Huddle tab with made-up numbers (and Marketing, once it's built) so
+// every card and chart can be seen working. Only on this device (lt-sample); nothing is read from or saved to the sheet,
+// and tapping a sample row just says it's sample data.
+function sampleOn(){ return pref('lt-sample','')==='on'; }
+const SAMPLE_HOME={
+  scorecard:[
+    { name:'New Referrals', note:'This week', value:46, goal:40, unit:'', better:'up', trend:[31,35,38,34,41,39,44,46] },
+    { name:'Scheduled Within 48 Hours', note:'Of new referrals', value:82, goal:90, unit:'%', better:'up', trend:[74,77,80,79,84,85,83,82] },
+    { name:'Cases Completed', note:'This week', value:118, goal:110, unit:'', better:'up', trend:[96,104,99,108,112,107,115,118] },
+    { name:'Days to Consult', note:'Average wait', value:6, goal:5, unit:'', better:'down', trend:[9,9,8,8,7,7,6,6] },
+    { name:'Google Rating', note:'All locations', value:4.9, goal:4.8, unit:'', better:'up', trend:[4.7,4.7,4.8,4.8,4.8,4.9,4.9,4.9] }
+  ],
+  focus:{ rally:'Every referring office knows our new scheduling line by Dec 31',
+    anchors:['Referring doctors come first', 'Same-week care for every patient', 'One team across both offices'],
+    objectives:['Visit all 40 referring offices this quarter', 'Answer every referral call within 2 rings', 'Move to the new scheduling line by Dec 1', 'Train every front desk on the new script'] },
+  rows:[['Overdue',2,'late'],['Due Today',1,''],['Waiting on You',1,'gold'],['To Review',3,'gold']]
+};
+// The Team Scorecard: one row per number, with this week's value, its goal and the last 8 weeks. Green when it meets the
+// goal, gold when it's within 10%, red beyond. (The same drawing will show the real numbers once they're set up.)
+function scoreState(x){ const v=Number(x.value), g=Number(x.goal); if (!isFinite(v) || !isFinite(g) || !g) return '';
+  const ok=x.better==='down' ? v<=g : v>=g; if (ok) return 'on'; const off=Math.abs(v-g)/Math.abs(g); return off<=0.1 ? 'near' : 'off'; }
+function sparkline(t, goal){
+  const W=84, H=28, p=3, all=t.concat(goal!=null?[goal]:[]), lo=Math.min(...all), hi=Math.max(...all), span=(hi-lo)||1;
+  const X=i=>p+(W-2*p)*i/(t.length-1), Y=v=>H-p-(H-2*p)*(v-lo)/span;
+  const pts=t.map((v,i)=>X(i).toFixed(1)+','+Y(v).toFixed(1)).join(' ');
+  return '<svg class="spark" viewBox="0 0 '+W+' '+H+'" width="'+W+'" height="'+H+'" aria-hidden="true">'
+    +(goal!=null?'<line x1="'+p+'" x2="'+(W-p)+'" y1="'+Y(goal).toFixed(1)+'" y2="'+Y(goal).toFixed(1)+'" class="sp-goal"/>':'')
+    +'<polyline points="'+pts+'" class="sp-line"/><circle cx="'+X(t.length-1).toFixed(1)+'" cy="'+Y(t[t.length-1]).toFixed(1)+'" r="3" class="sp-dot"/></svg>';
+}
+function scorecardHtml(list){
+  return '<div class="card scorecard">'+list.map(x=>{ const st=scoreState(x), t=x.trend||[], prev=t.length>1?t[t.length-2]:null, v=Number(x.value);
+    const up=prev!=null && v>prev, down=prev!=null && v<prev, arrow=up?'▲':down?'▼':'';
+    return '<div class="sc-row '+st+'"><div class="sc-name">'+esc(x.name)+'<small>'+esc(x.note||'')+(x.goal!=null?' · Goal '+esc(String(x.goal))+esc(x.unit||''):'')+'</small></div>'
+      +(t.length>1?sparkline(t.map(Number), x.goal!=null?Number(x.goal):null):'<span></span>')
+      +'<div class="sc-val"><b>'+esc(String(x.value))+esc(x.unit||'')+'</b><small'+(arrow?' title="Change from last week"':'')+'>'+(arrow?arrow+' '+esc(String(Math.round(Math.abs(v-prev)*10)/10)):'&nbsp;')+'</small></div></div>'; }).join('')
+    +'<div class="sc-key"><span class="on">Meets goal</span><span class="near">Within 10%</span><span class="off">Behind</span><span class="chg">▲▼ vs last week</span></div></div>';
+}
 function renderHome(m){
+  if (sampleOn()) return renderHomeSample(m);
   const me=S.data.me, mineOpen=S.data.tasks.filter(t=>isOpen(t) && owners(t).indexOf(me)>=0);
   const late=mineOpen.filter(isLate).length, today=mineOpen.filter(t=>t.due===S.data.today).length;
   const waiting=S.data.tasks.filter(t=>t.status==='Blocked' && t.waiting_on===me), rc=reviewCount();
@@ -2544,10 +2597,23 @@ function renderHome(m){
   m.innerHTML='<div class="head-row home-title"><h2>Huddle</h2></div>'   // Nov 16 (Brayden): the Home tab's page is titled Huddle
     // Nov 16 (Brayden): Scorecard first, then the Rally Cry card, then For You, then the meeting card.
     // Critique 4 (#1): the Scorecard shows once it has numbers (S.data.scorecard).
-    +(S.data.scorecard && S.data.scorecard.length ? '<h3 class="set-sec">Team Scorecard</h3><div class="card scorecard"></div>' : '')
+    +(S.data.scorecard && S.data.scorecard.length ? '<h3 class="set-sec">Team Scorecard</h3>'+scorecardHtml(S.data.scorecard) : '')
     +focusCard()
     +'<h3 class="set-sec">For You</h3>'+(rows?'<div class="set-card">'+rows+'</div>':'<p class="none">You\'re all caught up.</p>')
     +nextTacticalCard();
+}
+
+function renderHomeSample(m){
+  const X=SAMPLE_HOME, f=X.focus, row=(label,n,tone)=>'<button type="button" class="set-row home-row" data-act="sample-tap"><span>'+label+'</span><span class="hcount'+(tone?' '+tone:'')+'">'+n+'</span><span class="chev" aria-hidden="true">›</span></button>';
+  const list=(h,a)=>'<div class="sec">'+h+'</div><ul class="focus-list">'+a.map(x=>'<li>'+esc(x)+'</li>').join('')+'</ul>';
+  const next=S.data.defaultDue || addDays(S.data.today, 2);
+  m.innerHTML='<div class="head-row home-title"><h2>Huddle</h2></div>'
+    +'<div class="sample-note">'+ICON.tour+'<span>Showing <b>sample data</b>, only on this device.</span><button type="button" class="linkbtn" data-act="sample-off">Turn Off</button></div>'
+    +'<h3 class="set-sec">Team Scorecard</h3>'+scorecardHtml(X.scorecard)
+    +'<details class="card focus-card"><summary><span class="sec">Rally Cry</span><span class="rally">'+esc(f.rally)+'</span><span class="chev" aria-hidden="true">›</span></summary>'
+    +'<div class="focus-more">'+list('Strategic Anchors', f.anchors)+list('Defining Objectives', f.objectives)+'</div></details>'
+    +'<h3 class="set-sec">For You</h3><div class="set-card">'+X.rows.map(r=>row(r[0], r[1], r[2])).join('')+'</div>'
+    +'<button type="button" class="card start-card next-tac" data-act="sample-tap"><span class="sec">Next Tactical · Tomorrow</span><b>'+esc(fmtDate(next))+' · '+TACTICAL_TIME+'</b><span class="go">3 of your items come up · Update ›</span></button>';
 }
 
 /* ---------- More (a page since Nov 10, Batch 2) ---------- */
@@ -2566,6 +2632,7 @@ function renderMore(m){
     +gr('settings',ICON.bell,'Notifications', pushState()==='on'?'<span class="small muted">On</span>':'')
     +gr('deleted',ICON.deleted,'Recently Deleted')
     +row('data-act="tour-open"',ICON.tour,'Welcome Tour')+'</div>'
+    +'<div class="set-card mt-l">'+switchRow('sample', sampleOn(), 'Show Sample Data', 'Made-up numbers on the Huddle tab so you can see every card working. Only on this device; nothing is saved.')+'</div>'
     +(S.data.isApprover ? '<h3 class="set-sec">For Approvers</h3><div class="menu more-menu">'
       +gr('review',ICON.review,'Review', rc?'<span class="count" data-num="more-review">'+rc+'</span>':'')
       +gr('teamset',GEAR,'Team Settings')
@@ -4677,7 +4744,7 @@ async function liveAddItem(el){
 /* ---------- Alfred chat bubble ---------- */
 // The conversation lives only in this page (S.alf) and is gone after a reload. Every message carries the screen
 // context below, and the screenshot taken when the bubble was tapped, so nobody has to describe where they were.
-const APP_VERSION = '2026.11.17-tasks';
+const APP_VERSION = '2026.11.17-sample';
 const H2C_URL = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
 const DIAG = { errors:[], actions:[] };   // last 10 of each, for bug reports
 function pushDiag(list, item){ list.push(item); if (list.length>10) list.shift(); }
@@ -5557,6 +5624,8 @@ function actClick(e, el){
   else if (a==='tp-unlink') linkTopicDecision('', el);
   else if (a==='tour-open') startCoach();
   else if (a==='mtab') { S.mtab=v; render(); }
+  else if (a==='sample-tap') toast('This is sample data. Turn it off in Account.');
+  else if (a==='sample-off') { setPref('lt-sample',''); render(); toast('Sample data is off.'); }
   else if (a==='tside') { if (v!==S.view) { S.taskSide=v; go(v); } }
   else if (a==='lv-new') { S.zoomFrom=el.getBoundingClientRect(); if (S.live) { S.view='live'; S.liveAt=Date.now(); render(); zoomIn(); } else { S.sheet='newmeeting'; showSheet(); } }
   else if (a==='lv-start') { S.pendingType=v; S.zoomFrom=el.getBoundingClientRect(); S.sheet='newmeeting'; showSheet(); }
@@ -5840,6 +5909,7 @@ document.addEventListener('input', e=>{
 // Settings switches are real checkboxes (AP-3), so they report a change instead of a tap.
 function switchChanged(a, el){
   breadcrumb(el);
+  if (a==='sample') { setPref('lt-sample', el.checked ? 'on' : ''); toast(el.checked ? 'Sample data is on. Open the Huddle tab to see it.' : 'Sample data is off.'); return; }
   if (a==='private-toggle') togglePrivate();
   else if (a==='sf-done') { S.status = S.status==='' ? 'open' : ''; closeSheet(); }
   else if (a==='sf-blocked') { S.status = S.status==='Blocked' ? 'open' : 'Blocked'; closeSheet(); }
