@@ -19,7 +19,7 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" type="image/png" href="icon-192.png">
-<script>window.HUDDLE_WEB={"api":"https://script.google.com/macros/s/AKfycbzM8K_-XRMDdOJYJ3THn_FhyZkRreMddHIBAOFCFVoq5S_Y7MnsfFLsl7ac_fyDPrch/exec","clientId":"473377418367-cqmmnfum4kshq16973m4sj2jqqfa55p0.apps.googleusercontent.com","build":"4c05a25","push":{"config":{"apiKey":"AIzaSyBON-0KvTXPD_MV6ykhYvCoBRiECEHyE9c","authDomain":"huddle-e2548.firebaseapp.com","projectId":"huddle-e2548","storageBucket":"huddle-e2548.firebasestorage.app","messagingSenderId":"554653922065","appId":"1:554653922065:web:87de53b4cb11b36835d2b0"},"vapidKey":"BHKeDoBmW7vL-qAT3ocyTaMaZ27Ca66jvQtTes2NC4CPoWFiPBJcga7wVd-RD1IuyhBki0oKXwPBGSNq002s8o8"}};document.documentElement.classList.add('web');</script>
+<script>window.HUDDLE_WEB={"api":"https://script.google.com/macros/s/AKfycbzM8K_-XRMDdOJYJ3THn_FhyZkRreMddHIBAOFCFVoq5S_Y7MnsfFLsl7ac_fyDPrch/exec","clientId":"473377418367-cqmmnfum4kshq16973m4sj2jqqfa55p0.apps.googleusercontent.com","build":"dedda75","push":{"config":{"apiKey":"AIzaSyBON-0KvTXPD_MV6ykhYvCoBRiECEHyE9c","authDomain":"huddle-e2548.firebaseapp.com","projectId":"huddle-e2548","storageBucket":"huddle-e2548.firebasestorage.app","messagingSenderId":"554653922065","appId":"1:554653922065:web:87de53b4cb11b36835d2b0"},"vapidKey":"BHKeDoBmW7vL-qAT3ocyTaMaZ27Ca66jvQtTes2NC4CPoWFiPBJcga7wVd-RD1IuyhBki0oKXwPBGSNq002s8o8"}};document.documentElement.classList.add('web');</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <!-- The fonts load without holding up the first paint; the page shows in the phone's own font for a moment if needed. -->
@@ -653,6 +653,27 @@
   .set-row.mk-row > span.mk-date, .set-row.mk-row > span.plats { flex:0 0 auto; } .set-row.mk-row > .mk-main { flex:1 1 auto; min-width:0; }
   .mk-main { flex:1; min-width:0; font-weight:600; color:var(--ink); line-height:1.3; } .mk-main small { display:block; font-weight:400; color:var(--muted); font-size:var(--fs-cap); margin-top:2px; }
   .mk-date { width:38px; text-align:center; flex:none; } .mk-date b { display:block; font-family:var(--serif); font-size:20px; color:var(--heading); line-height:1; } .mk-date small { font-size:10px; font-weight:700; letter-spacing:.06em; color:var(--muted); }
+  /* Nov 17: Referrals (Watch List, budget card, office page) */
+  .ref-row .mk-main small.why { font-weight:600; } .ref-row .why.r, .ref-why.r { color:var(--red); } .ref-row .why.g, .ref-why.g { color:var(--green); } .ref-row .why.a, .ref-why.a { color:var(--gold-ink); }
+  .ref-row .mk-main .mtag { margin-left:4px; vertical-align:1px; }
+  .ref-spark { flex:none; } .ref-spark polyline { fill:none; stroke:var(--heading); stroke-width:1.6; stroke-linejoin:round; } .ref-spark.r polyline { stroke:var(--red); } .ref-spark.g polyline { stroke:var(--green); } .ref-spark.a polyline { stroke:var(--gold-ink); }
+  .ref-ytd { width:40px; text-align:right; flex:none; } .ref-ytd b { display:block; font-family:var(--serif); font-size:17px; color:var(--heading); line-height:1.1; } .ref-ytd small { font-size:10px; color:var(--muted); }
+  .ghost-cap { background:var(--card) !important; color:var(--heading) !important; border:1px solid var(--line) !important; }
+  .bud-card { padding:12px 14px; margin-bottom:8px; } .bud-card .sec-h { margin:0 0 8px; }
+  .bud-row { display:flex; justify-content:space-between; gap:8px; font-size:var(--fs-sub); margin-top:8px; } .bud-row b { color:var(--heading); white-space:nowrap; }
+  .bud-bar { height:8px; border-radius:4px; background:var(--line-soft); margin-top:4px; overflow:hidden; } .bud-bar i { display:block; height:100%; border-radius:4px; background:var(--heading); }
+  .bud-bar i.g { background:var(--green); } .bud-bar i.a { background:var(--gold); } .bud-bar i.r { background:var(--red); }
+  .bud-sub { font-size:var(--fs-cap); color:var(--muted); margin:3px 0 0; }
+  .ref-head { display:flex; align-items:center; gap:8px; flex-wrap:wrap; font-size:var(--fs-sub); color:var(--muted); }
+  .ref-sub { margin:6px 0 0; font-size:var(--fs-sub); color:var(--ink); } .ref-why { margin:6px 0 0; font-size:var(--fs-sub); font-weight:600; }
+  .ref-stats { display:grid; grid-template-columns:repeat(3,1fr); padding:12px 8px; margin-top:12px; text-align:center; } .ref-stats b { display:block; font-family:var(--serif); font-size:24px; color:var(--heading); } .ref-stats small { font-size:var(--fs-cap); color:var(--muted); }
+  .ref-bars { display:grid; grid-template-columns:repeat(12,1fr); gap:4px; padding:12px 10px 8px; margin-top:8px; align-items:end; }
+  .ref-bars .rb { text-align:center; } .ref-bars .rb small { font-size:10px; color:var(--muted); }
+  .rb-col { height:80px; position:relative; } .rb-col i { position:absolute; bottom:0; border-radius:3px 3px 0 0; } .rb-col i.p { left:0; right:0; background:var(--line); } .rb-col i.m { left:22%; right:22%; background:var(--heading); }
+  .ref-key { grid-column:1 / -1; margin:6px 0 0; font-size:var(--fs-cap); color:var(--muted); display:flex; gap:6px; align-items:center; justify-content:center; }
+  .ref-key i { display:inline-block; width:10px; height:10px; border-radius:2px; } .ref-key i.m { background:var(--heading); } .ref-key i.p { background:var(--line); margin-left:8px; }
+  .ref-notes ul { margin:0; padding-left:18px; } .ref-notes li { margin:2px 0; font-size:var(--fs-sub); }
+  .ref-search { margin:4px 0 4px; }
   .mtag { font-size:11px; font-weight:700; padding:3px 8px; border-radius:999px; white-space:nowrap; flex:none; }
   .mtag.g { background:var(--green-soft); color:var(--green); } .mtag.a { background:rgba(198,168,92,.22); color:var(--gold-ink); } .mtag.r { background:var(--red-soft); color:var(--red); }
   .mtag.b { background:rgba(47,95,138,.14); color:var(--heading); } .mtag.n { background:var(--line-soft); color:var(--muted); }
@@ -2168,7 +2189,7 @@ const COACH=[
   { view:'meetings', sel:'.mtab', h:'Meetings', b:'<p>Three lists: past <b>Meetings</b>, every <b>Decision</b>, and the <b>Parking Lot</b> of bigger topics. Search looks inside every summary and transcript.</p>' },
   { view:'meetings', sel:'#main .capsule', h:'Start a Meeting', b:'<p>Tap <b>＋ Start Meeting</b> for the weekly tactical (start the Otter recording first). Whoever starts it runs it; everyone else follows along, and a gold bar lets anyone join from any tab.</p>' },
   { view:'meetings', sel:'#mResults .set-row', h:'Read a Meeting', b:'<p>Tap any meeting for its summary: the decisions and your tasks come first, then the full notes.</p>' },
-  { view:'marketing', sel:'.ktab', h:'Marketing', b:'<p><b>Deliveries</b> to referring offices (a gold card shows who\'s due for a visit), <b>Posts</b> waiting for Becky\'s approval, and <b>To-Dos</b>: the team\'s marketing ideas and tasks. Anyone can add an idea.</p>' },
+  { view:'marketing', sel:'.ktab', h:'Marketing', b:'<p><b>Referrals</b>: a Watch List of referring doctors who need something (from the Referral Tracker), the month\'s budgets and your deliveries. <b>Social Posts</b> waiting for Becky\'s approval, and <b>To-Dos</b>: the team\'s marketing ideas and tasks. Anyone can add an idea.</p>' },
   { view:'home', sel:'.alf-fab', h:'Alfred', b:'<p>The hat is <b>Alfred</b>, your assistant. Ask about meetings and tasks, have him make a small change, or tell him about a problem or an idea. Drag him anywhere.</p>' },
   { view:'home', sel:'.ptitle .mebtn, #me .mebtn', h:'Your Account', b:'<p>Your initials open <b>Notifications</b>, Appearance, Recently Deleted, this tour and Sign Out.</p>' }
 ];
@@ -2852,7 +2873,8 @@ function renderHomeSample(m){
 // (S.data.access === 'marketing', Ashley) see only this tab; the server enforces it.
 // With Account › Show Sample Data on, the tab shows SAMPLE data kept in memory (MkLocal on S.mkSample), so every
 // button works and nothing is saved.
-const MK_TABS=[['deliveries','Deliveries'],['posts','Posts'],['todos','To-Dos']];
+// Nov 17 (Brayden): the first switch is Referrals (the Watch List, budgets and deliveries); Posts reads "Social Posts".
+const MK_TABS=[['deliveries','Referrals'],['posts','Social Posts'],['todos','To-Dos']];
 const DL_TAG={ Idea:'n', Planned:'a', Delivered:'g', Canceled:'n' }, POST_TAG={ 'Idea':'n', 'Drafted':'n', 'Needs Approval':'a', 'Approved':'b', 'Posted':'g' };
 const POST_STAGE_LIST=['Idea','Drafted','Needs Approval','Approved','Posted'];
 const PLATS=[['Facebook','fb','f'],['Instagram','ig','◎'],['Google Business','gb','G']];
@@ -2940,11 +2962,89 @@ function mkDeliveriesHtml(){
   groups.push({ label:'Delivered', items:(showAll?done:done.slice(0,8)).map(dlRow).concat(!showAll && done.length>8 ? ['<button type="button" class="set-row more-row" data-act="k-all-done"><span>Show All '+done.length+'</span><span class="chev" aria-hidden="true">›</span></button>'] : []) });
   groups.push({ label:'Canceled', items:S.kq ? list.filter(d=>d.status==='Canceled').map(dlRow) : [] });
   const due=(K.offices||[]).filter(o=>o.due).sort((a,b)=>(b.days_since==null?1e9:b.days_since)-(a.days_since==null?1e9:a.days_since));
-  const dueCard=due.length && !S.kq ? '<div class="mk-due"><div class="mk-due-h"><b>Due for a Visit · '+due.length+'</b><small>No delivery in '+(due[0].visit_days||45)+' days and nothing booked. Tap one to plan it.</small></div>'
+  const dueCard=due.length && !S.kq && !(K.referrals && K.referrals.rows) ? '<div class="mk-due"><div class="mk-due-h"><b>Due for a Visit · '+due.length+'</b><small>No delivery in '+(due[0].visit_days||45)+' days and nothing booked. Tap one to plan it.</small></div>'
     +'<div class="mk-due-list">'+due.slice(0, S.kAllDue?99:5).map(o=>'<button type="button" data-act="dl-new" data-office="'+esc(o.name)+'">'+esc(o.name)+'<small>'+(o.days_since==null?'Never visited':o.days_since+' days')+'</small></button>').join('')
     +(due.length>5 && !S.kAllDue ? '<button type="button" class="linkbtn" data-act="k-all-due">'+(due.length-5)+' More</button>' : '')+'</div></div>' : '';
   const body=mkGroups(groups, '<button type="button" class="capsule" data-act="dl-new">＋ New Delivery</button>');
-  return dueCard + body + (!list.length && !S.kq ? '<p class="none">No deliveries yet. Tap ＋ New Delivery to plan the first one.</p>' : list.length ? '' : '<p class="none">No matches.</p>');
+  return (S.kq ? '' : refWatchHtml()+mkBudgetHtml()) + dueCard + body + (!list.length && !S.kq ? '<p class="none">No deliveries yet. Tap ＋ New Delivery to plan the first one.</p>' : list.length ? '' : '<p class="none">No matches.</p>');
+}
+// ===== Referrals (Nov 17, Brayden: option B "Watch List", sheets sync option Y) =====
+// S.mkt.referrals (from the Referral Tracker sheet, read every 30 minutes by the server): { year, last (latest month with
+// cases, 0-11), tot, ptot, tiers:[{tier,name,note,goal}], rows:[{ d doctor, o office, s staff, l location, t tier,
+// m:[12 this year], p:[12 last year], g last gift }], watch:[{ i row, kind slip|dormant|thanks|intro, why }] }.
+// S.mkt.sheet (Marketing Analysis sheet): { thanksBudget, thanksSpent, planBudget, plan:[{m, items, cost, notes}], notes:{ lastname:{name, notes} } }.
+const REF_TIER_TAG={ 1:'g', 2:'a', 3:'r', 4:'r', 5:'n' }, REF_WHY={ slip:'r', dormant:'r', thanks:'g', intro:'a' };
+const MON_SHORT=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+function refTierName(t){ const R=S.mkt && S.mkt.referrals, x=R && (R.tiers||[]).find(y=>y.tier===t); return x ? x : null; }
+function refTierTag(t){ if (!t) return ''; const x=refTierName(t); return mkTag(REF_TIER_TAG[t]||'n', t<=2 ? 'Tier '+t : (x && x.name ? x.name.split(' ')[0] : 'Tier '+t)); }
+function refSeries(r){ const R=S.mkt.referrals; return (r.p && r.p.length===12 ? r.p : new Array(12).fill(0)).concat(r.m.slice(0, R.last+1)).slice(-12); }
+function refSpark(vals, cls){
+  const w=76, h=26, lo=Math.min(...vals), hi=Math.max(...vals), sp=(hi-lo)||1;
+  const pts=vals.map((v,i)=>(2+(w-4)*i/Math.max(1,vals.length-1)).toFixed(1)+','+(h-3-(h-6)*(v-lo)/sp).toFixed(1)).join(' ');
+  return '<svg class="ref-spark '+(cls||'')+'" width="'+w+'" height="'+h+'" viewBox="0 0 '+w+' '+h+'" aria-hidden="true"><polyline points="'+pts+'"/></svg>';
+}
+function refYtd(r){ const L=S.mkt.referrals.last; return r.m.slice(0, L+1).reduce((a,b)=>a+b,0); }
+function money(n){ n=Number(n)||0; return '$'+(Math.round(n)===n ? n.toLocaleString('en-US') : n.toLocaleString('en-US',{ minimumFractionDigits:2, maximumFractionDigits:2 })); }
+// The month's two budgets from the sheet: the all-office delivery (its plan row) and thank-yous / birthdays (gifts this month).
+function mkBudgetHtml(){
+  const B=S.mkt && S.mkt.sheet; if (!B || (B.thanksBudget==null && B.planBudget==null)) return '';
+  const mi=Number(S.data.today.slice(5,7))-1, plan=(B.plan||[]).find(p=>p.m===mi);
+  const bar=(label, used, of, sub)=>{ const pct=of ? Math.min(100, used/of*100) : 0, cls=!of ? '' : used>of ? 'r' : used>of*.8 ? 'a' : 'g';
+    return '<div class="bud-row"><span>'+label+'</span><b>'+money(used)+(of?' of '+money(of):'')+'</b></div><div class="bud-bar"><i class="'+cls+'" style="width:'+pct.toFixed(1)+'%"></i></div>'+(sub?'<p class="bud-sub">'+sub+'</p>':''); };
+  return '<div class="card bud-card"><h3 class="sec-h">'+esc(MON_NAMES[mi])+' Budget</h3>'
+    +(B.planBudget!=null ? bar('Monthly delivery', plan && plan.cost || 0, B.planBudget, plan && plan.items ? esc(plan.items) : 'Nothing in the plan for '+esc(MON_NAMES[mi])+' yet') : '')
+    +(B.thanksBudget!=null ? bar('Thank-yous and birthdays', B.thanksSpent||0, B.thanksBudget, 'Planned and delivered gifts this month') : '')
+    +'</div>';
+}
+const MON_NAMES=['January','February','March','April','May','June','July','August','September','October','November','December'];
+function refWatchHtml(){
+  const R=S.mkt && S.mkt.referrals; if (!R || !R.rows) return '';
+  const W=R.watch||[], all=S.refAllWatch, show=all ? W : W.slice(0,5);
+  const row=w=>{ const r=R.rows[w.i]; return '<button type="button" class="set-row ref-row" data-act="ref-open" data-i="'+w.i+'"><span class="mk-main">'+esc(r.d)+' '+refTierTag(r.t)
+    +'<small>'+esc(r.o||r.l||'')+'</small><small class="why '+(REF_WHY[w.kind]||'')+'">'+esc(w.why)+'</small></span>'+refSpark(refSeries(r), REF_WHY[w.kind])+'<span class="chev" aria-hidden="true">›</span></button>'; };
+  const lead=R.last>=0 ? 'From the Referral Tracker, through '+MON_NAMES[R.last] : 'The Referral Tracker has no cases for '+R.year+' yet';
+  return '<div class="mg-head"><h3 class="set-sec">Watch List'+(W.length?' · '+W.length:'')+'</h3><button type="button" class="capsule ghost-cap" data-act="ref-all">All Offices</button></div>'
+    +'<div class="set-card mrows">'+(W.length ? show.map(row).join('') : '<p class="none">Nothing needs attention right now.</p>')
+    +(W.length>5 && !all ? '<button type="button" class="set-row more-row" data-act="ref-more"><span>Show All '+W.length+'</span><span class="chev" aria-hidden="true">›</span></button>' : '')+'</div>'
+    +'<p class="set-note">'+lead+'. Tap one for its trend, gifts and notes.</p>';
+}
+// Gifts that went to this doctor (their last name in the office line) or to their office, newest first (as the server).
+function refLastName(n){ let t=String(n||'').replace(/\(.*?\)/g,'').replace(/^dr\.?\s+/i,'').trim(); t=t.indexOf(',')>=0 ? t.split(',')[0] : t.split(' ').pop(); return t.toLowerCase().replace(/[^a-z'-]/g,''); }
+function refGifts(r){
+  const ln=refLastName(r.d), off=String(r.o||'').trim().toLowerCase(), re=ln.length>2 ? new RegExp('\\b'+ln.replace(/[-']/g,'.')+'\\b','i') : null;
+  return (S.mkt.deliveries||[]).filter(d=>d.date && d.status!=='Canceled' && d.status!=='Idea' && ((re && re.test(d.office)) || (off.length>2 && String(d.office).trim().toLowerCase()===off)))
+    .sort((a,b)=>String(b.date).localeCompare(String(a.date)));
+}
+function refOfficeSheet(){
+  const R=S.mkt && S.mkt.referrals, r=R && R.rows[S.refI]; if (!r) return '<div class="grab"></div><div class="sheet-head"><h3>Office</h3><button type="button" class="btn ghost sm" data-act="close-sheet">Done</button></div><p class="none">That office isn\'t in the Referral Tracker any more.</p>';
+  const L=R.last, ytd=refYtd(r), pytd=(r.p||[]).slice(0, L+1).reduce((a,b)=>a+b,0), t=refTierName(r.t), w=(R.watch||[]).find(x=>x.i===S.refI);
+  const hi=Math.max(1, ...r.m, ...(r.p||[])), bars=MON_SHORT.map((mo,i)=>'<div class="rb"><div class="rb-col"><i class="p" style="height:'+((r.p||[])[i]||0)/hi*100+'%"></i><i class="m'+(i>L?' fut':'')+'" style="height:'+(i>L?0:r.m[i]/hi*100)+'%"></i></div><small>'+mo[0]+'</small></div>').join('');
+  const notes=S.mkt.sheet && S.mkt.sheet.notes && S.mkt.sheet.notes[refLastName(r.d)];
+  const gifts=refGifts(r);
+  return '<div class="grab"></div><div class="sheet-head">'+(S.refBack ? '<button type="button" class="btn ghost sm" data-act="ref-all-back">‹ All Offices</button>' : '')+'<h3>'+esc(r.d)+'</h3><button type="button" class="btn ghost sm" data-act="close-sheet">Done</button></div>'
+    +'<div class="ref-head">'+refTierTag(r.t)+(t ? '<span>'+esc(t.name)+(t.goal?' · '+esc(t.goal):'')+'</span>' : '')+'</div>'
+    +'<p class="ref-sub">'+[esc(r.o), esc(r.l)].filter(Boolean).join(' · ')+(r.s?'<br>Staff: '+esc(r.s):'')+'</p>'
+    +(w ? '<p class="ref-why '+(REF_WHY[w.kind]||'')+'">'+esc(w.why)+'</p>' : '')
+    +'<div class="card ref-stats"><div><b>'+ytd+'</b><small>'+R.year+' so far</small></div><div><b>'+pytd+'</b><small>Same months '+(R.year-1)+'</small></div><div><b>'+(r.p||[]).reduce((a,b)=>a+b,0)+'</b><small>All of '+(R.year-1)+'</small></div></div>'
+    +'<div class="card ref-bars" aria-label="Cases by month: '+R.year+' in navy, '+(R.year-1)+' behind it">'+bars+'<p class="ref-key"><i class="m"></i>'+R.year+' <i class="p"></i>'+(R.year-1)+'</p></div>'
+    +(notes ? '<h3 class="set-sec">Doctor Notes</h3><div class="set-card set-pad ref-notes"><ul>'+notes.notes.map(n=>'<li>'+esc(n)+'</li>').join('')+'</ul></div>' : '')
+    +'<h3 class="set-sec">Gifts</h3><div class="set-card mrows">'+(gifts.length ? gifts.slice(0,8).map(dlRow).join('') : '<p class="none">No gifts logged yet.</p>')+'</div>'
+    +'<button type="button" class="btn primary mt-l" data-act="ref-plan" style="width:100%">＋ Plan a Delivery</button>';
+}
+function refAllSheet(){
+  if (!(S.mkt && S.mkt.referrals)) return '';
+  return '<div class="grab"></div><div class="sheet-head"><h3>All Offices</h3><button type="button" class="btn ghost sm" data-act="close-sheet">Done</button></div>'
+    +'<label class="search ref-search">'+ICON.search+'<input type="search" id="refq" data-input="refq" placeholder="Search doctors and offices" value="'+esc(S.refQ||'')+'"></label>'
+    +'<div id="refList">'+refAllList()+'</div>';
+}
+function refAllList(){
+  const R=S.mkt && S.mkt.referrals; if (!R) return '';
+  const q=String(S.refQ||'').trim().toLowerCase(), rows=R.rows.map((r,i)=>[r,i]).filter(([r])=>!q || (r.d+' '+r.o+' '+r.l).toLowerCase().indexOf(q)>=0);
+  const groups={}; rows.forEach(([r,i])=>{ (groups[r.t||9]=groups[r.t||9]||[]).push([r,i]); });
+  const row=([r,i])=>'<button type="button" class="set-row ref-row" data-act="ref-open" data-i="'+i+'"><span class="mk-main">'+esc(r.d)+'<small>'+esc(r.o||r.l||'')+'</small></span>'+refSpark(refSeries(r))+'<span class="ref-ytd"><b>'+refYtd(r)+'</b><small>YTD</small></span></button>';
+  return Object.keys(groups).map(Number).sort((a,b)=>a-b).map(t=>{ const x=refTierName(t); return '<h3 class="set-sec">'+(t===9 ? 'Other Referrers' : 'Tier '+t+(x && x.name ? ' · '+esc(x.name) : ''))+'</h3><div class="set-card mrows">'
+      +groups[t].sort((a,b)=>refYtd(b[0])-refYtd(a[0])).map(row).join('')+'</div>'; }).join('')
+    +(rows.length ? '' : '<p class="none">No matches.</p>');
 }
 function platIcons(p){ const on=String(p||'').split(',').map(s=>s.trim()); const got=PLATS.filter(x=>on.indexOf(x[0])>=0);
   return '<span class="plats" aria-label="'+esc(got.map(x=>x[0]).join(', ')||'No place picked')+'">'+(got.length?got.map(x=>'<i class="plat '+x[1]+'">'+x[2]+'</i>').join(''):'<i class="plat none">?</i>')+'</span>'; }
@@ -3014,6 +3114,8 @@ function mkSheet(){
       +'<label for="mk-notes">Notes</label><textarea id="mk-notes" rows="3" placeholder="Who to ask for, what to mention">'+esc(x.notes||'')+'</textarea></div>'
       +(!E.isNew && x.status!=='Delivered' ? '<button type="button" class="btn ok-btn mt-l" data-act="mk-delivered">Mark Delivered</button>' : '')
       +(x.who ? '<p class="small muted mt-s">'+esc(firstName(x.who))+' gets a reminder the day before.</p>' : '')
+      +(x.rank ? '<p class="small muted mt-s">Referrer Rank in the sheet: '+esc(x.rank)+'</p>' : '')
+      +(S.mkt.sheet ? '<p class="small muted mt-s">Planned and delivered gifts are saved to the Thank You tab of the Marketing Analysis sheet'+(x.source==='sheet'?' (this one came from it)':'')+'.</p>' : '')
       +del('Delete Delivery');
   }
   if (E.kind==='post') {
@@ -3086,6 +3188,11 @@ function mkClick(a, el, v){
   if (a==='k-all-posted') { S.kAllPosted=true; renderMkResults(); return true; }
   if (a==='k-all-ideas') { S.kAllIdeas=true; renderMkResults(); return true; }
   if (a==='k-all-due') { S.kAllDue=true; renderMkResults(); return true; }
+  if (a==='ref-more') { S.refAllWatch=true; renderMkResults(); return true; }
+  if (a==='ref-open') { S.refI=Number(el.dataset.i); S.refBack=S.sheet==='refall'; if (S.sheet) { S.sheet='refoffice'; renderSheet(); } else { S.sheet='refoffice'; showSheet(); } return true; }
+  if (a==='ref-all') { S.refQ=''; S.sheet='refall'; showSheet(); return true; }
+  if (a==='ref-all-back') { S.refBack=false; S.sheet='refall'; renderSheet(); return true; }
+  if (a==='ref-plan') { const r=S.mkt.referrals.rows[S.refI]; closeSheet(true); mkOpen('delivery', { office:r.o||r.d, date:'', gift:'', who:(mkMembers().find(p=>p.marketing)||{}).email||'', cost:'', status:'Planned', notes:'' }, true); return true; }
   if (a==='dl-new') { mkOpen('delivery', { office:el.dataset.office||'', date:'', gift:'', who:(mkMembers().find(p=>p.marketing)||{}).email||'', cost:'', status:'Planned', notes:'' }, true); return true; }
   if (a==='dl-open') { const d=(S.mkt.deliveries||[]).find(x=>x.id===el.dataset.id); if (d) mkOpen('delivery', d); return true; }
   if (a==='post-new') { mkOpen('post', { title:'', caption:'', platforms:'', post_on:'', writer:S.data.me, stage:'Idea', link:'', notes:'' }, true); return true; }
@@ -3147,6 +3254,10 @@ function sampleMkt(){
       { id:'si4', text:'Holiday card contest for referring offices\' kids', details:'', suggested_by:becky, likes:'', status:'Open' },
       { id:'si5', text:'Meet the Team posts, one leader each week', details:'', suggested_by:becky, likes:[erin,jared].join(','), status:'Used', became:'post:sp1' }
     ].map((x,i)=>Object.assign({ created_at:at(-3-i), updated_at:at(-1) }, x)),
+    // Nov 17: made-up referral numbers and budgets (the real ones come from the sheets after sign-in, never from this page).
+    referrals:sampleReferrals(t), sheet:{ thanksBudget:833, thanksSpent:640, planBudget:3500,
+      plan:[{ m:Number(t.slice(5,7))-1, items:'Pumpkin bread with a thank-you card', cost:1180, notes:'' }],
+      notes:{ alvarez:{ name:'Dr Alvarez', notes:['Loves the Diamondbacks', 'Coffee, no sugar', 'Runs the Whiskey Row Marathon'] } } },
     tasks:[
       { title:'Order holiday cards for referring offices', due:d(0), owners:becky, status:'Not Done' },
       { title:'Get the office list from the referral report', due:d(2), owners:becky, status:'Not Done' },
@@ -3154,6 +3265,24 @@ function sampleMkt(){
       { title:'Plan the spring lunch-and-learn', due:'', owners:becky, status:'Not Done' }
     ]
   };
+}
+function sampleReferrals(t){
+  const last=Math.max(0, Number(t.slice(5,7))-2), y=Number(t.slice(0,4)), fill=(a)=>a.concat(new Array(12).fill(0)).slice(0,12);
+  const rows=[
+    { d:'Alvarez, Maria', o:'Granite Dental', s:'Karen (office manager)', l:'PRC', t:1, m:[9,11,8,10,12,9,11,10,13,12], p:[8,9,10,9,11,8,9,10,9,11,10,9] },
+    { d:'Chen, David', o:'Thumb Butte Family Dental', s:'', l:'PRC', t:1, m:[14,12,13,9,8,7,6,3,2,2], p:[12,13,11,14,12,13,12,11,13,12,14,12] },
+    { d:'Patel, Nina', o:'Pine Ridge Smiles', s:'Toni', l:'PV', t:2, m:[3,4,2,5,4,6,5,7,6,8], p:[2,3,2,3,4,3,2,3,4,3,3,2] },
+    { d:'Nguyen, Linh', o:'Mingus View Dental', s:'', l:'EAST', t:2, m:[6,5,4,3,2,1,0,0,0,0], p:[5,6,5,6,5,4,6,5,6,5,4,5] },
+    { d:'Brooks, Sam', o:'Willow Creek Dentistry', s:'', l:'PV', t:2, m:[4,3,5,4,4,3,5,4,3,4], p:[3,4,3,4,3,4,3,4,3,4,3,4] },
+    { d:'Ortiz, Ray', o:'Lynx Lake Family Dental', s:'', l:'PV', t:4, m:[0,0,1,0,0,0,0,0,0,0], p:[0,0,0,0,0,1,0,0,0,0,0,0] },
+    { d:'Hughes, Ann', o:'Sundog Dental', s:'', l:'CV', t:0, m:[2,1,2,3,1,2,2,1,2,3], p:[1,2,1,2,2,1,2,1,2,1,2,1] }
+  ].map(r=>Object.assign(r, { m:fill(r.m.slice(0,last+1)), g:'' }));
+  return { year:y, last:last, at:'', tot:[], ptot:[],
+    tiers:[{ tier:1, name:'Strategic Partners', note:'top 10-15 offices', goal:'Protect + Grow' }, { tier:2, name:'Growth Accounts', note:'2-10 a month', goal:'Increase Share of Referrals' },
+      { tier:4, name:'Competitive Accounts', note:'', goal:'Conquest' }],
+    rows:rows,
+    watch:[{ i:1, kind:'slip', why:'Down 67% the last 3 months (7 vs 21) · no gift logged' }, { i:3, kind:'dormant', why:'Nothing since June · no gift logged' },
+      { i:2, kind:'thanks', why:'Best month in a year (8) · say thank you · no gift logged' }, { i:5, kind:'intro', why:'Conquest · Competitive Accounts' }] };
 }
 // The Marketing calls, run in memory (sample data and the preview). Same rules as the server, simplified.
 function MkLocal(store){
@@ -3164,7 +3293,7 @@ function MkLocal(store){
   const ap=()=>store.approver;
   return {
     apiMarketing(me){ const deliveries=store.deliveries.filter(live);
-      return { deliveries:deliveries, posts:store.posts.filter(live), ideas:store.ideas.filter(live), offices:mkOffices(deliveries, []), approver:ap(), me:me }; },
+      return { deliveries:deliveries, posts:store.posts.filter(live), ideas:store.ideas.filter(live), offices:mkOffices(deliveries, []), approver:ap(), me:me, referrals:store.referrals||null, sheet:store.sheet||null }; },
     apiSaveDelivery(me, d){ const cur=d.id?findIn('deliveries', d.id):null; if (d.id && !cur) throw new Error('That delivery isn\'t there any more.');
       const out=cur||{ id:id('d'), created_at:now(), created_by:me }; if (!cur) store.deliveries.push(out);
       ['office','date','gift','who','notes','status'].forEach(k=>{ if (d[k]!=null) out[k]=String(d[k]); });
@@ -3697,6 +3826,8 @@ function renderSheetBody(){
   document.getElementById('sheetWrap').classList.toggle('dialog', S.sheet==='otter' || S.sheet==='ask');
   if (S.sheet==='sortfilter') { el.innerHTML=sortFilterSheet(); return; }
   if (S.sheet==='mk' && S.mk) { el.innerHTML=mkSheet(); el.scrollTop=top; return; }
+  if (S.sheet==='refoffice') { el.innerHTML=refOfficeSheet(); el.scrollTop=top; return; }
+  if (S.sheet==='refall') { el.innerHTML=refAllSheet(); el.scrollTop=top; return; }
   if (S.sheet==='ask') {
     const q=S.ask;
     el.innerHTML='<div class="otter-pop"><h3>'+(q.hat?ALF_HAT:'')+esc(q.title)+'</h3><p>'+q.body+'</p>'
@@ -5635,7 +5766,7 @@ async function liveAddItem(el){
 /* ---------- Alfred chat bubble ---------- */
 // The conversation lives only in this page (S.alf) and is gone after a reload. Every message carries the screen
 // context below, and the screenshot taken when the bubble was tapped, so nobody has to describe where they were.
-const APP_VERSION = '2026.11.17-sample';
+const APP_VERSION = '2026.11.17-referrals';
 const H2C_URL = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
 const DIAG = { errors:[], actions:[] };   // last 10 of each, for bug reports
 function pushDiag(list, item){ list.push(item); if (list.length>10) list.shift(); }
@@ -6817,6 +6948,7 @@ document.addEventListener('input', e=>{
   if (k==='mq') { S.mq=e.target.value; searchMeetings(); return; }
   if (k==='tq') { S.tq=e.target.value; renderTopicResults(); return; }
   if (k==='kq') { S.kq=e.target.value; renderMkResults(); return; }
+  if (k==='refq') { S.refQ=e.target.value; const b=document.getElementById('refList'); if (b) b.innerHTML=refAllList(); return; }
   if (k==='title' && /\n/.test(e.target.value)) e.target.value=e.target.value.replace(/\n/g,' ');
   if (k==='tp-title' || k==='tp-ctx' || k==='tp-out') { if (S.topicEdit) { S.topicEdit[{ 'tp-title':'topic', 'tp-ctx':'context', 'tp-out':'outcome' }[k]]=e.target.value; queueTopic(800); } return; }
   if (S.edit) { S.edit.task[k]=e.target.value; queueSave(800); }
