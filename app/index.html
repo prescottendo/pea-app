@@ -19,7 +19,7 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" type="image/png" href="icon-192.png">
-<script>window.HUDDLE_WEB={"api":"https://script.google.com/macros/s/AKfycbzM8K_-XRMDdOJYJ3THn_FhyZkRreMddHIBAOFCFVoq5S_Y7MnsfFLsl7ac_fyDPrch/exec","clientId":"473377418367-cqmmnfum4kshq16973m4sj2jqqfa55p0.apps.googleusercontent.com","build":"91cb56d","push":{"config":{"apiKey":"AIzaSyBON-0KvTXPD_MV6ykhYvCoBRiECEHyE9c","authDomain":"huddle-e2548.firebaseapp.com","projectId":"huddle-e2548","storageBucket":"huddle-e2548.firebasestorage.app","messagingSenderId":"554653922065","appId":"1:554653922065:web:87de53b4cb11b36835d2b0"},"vapidKey":"BHKeDoBmW7vL-qAT3ocyTaMaZ27Ca66jvQtTes2NC4CPoWFiPBJcga7wVd-RD1IuyhBki0oKXwPBGSNq002s8o8"}};document.documentElement.classList.add('web');</script>
+<script>window.HUDDLE_WEB={"api":"https://script.google.com/macros/s/AKfycbzM8K_-XRMDdOJYJ3THn_FhyZkRreMddHIBAOFCFVoq5S_Y7MnsfFLsl7ac_fyDPrch/exec","clientId":"473377418367-cqmmnfum4kshq16973m4sj2jqqfa55p0.apps.googleusercontent.com","build":"51ad3f9","push":{"config":{"apiKey":"AIzaSyBON-0KvTXPD_MV6ykhYvCoBRiECEHyE9c","authDomain":"huddle-e2548.firebaseapp.com","projectId":"huddle-e2548","storageBucket":"huddle-e2548.firebasestorage.app","messagingSenderId":"554653922065","appId":"1:554653922065:web:87de53b4cb11b36835d2b0"},"vapidKey":"BHKeDoBmW7vL-qAT3ocyTaMaZ27Ca66jvQtTes2NC4CPoWFiPBJcga7wVd-RD1IuyhBki0oKXwPBGSNq002s8o8"}};document.documentElement.classList.add('web');</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <!-- The fonts load without holding up the first paint; the page shows in the phone's own font for a moment if needed. -->
@@ -161,7 +161,7 @@
   :root { --top-safe:calc(env(safe-area-inset-top, 0px) + 24px); }
   nav.bottom { display:none; position:fixed; left:0; right:0; bottom:0; z-index:25; background:var(--card); border-top:1px solid var(--line);
     padding:10px max(14px, env(safe-area-inset-right, 0px)) var(--nav-under) max(14px, env(safe-area-inset-left, 0px)); }
-  nav.bottom .tabs { display:grid; grid-template-columns:repeat(4, 1fr); max-width:520px; margin:0 auto; }
+  nav.bottom .tabs { --ntabs:3; display:grid; grid-template-columns:repeat(var(--ntabs), 1fr); max-width:520px; margin:0 auto; }
   nav.bottom button { background:none; border:none; display:grid; justify-items:center; gap:4px; padding:8px 0 8px; color:var(--muted); font-size:var(--fs-cap); font-weight:600; position:relative; }
   nav.bottom button svg { width:24px; height:24px; }
   nav.bottom button span { font-size:min(var(--fs-cap), 13px); white-space:nowrap; }   /* layout #8: like iOS, tab labels don't grow */
@@ -519,6 +519,7 @@
     .head-row h2 { margin-bottom:16px; }
     .lead, .head-sub { margin:-8px 0 24px; }
     .people, .mtab-band { margin-bottom:16px; }
+    .mtab-band + .people { margin-top:-4px; }
     .toolbar { margin-bottom:24px; }
   }
   /* Desktop: more breathing room between a page's title, the line under it and the controls below. */
@@ -1091,9 +1092,9 @@
   .rv-why { font-size:var(--fs-sub); line-height:1.35; color:var(--gold-ink); }
   .rv-why b { font-weight:600; }
   .mtab { display:flex; width:100%; margin:0 0 16px; }
-  /* Nov 17 (Brayden): the slider sits centered in a band as tall as Team Tasks' row of faces (6 + 4 + 40 + 6 + name + 4)
-     with the same gap under it, so "＋ Start Meeting" lands exactly where "＋ New Task" does on Team Tasks. */
-  .mtab-band { display:flex; align-items:center; min-height:calc(60px + var(--fs-cap) * 1.15); margin-bottom:12px; }
+  /* Nov 17 (Brayden): Tasks (Personal | Team) and Meetings share the same switch in the same place, so "＋ New Task" on
+     Personal lands exactly where "＋ Start Meeting" does; on Team the faces sit under the switch. */
+  .mtab-band { display:flex; align-items:center; margin-bottom:12px; }
   .mtab-band .mtab { margin:0; }
   .mtab button { flex:1; }
   @media (min-width:700px) { .mtab { max-width:360px; } }
@@ -1122,7 +1123,7 @@
   /* The tab bar's highlight is one pill that slides to the tab you tap. */
   nav.bottom .tabs { position:relative; }
   nav.bottom button::before { display:none; }
-  nav.bottom .ind { position:absolute; top:0; bottom:0; left:0; width:25%; padding:0 8px; box-sizing:border-box; pointer-events:none;
+  nav.bottom .ind { position:absolute; top:0; bottom:0; left:0; width:calc(100% / var(--ntabs, 3)); padding:0 8px; box-sizing:border-box; pointer-events:none;
     transition:transform .36s cubic-bezier(.32,.72,0,1), opacity .2s; }
   nav.bottom .ind::before { content:""; display:block; height:100%; border-radius:12px; background:var(--heading); opacity:.08; }
   nav.bottom button { transition:color .25s; }
@@ -1594,7 +1595,9 @@
 <script>
 const S = { view:'home', layout:pref('lt-layout','list'), q:'', status:'open', priority:'', meeting:'', sort:'due', quick:'', person:'', searchOpen:false, back:null,
             data:null, sheet:null, edit:null, saveTimer:null, pending:0, undo:null, topics:null, meetings:null, lastSync:0, swiped:false, outbox:[] };
-const TABS = [['home','Huddle'],['mine','My Tasks'],['team','Team Tasks'],['review','Review'],['meetings','Meetings']];
+// Nov 17 (Brayden): My Tasks and Team Tasks became one Tasks tab with a Personal | Team switch (views 'mine' and 'team').
+const TABS = [['home','Huddle'],['mine','Tasks'],['review','Review'],['meetings','Meetings']];
+function tabKey(v){ return v==='team' ? 'mine' : v; }
 // Strategy Topics live on the Meetings screen (Meetings | Decisions | Topics); the old 'topics' view opens that tab.
 function onTopics(){ return S.view==='topics' || (S.view==='meetings' && S.mtab==='topics'); }
 // Blocked (Nov 10) is open, like Not Started and In Progress: it shows in lists, counts as overdue and is in every report.
@@ -1933,7 +1936,7 @@ async function paintBoot(){
 // Critique 4 (#27): before anything loads, the tab bar is drawn (Huddle lit), so the app opens on its own frame.
 function paintFrame(){
   const nb=document.getElementById('navBottom'); if (!nb || nb.querySelector('.tabs')) return;
-  const BT=[['home','Huddle'],['mine','My Tasks'],['team','Team Tasks'],['meetings','Meetings']];
+  const BT=[['home','Huddle'],['mine','Tasks'],['meetings','Meetings']];
   nb.innerHTML='<div class="tabs"><span class="ind" aria-hidden="true"></span>'+BT.map(([k,l])=>'<button type="button" data-act="go" data-view="'+k+'"'+(k==='home'?' class="on" aria-current="page"':'')+'>'+ICON[k]+'<span>'+l+'</span></button>').join('')+'</div>';
 }
 async function load(){
@@ -2021,7 +2024,7 @@ const COACH=[
   { view:'mine', sel:'article.task .title', h:'Open a Task', b:'<p>Tap a task to read it and change its status, due date, priority or owners. Comments are at the bottom; type <b>@</b> to mention someone.</p>' },
   { view:'mine', sel:'#main .capsule', h:'Add a Task', b:'<p>Tap <b>＋ New Task</b>: a title, who owns it and a date. Choose <b>Only Me</b> to keep it to yourself.</p>' },
   { view:'mine', sel:'#main .ptitle .sort-ico, #main .sort-ico', h:'Search and Sort', b:'<p>The magnifier searches your tasks. The sort icon sorts by due date or priority, shows only Blocked tasks, or shows finished ones.</p>' },
-  { view:'team', sel:'.people', h:'Team Tasks', b:'<p>Everyone\'s tasks in one place. Tap a person to see just theirs; a red number means they have overdue tasks.</p>' },
+  { view:'team', sel:'.people', h:'Team', b:'<p>The switch at the top flips between your <b>Personal</b> tasks and the whole <b>Team</b>. On Team, tap a person to see just theirs; a red number means they have overdue tasks.</p>' },
   { view:'team', sel:'#main .ptitle .sort-ico, #main .sort-ico, .print-btn', h:'Report & One-on-Ones', b:'<p>The <b>Accountability Report</b> and each leader\'s <b>One-on-Ones</b> are the first choice in this menu (on a computer, the printer).</p>' },
   { view:'meetings', sel:'.mtab', h:'Meetings', b:'<p>Three lists: past <b>Meetings</b>, every <b>Decision</b>, and the <b>Parking Lot</b> of bigger topics. Search looks inside every summary and transcript.</p>' },
   { view:'meetings', sel:'#main .capsule', h:'Start a Meeting', b:'<p>Tap <b>＋ Start Meeting</b> for the weekly tactical (start the Otter recording first). Whoever starts it runs it; everyone else follows along, and a gold bar lets anyone join from any tab.</p>' },
@@ -2030,7 +2033,8 @@ const COACH=[
   { view:'home', sel:'.ptitle .mebtn, #me .mebtn', h:'Your Account', b:'<p>Your initials open <b>Notifications</b>, Appearance, Recently Deleted, this tour and Sign Out.</p>' }
 ];
 // The tab button for a view (the bottom bar on a phone, the top bar on a computer).
-function coachTab(view){ return [...document.querySelectorAll('#navBottom [data-view="'+view+'"], #navTop [data-view="'+view+'"]')].find(e=>{ const r=e.getBoundingClientRect(); return r.width>0 && r.height>0; }); }
+function coachTab(view){ if (view==='team' && S.view==='mine') return document.querySelector('#main .tside [data-val="team"]');   // Personal → Team is the switch
+  return [...document.querySelectorAll('#navBottom [data-view="'+tabKey(view)+'"], #navTop [data-view="'+tabKey(view)+'"]')].find(e=>{ const r=e.getBoundingClientRect(); return r.width>0 && r.height>0; }); }
 // The dimming fades away, a ring and a tap show on the tab's button, the tab opens, then the dimming comes back.
 function coachTravel(view){
   return new Promise(done=>{
@@ -2214,12 +2218,12 @@ function renderNav(){
   renderMe(rc && S.data.isApprover ? rc : 0);
   // LB-11: on a computer, Change Requests, Recently Deleted, Settings and Account live in one labeled More menu.
   if (BOTTOM_TABS[S.view]) S.lastTab=S.view;   // Critique 4 (bug #19): Review isn't a bottom tab
-  const tabOn=k=>S.view===k||(k==='meetings'&&S.view==='live')||(!TAB_VIEWS[S.view] && S.view!=='live' && S.lastTab===k);
+  const tabOn=k=>tabKey(S.view)===k||(k==='meetings'&&S.view==='live')||(!TAB_VIEWS[S.view] && S.view!=='live' && tabKey(S.lastTab)===k);
   document.getElementById('navTop').innerHTML = TABS.filter(([k])=>k!=='review').map(([k,l])=>'<button type="button" class="'+(tabOn(k)?'on':'')+'" data-act="go" data-view="'+k+'">'+l+(k==='review'?badgeFor('top-review'):'')+'</button>').join('');
   renderLivebar();
   const inMeet = S.view==='meetings' || S.view==='live';
   // The tab bar is drawn once; after that only the highlight moves, so nothing flashes and the highlight slides.
-  const BT=[['home','Huddle'],['mine','My Tasks'],['team','Team Tasks'],['meetings','Meetings']], nb=document.getElementById('navBottom');
+  const BT=[['home','Huddle'],['mine','Tasks'],['meetings','Meetings']], nb=document.getElementById('navBottom');
   let tabs=nb.querySelector('.tabs');
   if (!tabs) {
     nb.innerHTML='<div class="tabs"><span class="ind" aria-hidden="true"></span>'+BT.map(([k,l])=>'<button type="button" data-act="go" data-view="'+k+'">'+ICON[k]+'<span>'+l+'</span></button>').join('')+'</div>';
@@ -2227,7 +2231,7 @@ function renderNav(){
   }
   let at=-1;
   BT.forEach(([k],i)=>{
-    const b=tabs.querySelector('[data-view="'+k+'"]'), on=S.view===k||(k==='meetings'&&inMeet)||(!BOTTOM_TABS[S.view] && S.view!=='live' && S.lastTab===k);
+    const b=tabs.querySelector('[data-view="'+k+'"]'), on=tabKey(S.view)===k||(k==='meetings'&&inMeet)||(!BOTTOM_TABS[S.view] && S.view!=='live' && tabKey(S.lastTab)===k);
     b.classList.toggle('on', on); if (on) { at=i; b.setAttribute('aria-current','page'); } else b.removeAttribute('aria-current');
     if (k==='home') { const old=b.querySelector('.count'); if (old) old.remove(); const n=unreadActivity(); if (n) b.insertAdjacentHTML('beforeend','<span class="count" data-num="tab-home">'+n+'</span>'); }
   });
@@ -2245,7 +2249,7 @@ function renderNav(){
 // Cross-fade a redraw with the browser's View Transitions (iOS 18+); older browsers just redraw.
 // Batch 3: the meeting's Back / Next slide the step instead (liveMove), a rating or one-on-one answer only changes its own
 // button (SOFT_ACTS), and a change request row opens and closes in place (req-toggle), so none of them cross-fade the page.
-const VT_ACTS=new Set(['ttab','go','back','layout','owner','waiting','prep-status','prep-due','set','tp-status','tp-owner','mtab','lv-owner','lv-due','due-quick',
+const VT_ACTS=new Set(['ttab','tside','go','back','layout','owner','waiting','prep-status','prep-due','set','tp-status','tp-owner','mtab','lv-owner','lv-due','due-quick',
   'remind-days','pref-set','team-set','text-size','theme-set','lv-motive-swap','search-close']);
 const SOFT_ACTS=new Set(['lv-rate','lv-one']);
 function canMorph(){ return !REDUCED && typeof document.startViewTransition==='function' && !document.hidden; }
@@ -2259,9 +2263,9 @@ function morph(fn, kind){
   catch (err) { S.vt=null; fn(); }
 }
 // Where a screen sits, left to right, so a tab change knows which way to slide.
-const NAV_ORDER={ home:-1, mine:0, team:1, review:2, meetings:3, live:3, more:4, requests:4, deleted:4, settings:4, teamset:4, admin:4 };
+const NAV_ORDER={ home:-1, mine:0, team:0, review:2, meetings:3, live:3, more:4, requests:4, deleted:4, settings:4, teamset:4, admin:4 };
 const BOTTOM_TABS={ home:1, mine:1, team:1, meetings:1 };
-const TAB_VIEWS={ home:'Huddle', mine:'My Tasks', team:'Team Tasks', meetings:'Meetings', review:'Review' };
+const TAB_VIEWS={ home:'Huddle', mine:'Tasks', team:'Tasks', meetings:'Meetings', review:'Review' };
 // Your initials (header on computers, title row on phones) open your page; a gold dot means meeting tasks wait in Review.
 function meBtn(rc){ return '<button type="button" class="mebtn" data-act="me-open" aria-label="Your account'+(rc?', '+rc+' to review':'')+'" title="Account">'+avatar(S.data.me, 32)+(rc?'<span class="rdot" aria-hidden="true"></span>':'')+'</button>'; }
 function renderMe(rc){ const el=document.getElementById('me'); if (el) el.innerHTML=meBtn(rc); S.meRc=rc; }
@@ -2294,6 +2298,7 @@ function go(v, back){
   if (!S.popping) { if (back) (S.backFrom=S.backFrom||[]).push({ view:S.view, back:S.back }); else S.backFrom=[]; }
   if (S.view==='home' && v!=='home') S.actSeenShown=null;
   if (v==='review' && S.view!=='review') { try { localStorage.setItem('lt-rv-hint', String(Number(localStorage.getItem('lt-rv-hint')||0)+1)); } catch(e){} }   // #12
+  if (v==='mine' || v==='team') S.taskSide=v;   // the Tasks tab reopens on this side until the app is closed
   S.view=v; S.back=back||null; S.quick=''; closeSheet(true); render(); window.scrollTo(0,keepY);
   if (S.tryUpdate && TAB_VIEWS[v]) setTimeout(()=>S.tryUpdate('tab'), 400);   // a new version installs on a tab switch
   requestAnimationFrame(()=>{ S.lastNav={ view:v, ms:Math.round(performance.now()-t0) }; });
@@ -2589,7 +2594,8 @@ function renderTasks(m){
   // Nov 16 (Brayden): the printer comes first, so search and sort sit in the same spot on every tab.
   const icons=(mine||phone?'':printBtn)+(phone?'<button type="button" class="tool-ico" data-act="search-open" aria-label="Search tasks">'+ICON.search+'</button>'
       +'<button type="button" class="tool-ico sort-ico" data-act="sortfilter" aria-haspopup="dialog" aria-label="Sort and filter'+(nf0?', '+nf0+' on':'')+'">'+ICON.sort+(nf0?'<span class="rdot" aria-hidden="true"></span>':'')+'</button>':'');
-  html+='<div class="head-row team-head"><h2>'+(mine ? 'My Tasks' : 'Team Tasks')+'</h2>'+icons+'</div><span class="synced compact-sync" id="synced"></span>';
+  html+='<div class="head-row team-head"><h2>Tasks</h2>'+icons+'</div><span class="synced compact-sync" id="synced"></span>'
+    +'<div class="mtab-band"><div class="seg mtab tside" role="group" aria-label="Show">'+[['mine','Personal'],['team','Team']].map(([k,l])=>'<button type="button" class="'+(S.view===k?'on':'')+'" data-act="tside" data-val="'+k+'" aria-pressed="'+(S.view===k)+'">'+l+'</button>').join('')+'</div></div>';
   if (mine) {
     // #13: one notice at a time: the meeting (live or ready to start), then Review, then "Before Thursday's Tactical".
     const rc=reviewCount(), uc=S.data.isApprover ? S.data.tasks.filter(t=>t.status==='Needs Review' && uncertainOf(t)).length : 0;   // LB-7: Review where approvers already are
@@ -3679,7 +3685,7 @@ async function addTask(el){
   replaceTask(saved);
   if (edit.live && S.live) { S.live.items=(S.live.items||[]).concat([saved.id]); liveMark('items', saved.id, true); }
   if (S.edit===edit) closeSheet();
-  if (isPriv(saved) && S.view!=='mine') toast('Added to My Tasks as Only Me.');   // #17: the new row shows it was added
+  if (isPriv(saved) && S.view!=='mine') toast('Added to your Personal tasks as Only Me.');   // #17: the new row shows it was added
 }
 // Nov 16 (#41): a half-typed comment survives a redraw (tapping a priority, owner or date) and closing the panel. Drafts are
 // kept per task on this device (lt-drafts) until posted; closing a task with a draft says so and offers to post it.
@@ -4671,7 +4677,7 @@ async function liveAddItem(el){
 /* ---------- Alfred chat bubble ---------- */
 // The conversation lives only in this page (S.alf) and is gone after a reload. Every message carries the screen
 // context below, and the screenshot taken when the bubble was tapped, so nobody has to describe where they were.
-const APP_VERSION = '2026.11.17-chats';
+const APP_VERSION = '2026.11.17-tasks';
 const H2C_URL = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
 const DIAG = { errors:[], actions:[] };   // last 10 of each, for bug reports
 function pushDiag(list, item){ list.push(item); if (list.length>10) list.shift(); }
@@ -5462,7 +5468,7 @@ function actClick(e, el){
   if (a==='boot-retry') { document.getElementById('main').innerHTML='<div class="list"><div class="skel" style="height:92px"></div><div class="skel" style="height:92px"></div></div>'; load(); return; }
   if (!S.data) return;
   if (alfredClick(a, el) || requestClick(a, el)) return;
-  if (a==='go') go(el.dataset.view, el.dataset.back);
+  if (a==='go') go(el.dataset.view==='mine' && el.closest('#navBottom, #navTop') ? (S.taskSide||'mine') : el.dataset.view, el.dataset.back);
   else if (a==='back') goBack();
   // Critique 4 (#32): Due Today opens My Tasks at today's tasks, with a short highlight.
   else if (a==='go-today') { go('mine'); requestAnimationFrame(()=>{ const r=[...document.querySelectorAll('#main article.task')].find(x=>{ const t=find(x.dataset.id); return t && t.due===S.data.today; });
@@ -5551,6 +5557,7 @@ function actClick(e, el){
   else if (a==='tp-unlink') linkTopicDecision('', el);
   else if (a==='tour-open') startCoach();
   else if (a==='mtab') { S.mtab=v; render(); }
+  else if (a==='tside') { if (v!==S.view) { S.taskSide=v; go(v); } }
   else if (a==='lv-new') { S.zoomFrom=el.getBoundingClientRect(); if (S.live) { S.view='live'; S.liveAt=Date.now(); render(); zoomIn(); } else { S.sheet='newmeeting'; showSheet(); } }
   else if (a==='lv-start') { S.pendingType=v; S.zoomFrom=el.getBoundingClientRect(); S.sheet='newmeeting'; showSheet(); }
   else if (a==='lv-begin') { S.pendingType=v; closeSheet(true); startLive(v, true); }
