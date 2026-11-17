@@ -19,7 +19,7 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" type="image/png" href="icon-192.png">
-<script>window.HUDDLE_WEB={"api":"https://script.google.com/macros/s/AKfycbzM8K_-XRMDdOJYJ3THn_FhyZkRreMddHIBAOFCFVoq5S_Y7MnsfFLsl7ac_fyDPrch/exec","clientId":"473377418367-cqmmnfum4kshq16973m4sj2jqqfa55p0.apps.googleusercontent.com","build":"43439a0","push":{"config":{"apiKey":"AIzaSyBON-0KvTXPD_MV6ykhYvCoBRiECEHyE9c","authDomain":"huddle-e2548.firebaseapp.com","projectId":"huddle-e2548","storageBucket":"huddle-e2548.firebasestorage.app","messagingSenderId":"554653922065","appId":"1:554653922065:web:87de53b4cb11b36835d2b0"},"vapidKey":"BHKeDoBmW7vL-qAT3ocyTaMaZ27Ca66jvQtTes2NC4CPoWFiPBJcga7wVd-RD1IuyhBki0oKXwPBGSNq002s8o8"}};document.documentElement.classList.add('web');</script>
+<script>window.HUDDLE_WEB={"api":"https://script.google.com/macros/s/AKfycbzM8K_-XRMDdOJYJ3THn_FhyZkRreMddHIBAOFCFVoq5S_Y7MnsfFLsl7ac_fyDPrch/exec","clientId":"473377418367-cqmmnfum4kshq16973m4sj2jqqfa55p0.apps.googleusercontent.com","build":"fbde207","push":{"config":{"apiKey":"AIzaSyBON-0KvTXPD_MV6ykhYvCoBRiECEHyE9c","authDomain":"huddle-e2548.firebaseapp.com","projectId":"huddle-e2548","storageBucket":"huddle-e2548.firebasestorage.app","messagingSenderId":"554653922065","appId":"1:554653922065:web:87de53b4cb11b36835d2b0"},"vapidKey":"BHKeDoBmW7vL-qAT3ocyTaMaZ27Ca66jvQtTes2NC4CPoWFiPBJcga7wVd-RD1IuyhBki0oKXwPBGSNq002s8o8"}};document.documentElement.classList.add('web');</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <!-- The fonts load without holding up the first paint; the page shows in the phone's own font for a moment if needed. -->
@@ -692,6 +692,12 @@
   .rep-hbar { display:grid; grid-template-columns:1fr auto; gap:3px 8px; width:100%; margin:6px 0; background:none; border:none; font:inherit; color:inherit; text-align:left; padding:0; }
   .hb-t b { font-size:var(--fs-sub); } .hb-t small { color:var(--muted); font-size:var(--fs-cap); } .hb-v { color:var(--heading); font-size:var(--fs-sub); }
   .hb-bar { grid-column:1 / -1; height:7px; border-radius:4px; background:var(--line-soft); } .hb-bar i { display:block; height:7px; border-radius:4px; background:var(--heading); }
+  .rep-vs { margin:8px 0; } .vs-h { display:flex; justify-content:space-between; gap:8px; font-size:var(--fs-sub); } .vs-h small { color:var(--muted); font-size:var(--fs-cap); }
+  .vs-bar { display:block; height:6px; border-radius:3px; margin-top:3px; min-width:2px; } .vs-bar.sp { background:var(--gold); } .vs-bar.cs { background:var(--heading); } .rep-key .k-sp { background:var(--gold); }
+  .rep-ba { display:grid; grid-template-columns:118px 1fr 36px; gap:8px; align-items:center; margin:7px 0; font-size:var(--fs-sub); } .rep-ba small { display:block; color:var(--muted); font-size:10.5px; }
+  .ba-bars i { display:block; height:6px; border-radius:3px; min-width:2px; } .ba-bars i.b { background:var(--line); } .ba-bars i.a { background:var(--heading); margin-top:2px; } .rep-ba > b { text-align:right; }
+  .hb-bar i.gold { background:var(--gold); } .hb-bar i.red { background:var(--red); } .hb-bar i.green { background:var(--green); }
+  .rep-pipe { display:grid; grid-template-columns:1fr 1fr; gap:8px; } .rep-pipe span { display:flex; align-items:center; justify-content:space-between; gap:6px; } .rep-pipe b { color:var(--heading); font-size:var(--fs-body); }
   .mk-picks:empty { display:none; } .mk-picks { margin-top:6px; } .mk-picks .set-row small { display:block; color:var(--muted); font-size:var(--fs-cap); }
   .mk-doc { font-size:var(--fs-sub); margin:6px 0 0; }
   /* Nov 17: Referrals (Watch List, budget card, office page) */
@@ -706,7 +712,9 @@
   .bud-bar i.g { background:var(--green); } .bud-bar i.a { background:var(--gold); } .bud-bar i.r { background:var(--red); }
   .bud-sub { font-size:var(--fs-cap); color:var(--muted); margin:3px 0 0; }
   .bud-sub b.left { color:var(--green); font-weight:600; } .bud-sub b.over { color:var(--red); font-weight:600; }
-  .ramp-recent { display:block; margin-top:4px; } .ramp-recent span { display:block; } .ramp-recent b { color:var(--ink); font-weight:600; }
+  .ramp-recent { display:block; margin:4px 0 0 14px; } .ramp-recent span { display:block; padding-left:12px; line-height:1.5; } .ramp-recent b { color:var(--ink); font-weight:600; }
+  .ramp-recent summary { list-style:none; cursor:pointer; font-weight:600; color:var(--heading); display:inline-flex; align-items:center; gap:4px; min-height:28px; }
+  .ramp-recent summary::-webkit-details-marker { display:none; } .ramp-recent summary::after { content:'›'; display:inline-block; transition:transform .2s; } .ramp-recent[open] summary::after { transform:rotate(90deg); }
   .ref-head { display:flex; align-items:center; gap:8px; flex-wrap:wrap; font-size:var(--fs-sub); color:var(--muted); }
   .ref-sub { margin:6px 0 0; font-size:var(--fs-sub); color:var(--ink); } .ref-why { margin:6px 0 0; font-size:var(--fs-sub); font-weight:600; }
   .ref-stats { display:grid; grid-template-columns:repeat(3,1fr); padding:12px 8px; margin-top:12px; text-align:center; } .ref-stats b { display:block; font-family:var(--serif); font-size:24px; color:var(--heading); } .ref-stats small { font-size:var(--fs-cap); color:var(--muted); }
@@ -3072,12 +3080,13 @@ function mkBudgetHtml(){
   const RP=S.mkt && S.mkt.ramp; if (!RP || !(RP.accounts||[]).length) return '';
   const mi=Number(S.data.today.slice(5,7))-1;
   const bar=(label, used, of, sub)=>{ const pct=of ? Math.min(100, used/of*100) : 0, cls=!of ? '' : used>of ? 'r' : used>of*.8 ? 'a' : 'g';
-    return '<div class="bud-row"><span>'+label+'</span><b>'+money(used)+(of?' of '+money(of):'')+'</b></div><div class="bud-bar"><i class="'+cls+'" style="width:'+pct.toFixed(1)+'%"></i></div>'+(sub?'<p class="bud-sub">'+sub+'</p>':''); };
+    return '<div class="bud-row"><span>'+label+'</span><b>'+money(used)+(of?' of '+money(of):'')+'</b></div><div class="bud-bar"><i class="'+cls+'" style="width:'+pct.toFixed(1)+'%"></i></div>'+(sub?'<div class="bud-sub">'+sub+'</div>':''); };
   return '<div class="card bud-card"><h3 class="sec-h">'+esc(MON_NAMES[mi])+' Budget</h3>'
     // Nov 17 (Brayden): each office's "Marketing" fund in Ramp (each office is its own Ramp company): what's been charged to it
     // this period by anyone, against its limit, and what's left. Read from Ramp every 5 minutes (Code.gs "Ramp").
     +(RP ? RP.accounts.map(A=>(A.cards||[]).map(c=>{ const left=c.limit!=null ? c.limit-(c.spent||0) : null, per=c.interval && c.interval!=='monthly' ? ' this '+esc(c.interval.replace(/ly$/,'').replace(/^dai$/,'day')) : ' this month';
-        const recent=(c.recent||[]).length ? '<span class="ramp-recent">'+c.recent.slice(0,3).map(t=>'<span>'+esc(fmtDate(t.date))+' · '+esc(t.merchant)+(t.who?' · '+esc(t.who):'')+' <b>'+money(t.amount)+'</b></span>').join('')+'</span>' : '';
+        // Nov 17 (Brayden): the charges fold away under "Recent Charges" and sit indented, so they don't clutter the card.
+        const recent=(c.recent||[]).length ? '<details class="ramp-recent"><summary>Recent Charges</summary>'+c.recent.slice(0,5).map(t=>'<span>'+esc(fmtDate(t.date))+' · '+esc(t.merchant)+(t.who?' · '+esc(t.who):'')+' <b>'+money(t.amount)+'</b></span>').join('')+'</details>' : '';
         return bar(esc(A.label+((A.cards||[]).length>1 && c.fund ? ' · '+c.fund : '')), c.spent||0, c.limit,
           (left==null ? 'No limit set in Ramp' : left>=0 ? '<b class="left">'+money(Math.round(left*100)/100)+' left</b>'+per : '<b class="over">'+money(Math.round(-left*100)/100)+' over</b>'+per)+recent); }).join('')).join('') : '')
     +'</div>';
@@ -3143,7 +3152,8 @@ const AREA_NAMES={ PRC:'Prescott', PV:'Prescott Valley', EAST:'East of Mingus', 
 const AREA_COLORS=['#0A345A','#2F5F8A','#C6A85C','#2E7D4F','#7C9CBB','#D9822B','#9AA5B1','#B8C7D6'];
 const TIER_COLORS={ 1:'#2E7D4F', 2:'#C6A85C', 3:'#D9822B', 4:'#B3261E', 5:'#8E6BB0', 0:'#9AA5B1' };
 const REPORTS=[['pulse','Referral Pulse','This year vs last year'],['moving','Who\'s Moving','Biggest gains and drops'],['dependent','How Dependent','Where cases come from'],
-  ['tiers','Tiers & Areas','By tier and by location'],['offices','Offices','Every office, all its doctors']];
+  ['tiers','Tiers & Areas','By tier and by location'],['offices','Offices','Every office, all its doctors'],
+  ['working','Is It Working?','Gift spend vs cases'],['budget','Budget','Ramp spending by month'],['social','Social Posts','Posts by month and place']];
 function areaOf(r){ const k=String(r.l||'').trim().toUpperCase(); return AREA_NAMES[k] || (k ? String(r.l).trim().replace(/\b\w/g,c=>c.toUpperCase()) : 'Unknown'); }
 function s24(r){ return (r.p && r.p.length===12 ? r.p : new Array(12).fill(0)).concat(r.m||new Array(12).fill(0)); }
 function rsum(r, idx){ const s=s24(r); return idx.reduce((a,i)=>a+(i>=0 && i<24 ? (s[i]||0) : 0), 0); }
@@ -3178,19 +3188,19 @@ function renderReports(m){
   if (!S.mkt) { m.innerHTML=backLink()+'<h2>Reports</h2><div class="skel" style="height:120px"></div>'; mkLoad().then(()=>{ if (S.view==='reports') render(); }).catch(()=>{ if (S.view==='reports') m.innerHTML=backLink()+'<h2>Reports</h2>'+loadFail('Reports'); }); return; }
   if (!R || !R.rows || R.last<0) { m.innerHTML=backLink()+'<h2>Reports</h2><div class="empty"><b>No Numbers Yet</b>Reports fill in once the Referral Tracker has cases for this year.</div>'; return; }
   const L=R.last, ytd=R.rows.reduce((a,r)=>a+r.m.slice(0,L+1).reduce((x,y)=>x+y,0),0), then=R.rows.reduce((a,r)=>a+(r.p||[]).slice(0,L+1).reduce((x,y)=>x+y,0),0);
-  const hint={ pulse:chTag(pctCh(ytd,then),' vs last year'), moving:'', dependent:'', tiers:'', offices:'' };
-  const icons={ pulse:'📈', moving:'↕︎', dependent:'🎯', tiers:'🏷', offices:'🏢' };
+  const hint={ pulse:chTag(pctCh(ytd,then),' vs last year') };
+  const icons={ pulse:'📈', moving:'↕︎', dependent:'🎯', tiers:'🏷', offices:'🏢', working:'💡', budget:'💳', social:'📣' };
   m.innerHTML=backLink()+'<h2>Reports</h2>'
     +repCard(MON_NAMES[L].toUpperCase()+' · YEAR TO DATE', repBig(ytd.toLocaleString(),'cases')+'<div class="mt-s">'+chTag(pctCh(ytd,then),' vs '+then.toLocaleString()+' last year')+'</div>')
     +'<div class="rep-grid">'+REPORTS.map(([k,t,s])=>'<button type="button" class="card rep-tile" data-act="rep-open" data-val="'+k+'"><i aria-hidden="true">'+icons[k]+'</i><b>'+esc(t)+'</b><small>'+esc(s)+'</small>'+(hint[k]?'<span class="mt-s">'+hint[k]+'</span>':'')+'</button>').join('')
     +'<button type="button" class="card rep-tile" data-act="rep-monthly"><i aria-hidden="true">🗞</i><b>Monthly Report</b><small>'+esc(MON_NAMES[L])+' on one page · print or PDF</small></button></div>'
-    +'<p class="set-note">From the Referral Tracker, through '+esc(MON_NAMES[L])+'. "Cases" are completed treatments, as the tracker counts them. Spend reports come next.</p>';
+    +'<p class="set-note">From the Referral Tracker, through '+esc(MON_NAMES[L])+'. "Cases" are completed treatments, as the tracker counts them.</p>';
 }
 function renderReport(m){
   const R=S.mkt && S.mkt.referrals, k=S.repKind||'pulse', title=(REPORTS.find(x=>x[0]===k)||[])[1]||'Report';
   if (!S.mkt) { m.innerHTML=backLink()+'<h2>'+esc(title)+'</h2><div class="skel" style="height:160px"></div>'; mkLoad().then(()=>{ if (S.view==='report') render(); }).catch(()=>{}); return; }
   if (!R || !R.rows || R.last<0) { go('reports', 'Marketing'); return; }
-  const body={ pulse:repPulse, moving:repMoving, dependent:repDependent, tiers:repTiers, offices:repOffices }[k]();
+  const body={ pulse:repPulse, moving:repMoving, dependent:repDependent, tiers:repTiers, offices:repOffices, working:repWorking, budget:repBudget, social:repSocial }[k]();
   m.innerHTML=backLink()+'<h2>'+esc(title)+'</h2>'+repFilterChips()+body;
 }
 // SVG helpers. Every chart is drawn here (no outside library) so it's fast on phones and follows dark mode.
@@ -3296,6 +3306,80 @@ function repOffices(){
     +(list.length>25 && S.repAll!=='offices' ? '<button type="button" class="set-row more-row" data-act="rep-all" data-val="offices"><span>Show All '+list.length+'</span><span class="chev" aria-hidden="true">›</span></button>' : '')+'</div>'
     +'<p class="set-note">'+esc(rg.label)+(rg.cmp?', change vs the '+esc(rg.cmpLabel):'')+'. Tap an office for its doctors.</p>';
 }
+// ===== Spend reports (Nov 17, Brayden: reports 6–8) =====
+// Dates for the time filter: This Year (Jan 1 to today), Last 3 Months (this month and the two before), Last Year.
+function repDates(){ const t=S.data.today, y=Number(t.slice(0,4)), f=rf();
+  if (f.range==='3m') { const d=new Date(t.slice(0,8)+'01T12:00:00'); d.setMonth(d.getMonth()-2); return { from:d.toISOString().slice(0,8)+'01', to:t }; }
+  if (f.range==='ly') return { from:(y-1)+'-01-01', to:(y-1)+'-12-31' };
+  return { from:y+'-01-01', to:t }; }
+function monthsBetween(from, to){ const out=[]; let y=Number(from.slice(0,4)), m=Number(from.slice(5,7)); const ty=Number(to.slice(0,4)), tm=Number(to.slice(5,7));
+  while (y<ty || (y===ty && m<=tm)) { out.push(y+'-'+String(m).padStart(2,'0')); m++; if (m>12) { m=1; y++; } } return out; }
+// Which tracker doctors each gift went to (the same rules as an office page: the picked doctor, else last name or office).
+function giftRowsMap(){ const R=S.mkt.referrals, map={}; R.rows.forEach(r=>refGifts(r).forEach(g=>{ (map[g.id]=map[g.id]||[]).push(r); })); return map; }
+function repGifts(){ const D=repDates(); return (S.mkt.deliveries||[]).filter(g=>g.date && g.date>=D.from && g.date<=D.to && g.status!=='Canceled' && g.status!=='Idea'); }
+// 6. Is It Working?
+function repWorking(){
+  const R=S.mkt.referrals, rows=repRows(), inRows=new Set(rows), rg=repRange(), D=repDates(), gifts=repGifts(), map=giftRowsMap(), L=R.last;
+  const tierName=t=>t ? 'Tier '+t : 'No tier', spend={}, cases={};
+  let unmatched=0, total=0;
+  gifts.forEach(g=>{ const c=Number(g.cost)||0; total+=c; const rs=(map[g.id]||[]).filter(r=>inRows.has(r)); if (!rs.length) { if (!(map[g.id]||[]).length) unmatched+=c; return; } rs.forEach(r=>{ const k=tierName(r.t||0); spend[k]=(spend[k]||0)+c/rs.length; }); });
+  rows.forEach(r=>{ const k=tierName(r.t||0); cases[k]=(cases[k]||0)+rsum(r,rg.cur); });
+  const sp=Object.values(spend).reduce((a,b)=>a+b,0)||1, cs=Object.values(cases).reduce((a,b)=>a+b,0)||1;
+  const tiers=[1,2,3,4,5,0].map(tierName).filter(k=>spend[k]||cases[k]);
+  const tierCard=repCard('SPEND VS CASES, BY TIER · '+rg.label.toUpperCase(), tiers.map(k=>{ const a=Math.round((spend[k]||0)/sp*100), b=Math.round((cases[k]||0)/cs*100);
+      return '<div class="rep-vs"><div class="vs-h"><b>'+esc(k)+'</b><small>'+a+'% of gift spend · '+b+'% of cases</small></div><span class="vs-bar sp" style="width:'+a+'%"></span><span class="vs-bar cs" style="width:'+b+'%"></span></div>'; }).join('')
+    +'<p class="rep-key"><i class="k-sp"></i>gift spend <i class="k-cur"></i>cases</p>'+(unmatched?'<p class="rep-note">'+money(Math.round(unmatched))+' of gifts didn\'t match a doctor in the tracker (all-office deliveries, or names that don\'t match). Picking the doctor when logging a gift fixes that.</p>':''));
+  // 3 months before vs after each office's gifts (only gifts with 3 full months after them).
+  const off={}; gifts.forEach(g=>{ const rs=(map[g.id]||[]).filter(r=>inRows.has(r)); if (!rs.length) return; const y=Number(g.date.slice(0,4)), m=Number(g.date.slice(5,7))-1, idx=(y-(R.year-1))*12+m;
+    if (idx-3<0 || idx+3>12+L) return; const key=String(rs[0].o||rs[0].d).toLowerCase(); if (off[key]) return;
+    const b=rs.reduce((a,r)=>a+rsum(r,[idx-3,idx-2,idx-1]),0), af=rs.reduce((a,r)=>a+rsum(r,[idx+1,idx+2,idx+3]),0); off[key]={ name:rs[0].o||rs[0].d, b:b, a:af, date:g.date }; });
+  const ba=Object.values(off).sort((x,y)=>(y.a-y.b)-(x.a-x.b)), mx=Math.max(1,...ba.map(x=>Math.max(x.a,x.b)));
+  const baCard=repCard('3 MONTHS BEFORE VS AFTER A GIFT', ba.length ? ba.slice(0,8).map(x=>'<div class="rep-ba"><span><b>'+esc(x.name)+'</b><small>gift '+esc(fmtDate(x.date))+'</small></span><span class="ba-bars"><i class="b" style="width:'+(x.b/mx*100).toFixed(1)+'%"></i><i class="a" style="width:'+(x.a/mx*100).toFixed(1)+'%"></i></span><b class="'+(x.a>=x.b?'up':'dn')+'">'+(x.a>=x.b?'+':'')+(x.a-x.b)+'</b></div>').join('')
+      +'<p class="rep-key"><i class="k-prev"></i>3 months before <i class="k-cur"></i>3 months after</p><p class="rep-note">A pattern, not proof the gift caused it.</p>'
+    : '<p class="none">Gifts need three full months of cases after them before they can be compared.</p>');
+  const nCases=rows.reduce((a,r)=>a+rsum(r,rg.cur),0), cpc=nCases ? total/nCases : 0;
+  const cutoff=addDays(S.data.today,-90), nogift=rows.filter(r=>(r.t===1||r.t===2) && !/no longer|retired|moved|closed/i.test(r.s||'')).filter(r=>{ const g=refGifts(r)[0]; return !g || g.date<cutoff; });
+  S.repLists={ nogift:nogift };
+  return tierCard+baCard+'<div class="rep-two"><div class="card rep-mini"><h3 class="sec-h">GIFT COST PER CASE</h3>'+repBig(money(Math.round(cpc)),'')+'<small>'+money(Math.round(total))+' in gifts · '+nCases.toLocaleString()+' cases</small></div>'
+    +'<button type="button" class="card rep-mini" data-act="rep-drill" data-kind="nogift"><h3 class="sec-h">NO GIFT IN 90+ DAYS</h3>'+repBig(String(nogift.length),'Tier 1 & 2',nogift.length?'dn':'')+'<small>Tap to see who</small></button></div>'
+    +'<p class="set-note">Gifts are the ones logged in Huddle and the Thank You tab ('+esc(D.from)+' to '+esc(D.to)+').</p>';
+}
+// 7. Budget (Ramp Marketing funds; history read once a day)
+function repBudget(){
+  const H=S.mkt.rampHist, RP=S.mkt.ramp, D=repDates();
+  if (!H || !(H.accounts||[]).length) return '<p class="none">Ramp\'s month-by-month history loads once a day. It shows here after the next read (within a few minutes of Ramp being connected).</p>';
+  const months=monthsBetween(H.from||D.from, S.data.today.slice(0,7)+'-01').slice(-12), cols=['#0A345A','#C6A85C','#2E7D4F'];
+  const series=H.accounts.map(a=>months.map(m=>a.months[m]||0)), hi=Math.max(1,...months.map((_,i)=>series.reduce((x,s)=>x+s[i],0))), w=300, h=124, bw=(w-8)/months.length;
+  let svg=''; months.forEach((m,i)=>{ let y=h-16; series.forEach((s,j)=>{ const hh=(h-24)*s[i]/hi; y-=hh; if (hh>0) svg+='<rect x="'+(4+i*bw+2).toFixed(1)+'" y="'+y.toFixed(1)+'" width="'+(bw-4).toFixed(1)+'" height="'+hh.toFixed(1)+'" fill="'+cols[j%3]+'"/>'; });
+    svg+='<text x="'+(4+i*bw+bw/2).toFixed(1)+'" y="'+(h-3)+'" text-anchor="middle">'+MON_SHORT[Number(m.slice(5,7))-1][0]+'</text>'; });
+  const inRange=months.filter(m=>m>=D.from.slice(0,7) && m<=D.to.slice(0,7)), tot=a=>inRange.reduce((x,m)=>x+(a.months[m]||0),0), all=H.accounts.reduce((x,a)=>x+tot(a),0);
+  const agg=key=>{ const o={}; H.accounts.forEach(a=>Object.keys(a[key]||{}).forEach(k=>{ o[k]=(o[k]||0)+inRange.reduce((x,m)=>x+(a[key][k][m]||0),0); })); return Object.keys(o).filter(k=>o[k]>0).sort((x,y)=>o[y]-o[x]).map(k=>[k,o[k]]); };
+  const cats=agg('cats'), mers=agg('merchants'), avg=inRange.length ? all/inRange.length : 0;
+  const rangeLabel=rf().range==='ly' ? 'LAST YEAR' : rf().range==='3m' ? 'LAST 3 MONTHS' : 'THIS YEAR';
+  return repCard('RAMP · MARKETING FUNDS BY MONTH', '<svg class="rep-svg" viewBox="0 0 '+w+' '+h+'" width="100%" height="'+h+'">'+svg+'</svg><p class="rep-key">'+H.accounts.map((a,j)=>'<i style="background:'+cols[j%3]+'"></i>'+esc(a.label)).join(' ')+'</p>')
+    +repCard(rangeLabel+' · '+money(Math.round(all))+(inRange.length>1?' · AVG '+money(Math.round(avg))+'/MO':''), H.accounts.map(a=>repHbar(esc(a.label),'',tot(a),Math.max(1,...H.accounts.map(tot)),money(Math.round(tot(a))))).join(''))
+    +(cats.length ? repCard('WHERE IT GOES', cats.slice(0,8).map(c=>repHbar(esc(c[0]),'',c[1],cats[0][1],money(Math.round(c[1])))).join('')) : '')
+    +(mers.length ? repCard('TOP MERCHANTS', mers.slice(0,8).map(c=>repHbar(esc(c[0]),'',c[1],mers[0][1],money(Math.round(c[1])),'gold')).join('')) : '')
+    +(RP && RP.accounts ? repCard('THIS MONTH', RP.accounts.map(A=>(A.cards||[]).map(c=>repHbar(esc(A.label),'',c.spent||0,c.limit||Math.max(1,c.spent||0),money(Math.round(c.spent||0))+(c.limit?' of '+money(c.limit):''),c.limit&&c.spent>c.limit?'red':c.limit&&c.spent>c.limit*.8?'gold':'green')).join('')).join('')) : '')
+    +'<p class="set-note">From each office\'s Marketing fund in Ramp, read once a day (this month\'s bars every 5 minutes).</p>';
+}
+// 8. Social Posts
+function repSocial(){
+  const D=repDates(), posts=(S.mkt.posts||[]), when=p=>String(p.posted_at||p.post_on||'').slice(0,10);
+  const posted=posts.filter(p=>p.stage==='Posted' && when(p)>=D.from && when(p)<=D.to);
+  const months=monthsBetween(D.from, D.to.slice(0,8)+'01'), byM=months.map(m=>posted.filter(p=>when(p).slice(0,7)===m).length), hi=Math.max(1,...byM), w=300, h=96, bw=(w-8)/Math.max(1,months.length);
+  const svg=months.map((m,i)=>'<rect x="'+(4+i*bw+2).toFixed(1)+'" y="'+(h-16-(h-24)*byM[i]/hi).toFixed(1)+'" width="'+(bw-4).toFixed(1)+'" height="'+((h-24)*byM[i]/hi).toFixed(1)+'" rx="2" fill="var(--heading)"/><text x="'+(4+i*bw+bw/2).toFixed(1)+'" y="'+(h-3)+'" text-anchor="middle">'+MON_SHORT[Number(m.slice(5,7))-1][0]+'</text>').join('');
+  const plat={}; posted.forEach(p=>String(p.platforms||'').split(',').map(x=>x.trim()).filter(Boolean).forEach(x=>{ plat[x]=(plat[x]||0)+1; }));
+  const days=posts.filter(p=>p.approved_at && p.created_at).map(p=>(new Date(String(p.approved_at).replace(' ','T'))-new Date(String(p.created_at).replace(' ','T')))/864e5).filter(x=>x>=0 && x<120);
+  const avgDays=days.length ? Math.round(days.reduce((a,b)=>a+b,0)/days.length*10)/10 : null;
+  const stage=k=>posts.filter(p=>p.stage===k).length, PC={ Facebook:'#1877F2', Instagram:'#DD2A7B', 'Google Business':'#4285F4' };
+  return repCard('POSTED BY MONTH', '<svg class="rep-svg" viewBox="0 0 '+w+' '+h+'" width="100%" height="'+h+'">'+svg+'</svg>')
+    +'<div class="rep-two"><div class="card rep-mini"><h3 class="sec-h">POSTED</h3>'+repBig(String(posted.length),'')+'<small>'+esc(rf().range==='ly'?'Last year':rf().range==='3m'?'Last 3 months':'This year')+'</small></div>'
+    +'<div class="card rep-mini"><h3 class="sec-h">TIME TO APPROVE</h3>'+repBig(avgDays==null?'–':String(avgDays), avgDays==null?'':'days')+'<small>From written to approved</small></div></div>'
+    +repCard('BY PLACE', Object.keys(plat).length ? Object.keys(plat).sort((a,b)=>plat[b]-plat[a]).map(k=>'<div class="rep-hbar"><span class="hb-t"><b>'+esc(k)+'</b></span><b class="hb-v">'+plat[k]+'</b><span class="hb-bar"><i style="width:'+(plat[k]/Math.max(...Object.values(plat))*100).toFixed(1)+'%;background:'+(PC[k]||'var(--heading)')+'"></i></span></div>').join('') : '<p class="none">Nothing posted in this time.</p>')
+    +repCard('IN THE PIPELINE', '<div class="rep-pipe">'+[['Needs Approval','a'],['Approved','b'],['Drafted','n'],['Idea','n']].map(([k,c])=>'<span>'+mkTag(c,k)+'<b>'+stage(k)+'</b></span>').join('')+'</div>')
+    +'<p class="set-note">Reach and likes need Facebook, Instagram and Google Business connected (a later step).</p>';
+}
 // The doctors behind a tapped chart piece.
 function repDrill(kind, i){
   const R=S.mkt.referrals, rows=repRows(), L=R.last, ly=rf().range==='ly', rg=repRange(); let title='', list=[];
@@ -3303,16 +3387,17 @@ function repDrill(kind, i){
   else if (kind==='cut') { const c=(S.repLists.cuts||[])[i]; if (!c) return; title=c.label; list=c.rows.map(x=>[x.r, x.n]); }
   else if (kind==='area') { const a=(S.repLists.areas||[])[i]; title=a+' · '+rg.short; list=rows.filter(r=>areaOf(r)===a).map(r=>[r, rsum(r,rg.cur)]); }
   else if (kind==='office') { const o=(S.repLists.offices||[])[i]; if (!o) return; title=o.name; list=o.rows.map(r=>[r, rsum(r,rg.cur)]); }
+  else if (kind==='nogift') { title='No Gift in 90+ Days'; list=(S.repLists.nogift||[]).map(r=>{ const g=refGifts(r)[0]; return [r, g ? daysBetween(g.date, S.data.today) : 9999, g ? 'Last gift '+fmtDate(g.date) : 'No gift logged']; }); }
   else if (kind==='fresh' || kind==='quiet') { title=kind==='fresh'?'New':'Went Quiet'; list=(S.repLists[kind]||[]).map(x=>[x.r, kind==='fresh'?x.now:x.then]); }
   list=list.filter(x=>x[1]>0).sort((a,b)=>b[1]-a[1]);
   const tot=list.reduce((a,x)=>a+x[1],0);
-  S.repDrill={ title:title+' · '+tot.toLocaleString()+' case'+(tot===1?'':'s'), rows:list, note:kind==='quiet'?'Cases in the '+rg.cmpLabel+'.':'' };
+  S.repDrill={ title:kind==='nogift' ? title+' · '+list.length : title+' · '+tot.toLocaleString()+' case'+(tot===1?'':'s'), rows:list, note:kind==='quiet'?'Cases in the '+rg.cmpLabel+'.':kind==='nogift'?'Tier 1 and 2 doctors, longest without a gift first.':'' };
   S.sheet='repdrill'; showSheet();
 }
 function repDrillSheet(){
   const D=S.repDrill||{ rows:[] };
   return '<div class="grab"></div><div class="sheet-head"><h3>'+esc(D.title||'')+'</h3><button type="button" class="btn ghost sm" data-act="close-sheet">Done</button></div>'
-    +'<div class="set-card mrows">'+(D.rows.length ? D.rows.slice(0,150).map(x=>repDoctorRow(x[0], String(x[1]))).join('') : '<p class="none">No cases.</p>')+'</div>'+(D.note?'<p class="set-note">'+esc(D.note)+'</p>':'');
+    +'<div class="set-card mrows">'+(D.rows.length ? D.rows.slice(0,150).map(x=>x[2] ? repDoctorRow(x[0], '', x[2]) : repDoctorRow(x[0], String(x[1]))).join('') : '<p class="none">No cases.</p>')+'</div>'+(D.note?'<p class="set-note">'+esc(D.note)+'</p>':'');
 }
 function repFilterSheet(){
   const f=rf(), R=S.mkt.referrals, areas=[...new Set(R.rows.map(areaOf))].sort((a,b)=>a==='Unknown'?1:b==='Unknown'?-1:a.localeCompare(b)), tiers=[...new Set(R.rows.map(r=>String(r.t||0)))].sort();
@@ -3565,7 +3650,7 @@ function sampleMkt(){
       { id:'sp4', title:'Root Canal Myths, Part 2', caption:'Myth: a root canal hurts. Truth: it feels like getting a filling.', platforms:'Facebook', post_on:'', writer:erin, stage:'Drafted', review_note:'Love it. Can we add a line about same-week appointments?' },
       { id:'sp5', title:'Holiday Hours', caption:'', platforms:'Facebook, Google Business', post_on:'', writer:becky, stage:'Idea' },
       { id:'sp6', title:'Veterans Day Thank-You', caption:'Thank you to every veteran in our community.', platforms:'Facebook', post_on:d(-6), writer:erin, stage:'Posted', posted_at:at(-6) }
-    ].map(x=>Object.assign({ link:'', notes:'', created_at:at(-12), created_by:x.writer, updated_at:at(-1), updated_by:x.writer, review_note:'', approved_by:'' }, x)),
+    ].map(x=>Object.assign({ link:'', notes:'', created_at:at(-12), created_by:x.writer, updated_at:at(-1), updated_by:x.writer, review_note:'', approved_by:'', approved_at:(x.stage==='Approved'||x.stage==='Posted')?at(-10):'' }, x)),
     ideas:[
       { id:'si1', text:'Thanksgiving pie delivery to our top 10 referring offices', details:'Order from Sweet Treats by Nov 20.', suggested_by:jared, likes:[becky,erin,drs].join(','), status:'Open' },
       { id:'si2', text:'Lunch-and-learn on cracked teeth for front desk teams', details:'', suggested_by:drs, likes:[becky].join(','), status:'Open' },
@@ -3577,6 +3662,11 @@ function sampleMkt(){
     ramp:{ accounts:[
       { label:'Prescott', cards:[{ fund:'Marketing', limit:1500, interval:'monthly', spent:412.6, recent:[{ date:d(-1), merchant:'Sweet Treats Bakery', amount:186.4, who:'Ashley' }, { date:d(-3), merchant:'Safeway', amount:42.18, who:'Becky' }] }] },
       { label:'Prescott Valley', cards:[{ fund:'Marketing', limit:1000, interval:'monthly', spent:880, recent:[{ date:d(-2), merchant:'Costco', amount:312.55, who:'Ashley' }, { date:d(-6), merchant:'Michaels', amount:61.02, who:'Ashley' }] }] }] },
+    rampHist:(()=>{ const ms=[]; const d0=new Date(t.slice(0,8)+'01T12:00:00'); for (let k=11;k>=0;k--){ const x=new Date(d0); x.setMonth(x.getMonth()-k); ms.push(x.toISOString().slice(0,7)); }
+      const mk=(base,seed)=>{ const months={}, cats={ 'Restaurants & bakeries':{}, 'Grocery':{}, 'Gift cards':{}, 'Florists':{}, 'Printing':{} }, merchants={ 'Sweet Treats Bakery':{}, 'Safeway':{}, 'Costco':{}, 'Michaels':{}, 'Prescott Flowers':{} };
+        ms.forEach((m,i)=>{ const v=base+((i*37+seed)%9)*60; months[m]=v; const ck=Object.keys(cats), mk2=Object.keys(merchants); ck.forEach((c,j)=>{ cats[c][m]=Math.round(v*[.38,.22,.2,.12,.08][j]); }); mk2.forEach((c,j)=>{ merchants[c][m]=Math.round(v*[.3,.2,.18,.12,.1][j]); }); });
+        return { months, cats, merchants }; };
+      return { at:'', from:ms[0]+'-01', accounts:[Object.assign({ label:'Prescott' }, mk(900,3)), Object.assign({ label:'Prescott Valley' }, mk(650,7))] }; })(),
     referrals:sampleReferrals(t), sheet:{ thanksBudget:833, thanksSpent:640, planBudget:3500,
       plan:[{ m:Number(t.slice(5,7))-1, items:'Pumpkin bread with a thank-you card', cost:1180, notes:'' }],
       notes:{ alvarez:{ name:'Dr Alvarez', notes:['Loves the Diamondbacks', 'Coffee, no sugar', 'Runs the Whiskey Row Marathon'] } } },
@@ -3616,7 +3706,7 @@ function MkLocal(store){
   const ap=()=>store.approver;
   return {
     apiMarketing(me){ const deliveries=store.deliveries.filter(live);
-      return { deliveries:deliveries, posts:store.posts.filter(live), ideas:store.ideas.filter(live), offices:mkOffices(deliveries, []), approver:ap(), me:me, referrals:store.referrals||null, sheet:store.sheet||null, ramp:store.ramp||null }; },
+      return { deliveries:deliveries, posts:store.posts.filter(live), ideas:store.ideas.filter(live), offices:mkOffices(deliveries, []), approver:ap(), me:me, referrals:store.referrals||null, sheet:store.sheet||null, ramp:store.ramp||null, rampHist:store.rampHist||null }; },
     apiSaveDelivery(me, d){ const cur=d.id?findIn('deliveries', d.id):null; if (d.id && !cur) throw new Error('That delivery isn\'t there any more.');
       const out=cur||{ id:id('d'), created_at:now(), created_by:me }; if (!cur) store.deliveries.push(out);
       ['office','date','gift','who','notes','status','doctor'].forEach(k=>{ if (d[k]!=null) out[k]=String(d[k]); });
@@ -6091,7 +6181,7 @@ async function liveAddItem(el){
 /* ---------- Alfred chat bubble ---------- */
 // The conversation lives only in this page (S.alf) and is gone after a reload. Every message carries the screen
 // context below, and the screenshot taken when the bubble was tapped, so nobody has to describe where they were.
-const APP_VERSION = '2026.11.17-ptr';
+const APP_VERSION = '2026.11.17-spend';
 const H2C_URL = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
 const DIAG = { errors:[], actions:[] };   // last 10 of each, for bug reports
 function pushDiag(list, item){ list.push(item); if (list.length>10) list.shift(); }
