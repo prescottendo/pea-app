@@ -19,7 +19,7 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" type="image/png" href="icon-192.png">
-<script>window.HUDDLE_WEB={"api":"https://script.google.com/macros/s/AKfycbzM8K_-XRMDdOJYJ3THn_FhyZkRreMddHIBAOFCFVoq5S_Y7MnsfFLsl7ac_fyDPrch/exec","clientId":"473377418367-cqmmnfum4kshq16973m4sj2jqqfa55p0.apps.googleusercontent.com","build":"fbde207","push":{"config":{"apiKey":"AIzaSyBON-0KvTXPD_MV6ykhYvCoBRiECEHyE9c","authDomain":"huddle-e2548.firebaseapp.com","projectId":"huddle-e2548","storageBucket":"huddle-e2548.firebasestorage.app","messagingSenderId":"554653922065","appId":"1:554653922065:web:87de53b4cb11b36835d2b0"},"vapidKey":"BHKeDoBmW7vL-qAT3ocyTaMaZ27Ca66jvQtTes2NC4CPoWFiPBJcga7wVd-RD1IuyhBki0oKXwPBGSNq002s8o8"}};document.documentElement.classList.add('web');</script>
+<script>window.HUDDLE_WEB={"api":"https://script.google.com/macros/s/AKfycbzM8K_-XRMDdOJYJ3THn_FhyZkRreMddHIBAOFCFVoq5S_Y7MnsfFLsl7ac_fyDPrch/exec","clientId":"473377418367-cqmmnfum4kshq16973m4sj2jqqfa55p0.apps.googleusercontent.com","build":"f6ada63","push":{"config":{"apiKey":"AIzaSyBON-0KvTXPD_MV6ykhYvCoBRiECEHyE9c","authDomain":"huddle-e2548.firebaseapp.com","projectId":"huddle-e2548","storageBucket":"huddle-e2548.firebasestorage.app","messagingSenderId":"554653922065","appId":"1:554653922065:web:87de53b4cb11b36835d2b0"},"vapidKey":"BHKeDoBmW7vL-qAT3ocyTaMaZ27Ca66jvQtTes2NC4CPoWFiPBJcga7wVd-RD1IuyhBki0oKXwPBGSNq002s8o8"}};document.documentElement.classList.add('web');</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <!-- The fonts load without holding up the first paint; the page shows in the phone's own font for a moment if needed. -->
@@ -701,7 +701,7 @@
   .mk-picks:empty { display:none; } .mk-picks { margin-top:6px; } .mk-picks .set-row small { display:block; color:var(--muted); font-size:var(--fs-cap); }
   .mk-doc { font-size:var(--fs-sub); margin:6px 0 0; }
   /* Nov 17: Referrals (Watch List, budget card, office page) */
-  .ref-row .mk-main small.why { font-weight:600; } .ref-row .why.r, .ref-why.r { color:var(--red); } .ref-row .why.g, .ref-why.g { color:var(--green); } .ref-row .why.a, .ref-why.a { color:var(--gold-ink); }
+  .ref-row .mk-main small.why { font-weight:600; color:var(--ink); } .ref-row .why.r, .ref-why.r { color:var(--red); } .ref-row .why.g, .ref-why.g { color:var(--green); } .ref-row .why.a, .ref-why.a { color:var(--gold-ink); }
   .ref-row .mk-main .mtag { margin-left:4px; vertical-align:1px; }
   .ref-spark { flex:none; } .ref-spark polyline { fill:none; stroke:var(--heading); stroke-width:1.6; stroke-linejoin:round; } .ref-spark.r polyline { stroke:var(--red); } .ref-spark.g polyline { stroke:var(--green); } .ref-spark.a polyline { stroke:var(--gold-ink); }
   .ref-ytd { width:40px; text-align:right; flex:none; } .ref-ytd b { display:block; font-family:var(--serif); font-size:17px; color:var(--heading); line-height:1.1; } .ref-ytd small { font-size:10px; color:var(--muted); }
@@ -3066,6 +3066,11 @@ const REF_TIER_TAG={ 1:'g', 2:'a', 3:'r', 4:'r', 5:'n' }, REF_WHY={ slip:'r', do
 const MON_SHORT=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 function refTierName(t){ const R=S.mkt && S.mkt.referrals, x=R && (R.tiers||[]).find(y=>y.tier===t); return x ? x : null; }
 function refTierTag(t){ if (!t) return ''; const x=refTierName(t); return mkTag(REF_TIER_TAG[t]||'n', t<=2 ? 'Tier '+t : (x && x.name ? x.name.split(' ')[0] : 'Tier '+t)); }
+// Nov 17 (Brayden): every trend line is the last 6 months, green when cases are trending up, red when down, navy when flat
+// (the slope of a straight line through the 6 months, at least 0.15 cases a month either way).
+function refTrend(vals){ const n=vals.length; if (n<2) return ''; const mx=(n-1)/2, my=vals.reduce((a,b)=>a+b,0)/n;
+  let num=0, den=0; vals.forEach((v,i)=>{ num+=(i-mx)*(v-my); den+=(i-mx)*(i-mx); }); const sl=den ? num/den : 0; return sl>=0.15 ? 'g' : sl<=-0.15 ? 'r' : ''; }
+function refSpark6(r){ const v=refSeries(r).slice(-6); return refSpark(v, refTrend(v)); }
 function refSeries(r){ const R=S.mkt.referrals; return (r.p && r.p.length===12 ? r.p : new Array(12).fill(0)).concat(r.m.slice(0, R.last+1)).slice(-12); }
 function refSpark(vals, cls){
   const w=76, h=26, lo=Math.min(...vals), hi=Math.max(...vals), sp=(hi-lo)||1;
@@ -3097,12 +3102,12 @@ function refWatchHtml(){
   const R=S.mkt && S.mkt.referrals; if (!R || !R.rows) return '';
   const W=R.watch||[], all=S.refAllWatch, show=all ? W : W.slice(0,5);
   const row=w=>{ const r=R.rows[w.i]; return '<button type="button" class="set-row ref-row" data-act="ref-open" data-i="'+w.i+'"><span class="mk-main">'+esc(r.d)+' '+refTierTag(r.t)
-    +'<small>'+esc(r.o||r.l||'')+'</small><small class="why '+(REF_WHY[w.kind]||'')+'">'+esc(w.why)+'</small></span>'+refSpark(refSeries(r), REF_WHY[w.kind])+'<span class="chev" aria-hidden="true">›</span></button>'; };
+    +'<small>'+esc(r.o||r.l||'')+'</small><small class="why">'+esc(w.why)+'</small></span>'+refSpark6(r)+'<span class="chev" aria-hidden="true">›</span></button>'; };
   const lead=R.last>=0 ? 'From the Referral Tracker, through '+MON_NAMES[R.last] : 'The Referral Tracker has no cases for '+R.year+' yet';
   return '<div class="mg-head"><h3 class="set-sec">Watch List'+(W.length?' · '+W.length:'')+'</h3><button type="button" class="capsule ghost-cap" data-act="ref-all">All Offices</button></div>'
     +'<div class="set-card mrows">'+(W.length ? show.map(row).join('') : '<p class="none">Nothing needs attention right now.</p>')
     +(W.length>5 && !all ? '<button type="button" class="set-row more-row" data-act="ref-more"><span>Show All '+W.length+'</span><span class="chev" aria-hidden="true">›</span></button>' : '')+'</div>'
-    +'<p class="set-note">'+lead+'. Tap one for its trend, gifts and notes.</p>';
+    +'<p class="set-note">'+lead+'. The line is the last 6 months: green trending up, red trending down. Tap one for its trend, gifts and notes.</p>';
 }
 // Gifts that went to this doctor (their last name in the office line) or to their office, newest first (as the server).
 function refLastName(n){ let t=String(n||'').replace(/\(.*?\)/g,'').replace(/^dr\.?\s+/i,'').trim(); t=t.indexOf(',')>=0 ? t.split(',')[0] : t.split(' ').pop(); return t.toLowerCase().replace(/[^a-z'-]/g,''); }
@@ -3120,7 +3125,7 @@ function refOfficeSheet(){
   return '<div class="grab"></div><div class="sheet-head">'+(S.refBack ? '<button type="button" class="btn ghost sm" data-act="ref-all-back">‹ All Offices</button>' : '')+'<h3>'+esc(r.d)+'</h3><button type="button" class="btn ghost sm" data-act="close-sheet">Done</button></div>'
     +'<div class="ref-head">'+refTierTag(r.t)+(t ? '<span>'+esc(t.name)+(t.goal?' · '+esc(t.goal):'')+'</span>' : '')+'</div>'
     +'<p class="ref-sub">'+[esc(r.o), esc(r.l)].filter(Boolean).join(' · ')+(r.s?'<br>Staff: '+esc(r.s):'')+'</p>'
-    +(w ? '<p class="ref-why '+(REF_WHY[w.kind]||'')+'">'+esc(w.why)+'</p>' : '')
+    +(w ? '<p class="ref-why">'+esc(w.why)+'</p>' : '')
     +'<div class="card ref-stats"><div><b>'+ytd+'</b><small>'+R.year+' so far</small></div><div><b>'+pytd+'</b><small>Same months '+(R.year-1)+'</small></div><div><b>'+(r.p||[]).reduce((a,b)=>a+b,0)+'</b><small>All of '+(R.year-1)+'</small></div></div>'
     +'<div class="card ref-bars" aria-label="Cases by month: '+R.year+' in navy, '+(R.year-1)+' behind it">'+bars+'<p class="ref-key"><i class="m"></i>'+R.year+' <i class="p"></i>'+(R.year-1)+'</p></div>'
     +(notes ? '<h3 class="set-sec">Doctor Notes</h3><div class="set-card set-pad ref-notes"><ul>'+notes.notes.map(n=>'<li>'+esc(n)+'</li>').join('')+'</ul></div>' : '')
@@ -3137,7 +3142,7 @@ function refAllList(){
   const R=S.mkt && S.mkt.referrals; if (!R) return '';
   const q=String(S.refQ||'').trim().toLowerCase(), rows=R.rows.map((r,i)=>[r,i]).filter(([r])=>!q || (r.d+' '+r.o+' '+r.l).toLowerCase().indexOf(q)>=0);
   const groups={}; rows.forEach(([r,i])=>{ (groups[r.t||9]=groups[r.t||9]||[]).push([r,i]); });
-  const row=([r,i])=>'<button type="button" class="set-row ref-row" data-act="ref-open" data-i="'+i+'"><span class="mk-main">'+esc(r.d)+'<small>'+esc(r.o||r.l||'')+'</small></span>'+refSpark(refSeries(r))+'<span class="ref-ytd"><b>'+refYtd(r)+'</b><small>YTD</small></span></button>';
+  const row=([r,i])=>'<button type="button" class="set-row ref-row" data-act="ref-open" data-i="'+i+'"><span class="mk-main">'+esc(r.d)+'<small>'+esc(r.o||r.l||'')+'</small></span>'+refSpark6(r)+'<span class="ref-ytd"><b>'+refYtd(r)+'</b><small>YTD</small></span></button>';
   return Object.keys(groups).map(Number).sort((a,b)=>a-b).map(t=>{ const x=refTierName(t); return '<h3 class="set-sec">'+(t===9 ? 'Other Referrers' : 'Tier '+t+(x && x.name ? ' · '+esc(x.name) : ''))+'</h3><div class="set-card mrows">'
       +groups[t].sort((a,b)=>refYtd(b[0])-refYtd(a[0])).map(row).join('')+'</div>'; }).join('')
     +(rows.length ? '' : '<p class="none">No matches.</p>');
@@ -6181,7 +6186,7 @@ async function liveAddItem(el){
 /* ---------- Alfred chat bubble ---------- */
 // The conversation lives only in this page (S.alf) and is gone after a reload. Every message carries the screen
 // context below, and the screenshot taken when the bubble was tapped, so nobody has to describe where they were.
-const APP_VERSION = '2026.11.17-spend';
+const APP_VERSION = '2026.11.17-trend';
 const H2C_URL = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
 const DIAG = { errors:[], actions:[] };   // last 10 of each, for bug reports
 function pushDiag(list, item){ list.push(item); if (list.length>10) list.shift(); }
