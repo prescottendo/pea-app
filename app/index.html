@@ -19,7 +19,7 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" type="image/png" href="icon-192.png">
-<script>window.HUDDLE_WEB={"api":"https://script.google.com/macros/s/AKfycbzM8K_-XRMDdOJYJ3THn_FhyZkRreMddHIBAOFCFVoq5S_Y7MnsfFLsl7ac_fyDPrch/exec","clientId":"473377418367-cqmmnfum4kshq16973m4sj2jqqfa55p0.apps.googleusercontent.com","build":"dedda75","push":{"config":{"apiKey":"AIzaSyBON-0KvTXPD_MV6ykhYvCoBRiECEHyE9c","authDomain":"huddle-e2548.firebaseapp.com","projectId":"huddle-e2548","storageBucket":"huddle-e2548.firebasestorage.app","messagingSenderId":"554653922065","appId":"1:554653922065:web:87de53b4cb11b36835d2b0"},"vapidKey":"BHKeDoBmW7vL-qAT3ocyTaMaZ27Ca66jvQtTes2NC4CPoWFiPBJcga7wVd-RD1IuyhBki0oKXwPBGSNq002s8o8"}};document.documentElement.classList.add('web');</script>
+<script>window.HUDDLE_WEB={"api":"https://script.google.com/macros/s/AKfycbzM8K_-XRMDdOJYJ3THn_FhyZkRreMddHIBAOFCFVoq5S_Y7MnsfFLsl7ac_fyDPrch/exec","clientId":"473377418367-cqmmnfum4kshq16973m4sj2jqqfa55p0.apps.googleusercontent.com","build":"b4e380e","push":{"config":{"apiKey":"AIzaSyBON-0KvTXPD_MV6ykhYvCoBRiECEHyE9c","authDomain":"huddle-e2548.firebaseapp.com","projectId":"huddle-e2548","storageBucket":"huddle-e2548.firebasestorage.app","messagingSenderId":"554653922065","appId":"1:554653922065:web:87de53b4cb11b36835d2b0"},"vapidKey":"BHKeDoBmW7vL-qAT3ocyTaMaZ27Ca66jvQtTes2NC4CPoWFiPBJcga7wVd-RD1IuyhBki0oKXwPBGSNq002s8o8"}};document.documentElement.classList.add('web');</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <!-- The fonts load without holding up the first paint; the page shows in the phone's own font for a moment if needed. -->
@@ -2184,14 +2184,14 @@ const COACH=[
   { view:'mine', sel:'article.task .title', h:'Open a Task', b:'<p>Tap a task to read it and change its status, due date, priority or owners. Comments are at the bottom; type <b>@</b> to mention someone.</p>' },
   { view:'mine', sel:'#main .capsule', h:'Add a Task', b:'<p>Tap <b>＋ New Task</b>: a title, who owns it and a date. Choose <b>Only Me</b> to keep it to yourself.</p>' },
   { view:'mine', sel:'#main .ptitle .sort-ico, #main .sort-ico', h:'Search and Sort', b:'<p>The magnifier searches your tasks. The sort icon sorts by due date or priority, shows only Blocked tasks, or shows finished ones.</p>' },
-  { view:'team', sel:'.people', h:'Team', b:'<p>The switch at the top flips between your <b>Personal</b> tasks and the whole <b>Team</b>. On Team, tap a person to see just theirs; a red number means they have overdue tasks.</p>' },
+  { view:'team', sel:'#main .people', h:'Team', b:'<p>The switch at the top flips between your <b>Personal</b> tasks and the whole <b>Team</b>. On Team, tap a person to see just theirs; a red number means they have overdue tasks.</p>' },
   { view:'team', sel:'#main .ptitle .sort-ico, #main .sort-ico, .print-btn', h:'Report & One-on-Ones', b:'<p>The <b>Accountability Report</b> and each leader\'s <b>One-on-Ones</b> are the first choice in this menu (on a computer, the printer).</p>' },
-  { view:'meetings', sel:'.mtab', h:'Meetings', b:'<p>Three lists: past <b>Meetings</b>, every <b>Decision</b>, and the <b>Parking Lot</b> of bigger topics. Search looks inside every summary and transcript.</p>' },
+  { view:'meetings', sel:'#main .mtab', h:'Meetings', b:'<p>Three lists: past <b>Meetings</b>, every <b>Decision</b>, and the <b>Parking Lot</b> of bigger topics. Search looks inside every summary and transcript.</p>' },
   { view:'meetings', sel:'#main .capsule', h:'Start a Meeting', b:'<p>Tap <b>＋ Start Meeting</b> for the weekly tactical (start the Otter recording first). Whoever starts it runs it; everyone else follows along, and a gold bar lets anyone join from any tab.</p>' },
   { view:'meetings', sel:'#mResults .set-row', h:'Read a Meeting', b:'<p>Tap any meeting for its summary: the decisions and your tasks come first, then the full notes.</p>' },
-  { view:'marketing', sel:'.ktab', h:'Marketing', b:'<p><b>Referrals</b>: a Watch List of referring doctors who need something (from the Referral Tracker), the month\'s budgets and your deliveries. <b>Social Posts</b> waiting for Becky\'s approval, and <b>To-Dos</b>: the team\'s marketing ideas and tasks. Anyone can add an idea.</p>' },
+  { view:'marketing', sel:'#main .ktab', h:'Marketing', b:'<p><b>Referrals</b>: a Watch List of referring doctors who need something (from the Referral Tracker), the month\'s budgets and your deliveries. <b>Social Posts</b> waiting for Becky\'s approval, and <b>To-Dos</b>: the team\'s marketing ideas and tasks. Anyone can add an idea.</p>' },
   { view:'home', sel:'.alf-fab', h:'Alfred', b:'<p>The hat is <b>Alfred</b>, your assistant. Ask about meetings and tasks, have him make a small change, or tell him about a problem or an idea. Drag him anywhere.</p>' },
-  { view:'home', sel:'.ptitle .mebtn, #me .mebtn', h:'Your Account', b:'<p>Your initials open <b>Notifications</b>, Appearance, Recently Deleted, this tour and Sign Out.</p>' }
+  { view:'home', sel:'#main .ptitle .mebtn, #me .mebtn', h:'Your Account', b:'<p>Your initials open <b>Notifications</b>, Appearance, Recently Deleted, this tour and Sign Out.</p>' }
 ];
 // The tab button for a view (the bottom bar on a phone, the top bar on a computer).
 function coachTab(view){ if (view==='team' && S.view==='mine') return document.querySelector('#main .tside [data-val="team"]');   // Personal → Team is the switch
@@ -2212,6 +2212,7 @@ function coachTravel(view){
   });
 }
 function startCoach(){
+  S.coachScrolled=null; S.coachKey='';
   closeSheet(true); document.body.classList.remove('fabs-away');
   let ov=document.getElementById('coach');
   if (!ov) { ov=document.createElement('div'); ov.id='coach'; ov.className='coach';
@@ -2238,22 +2239,36 @@ function showCoach(fwd){
     +(i?'<button type="button" class="btn ghost sm" data-act="coach-back">Back</button>':'')
     +'<button type="button" class="btn primary sm" data-act="'+(last?'coach-done':'coach-next')+'">'+(last?'Get Started':'Next')+'</button></div>';
   // Lists load in a moment after a tab change, so place the bubble after the screen has drawn.
-  setTimeout(placeCoach, st.view ? 380 : 0); placeCoach();
+  S.coachKey=''; placeCoach(); coachFollow();
 }
+// Nov 17 (Brayden: on the iPhone the rings were far from the buttons at the top): after a step shows, the ring keeps
+// following its target for 1.6 s (and on every scroll), because on a phone the page can still be loading, the pinned title
+// row settling, or the list redrawing (a fresh element) after the first measurement.
+function coachFollow(){
+  cancelAnimationFrame(S.coachRaf); const until=performance.now()+1600;
+  const tick=()=>{ if (S.coach==null) return; if (!S.coachBusy) placeCoach(true); if (performance.now()<until) S.coachRaf=requestAnimationFrame(tick); };
+  S.coachRaf=requestAnimationFrame(tick);
+}
+window.addEventListener('scroll', ()=>{ if (S.coach!=null && !S.coachBusy) requestAnimationFrame(()=>placeCoach(true)); }, { passive:true });
+// Pinned things (the title row with its search, sort and initials, the bottom bar, Alfred) don't move with the page.
+function coachPinned(el){ for (let e=el; e && e!==document.body; e=e.parentElement){ const p=getComputedStyle(e).position; if (p==='fixed' || p==='sticky') return true; } return false; }
 function coachTarget(st){ return st.sel ? [...document.querySelectorAll(st.sel)].find(e=>{ const r=e.getBoundingClientRect(); return r.width>0 && r.height>0; }) : null; }
 function topSafe(){
   let p=document.getElementById('topSafeProbe');
   if (!p) { p=document.createElement('div'); p.id='topSafeProbe'; p.style.cssText='position:fixed;left:0;top:var(--top-safe);width:1px;height:1px;visibility:hidden;pointer-events:none'; document.body.appendChild(p); }
   return p.getBoundingClientRect().top || 12;
 }
-function placeCoach(){
+function placeCoach(follow){
   if (S.coach==null) return;
   const st=COACH[S.coach], ov=document.getElementById('coach'); if (!ov || ov.hidden) return;
   const spot=ov.querySelector('.coach-spot'), bub=ov.querySelector('.coach-bub'), W=innerWidth, H=innerHeight, pad=6;
   let el=coachTarget(st);
-  if (el && getComputedStyle(el).position!=='fixed' && !el.closest('nav')) {
-    const r0=el.getBoundingClientRect(); if (r0.top<topSafe()+70 || r0.bottom>H-160) { window.scrollTo(0, window.scrollY + r0.top - H*0.3); el=coachTarget(st); }
+  // Scroll a target into view once per step (not while following), instantly, and never for pinned things.
+  if (el && S.coachScrolled!==S.coach && !coachPinned(el) && !el.closest('nav')) {
+    const r0=el.getBoundingClientRect(); S.coachScrolled=S.coach;
+    if (r0.top<topSafe()+70 || r0.bottom>H-160) { window.scrollTo({ top:Math.max(0, window.scrollY + r0.top - H*0.3), behavior:'instant' }); el=coachTarget(st); }
   }
+  if (follow && el) { const k=el.getBoundingClientRect(), key=[k.left,k.top,k.width,k.height].map(Math.round).join(',')+'|'+W+'x'+H; if (key===S.coachKey) return; S.coachKey=key; }
   const r=el && el.getBoundingClientRect();
   // Critique 4 layout #15: the ring never starts in the faded strip under the clock.
   if (r) { const big=r.width>W*0.6, sTop=Math.max(topSafe(), r.top-pad); Object.assign(spot.style, { left:(r.left-pad)+'px', top:sTop+'px', width:(r.width+pad*2)+'px', height:(r.bottom+pad-sTop)+'px',
@@ -2625,8 +2640,13 @@ function syncTbar(){
   const rr=row.getBoundingClientRect(), fs=parseFloat(getComputedStyle(words).fontSize)||26, sEnd=GLIDE_SIZE/fs, s=1+(sEnd-1)*t;
   const wLeft=rr.left+words.offsetLeft, wW=words.offsetWidth;
   // Nov 16 (Brayden): the title shrinks toward the left and stays right beside the (smaller) tree, instead of moving to the middle.
-  const endLeft=tree ? rr.left+treeLeft(tree, rr)+treeW(tree)*TREE_SMALL+8 : wLeft;
-  words.style.transform='translateX('+((endLeft-wLeft)*t).toFixed(1)+'px) scale('+s.toFixed(3)+')';
+  // Nov 17 (Brayden's screenshot, Admin Tools): pages reached with "‹ Back" have no tree, and the title shrank onto the
+  // back link. There it glides to the middle of the bar instead (back on the left, title centered, like iPhone apps).
+  const endLeft=tree ? rr.left+treeLeft(tree, rr)+treeW(tree)*TREE_SMALL+8 : (S.back ? Math.max(wLeft, window.innerWidth/2-wW*sEnd/2) : wLeft);
+  // With a back link, the centered title also lines up with it (same middle line).
+  let dy=0; const bk=!tree && S.back && bar.querySelector('.tb-l > *');
+  if (bk) { const bkr=bk.getBoundingClientRect(); if (bkr.height) dy=(bkr.top+bkr.height/2)-(rr.top+words.offsetTop+words.offsetHeight/2); }
+  words.style.transform='translate('+((endLeft-wLeft)*t).toFixed(1)+'px,'+(dy*t).toFixed(1)+'px) scale('+s.toFixed(3)+')';
   if (tree) tree.style.transform='scale('+(1+(TREE_SMALL-1)*t).toFixed(3)+')';
 }
 // The tree's natural left and width (an SVG has no offsetLeft): read with its transform briefly off.
@@ -5766,7 +5786,7 @@ async function liveAddItem(el){
 /* ---------- Alfred chat bubble ---------- */
 // The conversation lives only in this page (S.alf) and is gone after a reload. Every message carries the screen
 // context below, and the screenshot taken when the bubble was tapped, so nobody has to describe where they were.
-const APP_VERSION = '2026.11.17-referrals';
+const APP_VERSION = '2026.11.17-tour';
 const H2C_URL = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
 const DIAG = { errors:[], actions:[] };   // last 10 of each, for bug reports
 function pushDiag(list, item){ list.push(item); if (list.length>10) list.shift(); }
