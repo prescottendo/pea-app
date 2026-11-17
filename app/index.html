@@ -19,7 +19,7 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" type="image/png" href="icon-192.png">
-<script>window.HUDDLE_WEB={"api":"https://script.google.com/macros/s/AKfycbzM8K_-XRMDdOJYJ3THn_FhyZkRreMddHIBAOFCFVoq5S_Y7MnsfFLsl7ac_fyDPrch/exec","clientId":"473377418367-cqmmnfum4kshq16973m4sj2jqqfa55p0.apps.googleusercontent.com","build":"ccea2e1","push":{"config":{"apiKey":"AIzaSyBON-0KvTXPD_MV6ykhYvCoBRiECEHyE9c","authDomain":"huddle-e2548.firebaseapp.com","projectId":"huddle-e2548","storageBucket":"huddle-e2548.firebasestorage.app","messagingSenderId":"554653922065","appId":"1:554653922065:web:87de53b4cb11b36835d2b0"},"vapidKey":"BHKeDoBmW7vL-qAT3ocyTaMaZ27Ca66jvQtTes2NC4CPoWFiPBJcga7wVd-RD1IuyhBki0oKXwPBGSNq002s8o8"}};document.documentElement.classList.add('web');</script>
+<script>window.HUDDLE_WEB={"api":"https://script.google.com/macros/s/AKfycbzM8K_-XRMDdOJYJ3THn_FhyZkRreMddHIBAOFCFVoq5S_Y7MnsfFLsl7ac_fyDPrch/exec","clientId":"473377418367-cqmmnfum4kshq16973m4sj2jqqfa55p0.apps.googleusercontent.com","build":"cb16ed0","push":{"config":{"apiKey":"AIzaSyBON-0KvTXPD_MV6ykhYvCoBRiECEHyE9c","authDomain":"huddle-e2548.firebaseapp.com","projectId":"huddle-e2548","storageBucket":"huddle-e2548.firebasestorage.app","messagingSenderId":"554653922065","appId":"1:554653922065:web:87de53b4cb11b36835d2b0"},"vapidKey":"BHKeDoBmW7vL-qAT3ocyTaMaZ27Ca66jvQtTes2NC4CPoWFiPBJcga7wVd-RD1IuyhBki0oKXwPBGSNq002s8o8"}};document.documentElement.classList.add('web');</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <!-- The fonts load without holding up the first paint; the page shows in the phone's own font for a moment if needed. -->
@@ -5135,7 +5135,7 @@ function ratingCard(st){
 // Objectives, the Standard Operating Objectives and the Lightning Round, each red (off track), yellow (needs attention)
 // or green (on track), like the priority bar on tasks. Alfred fills it from what he hears (one phone listens: LISTEN),
 // anyone can add, edit, recolor or remove an item, and on Discuss a tap starts that item's timer. Tasks and decisions
-// Alfred hears show as "Alfred Heard" suggestions with Add.
+// Alfred hears show as "Heard by Alfred" suggestions ("Heard by Alfred") with Add.
 const AG_COLORS=[['red','Off Track'],['yellow','Needs Attention'],['green','On Track']];
 const AG_NEXT={ '':'green', green:'yellow', yellow:'red', red:'' };
 const LIGHTNING='Lightning Round';
@@ -5146,7 +5146,7 @@ function agendaStep(step){ return step && /agenda/i.test(step.title||'') && step
 function agItemRow(x, discuss){
   return '<div class="ag-item'+(x.done?' done':'')+'" role="button" tabindex="0" data-act="ag-open" data-id="'+esc(x.id)+'">'
     +'<button type="button" class="ag-bar c-'+(x.color||'none')+'" data-act="ag-color" data-id="'+esc(x.id)+'" aria-label="'+esc(agColorName(x.color))+'. Tap to change"></button>'
-    +'<span class="ag-text">'+esc(x.text)+'<small>'+[x.by?esc(x.by):'', x.src==='alfred'?'Heard by Alfred':'', x.done && x.secs ? 'Discussed '+fmtClock(x.secs).replace('+','') : ''].filter(Boolean).join(' · ')+'</small></span>'
+    +'<span class="ag-text">'+esc(x.text)+'<small>'+[x.by?esc(x.by):'', x.src==='alfred'?'Added by Alfred':'', x.done && x.secs ? 'Discussed '+fmtClock(x.secs).replace('+','') : ''].filter(Boolean).join(' · ')+'</small></span>'
     +(discuss && !x.done && isHost(S.live) ? '<span class="ag-go" aria-hidden="true">›</span>' : '')+'</div>';
 }
 function agendaBoard(st, discuss){
@@ -5168,7 +5168,7 @@ function agendaBoard(st, discuss){
 }
 function agSuggestions(st){
   const list=(agenda(st).sugg||[]).filter(s=>!s.state); if (!list.length) return '';
-  return '<div class="card ag-sugg"><h3>Alfred Heard</h3>'+list.slice(-6).reverse().map(s=>'<div class="ag-s"><span class="tag '+(s.kind==='task'?'':'gold')+'">'+(s.kind==='task'?'Task':'Decision')+'</span>'
+  return '<div class="card ag-sugg"><h3>Heard by Alfred</h3>'+list.slice(-6).reverse().map(s=>'<div class="ag-s"><span class="tag '+(s.kind==='task'?'':'gold')+'">'+(s.kind==='task'?'Task':'Decision')+'</span>'
     +'<span class="ag-s-t">'+esc(s.text)+(s.owner||s.due?'<small>'+[esc(s.owner||''), s.due?esc(fmtDate(s.due)):''].filter(Boolean).join(' · ')+'</small>':'')+'</span>'
     +'<button type="button" class="btn primary sm" data-act="ag-sugg-add" data-id="'+esc(s.id)+'">Add</button><button type="button" class="iconbtn" data-act="ag-sugg-x" data-id="'+esc(s.id)+'" aria-label="Dismiss">'+ICON.x+'</button></div>').join('')+'</div>';
 }
@@ -5497,7 +5497,7 @@ async function liveAddItem(el){
 /* ---------- Alfred chat bubble ---------- */
 // The conversation lives only in this page (S.alf) and is gone after a reload. Every message carries the screen
 // context below, and the screenshot taken when the bubble was tapped, so nobody has to describe where they were.
-const APP_VERSION = '2026.11.17-listen';
+const APP_VERSION = '2026.11.17-heard';
 const H2C_URL = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
 const DIAG = { errors:[], actions:[] };   // last 10 of each, for bug reports
 function pushDiag(list, item){ list.push(item); if (list.length>10) list.shift(); }
