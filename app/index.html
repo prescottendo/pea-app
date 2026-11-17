@@ -19,7 +19,7 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" type="image/png" href="icon-192.png">
-<script>window.HUDDLE_WEB={"api":"https://script.google.com/macros/s/AKfycbzM8K_-XRMDdOJYJ3THn_FhyZkRreMddHIBAOFCFVoq5S_Y7MnsfFLsl7ac_fyDPrch/exec","clientId":"473377418367-cqmmnfum4kshq16973m4sj2jqqfa55p0.apps.googleusercontent.com","build":"6a7b857","push":{"config":{"apiKey":"AIzaSyBON-0KvTXPD_MV6ykhYvCoBRiECEHyE9c","authDomain":"huddle-e2548.firebaseapp.com","projectId":"huddle-e2548","storageBucket":"huddle-e2548.firebasestorage.app","messagingSenderId":"554653922065","appId":"1:554653922065:web:87de53b4cb11b36835d2b0"},"vapidKey":"BHKeDoBmW7vL-qAT3ocyTaMaZ27Ca66jvQtTes2NC4CPoWFiPBJcga7wVd-RD1IuyhBki0oKXwPBGSNq002s8o8"}};document.documentElement.classList.add('web');</script>
+<script>window.HUDDLE_WEB={"api":"https://script.google.com/macros/s/AKfycbzM8K_-XRMDdOJYJ3THn_FhyZkRreMddHIBAOFCFVoq5S_Y7MnsfFLsl7ac_fyDPrch/exec","clientId":"473377418367-cqmmnfum4kshq16973m4sj2jqqfa55p0.apps.googleusercontent.com","build":"cd1a728","push":{"config":{"apiKey":"AIzaSyBON-0KvTXPD_MV6ykhYvCoBRiECEHyE9c","authDomain":"huddle-e2548.firebaseapp.com","projectId":"huddle-e2548","storageBucket":"huddle-e2548.firebasestorage.app","messagingSenderId":"554653922065","appId":"1:554653922065:web:87de53b4cb11b36835d2b0"},"vapidKey":"BHKeDoBmW7vL-qAT3ocyTaMaZ27Ca66jvQtTes2NC4CPoWFiPBJcga7wVd-RD1IuyhBki0oKXwPBGSNq002s8o8"}};document.documentElement.classList.add('web');</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <!-- The fonts load without holding up the first paint; the page shows in the phone's own font for a moment if needed. -->
@@ -2304,7 +2304,9 @@ function refreshOpenList(){
   if (refreshOpenList.busy) return;
   const now=Date.now(), view=S.view, tab=S.mtab||'meetings';
   let job=null;
-  if (view==='marketing' && S.mkt && S.mktFrom==='live' && now-(S.mktAt||0)>=55000)
+  if (view==='home' && !sampleOn() && now-(S.scAt||0)>=55000)   // Nov 17: the Team Scorecard, read from its sheet every 5 minutes
+    job=call('apiScorecard').then(r=>{ S.scAt=Date.now(); if (JSON.stringify(r)!==JSON.stringify(S.data.scorecard)) { S.data.scorecard=r; saveBoot(); return true; } });
+  else if (view==='marketing' && S.mkt && S.mktFrom==='live' && now-(S.mktAt||0)>=55000)
     job=call('apiMarketing').then(r=>{ const same=JSON.stringify(r)===JSON.stringify(S.mkt); S.mktAt=Date.now(); if (!same) { S.mkt=r; return true; } });
   else if (view==='meetings' && now-(S.mtgSyncAt||S.listsAt||0)>=55000) {
     if (tab==='decisions' && S.decisions) job=call('apiDecisions').then(r=>{ const same=JSON.stringify(r)===JSON.stringify(S.decisions); S.mtgSyncAt=Date.now(); if (!same) { S.decisions=r; saveLists(); return true; } });
@@ -3005,7 +3007,7 @@ function mkDeliveriesHtml(){
   return (S.kq ? '' : refWatchHtml()+mkBudgetHtml()) + dueCard + body + (!list.length && !S.kq ? '<p class="none">No deliveries yet. Tap ＋ New Delivery to plan the first one.</p>' : list.length ? '' : '<p class="none">No matches.</p>');
 }
 // ===== Referrals (Nov 17, Brayden: option B "Watch List", sheets sync option Y) =====
-// S.mkt.referrals (from the Referral Tracker sheet, read every 30 minutes by the server): { year, last (latest month with
+// S.mkt.referrals (from the Referral Tracker sheet, read every 5 minutes by the server): { year, last (latest month with
 // cases, 0-11), tot, ptot, tiers:[{tier,name,note,goal}], rows:[{ d doctor, o office, s staff, l location, t tier,
 // m:[12 this year], p:[12 last year], g last gift }], watch:[{ i row, kind slip|dormant|thanks|intro, why }] }.
 // S.mkt.sheet (Marketing Analysis sheet): { thanksBudget, thanksSpent, planBudget, plan:[{m, items, cost, notes}], notes:{ lastname:{name, notes} } }.
@@ -3031,7 +3033,7 @@ function mkBudgetHtml(){
     +(B.planBudget!=null ? bar('Monthly delivery', plan && plan.cost || 0, B.planBudget, plan && plan.items ? esc(plan.items) : 'Nothing in the plan for '+esc(MON_NAMES[mi])+' yet') : '')
     +(B.thanksBudget!=null ? bar('Thank-yous and birthdays', B.thanksSpent||0, B.thanksBudget, 'Planned and delivered gifts this month') : '')
     // Nov 17 (Brayden): each office's "Marketing" fund in Ramp (each office is its own Ramp company): what's been charged to it
-    // this period by anyone, against its limit, and what's left. Read from Ramp every 30 minutes (Code.gs "Ramp").
+    // this period by anyone, against its limit, and what's left. Read from Ramp every 5 minutes (Code.gs "Ramp").
     +(RP ? RP.accounts.map(A=>(A.cards||[]).map(c=>{ const left=c.limit!=null ? c.limit-(c.spent||0) : null, per=c.interval && c.interval!=='monthly' ? ' this '+esc(c.interval.replace(/ly$/,'').replace(/^dai$/,'day')) : ' this month';
         const recent=(c.recent||[]).length ? '<span class="ramp-recent">'+c.recent.slice(0,3).map(t=>'<span>'+esc(fmtDate(t.date))+' · '+esc(t.merchant)+(t.who?' · '+esc(t.who):'')+' <b>'+money(t.amount)+'</b></span>').join('')+'</span>' : '';
         return bar(esc((c.fund||'Marketing')+' Fund · '+A.label), c.spent||0, c.limit,
@@ -4176,7 +4178,7 @@ function teamSettingsHtml(){
 // Nov 17 (Brayden): the Team Scorecard's goals, one row per measure the sheet has numbers for. Also opened by tapping a tile.
 function scorecardGoalsHtml(){
   const sc=S.data.scorecard, items=sc && sc.items || [];
-  if (!items.length) return '<h3 class="set-sec">Scorecard Goals</h3><div class="set-card set-pad"><p class="small">The Monthly Results Scorecard sheet hasn\'t been read yet. Its numbers show here within 30 minutes.</p></div>';
+  if (!items.length) return '<h3 class="set-sec">Scorecard Goals</h3><div class="set-card set-pad"><p class="small">The Monthly Results Scorecard sheet hasn\'t been read yet. Its numbers show here within 5 minutes.</p></div>';
   return '<h3 class="set-sec">Scorecard Goals</h3><div class="set-card">'
     +items.map(x=>'<button type="button" class="set-row" data-act="sc-goal" data-name="'+esc(x.name)+'"><span>'+esc(x.name)+'</span><span class="small muted">'+(x.goal!=null ? (x.better==='down'?'≤ ':'')+fmtNum(x.goal, x.unit) : 'Not Set')+'</span><span class="chev" aria-hidden="true">›</span></button>').join('')
     +'</div><p class="set-note">Numbers come from the Monthly Results Scorecard sheet. A tile is green when it meets its goal, gold within 10%, red behind.</p>';
@@ -5812,7 +5814,7 @@ async function liveAddItem(el){
 /* ---------- Alfred chat bubble ---------- */
 // The conversation lives only in this page (S.alf) and is gone after a reload. Every message carries the screen
 // context below, and the screenshot taken when the bubble was tapped, so nobody has to describe where they were.
-const APP_VERSION = '2026.11.17-rampfund';
+const APP_VERSION = '2026.11.17-every5';
 const H2C_URL = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
 const DIAG = { errors:[], actions:[] };   // last 10 of each, for bug reports
 function pushDiag(list, item){ list.push(item); if (list.length>10) list.shift(); }
@@ -7541,6 +7543,7 @@ function makeMock(REAL){
     apiTopics:()=>topics.filter(t=>t.status!=='Deleted'),
     apiDecisions:()=>decisions.filter(d=>!d.deleted_at),
     apiSetFocus:(r,o,n)=>{ const l=v=>String(v||'').split('\n').map(s=>s.trim()).filter(Boolean); S.data.focus={ rally:String(r||'').trim(), objectives:l(o), anchors:l(n), status:(S.data.focus&&S.data.focus.status)||{} }; return S.data.focus; },
+    apiScorecard:()=>JSON.parse(JSON.stringify(Mock._sc)),
     apiSetScorecardGoal:(n,g)=>{ const x=Mock._sc.items.find(i=>i.name===n); if (g==='') delete x.goal; else { x.goal=Number(g); x.foot=String(x.foot||'').replace(/( · )?No goal set yet/,''); } return JSON.parse(JSON.stringify(Mock._sc)); },
     apiSetObjectiveStatus:(t,st)=>{ const m=Object.assign({}, S.data.focus.status||{}); if (st) m[t]=st; else delete m[t]; return { status:m }; },
     apiActivity:()=>[{kind:'mention',at:d(0)+' 09:12',by:E.EP,by_name:'Erin',task_id:'t1',title:'Call the three top referring offices about the new scheduling line',text:'@Becky Dr. Patel\'s office prefers email. I can send you their contact.'},
