@@ -19,7 +19,7 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" type="image/png" href="icon-192.png">
-<script>window.HUDDLE_WEB={"api":"https://script.google.com/macros/s/AKfycbzM8K_-XRMDdOJYJ3THn_FhyZkRreMddHIBAOFCFVoq5S_Y7MnsfFLsl7ac_fyDPrch/exec","clientId":"473377418367-cqmmnfum4kshq16973m4sj2jqqfa55p0.apps.googleusercontent.com","build":"c42bc78","push":{"config":{"apiKey":"AIzaSyBON-0KvTXPD_MV6ykhYvCoBRiECEHyE9c","authDomain":"huddle-e2548.firebaseapp.com","projectId":"huddle-e2548","storageBucket":"huddle-e2548.firebasestorage.app","messagingSenderId":"554653922065","appId":"1:554653922065:web:87de53b4cb11b36835d2b0"},"vapidKey":"BHKeDoBmW7vL-qAT3ocyTaMaZ27Ca66jvQtTes2NC4CPoWFiPBJcga7wVd-RD1IuyhBki0oKXwPBGSNq002s8o8"}};document.documentElement.classList.add('web');</script>
+<script>window.HUDDLE_WEB={"api":"https://script.google.com/macros/s/AKfycbzM8K_-XRMDdOJYJ3THn_FhyZkRreMddHIBAOFCFVoq5S_Y7MnsfFLsl7ac_fyDPrch/exec","clientId":"473377418367-cqmmnfum4kshq16973m4sj2jqqfa55p0.apps.googleusercontent.com","build":"75d06f4","push":{"config":{"apiKey":"AIzaSyBON-0KvTXPD_MV6ykhYvCoBRiECEHyE9c","authDomain":"huddle-e2548.firebaseapp.com","projectId":"huddle-e2548","storageBucket":"huddle-e2548.firebasestorage.app","messagingSenderId":"554653922065","appId":"1:554653922065:web:87de53b4cb11b36835d2b0"},"vapidKey":"BHKeDoBmW7vL-qAT3ocyTaMaZ27Ca66jvQtTes2NC4CPoWFiPBJcga7wVd-RD1IuyhBki0oKXwPBGSNq002s8o8"}};document.documentElement.classList.add('web');</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <!-- The fonts load without holding up the first paint; the page shows in the phone's own font for a moment if needed. -->
@@ -4550,10 +4550,12 @@ function teamSettingsHtml(){
 // Nov 17 (Brayden): the Team Scorecard's goals, one row per measure the sheet has numbers for. Also opened by tapping a tile.
 function scorecardGoalsHtml(){
   const sc=S.data.scorecard, items=sc && sc.items || [];
-  if (!items.length) return '<h3 class="set-sec">Scorecard Goals</h3><div class="set-card set-pad"><p class="small">The Monthly Results Scorecard sheet hasn\'t been read yet. Its numbers show here within 5 minutes.</p></div>';
+  const info=sc && sc.info;
+  const last=info ? '<p class="set-note">Last read '+esc(info.at||'')+(info.tab?' from the "'+esc(info.tab)+'" tab':'')+(info.found&&info.found.length?': found '+esc(info.found.join(', ')):'')+'.'+(info.problem?' <b>Problem:</b> '+esc(info.problem):'')+'</p>' : '';
+  if (!items.length) return '<h3 class="set-sec">Scorecard Goals</h3><div class="set-card set-pad"><p class="small">'+(info && info.problem ? 'Huddle opened the Monthly Results Scorecard sheet but couldn\'t use it yet.' : 'The Monthly Results Scorecard sheet hasn\'t been read yet. Its numbers show here within 5 minutes.')+'</p></div>'+last;
   return '<h3 class="set-sec">Scorecard Goals</h3><div class="set-card">'
     +items.map(x=>'<button type="button" class="set-row" data-act="sc-goal" data-name="'+esc(x.name)+'"><span>'+esc(x.name)+'</span><span class="small muted">'+(x.goal!=null ? (x.better==='down'?'≤ ':'')+fmtNum(x.goal, x.unit) : 'Not Set')+'</span><span class="chev" aria-hidden="true">›</span></button>').join('')
-    +'</div><p class="set-note">Numbers come from the Monthly Results Scorecard sheet. A tile is green when it meets its goal, gold within 10%, red behind.</p>';
+    +'</div><p class="set-note">Numbers come from the Monthly Results Scorecard sheet. A tile is green when it meets its goal, gold within 10%, red behind.</p>'+last;
 }
 function scGoalItem(){ const sc=S.data.scorecard; return S.scGoal && sc && (sc.items||[]).find(x=>x.name===S.scGoal) || null; }
 // Team settings change for everyone at once, so the message offers Undo for a few seconds (MP-8).
@@ -6186,7 +6188,7 @@ async function liveAddItem(el){
 /* ---------- Alfred chat bubble ---------- */
 // The conversation lives only in this page (S.alf) and is gone after a reload. Every message carries the screen
 // context below, and the screenshot taken when the bubble was tapped, so nobody has to describe where they were.
-const APP_VERSION = '2026.11.17-trend12';
+const APP_VERSION = '2026.11.18-scdiag';
 const H2C_URL = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
 const DIAG = { errors:[], actions:[] };   // last 10 of each, for bug reports
 function pushDiag(list, item){ list.push(item); if (list.length>10) list.shift(); }
