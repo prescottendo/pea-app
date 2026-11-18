@@ -19,7 +19,7 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" type="image/png" href="icon-192.png">
-<script>window.HUDDLE_WEB={"api":"https://script.google.com/macros/s/AKfycbzM8K_-XRMDdOJYJ3THn_FhyZkRreMddHIBAOFCFVoq5S_Y7MnsfFLsl7ac_fyDPrch/exec","clientId":"473377418367-cqmmnfum4kshq16973m4sj2jqqfa55p0.apps.googleusercontent.com","build":"75d06f4","push":{"config":{"apiKey":"AIzaSyBON-0KvTXPD_MV6ykhYvCoBRiECEHyE9c","authDomain":"huddle-e2548.firebaseapp.com","projectId":"huddle-e2548","storageBucket":"huddle-e2548.firebasestorage.app","messagingSenderId":"554653922065","appId":"1:554653922065:web:87de53b4cb11b36835d2b0"},"vapidKey":"BHKeDoBmW7vL-qAT3ocyTaMaZ27Ca66jvQtTes2NC4CPoWFiPBJcga7wVd-RD1IuyhBki0oKXwPBGSNq002s8o8"}};document.documentElement.classList.add('web');</script>
+<script>window.HUDDLE_WEB={"api":"https://script.google.com/macros/s/AKfycbzM8K_-XRMDdOJYJ3THn_FhyZkRreMddHIBAOFCFVoq5S_Y7MnsfFLsl7ac_fyDPrch/exec","clientId":"473377418367-cqmmnfum4kshq16973m4sj2jqqfa55p0.apps.googleusercontent.com","build":"085fb1d","push":{"config":{"apiKey":"AIzaSyBON-0KvTXPD_MV6ykhYvCoBRiECEHyE9c","authDomain":"huddle-e2548.firebaseapp.com","projectId":"huddle-e2548","storageBucket":"huddle-e2548.firebasestorage.app","messagingSenderId":"554653922065","appId":"1:554653922065:web:87de53b4cb11b36835d2b0"},"vapidKey":"BHKeDoBmW7vL-qAT3ocyTaMaZ27Ca66jvQtTes2NC4CPoWFiPBJcga7wVd-RD1IuyhBki0oKXwPBGSNq002s8o8"}};document.documentElement.classList.add('web');</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <!-- The fonts load without holding up the first paint; the page shows in the phone's own font for a moment if needed. -->
@@ -748,25 +748,31 @@
   .sample-note { display:flex; align-items:center; gap:8px; background:var(--card); border:1px dashed var(--gold); border-radius:12px; padding:8px 12px; margin:0 0 16px; font-size:var(--fs-sub); color:var(--ink); }
   .sample-note svg { width:18px; height:18px; color:var(--gold); flex:none; } .sample-note span { flex:1; } .sample-note .linkbtn { flex:none; }
   /* Nov 17 (option C): one navy block for the Rally Cry, Strategic Anchors and Defining Objectives, split by gold rules. */
-  .strat-block { background:#0A345A; color:#fff; border-radius:14px; padding:0 18px; margin:20px 0 8px; }
-  :root[data-theme="dark"] .strat-block { box-shadow:inset 0 0 0 1px rgba(198,168,92,.35); }
-  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .strat-block { box-shadow:inset 0 0 0 1px rgba(198,168,92,.35); } }
-  .sb-sec { padding:16px 0; border-top:1px solid #C6A85C; } .sb-sec:first-child { border-top:none; padding-top:18px; }
-  .sb-k { display:flex; justify-content:space-between; align-items:center; gap:8px; font-size:var(--fs-cap); font-weight:700; letter-spacing:.14em; text-transform:uppercase; color:#C6A85C; margin-bottom:9px; }
-  .sb-edit { background:none; border:none; color:#E6D7AE; font-weight:600; font-size:var(--fs-sub); letter-spacing:0; text-transform:none; padding:2px 0 2px 12px; }
-  .sb-chip { font-size:10px; letter-spacing:.02em; text-transform:none; border:1px dashed #C6A85C; border-radius:999px; padding:1px 7px; }
-  .sb-cry { margin:0; font-family:var(--serif); font-weight:600; font-size:calc(var(--fs-title) * 1.12); line-height:1.16; color:#fff; }
+  /* Nov 18 (Brayden's pick D, "Cream Card"; Design Picks/Rally Cry Background Options): a warm light card with navy text and a
+     gold edge, so it sits with the other cards instead of a heavy navy block. Colors are variables so dark mode swaps them. */
+  .strat-block { --sb-bg:#FBF7EC; --sb-ink:#0A345A; --sb-sub:#5F5F5F; --sb-key:#9A7B2E; --sb-rule:#E3D6B4; --sb-edge:#C6A85C; --sb-edit:#0A345A;
+    --sb-g:#2E7D4F; --sb-y:#8A6418; --sb-yd:#D4A017; --sb-r:#B3261E; --sb-none:#8A8A8A;
+    background:var(--sb-bg); color:var(--sb-ink); border:1px solid var(--sb-rule); box-shadow:inset 4px 0 0 var(--sb-edge); border-radius:14px; padding:0 18px 0 22px; margin:20px 0 8px; }
+  :root[data-theme="dark"] .strat-block { --sb-bg:#1A2533; --sb-ink:#E6E6E6; --sb-sub:#A3A3A3; --sb-key:#C6A85C; --sb-rule:#3A4656; --sb-edit:#E6D7AE;
+    --sb-g:#6FCF97; --sb-y:#F1DB8A; --sb-yd:#E8C547; --sb-r:#F08A80; --sb-none:#9AA3AD; }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .strat-block { --sb-bg:#1A2533; --sb-ink:#E6E6E6; --sb-sub:#A3A3A3; --sb-key:#C6A85C; --sb-rule:#3A4656; --sb-edit:#E6D7AE;
+    --sb-g:#6FCF97; --sb-y:#F1DB8A; --sb-yd:#E8C547; --sb-r:#F08A80; --sb-none:#9AA3AD; } }
+  .sb-sec { padding:16px 0; border-top:1px solid var(--sb-rule); } .sb-sec:first-child { border-top:none; padding-top:18px; }
+  .sb-k { display:flex; justify-content:space-between; align-items:center; gap:8px; font-size:var(--fs-cap); font-weight:700; letter-spacing:.14em; text-transform:uppercase; color:var(--sb-key); margin-bottom:9px; }
+  .sb-edit { background:none; border:none; color:var(--sb-edit); font-weight:600; font-size:var(--fs-sub); letter-spacing:0; text-transform:none; padding:2px 0 2px 12px; }
+  .sb-chip { font-size:10px; letter-spacing:.02em; text-transform:none; border:1px dashed var(--sb-edge); border-radius:999px; padding:1px 7px; }
+  .sb-cry { margin:0; font-family:var(--serif); font-weight:600; font-size:calc(var(--fs-title) * 1.12); line-height:1.16; color:var(--sb-ink); }
   .sb-an, .sb-ob { list-style:none; margin:0; padding:0; }
   .sb-an li { display:flex; gap:12px; align-items:baseline; padding:5px 0; font-weight:500; line-height:1.3; }
-  .sb-an i { font-style:normal; font-family:var(--serif); font-weight:600; color:#C6A85C; width:22px; flex:none; font-size:1.1em; }
+  .sb-an i { font-style:normal; font-family:var(--serif); font-weight:600; color:var(--sb-edge); width:22px; flex:none; font-size:1.1em; }
   .sb-ob li { padding:7px 0; }
   .sb-tx { display:block; font-weight:500; line-height:1.3; }
-  .sb-st { display:inline-flex; align-items:center; gap:6px; margin-top:5px; font-size:var(--fs-cap); color:#C4C8CC; background:none; border:none; padding:0; }
+  .sb-st { display:inline-flex; align-items:center; gap:6px; margin-top:5px; font-size:var(--fs-cap); color:var(--sb-sub); background:none; border:none; padding:0; }
   button.sb-st { min-height:28px; margin-top:2px; }
-  .sb-st i { width:8px; height:8px; border-radius:50%; border:1.5px solid #C6A85C; flex:none; }
-  .sb-st.green i { background:#6FCF97; border-color:#6FCF97; } .sb-st.green span { color:#B9E6C9; }
-  .sb-st.yellow i { background:#E8C547; border-color:#E8C547; } .sb-st.yellow span { color:#F1DB8A; font-weight:600; }
-  .sb-st.red i { background:#F08A80; border-color:#F08A80; } .sb-st.red span { color:#F6B3AC; font-weight:600; }
+  .sb-st i { width:8px; height:8px; border-radius:50%; border:1.5px solid var(--sb-edge); flex:none; }
+  .sb-st.green i { background:var(--sb-g); border-color:var(--sb-g); } .sb-st.green span { color:var(--sb-g); }
+  .sb-st.yellow i { background:var(--sb-yd); border-color:var(--sb-yd); } .sb-st.yellow span { color:var(--sb-y); font-weight:600; }
+  .sb-st.red i { background:var(--sb-r); border-color:var(--sb-r); } .sb-st.red span { color:var(--sb-r); font-weight:600; }
   /* Nov 17: the live agenda (meeting screen) */
   .ag-board { padding:14px 14px 10px; }
   .ag-top { display:flex; align-items:center; gap:8px; } .ag-top h3 { margin:0; } .ag-top .muted { flex:1; font-size:var(--fs-cap); }
@@ -816,7 +822,7 @@
   .ag-s { display:flex; align-items:center; gap:8px; padding:8px 0; border-top:1px solid var(--line-soft); } .ag-s:first-of-type { border-top:none; }
   .ag-s-t { flex:1; min-width:0; font-weight:600; line-height:1.3; } .ag-s-t small { display:block; font-weight:400; color:var(--muted); font-size:var(--fs-cap); }
   .ag-s .iconbtn { width:36px; height:36px; display:grid; place-items:center; background:none; border:none; color:var(--muted); } .ag-s .iconbtn svg { width:16px; height:16px; }
-  .sb-st.none span { color:#9AA3AD; }
+  .sb-st.none span { color:var(--sb-none); }
   .strat-block + .set-sec { margin-top:20px; }
   .home-row { display:grid; grid-template-columns:1fr auto auto; gap:10px; align-items:center; }
   .hcount { min-width:28px; height:24px; padding:0 8px; border-radius:999px; display:inline-grid; place-items:center; font-weight:600; font-size:var(--fs-sub); background:var(--line-soft); color:var(--ink); }
@@ -6188,7 +6194,7 @@ async function liveAddItem(el){
 /* ---------- Alfred chat bubble ---------- */
 // The conversation lives only in this page (S.alf) and is gone after a reload. Every message carries the screen
 // context below, and the screenshot taken when the bubble was tapped, so nobody has to describe where they were.
-const APP_VERSION = '2026.11.18-scdiag';
+const APP_VERSION = '2026.11.18-cream';
 const H2C_URL = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
 const DIAG = { errors:[], actions:[] };   // last 10 of each, for bug reports
 function pushDiag(list, item){ list.push(item); if (list.length>10) list.shift(); }
