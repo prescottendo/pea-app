@@ -19,7 +19,7 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" type="image/png" href="icon-192.png">
-<script>window.HUDDLE_WEB={"api":"https://script.google.com/macros/s/AKfycbzM8K_-XRMDdOJYJ3THn_FhyZkRreMddHIBAOFCFVoq5S_Y7MnsfFLsl7ac_fyDPrch/exec","clientId":"473377418367-cqmmnfum4kshq16973m4sj2jqqfa55p0.apps.googleusercontent.com","build":"5e23f90","push":{"config":{"apiKey":"AIzaSyBON-0KvTXPD_MV6ykhYvCoBRiECEHyE9c","authDomain":"huddle-e2548.firebaseapp.com","projectId":"huddle-e2548","storageBucket":"huddle-e2548.firebasestorage.app","messagingSenderId":"554653922065","appId":"1:554653922065:web:87de53b4cb11b36835d2b0"},"vapidKey":"BHKeDoBmW7vL-qAT3ocyTaMaZ27Ca66jvQtTes2NC4CPoWFiPBJcga7wVd-RD1IuyhBki0oKXwPBGSNq002s8o8"}};document.documentElement.classList.add('web');</script>
+<script>window.HUDDLE_WEB={"api":"https://script.google.com/macros/s/AKfycbzM8K_-XRMDdOJYJ3THn_FhyZkRreMddHIBAOFCFVoq5S_Y7MnsfFLsl7ac_fyDPrch/exec","clientId":"473377418367-cqmmnfum4kshq16973m4sj2jqqfa55p0.apps.googleusercontent.com","build":"ddd8824","push":{"config":{"apiKey":"AIzaSyBON-0KvTXPD_MV6ykhYvCoBRiECEHyE9c","authDomain":"huddle-e2548.firebaseapp.com","projectId":"huddle-e2548","storageBucket":"huddle-e2548.firebasestorage.app","messagingSenderId":"554653922065","appId":"1:554653922065:web:87de53b4cb11b36835d2b0"},"vapidKey":"BHKeDoBmW7vL-qAT3ocyTaMaZ27Ca66jvQtTes2NC4CPoWFiPBJcga7wVd-RD1IuyhBki0oKXwPBGSNq002s8o8"}};document.documentElement.classList.add('web');</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <!-- The fonts load without holding up the first paint; the page shows in the phone's own font for a moment if needed. -->
@@ -1737,6 +1737,14 @@
     .report-screen .rp-bar { display:none; }
     .report-screen .rp-paper { margin:0; padding:0; max-width:none; width:auto; border-radius:0; }
   }
+  /* Nov 23 (#20): the printable backup agenda */
+  .ba h2 { font-family:var(--serif, Georgia, serif); color:#0A345A; margin:0 0 2px; font-size:22px; }
+  .ba h3 { font-family:var(--serif, Georgia, serif); color:#0A345A; border-bottom:1.5px solid #C6A85C; padding-bottom:3px; margin:18px 0 6px; font-size:16px; break-after:avoid; }
+  .ba h4 { margin:10px 0 2px; font-size:14px; } .ba ul { margin:2px 0 6px; padding-left:20px; } .ba li { margin:2px 0; font-size:13px; }
+  .ba-sub, .ba-none { color:#666; font-size:12px; margin:2px 0; }
+  .ba-t { width:100%; border-collapse:collapse; font-size:13px; } .ba-t th, .ba-t td { border:1px solid #bbb; padding:5px 7px; text-align:left; vertical-align:top; }
+  .ba-t th { background:#F3EEE2; } .ba-t tr { break-inside:avoid; } .ba-areas td:first-child { width:34%; } .ba-rate { white-space:nowrap; color:#888; width:1%; }
+  .ba-write td { height:26px; } .ag-dup { color:var(--gold-ink, #7a5c12); } .ask-warn { color:var(--red, #b3261e); }
   .toast button { color:var(--primary-ink); text-decoration:underline; text-underline-offset:3px; }
 
   /* ---------- Huddle's own web address (html.web) ---------- */
@@ -2279,7 +2287,7 @@ const COACH=[
   { view:'team', sel:'#main .people', h:'Team', b:'<p>The switch at the top flips between your <b>Personal</b> tasks and the whole <b>Team</b>. On Team, tap a person to see just theirs; a red number means they have overdue tasks.</p>' },
   { view:'team', sel:'#main .ptitle .sort-ico, #main .sort-ico, .print-btn', h:'Report & One-on-Ones', b:'<p>The <b>Accountability Report</b> and each leader\'s <b>One-on-Ones</b> are the first choice in this menu (on a computer, the printer).</p>' },
   { view:'meetings', sel:'#main .mtab', h:'Meetings', b:'<p>Three lists: past <b>Meetings</b>, every <b>Decision</b>, and the <b>Parking Lot</b> of bigger topics. Search looks inside every summary and transcript.</p>' },
-  { view:'meetings', sel:'#main .capsule', h:'Start a Meeting', b:'<p>Tap <b>＋ Start Meeting</b> for the weekly tactical (start the Otter recording first). Whoever starts it runs it; everyone else follows along within a second or two, and a yellow bar lets anyone join from any tab. During Discuss the host can let someone else (usually Dr. Smith) run the topics; when a topic\'s time is up, whoever runs topics can add a minute, add five, park it or finish it.</p>' },
+  { view:'meetings', sel:'#main .capsule', h:'Start a Meeting', b:'<p>Tap <b>＋ Start Meeting</b> for the weekly tactical (start the Otter recording first). Whoever starts it runs it; everyone else follows along within a second or two, and a yellow bar lets anyone join from any tab. During Discuss the host can let someone else (usually Dr. Smith) run the topics; when a topic\'s time is up, whoever runs topics can add a minute, add five, park it or finish it. The last 10 minutes are kept for Clarity and Closure, and <b>Print a Backup Agenda</b> gives you a paper copy in case the internet goes down.</p>' },
   { view:'meetings', sel:'#mResults .set-row', h:'Read a Meeting', b:'<p>Tap any meeting for its summary: the decisions and your tasks come first, then the full notes.</p>' },
   { view:'marketing', sel:'#main .ktab', h:'Marketing', b:'<p><b>Referrals</b>: a Watch List of referring doctors who need something (from the Referral Tracker), the month\'s budgets and your deliveries. <b>Social Posts</b> waiting for Becky\'s approval, and <b>To-Dos</b>: the team\'s marketing ideas and tasks. Anyone can add an idea.</p>' },
   { view:'home', sel:'.alf-fab', h:'Alfred', b:'<p>The hat is <b>Alfred</b>, your assistant. Ask about meetings and tasks, have him make a small change, or tell him about a problem or an idea. Drag him anywhere.</p>' },
@@ -2895,7 +2903,7 @@ const SAMPLE_HOME={
   focus:{ rally:'Every referring office knows our new scheduling line by Dec 31',
     anchors:['Referring doctors come first', 'Same-week care for every patient', 'One team across both offices'],
     objectives:['Visit all 40 referring offices this quarter', 'Answer every referral call within 2 rings', 'Move to the new scheduling line by Dec 1', 'Train every front desk on the new script'],
-    operating:['Scheduling', 'HR', 'Operations', 'IT Systems', 'First Choice Partners (Marketing)', 'Finance', 'Quality'],
+    operating:['Scheduling', 'HR', 'Operations', 'IT Systems', 'Marketing', 'Finance', 'Quality'],
     status:{ 'Visit all 40 referring offices this quarter':'green', 'Answer every referral call within 2 rings':'red', 'Move to the new scheduling line by Dec 1':'yellow', 'Scheduling':'yellow', 'IT Systems':'green', 'Finance':'red' } },
   rows:[['Overdue',2,'late'],['Due Today',1,''],['Waiting on You',1,'gold'],['To Review',3,'gold']]
 };
@@ -4310,7 +4318,8 @@ function renderSheetBody(){
     el.innerHTML='<div class="grab"></div><div class="sheet-head"><button type="button" class="btn ghost sm" data-act="close-sheet">Cancel</button><h3>Start Meeting</h3></div><div class="set-card">'
       +[['tactical','Weekly Tactical','90 minutes'],['strategic','Monthly Strategic','About 2 hours']]
         .map(([k,l,d])=>'<div class="set-row nm-row'+(S.pendingType===k?' pre':'')+'"><span>'+l+'<small>'+d+' · Start Otter first, titled “'+esc(TEMPLATES[k].title)+'”.</small></span><button type="button" class="btn primary sm" data-act="lv-begin" data-val="'+k+'">Start</button></div>').join('')
-      +'</div><p class="small muted">Everyone with the app open will see the meeting and the same timers.</p>';
+      +'</div><p class="small muted">Everyone with the app open will see the meeting and the same timers.</p>'
+      +'<button type="button" class="linkbtn mt-s" data-act="lv-backup" data-val="'+esc(S.pendingType||'tactical')+'">Print a Backup Agenda</button><p class="small muted">In case the internet or Alfred goes down mid-meeting.</p>';
     return;
   }
   if (S.sheet==='topic') {
@@ -5466,6 +5475,9 @@ function liveWrite(fn, ...args){
     .catch(e=>{ S.liveDirty--; toast('Could not sync: '+errText(e)); });
 }
 function startLive(type, begin){
+  // Nov 23 (Brayden #15): with Show Sample Data on, this phone talks to the made-up stand-in, so the meeting wouldn't be shared.
+  if (sampleOn() && !MOCK) { closeSheet(true); setTimeout(()=>askLive('Sample Data Is On', 'This phone is showing made-up data, so the meeting wouldn\'t reach anyone else\'s phone. Turn sample data off, then start the meeting again.',
+    'Turn Off Sample Data', ()=>sampleSwitch(false), null, { no:'Cancel' }), 300); return; }
   const t=TEMPLATES[type];
   const st={ id:'L'+Date.now(), type:type, title:t.title, draft:!!t.draft, motiveSet:S.data.motiveNext||'A', conflictSet:Number(S.data.conflictNext)||0, ratings:{}, steps:clone(t.steps), i:0, phase:'ready', startedAt:null, stepStart:null,
              pausedAt:null, pausedTotal:0, extra:0, topic:null, topics:[], person:0, personStart:null, items:[], log:[], startedBy:S.data.me, host:S.data.me };
@@ -5551,6 +5563,7 @@ function liveTick(){
   if (PERSON_SECS[st.steps[st.i].kind] && st.personStart) set('lvPerson', personLeft(st), null);
   const tot=document.getElementById('lvTotal'); if (tot) tot.textContent=fmtClock(totalElapsed(st)).replace('+','');
   if (S.view==='live') liveMini(st);
+  endNear(st);
   const pc=S.view==='live' && document.getElementById('lvPace'); if (pc) { const p=paceTag(st); if (pc.textContent!==p.txt) pc.textContent=p.txt; const cl='tag pace '+p.cls; if (pc.className!==cl) pc.className=cl; }
 }
 
@@ -5772,6 +5785,7 @@ function countUpStats(key, list){
   requestAnimationFrame(frame);
 }
 function renderLive(m){
+  { const st0=S.live, k=st0 && st0.id+':'+st0.i; if (k && S.agAllKey!==k) { S.agAllKey=k; S.agShowAll=false; } }   // Nov 23 (#16): each step starts with empty areas hidden
   const st=S.live;
   S.liveShown=livePos(st); S.liveDrawnV=liveVer(st);
   renderLiveCtl();
@@ -5940,7 +5954,8 @@ function agHeardSheet(st){
   const list=(agenda(st).sugg||[]).filter(s=>!s.state);
   return '<div class="grab"></div><div class="sheet-head"><h3>Heard by Alfred</h3><button type="button" class="btn ghost sm" data-act="close-sheet">Done</button></div>'
     +(list.length ? '<div class="card ag-sugg">' : '<p class="none">Nothing new. Tasks and decisions Alfred hears show here.</p>')+list.slice(-6).reverse().map(s=>'<div class="ag-s"><span class="tag '+(s.kind==='task'?'':'gold')+'">'+(s.kind==='task'?'Task':'Decision')+'</span>'
-    +'<span class="ag-s-t">'+esc(s.text)+(s.owner||s.due?'<small>'+[esc(s.owner||''), s.due?esc(fmtDate(s.due)):''].filter(Boolean).join(' · ')+'</small>':'')+'</span>'
+    +'<span class="ag-s-t">'+esc(s.text)+(s.owner||s.due?'<small>'+[esc(s.owner||''), s.due?esc(fmtDate(s.due)):''].filter(Boolean).join(' · ')+'</small>':'')
+    +(s.dup?'<small class="ag-dup">Already a task: '+esc(s.dup)+'</small>':'')+'</span>'
     +'<button type="button" class="btn primary sm" data-act="ag-sugg-add" data-id="'+esc(s.id)+'">Add</button><button type="button" class="iconbtn" data-act="ag-sugg-x" data-id="'+esc(s.id)+'" aria-label="Dismiss">'+ICON.x+'</button></div>').join('')+(list.length?'</div>':'');
 }
 // Every change goes to the server at once (merged one at a time, like ratings), then the meeting redraws.
@@ -6248,6 +6263,7 @@ function liveMenuSheet(){
       : topicLead(st)===S.data.me ? item('lv-lead-back','Hand the Topics Back') : '') : '')
     // Nov 17: listening lives here too (Stop moved off the agenda)
     +(run ? (LISTEN.on ? item('ag-listen-stop','Stop Listening') : !agenda(st).listen ? item('ag-listen-start','Start Listening') : '') : '')
+    +item('lv-backup','Print Backup Agenda')
     +'</div>'+(host ? '<div class="menu mt-l">'+item('lv-cancel-ask','Cancel Meeting','danger-row-btn')+'</div>' : '');
 }
 // The host is asked once per meeting, when Discuss opens, whether the usual Topic Lead runs the topics.
@@ -6287,6 +6303,60 @@ function timesUp(st){
   if (S.sheet) return;   // something else is open; the timer still turns red
   S.sheet='timesup'; showSheet(); buzz([60,90,60]);
   clearTimeout(S.tuT); S.tuT=setTimeout(()=>{ if (S.sheet==='timesup') closeSheet(); }, 30000);
+}
+// Nov 23 (Brayden #17): protect the last minutes for Clarity and Closure. The planned end is the start plus every step's
+// minutes (pauses don't count). Before the closure step, the host (and the Topic Lead) get a heads-up 5 minutes before the
+// closure time starts, then a choice when it does: go to Clarity and Closure now, 5 more minutes, or keep going.
+function closureIdx(st){ return st.steps.findIndex(s=>s.kind==='closure'); }
+function closureLeft(st){ const k=closureIdx(st); if (k<0 || !st.startedAt) return null;
+  return plannedTotal(st) - st.steps[k].mins*60 + (st.endExtra||0) - totalElapsed(st); }
+function endNear(st){
+  const k=closureIdx(st); if (k<0 || st.i>=k || st.phase!=='running' || st.pausedAt || S.tv || st.endKeep) return;
+  if (!(isHost(st) || (topicLead(st) && topicLead(st)===S.data.me))) return;
+  const left=closureLeft(st); if (left==null) return;
+  S.fired=S.fired||{}; const base=st.id+':end'+(st.endExtra||0);
+  if (left<=300 && left>0 && !S.fired[base+':w']) { S.fired[base+':w']=1; toast('5 minutes until Clarity and Closure. Start wrapping up this topic.'); }
+  if (left<=0 && !S.fired[base] && isHost(st)) { S.fired[base]=1; S.fired[base+':w']=1;
+    if (S.sheet || S.view!=='live' || document.hidden) return;
+    buzz([60,90,60]);
+    askLive('Time for Clarity and Closure', 'The last '+st.steps[k].mins+' minutes are for Clarity and Closure. Wrap up here so the team leaves clear on who does what.',
+      'Go to Clarity and Closure', ()=>liveAct(s2=>{ while (s2.i<closureIdx(s2) && s2.phase==='running') liveGo(s2, 1); }),
+      ()=>liveAct(s2=>{ s2.endExtra=(s2.endExtra||0)+300; }, true), { no:'5 More Minutes' });
+  }
+}
+// The printable backup agenda (Brayden #20): everything needed to run the meeting on paper if the internet or Claude is
+// down: the steps and times, the readings, each person's tasks for the Accountability Report, and the areas with space to
+// write. Built on this phone from what it already has, so it works offline too.
+function backupAgendaHtml(type){
+  const t=TEMPLATES[type||'tactical'], A=agAreas(), st=S.live && S.live.type===(type||'tactical') ? S.live : null;
+  const set=(st && st.motiveSet)||S.data.motiveNext||'A', today=set==='A'?[0,1,2]:[3,4,5,6], cf=conflictToday(st||{ conflictSet:Number(S.data.conflictNext)||0 });
+  let clock=0; const when=m=>{ const a=clock; clock+=m; return a+'–'+clock; };
+  const ul=l=>'<ul>'+l.map(x=>'<li>'+x+'</li>').join('')+'</ul>';
+  const items=st ? agenda(st).items||[] : [];
+  const people=(S.data.people||[]).map(p=>{ const open=S.data.tasks.filter(x=>isOpen(x) && owners(x).indexOf(p.email)>=0 && !x.private && (!x.due || x.due<=addDays(S.data.today, 7)));
+    return '<h4>'+esc(p.name)+'</h4>'+(open.length?ul(open.slice(0,12).map(x=>esc(x.title)+(x.due?' <i>('+esc(fmtDate(x.due))+')</i>':'')+' ☐')):'<p class="ba-none">No open tasks due.</p>'); }).join('');
+  const area=n=>{ const l=items.filter(x=>x.area===n); return '<tr><td>'+esc(n)+'</td><td>'+(l.map(x=>esc(x.text)).join('<br>')||'&nbsp;')+'</td><td class="ba-rate">R · Y · G</td></tr>'; };
+  return '<div class="ba"><h2>'+esc(t.title)+' · Backup Agenda</h2><p class="ba-sub">'+esc(fmtDate(S.data.today, { weekday:'long', month:'long', day:'numeric' }))+' · Printed from Huddle'+(st?' during the meeting':'')+'</p>'
+    +'<h3>Steps</h3><table class="ba-t"><tr><th>Min</th><th>Step</th><th>Notes</th></tr>'+t.steps.map(x=>'<tr><td>'+when(x.mins)+'</td><td>'+esc(x.title)+'</td><td>'+(x.note?esc(x.note):'&nbsp;')+'</td></tr>').join('')+'</table>'
+    +'<h3>Motive Summary · Set '+set+'</h3>'+today.map(k=>{ const r=READINGS.motive[k]; return '<h4>'+esc(r.h)+'</h4>'+ul(r.b.map(esc)); }).join('')+'<p><i>'+esc(READINGS.motiveClose)+'</i></p>'
+    +'<h3>Six Questions of Clarity</h3>'+ul(sixQs().map(([q,a])=>'<b>'+esc(q)+'</b> '+esc(a)))
+    +'<h3>Team Member Commitments</h3>'+ul(READINGS.commitments.map(([n,c])=>'<b>'+esc(n)+':</b> '+esc(c)))
+    +'<h3>Team Norms</h3>'+ul(READINGS.norms.map(esc))+'<h3>Team Effectiveness Focus Areas</h3>'+ul(READINGS.focus.map(esc))
+    +'<h3>Conflict Norms · Today: '+esc(READINGS.conflict[cf][0])+'</h3>'+ul(READINGS.conflict[cf][1].map(esc))
+    +(type==='strategic'?'':'<h3>Accountability Report</h3>'+people)
+    +'<h3>Real-Time Agenda</h3><table class="ba-t ba-areas"><tr><th>Area</th><th>Items</th><th>Rate</th></tr>'+A.defining.concat(A.operating, [LIGHTNING]).map(area).join('')+'</table>'
+    +'<h3>Action Items</h3><table class="ba-t ba-write"><tr><th>What</th><th>Who</th><th>When</th></tr>'+'<tr><td>&nbsp;</td><td></td><td></td></tr>'.repeat(8)+'</table>'
+    +'<h3>Clarity and Closure · Tell Your Team</h3><table class="ba-t ba-write"><tr><th>Message</th><th>Who</th></tr>'+'<tr><td>&nbsp;</td><td></td></tr>'.repeat(4)+'</table>'
+    +'<p class="ba-sub">Afterward: type the action items into Huddle, or take a photo of this page and send it to Alfred.</p></div>';
+}
+function openBackupAgenda(type){
+  closeReport();
+  const el=document.createElement('div'); el.id='report'; el.className='report-screen';
+  el.setAttribute('role','dialog'); el.setAttribute('aria-modal','true'); el.setAttribute('aria-label','Backup Agenda');
+  el.innerHTML='<div class="rp-bar"><button type="button" class="btn ghost sm" data-act="report-close">Close</button><b>Backup Agenda</b><button type="button" class="btn primary sm" data-act="report-print">Print</button></div>'
+    +'<div class="rp-paper">'+backupAgendaHtml(type)+'</div>';
+  document.body.appendChild(el); document.body.classList.add('printing-report');
+  motion(el, [{ transform:'translateY(100%)' }, { transform:'none' }], { duration:420, easing:EASE.ios });
 }
 // Park: ends the topic's timer, takes the item off the agenda as Parked and adds it to the Parking Lot (Undo puts it back).
 // A numbered topic with no agenda item goes to the Parking Lot under its name.
@@ -6373,7 +6443,7 @@ async function liveAddItem(el){
 /* ---------- Alfred chat bubble ---------- */
 // The conversation lives only in this page (S.alf) and is gone after a reload. Every message carries the screen
 // context below, and the screenshot taken when the bubble was tapped, so nobody has to describe where they were.
-const APP_VERSION = '2026.11.23-topiclead';
+const APP_VERSION = '2026.11.23-polish';
 const H2C_URL = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
 const DIAG = { errors:[], actions:[] };   // last 10 of each, for bug reports
 function pushDiag(list, item){ list.push(item); if (list.length>10) list.shift(); }
@@ -7272,6 +7342,7 @@ function actClick(e, el){
   else if (a==='lv-confirm') startLive(S.pendingType, true);
   else if (a==='lv-pause') liveAct(livePause);
   else if (a==='lv-menu') { S.sheet='livemenu'; showSheet(); }
+  else if (a==='lv-backup') { if (S.sheet) closeSheet(true); openBackupAgenda(v || (S.live && S.live.type) || 'tactical'); }
   else if (a==='lv-chime') { setPref('lt-chime', pref('lt-chime','on')==='off' ? 'on' : 'off'); toast(pref('lt-chime','on')==='off' ? 'Chime muted on this device' : 'Chime on'); }
   else if (a==='lvm' && /^ag-listen-/.test(el.dataset.do)) { const d=el.dataset.do; closeSheet(true); if (d==='ag-listen-start') listenStart(); else listenStop(true); }   // Nov 17: the microphone must start inside the tap
   else if (a==='lvm') { const d=el.dataset.do; closeSheet(true); setTimeout(()=>{ const b=document.createElement('button'); b.type='button'; b.dataset.act=d; b.hidden=true; document.body.appendChild(b); b.click(); b.remove(); }, 60); }
@@ -7287,7 +7358,10 @@ function actClick(e, el){
   else if (a==='lv-cancel-ask') askLive('Cancel This Meeting?', 'It ends for everyone and isn\'t saved. Action items and task updates made during it stay.', 'Cancel Meeting', ()=>cancelLive(), null, { no:'Keep Going', danger:true });
   else if (a==='lv-wrap-ask') askLive('Skip to the Wrap-Up?', 'You\'re on <b>'+esc(S.live.steps[S.live.i].title)+'</b>. Back on the wrap-up brings you right back here.', 'Wrap Up', ()=>liveAct(liveWrap));
   else if (a==='lv-end-ask') { const n=Object.keys(S.live.ratings||{}).length, of=S.data.people.length;
-    askLive('End the Meeting for Everyone?', '<b>Stop the Otter recording first.</b><br>'+(n>=of?'Everyone has rated.':n+' of '+of+(n===1?' has':' have')+' rated.')+' Ending saves the meeting and closes it on every phone.', 'End Meeting', endLive); }
+    // Nov 23 (Brayden #23): if Alfred never heard this meeting, the summary waits for Otter's recording
+    const deaf=!agenda(S.live).heard && !LISTEN.on;
+    askLive('End the Meeting for Everyone?', '<b>Stop the Otter recording first.</b><br>'+(deaf?'<span class="ask-warn">Alfred didn\'t listen to this meeting, so the summary waits for Otter\'s recording. Make sure Otter uploads it.</span><br>':'')
+      +(n>=of?'Everyone has rated.':n+' of '+of+(n===1?' has':' have')+' rated.')+' Ending saves the meeting and closes it on every phone.', 'End Meeting', endLive); }
   else if (a==='lv-takeover-ask') { const h=esc(firstName(liveHost(S.live)));
     askLive('Take Over as Host?', h+' is hosting now. You\'ll get Back, Next and the other controls, and '+h+'\'s phone will follow along.', 'Take Over', takeOver); }
   else if (a==='lv-item') openLiveItem();
@@ -8093,7 +8167,7 @@ function makeMock(REAL){
     return { reply:'In the preview I only know a few canned answers. Try asking what\'s overdue, what was decided at the last tactical, how to make a task private, or tell me something isn\'t working.', drafts:[] };
   };
   return {
-    apiBootstrap:()=>({scorecard:Mock._sc,focus:{ rally:'Raise Customer XP to an Unreasonable Level', objectives:['Raise Fees','Establish Scorecard','Decide on Insurance','Automate and Catch Up Bookkeeping','Finish Rebranding','Schedule Triage Training','Begin the Marketing Hiring Process'], operating:['Scheduling','HR','Operations','IT Systems','First Choice Partners (Marketing)','Finance','Quality'], status:{}, anchors:['We row as one','We create fanatically loyal dental offices','We create unreasonable customer experiences'] },me:me,isApprover:true,people:people.filter(p=>p.email!==E.ES),tasks:tasks,today:today,defaultDue:d(((4-new Date().getDay()+7)%7)||7),appUrl:'#',meetings:mt,lastTactical:d(-5),emails:{summary:false,assigned:true,mentions:true,reminders:true,digest:true,report:true},reminderDays:2,tacticalWeekday:'4',reportWeekday:team.report_email==='on'?team.report_weekday:'',motiveNext:'A',alfred:{on:team.alfred_chat==='on',ready:true},isRequestApprover:true}),
+    apiBootstrap:()=>({scorecard:Mock._sc,focus:{ rally:'Raise Customer XP to an Unreasonable Level', objectives:['Raise Fees','Establish Scorecard','Decide on Insurance','Automate and Catch Up Bookkeeping','Finish Rebranding','Schedule Triage Training','Begin the Marketing Hiring Process'], operating:['Scheduling','HR','Operations','IT Systems','Marketing','Finance','Quality'], status:{}, anchors:['We row as one','We create fanatically loyal dental offices','We create unreasonable customer experiences'] },me:me,isApprover:true,people:people.filter(p=>p.email!==E.ES),tasks:tasks,today:today,defaultDue:d(((4-new Date().getDay()+7)%7)||7),appUrl:'#',meetings:mt,lastTactical:d(-5),emails:{summary:false,assigned:true,mentions:true,reminders:true,digest:true,report:true},reminderDays:2,tacticalWeekday:'4',reportWeekday:team.report_email==='on'?team.report_weekday:'',motiveNext:'A',alfred:{on:team.alfred_chat==='on',ready:true},isRequestApprover:true}),
     apiTasks:()=>tasks,
     apiSaveTask:t=>{ const i=tasks.findIndex(x=>x.id===t.id);
       if (i>=0) t=Object.assign({}, tasks[i], t);   // like the server: an edit only changes the fields it sends
