@@ -19,7 +19,7 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" type="image/png" href="icon-192.png">
-<script>window.HUDDLE_WEB={"api":"https://script.google.com/macros/s/AKfycbzM8K_-XRMDdOJYJ3THn_FhyZkRreMddHIBAOFCFVoq5S_Y7MnsfFLsl7ac_fyDPrch/exec","clientId":"473377418367-cqmmnfum4kshq16973m4sj2jqqfa55p0.apps.googleusercontent.com","build":"ddd8824","push":{"config":{"apiKey":"AIzaSyBON-0KvTXPD_MV6ykhYvCoBRiECEHyE9c","authDomain":"huddle-e2548.firebaseapp.com","projectId":"huddle-e2548","storageBucket":"huddle-e2548.firebasestorage.app","messagingSenderId":"554653922065","appId":"1:554653922065:web:87de53b4cb11b36835d2b0"},"vapidKey":"BHKeDoBmW7vL-qAT3ocyTaMaZ27Ca66jvQtTes2NC4CPoWFiPBJcga7wVd-RD1IuyhBki0oKXwPBGSNq002s8o8"}};document.documentElement.classList.add('web');</script>
+<script>window.HUDDLE_WEB={"api":"https://script.google.com/macros/s/AKfycbzM8K_-XRMDdOJYJ3THn_FhyZkRreMddHIBAOFCFVoq5S_Y7MnsfFLsl7ac_fyDPrch/exec","clientId":"473377418367-cqmmnfum4kshq16973m4sj2jqqfa55p0.apps.googleusercontent.com","build":"bffc151","push":{"config":{"apiKey":"AIzaSyBON-0KvTXPD_MV6ykhYvCoBRiECEHyE9c","authDomain":"huddle-e2548.firebaseapp.com","projectId":"huddle-e2548","storageBucket":"huddle-e2548.firebasestorage.app","messagingSenderId":"554653922065","appId":"1:554653922065:web:87de53b4cb11b36835d2b0"},"vapidKey":"BHKeDoBmW7vL-qAT3ocyTaMaZ27Ca66jvQtTes2NC4CPoWFiPBJcga7wVd-RD1IuyhBki0oKXwPBGSNq002s8o8"}};document.documentElement.classList.add('web');</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <!-- The fonts load without holding up the first paint; the page shows in the phone's own font for a moment if needed. -->
@@ -626,6 +626,8 @@
   .sc-health small { font-size:var(--fs-cap); color:var(--muted); line-height:1.4; display:block; margin-top:2px; }
   .sc-ring { flex:none; } .sc-ring .rs { fill:none; stroke-width:8; } .sc-ring .on { stroke:var(--green); } .sc-ring .near { stroke:var(--gold); } .sc-ring .off { stroke:var(--red); } .sc-ring .none { stroke:var(--line-soft); }
   .sc-ring text { font-family:var(--serif); font-weight:600; font-size:19px; fill:var(--heading); }
+  .sc-tile.empty .t-num { color:var(--muted); } .sc-tile.empty .t-num small { font-style:italic; font-weight:500; }
+  .hcount.zero { color:var(--muted); background:none; } .sb-none { margin:2px 0 0; color:var(--muted); font-style:italic; font-size:var(--fs-cap, 13px); }
   .sc-tiles { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:16px; }
   .sc-tile { padding:11px 12px 10px; position:relative; min-width:0; margin:0; }
   .sc-tile.wide { grid-column:span 2; display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1.3fr); gap:12px; align-items:center; }
@@ -2277,7 +2279,7 @@ const BOX={ todo:'<i class="tbox"></i>', prog:'<i class="tbox prog"></i>', blk:'
 // Nov 16 (Brayden: "the tour got cut down too far"): a step-by-step tour of each tab. Before a step on another tab, the
 // dimming fades away and the tour shows that tab's button being pressed, then the tab opens and the tour carries on there.
 const COACH=[
-  { view:'home', sel:'#main .strat-block', h:'Welcome to Huddle', b:'<p>This is the <b>Huddle</b> tab, your home base: the Team Scorecard, then the team\'s <b>Rally Cry</b>, <b>Strategic Anchors</b> and <b>Defining Objectives</b>, always in view.</p>' },
+  { view:'home', sel:'#main .strat-block', h:'Welcome to Huddle', b:'<p>This is the <b>Huddle</b> tab, your home base: the Team Scorecard, then the team\'s <b>Rally Cry</b>, <b>Strategic Anchors</b> and <b>Defining Objectives</b>, always in view. Nothing here hides: anything without numbers yet says "Nothing here yet".</p>' },
   { view:'home', sel:'#main .set-card', h:'For You', b:'<p>What needs you today: anything <b>overdue</b>, <b>due today</b>, or a teammate <b>waiting on you</b>. Tap a row to go straight there.</p>' },
   { view:'home', sel:'#main .start-card', h:'The Next Meeting', b:'<p>The weekly tactical: when it is, and how many of your items will come up. Tap it during the week to update them before the meeting.</p>' },
   { view:'mine', sel:'article.task .circ', h:'Finish a Task', b:'<p>Tap the box when a task is <b>done</b> (Undo shows for a few seconds). <b>Hold</b> it for In Progress, Blocked or Not Started. You can also swipe a task to the right.</p>' },
@@ -2850,18 +2852,19 @@ function roman(n){ return ['I','II','III','IV','V','VI','VII','VIII','IX','X'][n
 function focusCard(f, opts){
   f=f||S.data.focus; opts=opts||{}; if (!f) return '';
   const has=a=>a && a.length, ap=S.data.isApprover && !opts.sample, st=f.status||{};
-  if (!f.rally && !has(f.anchors) && !has(f.objectives) && !has(f.operating)) return ap ? '<div class="set-card"><button type="button" class="set-row" data-act="focus-edit"><span>Add Your Rally Cry</span><span class="chev" aria-hidden="true">›</span></button></div>' : '';
   const ex=opts.sample ? '<span class="sb-chip">Sample</span>' : '';
   const sec=(label, body, extra)=>'<div class="sb-sec"><div class="sb-k"><span>'+label+'</span>'+(extra||'')+'</div>'+body+'</div>';
   const obList=list=>'<ul class="sb-ob">'+list.map(x=>{ const v=st[x]||'', t=OBJ_TAG[v];
     const line='<i class="'+(v||'none')+'" aria-hidden="true"></i><span>'+(t || (ap ? 'Set Status' : ''))+'</span>';
     return '<li><span class="sb-tx">'+esc(x)+'</span>'+(ap ? '<button type="button" class="sb-st '+(v||'none')+'" data-act="obj-status" data-text="'+esc(x)+'" aria-label="Status: '+(t||'none')+'. Tap to change">'+line+'</button>'
       : t ? '<span class="sb-st '+v+'">'+line+'</span>' : '')+'</li>'; }).join('')+'</ul>';
+  // Nov 23 (Brayden): every section shows, empty ones with "Nothing here yet".
+  const none='<p class="sb-none">Nothing here yet</p>';
   return '<section class="strat-block" aria-label="Rally Cry, Strategic Anchors and Objectives">'
-    +(f.rally ? sec('Rally Cry', '<p class="sb-cry">'+esc(f.rally)+'</p>', ap ? '<button type="button" class="sb-edit" data-act="focus-edit">Edit</button>' : ex) : '')
-    +(has(f.anchors) ? sec('Strategic Anchors', '<ol class="sb-an">'+f.anchors.map((x,i)=>'<li><i>'+roman(i+1)+'</i><span>'+esc(x)+'</span></li>').join('')+'</ol>', f.rally ? '' : ex) : '')
-    +(has(f.objectives) ? sec('Defining Objectives', obList(f.objectives)) : '')
-    +(has(f.operating) ? sec('Standard Operating Objectives', obList(f.operating)) : '')
+    +sec('Rally Cry', f.rally ? '<p class="sb-cry">'+esc(f.rally)+'</p>' : none, ap ? '<button type="button" class="sb-edit" data-act="focus-edit">'+(f.rally?'Edit':'Add')+'</button>' : ex)
+    +sec('Strategic Anchors', has(f.anchors) ? '<ol class="sb-an">'+f.anchors.map((x,i)=>'<li><i>'+roman(i+1)+'</i><span>'+esc(x)+'</span></li>').join('')+'</ol>' : none)
+    +sec('Defining Objectives', has(f.objectives) ? obList(f.objectives) : none)
+    +sec('Standard Operating Objectives', has(f.operating) ? obList(f.operating) : none)
     +'</section>';
 }
 
@@ -2914,7 +2917,17 @@ const SAMPLE_HOME={
 // Items: { name, value, goal, exampleGoal, better:'up'|'down', unit, unitNote, viz, trend:[…oldest→newest], note, foot, sample }.
 const ENPS_BANDS=[[-100,0,'Trouble'],[0,10,'Positive'],[10,30,'Good'],[30,50,'Strong'],[50,101,'Excellent']];
 function enpsBand(v){ return ENPS_BANDS.find(b=>v>=b[0] && v<b[1]) || ENPS_BANDS[0]; }
+// Nov 23 (Brayden): all five measures always show. Without numbers a tile reads 0 with a flat line or an empty meter, and
+// "Nothing here yet". The server sends them that way; this list covers a phone whose copy has none.
+const SC_MEASURES=[{ name:'Completed Cases', better:'up', viz:'trend' }, { name:'Turnover Rate', unit:'%', better:'down', viz:'trend' }, { name:'eNPS', better:'up', viz:'enps' },
+  { name:'Team Judgment', better:'up', viz:'scale5', unitNote:'of 5' }, { name:'Profitability', better:'up', viz:'percentile', unit:'th', unitNote:'pctl' }];
+function scItems(){
+  const have=(S.data.scorecard && S.data.scorecard.items) || [];
+  return SC_MEASURES.map(m=>have.find(x=>x.name===m.name) || Object.assign({}, m, { value:0, empty:true }, m.viz==='trend' ? { trend:[0,0] } : {}))
+    .concat(have.filter(x=>!SC_MEASURES.some(m=>m.name===x.name)));
+}
 function scoreState(x){
+  if (x.empty) return '';
   const v=Number(x.value); if (!isFinite(v)) return '';
   if (x.viz==='enps' && (x.goal==null || x.goal==='')) return v>=10 ? 'on' : v>0 ? 'near' : 'off';
   const g=Number(x.goal); if (x.goal==null || x.goal==='' || !isFinite(g)) return '';
@@ -2946,12 +2959,12 @@ function scRing(states){
 }
 function scorecardHtml(list, month, opts){
   opts=opts||{};
-  const states=list.map(scoreState), on=states.filter(x=>x==='on').length, rated=states.filter(Boolean).length, unrated=list.length-rated;
+  const states=list.map(scoreState), on=states.filter(x=>x==='on').length, rated=states.filter(Boolean).length, empties=list.filter(x=>x.empty).length, unrated=list.length-rated-empties;
   const close=list.filter((x,i)=>states[i]==='near').map(x=>x.name), behind=list.filter((x,i)=>states[i]==='off').map(x=>x.name);
   const moved=list.filter(x=>x.viz==='trend' && (x.trend||[]).length>1).map(x=>({ x:x, d:Number(x.value)-Number(x.trend[x.trend.length-2]) })).sort((a,b)=>Math.abs(b.d)-Math.abs(a.d))[0];
   // Nov 17: measures without a goal aren't counted as on or off track ("2 have no goal yet").
   const sub=[month||'', !rated ? '' : behind.length ? listNames(behind)+(behind.length===1?' is':' are')+' behind' : close.length ? listNames(close)+(close.length===1?' is':' are')+' close' : unrated ? '' : 'Everything meets its goal',
-      unrated ? unrated+(unrated===1?' has':' have')+' no goal yet' : ''].filter(Boolean).join(' · ')
+      unrated ? unrated+(unrated===1?' has':' have')+' no goal yet' : '', empties ? (empties===list.length ? 'No numbers yet' : empties+(empties===1?' has':' have')+' no numbers yet') : ''].filter(Boolean).join(' · ')
     +(moved && moved.d ? '<br>'+esc(moved.x.name.split(' ')[0])+' '+(moved.d>0?'▲':'▼')+' '+fmtNum(Math.abs(moved.d), moved.x.unit==='th'?'':moved.x.unit)+' from last month' : '');
   const chip=x=>x.sample ? '<span class="t-chip">Sample</span>' : '';
   const ex=x=>x.exampleGoal ? ' <span class="t-ex">example</span>' : '';
@@ -2959,16 +2972,19 @@ function scorecardHtml(list, month, opts){
     const st=states[i], t=(x.trend||[]).map(Number), prev=t.length>1 ? t[t.length-2] : null, v=Number(x.value);
     const change=prev!=null ? (v>prev?'▲ ':v<prev?'▼ ':'— ')+fmtNum(Math.abs(Math.round((v-prev)*10)/10), x.unit==='th'?'':'') : '';
     const goalTxt=x.goal!=null && x.goal!=='' ? 'Goal '+(x.better==='down'?'≤ ':'')+fmtNum(x.goal, x.unit)+ex(x) : '';
-    let viz='', small=x.unitNote||change||x.note||'';
-    if (x.viz==='trend' && t.length>1) viz=scTrend(t, x.goal!=null && x.goal!=='' ? Number(x.goal) : null, st);
-    else if (x.viz==='enps') { viz=scEnps(v); small=x.note||''; }
+    let viz='', small=x.empty ? 'Nothing here yet' : x.unitNote||change||x.note||'';
+    if (x.viz==='trend' && x.empty) viz=scTrend([0,0], null, '');
+    else if (x.viz==='trend' && t.length>1) viz=scTrend(t, x.goal!=null && x.goal!=='' ? Number(x.goal) : null, st);
+    else if (x.viz==='trend') viz=scTrend([v,v], null, st);   // one month so far: a flat line
+    else if (x.viz==='enps') { viz=scEnps(v); if (!x.empty) small=x.note||''; }
     else if (x.viz==='scale5') viz=scScale5(v);
     else if (x.viz==='percentile') viz=scPct(v, x.goal!=null && x.goal!=='' ? Number(x.goal) : null);
-    const pill=x.viz==='enps' ? '<span class="t-pill '+st+'">'+enpsBand(v)[2]+'</span>' : chip(x);
+    const pill=x.viz==='enps' && !x.empty ? '<span class="t-pill '+st+'">'+enpsBand(v)[2]+'</span>' : chip(x);
     const foot=[x.viz==='percentile' && x.goal!=null && v<x.goal ? fmtNum(x.goal-v,'')+' points under goal' : goalTxt, x.foot||''].filter(Boolean).join('<br>');
     const tap=(opts.edit?' data-act="sc-goal" data-name="'+esc(x.name)+'" role="button" tabindex="0" aria-label="'+esc(x.name)+': set its goal"':'');
-    if (x.viz==='percentile') return '<div class="card sc-tile wide '+st+'"'+tap+'><div><div class="t-name">'+esc(x.name)+' '+pill+'</div><div class="t-num">'+fmtNum(v, x.unit)+'<small>'+esc(small)+'</small></div><div class="t-foot">'+foot+'</div></div><div class="t-wide-viz">'+viz+'</div></div>';
-    return '<div class="card sc-tile '+st+'"'+tap+'><div class="t-name">'+esc(x.name)+' '+pill+'</div><div class="t-num">'+fmtNum(v, x.unit)+'<small>'+esc(small)+'</small></div><div class="t-viz-box">'+viz+'</div><div class="t-foot">'+foot+'</div></div>';
+    const cls=st+(x.empty?' empty':'');
+    if (x.viz==='percentile') return '<div class="card sc-tile wide '+cls+'"'+tap+'><div><div class="t-name">'+esc(x.name)+' '+pill+'</div><div class="t-num">'+fmtNum(v, x.unit)+'<small>'+esc(small)+'</small></div><div class="t-foot">'+foot+'</div></div><div class="t-wide-viz">'+viz+'</div></div>';
+    return '<div class="card sc-tile '+cls+'"'+tap+'><div class="t-name">'+esc(x.name)+' '+pill+'</div><div class="t-num">'+fmtNum(v, x.unit)+'<small>'+esc(small)+'</small></div><div class="t-viz-box">'+viz+'</div><div class="t-foot">'+foot+'</div></div>';
   }).join('');
   return '<div class="card sc-health">'+scRing(states)+'<div><b>'+(rated ? on+' of '+rated+' On Track' : 'No Goals Set Yet')+'</b><small>'+sub+'</small></div></div><div class="sc-tiles">'+tiles+'</div>';
 }
@@ -2977,18 +2993,19 @@ function renderHome(m){
   const me=S.data.me, mineOpen=S.data.tasks.filter(t=>isOpen(t) && owners(t).indexOf(me)>=0);
   const late=mineOpen.filter(isLate).length, today=mineOpen.filter(t=>t.due===S.data.today).length;
   const waiting=S.data.tasks.filter(t=>t.status==='Blocked' && t.waiting_on===me), rc=reviewCount();
-  const row=(attrs,label,n,tone)=>'<button type="button" class="set-row home-row" '+attrs+'><span>'+label+'</span><span class="hcount'+(tone?' '+tone:'')+'">'+n+'</span><span class="chev" aria-hidden="true">›</span></button>';
-  const rows=(late?row('data-act="go" data-view="mine"','Overdue',late,'late'):'')
-    +(today?row('data-act="go-today"','Due Today',today,''):'')
-    +(waiting.length?row('data-act="home-waiting"','Waiting on You',waiting.length,'gold'):'')
-    +(rc?row('data-act="go" data-view="review" data-back="Huddle"','To Review',rc,'gold'):'');
+  const row=(attrs,label,n,tone)=>'<button type="button" class="set-row home-row" '+attrs+'><span>'+label+'</span><span class="hcount'+(n?(tone?' '+tone:''):' zero')+'">'+n+'</span><span class="chev" aria-hidden="true">›</span></button>';
+  // Nov 23 (Brayden): nothing on the Huddle tab hides when it's empty; a row shows 0.
+  const rows=row('data-act="go" data-view="mine"','Overdue',late,'late')
+    +row('data-act="go-today"','Due Today',today,'')
+    +row('data-act="home-waiting"','Waiting on You',waiting.length,'gold')
+    +(S.data.isApprover?row('data-act="go" data-view="review" data-back="Huddle"','To Review',rc,'gold'):'');
   m.innerHTML='<div class="head-row home-title"><h2>Huddle</h2></div>'   // Nov 16 (Brayden): the Home tab's page is titled Huddle
     // Nov 16 (Brayden): Scorecard first, then the Rally Cry card, then For You, then the meeting card.
     // Critique 4 (#1): the Scorecard shows once it has numbers. Nov 17: S.data.scorecard = { month, items } from the
     // Monthly Results Scorecard sheet (scorecard_() in Code.gs); approvers tap a tile to set its goal.
-    +(S.data.scorecard && (S.data.scorecard.items||[]).length ? '<h3 class="set-sec">Team Scorecard</h3>'+scorecardHtml(S.data.scorecard.items, S.data.scorecard.month, { edit:!!S.data.isApprover }) : '')
+    +'<h3 class="set-sec">Team Scorecard</h3>'+scorecardHtml(scItems(), (S.data.scorecard||{}).month, { edit:!!S.data.isApprover })
     +focusCard()
-    +'<h3 class="set-sec">For You</h3>'+(rows?'<div class="set-card">'+rows+'</div>':'<p class="none">You\'re all caught up.</p>')
+    +'<h3 class="set-sec">For You</h3><div class="set-card">'+rows+'</div>'
     +nextTacticalCard();
 }
 
@@ -5050,11 +5067,16 @@ function reviewSet(id, ch){
   const prev=st.review[id], v=rvView(t, prev);
   const e={ due_before: prev ? prev.due_before : t.due, status_before: prev ? prev.status_before : t.status, note: prev ? prev.note||'' : '', status_after:v.status, new_due:'' };
   if (ch.note!=null) e.note=String(ch.note).trim().slice(0,200);
-  if (ch.status) { e.status_after=ch.status; if (ch.status!==t.status) setStatus(id, ch.status, { undo:false, stay:true }); }
+  // Nov 23 (Thursday's "glitching task status"): a status tap on an overdue task used to send two saves at once (status,
+  // then the new date). Their replies could land out of order and put the old date back, so the card asked for a date
+  // again. Now one tap is one save, and each task's saves go one after another (rvSave).
+  const fields={};
+  if (ch.status) { e.status_after=ch.status; if (ch.status!==t.status) { rvLocalStatus(t, ch.status); fields.status=ch.status; } }
   // #11 (Nov 16): not done and still due today or earlier: Next Tactical fills in at once (tap another date to change it).
   if (ch.status && ch.status!=='Done' && ch.due==null && (!v.due || v.due<=S.data.today)) ch.due=S.data.defaultDue;
   let due=v.due;
-  if (ch.due!=null) { due=ch.due; if (ch.due!==t.due) { t.due=ch.due; saveTaskEdit({ id:t.id, due:ch.due }); } }
+  if (ch.due!=null) { due=ch.due; if (ch.due!==t.due) { t.due=ch.due; fields.due=ch.due; } }
+  if (Object.keys(fields).length) rvSave(t.id, fields);
   e.new_due = due && due!==e.due_before ? due : '';
   st.review[id]=e;
   // Nov 17 (Brayden: "it jumps around the page and sometimes reloads"): a tap here used to redraw the whole meeting screen
@@ -5063,6 +5085,24 @@ function reviewSet(id, ch){
   S.lastLiveTap=Date.now();
   rvPatch(id);
   liveWrite('apiLiveMark', 'review', id, e, null);
+}
+function rvLocalStatus(t, status){
+  t.status=status; t.completed_at = status==='Done' ? S.data.today : '';
+  if (status==='Done') { haptic(); const card=document.querySelector('.mm-card[data-id="'+t.id+'"]'); if (card && !REDUCED) card.classList.add('celebrate'); }
+}
+// One save per tap, queued per task so the server gets them in tap order; only the newest reply updates this phone.
+function rvSave(id, fields){
+  const chain=S.rvChain=S.rvChain||{}, seq=S.rvSeq=S.rvSeq||{}, n=seq[id]=(seq[id]||0)+1;
+  if (!navigator.onLine || S.outbox.length) { queueEdit(Object.assign({ id:id }, fields)); return; }
+  S.pending++;
+  chain[id]=(chain[id]||Promise.resolve()).then(()=>call('apiSaveTask', Object.assign({ id:id }, fields)).then(saved=>{
+      if (seq[id]!==n) return;   // a newer tap is on its way; its reply will update the card
+      const t=find(id); if (t) { ['status','due'].forEach(k=>{ if (fields[k]===undefined) saved[k]=t[k]; }); }   // keep this phone's newest values
+      replaceTask(saved); rvPatch(id);
+    }).catch(e=>{
+      if (isNetErr(e)) { queueEdit(Object.assign({ id:id }, fields)); return; }
+      toast('Couldn\'t save "'+((find(id)||{}).title||'that task').slice(0,32)+'". '+errText(e));
+    }).finally(()=>{ S.pending--; }));
 }
 // Redraw one Accountability card (and the person's tags) where it is.
 function rvPatch(id){
@@ -5401,7 +5441,31 @@ function liveStale(){
   }
   S.liveRedo=false; render();
 }
-function liveVer(st){ return st.id+':'+(st.version||0); }   // the server adds one for every change, agenda and review included
+function liveVer(st){ return st.id+':'+(st.version||0); }
+// Nov 23 (Brayden #8 "lag w/ updating pages", #5 "locking up"): this phone keeps score during a meeting: how long each change
+// made elsewhere took to show here (from the server saving it to this redraw), and any freeze (the page stopped for 1.5 s
+// or more while open). It reports with a meeting check about once a minute; the summary's Meeting Timing lists the totals.
+const SYNC={ id:'', lagN:0, lagSum:0, lagMax:0, frz:0, frzMax:0, frzAt:'' };
+function syncFor(st){ if (SYNC.id!==st.id) Object.assign(SYNC, { id:st.id, lagN:0, lagSum:0, lagMax:0, frz:0, frzMax:0, frzAt:'' }); return SYNC; }
+function liveSyncSeen(st){
+  if (!st || !st.savedAt || S.syncV===liveVer(st)) return; S.syncV=liveVer(st);
+  if (Date.now()-(S.lastLocalAct||0)<4000 || (S.liveDirty||0)>0) return;   // this phone's own change
+  const lag=srvNow()-Number(st.savedAt); if (!(lag>=0 && lag<60000)) return;
+  const x=syncFor(st); x.lagN++; x.lagSum+=lag; x.lagMax=Math.max(x.lagMax, lag);
+}
+function liveSyncReport(){
+  const st=S.live; if (!st || st.phase!=='running' || Date.now()-(S.syncSent||0)<60000) return null;
+  S.syncSent=Date.now(); const x=syncFor(st); return x.lagN || x.frz ? Object.assign({}, x) : null;
+}
+(function freezeWatch(){
+  let last=performance.now();
+  document.addEventListener('visibilitychange', ()=>{ last=performance.now(); });
+  setInterval(()=>{ const now=performance.now(), gap=now-last; last=now;
+    if (gap<1500 || document.hidden || !S.live || S.view!=='live' || S.live.phase!=='running') return;
+    const x=syncFor(S.live), step=(S.live.steps[S.live.i]||{}).title||'';
+    x.frz++; if (gap>x.frzMax) { x.frzMax=Math.round(gap); x.frzAt=(step.length>36?step.slice(0,36)+'…':step)+(LISTEN.on?', listening':''); }
+  }, 250);
+})();   // the server adds one for every change, agenda and review included
 // Nov 16 (#46): while the meeting connection blinks (two or more empty answers), say so instead of freezing silently.
 function liveConn(){
   let el=document.getElementById('liveConn');
@@ -5415,7 +5479,7 @@ function livePoll(){
   const now=Date.now();
   if (S.view!=='live' && now-(S.liveChecked||0) < 20000) return;
   S.liveChecked=now; livePoll.busy=true;
-  call('apiLiveGet').then(applyLive).catch(()=>{}).then(()=>{ livePoll.busy=false; });
+  call('apiLiveGet', liveSyncReport()).then(applyLive).catch(()=>{}).then(()=>{ livePoll.busy=false; });
 }
 // Nov 17: while a phone is listening, everyone on the meeting screen checks every second (instead of 2.5 s), so new
 // agenda items show within about a second of Alfred adding them. Nov 23 (Brayden #8): the same for the whole running
@@ -5431,6 +5495,7 @@ function liveKey(st){ return [st.id, st.phase, st.i, st.person||0, !!st.topic, !
 // taps never race each other. A real change by another phone still wins and says so.
 function liveAct(fn, always){
   if (!S.live) return;
+  S.lastLocalAct=Date.now();
   const seen=liveKey(S.live), st=clone(S.live); fn(st); S.live=st; render();
   (S.liveQ=S.liveQ||[]).push({ fn:fn, always:always, seen:seen });
   if (!S.liveSending) liveFlush(null, 0);
@@ -5470,7 +5535,7 @@ function liveFlush(base, tries){
 // Ratings, one-on-ones and action items: merged on the server one at a time, so people who aren't the host can do them too.
 function liveMark(field, key, value, move){ render(); liveWrite('apiLiveMark', field, key, value, move||null); }
 function liveWrite(fn, ...args){
-  S.liveDirty=(S.liveDirty||0)+1;
+  S.lastLocalAct=Date.now(); S.liveDirty=(S.liveDirty||0)+1;
   call(fn, ...args).then(res=>{ S.liveDirty--; if (res) res.fromWrite = !S.liveDirty; applyLive(res); })
     .catch(e=>{ S.liveDirty--; toast('Could not sync: '+errText(e)); });
 }
@@ -5787,6 +5852,7 @@ function countUpStats(key, list){
 function renderLive(m){
   { const st0=S.live, k=st0 && st0.id+':'+st0.i; if (k && S.agAllKey!==k) { S.agAllKey=k; S.agShowAll=false; } }   // Nov 23 (#16): each step starts with empty areas hidden
   const st=S.live;
+  liveSyncSeen(st);
   S.liveShown=livePos(st); S.liveDrawnV=liveVer(st);
   renderLiveCtl();
   if (!st) { m.innerHTML='<div class="empty"><b>No Meeting Running</b>Start one from the Meetings tab.</div>'; return; }
@@ -5959,7 +6025,7 @@ function agHeardSheet(st){
     +'<button type="button" class="btn primary sm" data-act="ag-sugg-add" data-id="'+esc(s.id)+'">Add</button><button type="button" class="iconbtn" data-act="ag-sugg-x" data-id="'+esc(s.id)+'" aria-label="Dismiss">'+ICON.x+'</button></div>').join('')+(list.length?'</div>':'');
 }
 // Every change goes to the server at once (merged one at a time, like ratings), then the meeting redraws.
-function agSend(op, quiet){ return call('apiLiveAgenda', op).then(res=>{ applyLive(Object.assign(res, { fromWrite:true })); return res; }).catch(e=>{ if (!quiet) toast('Couldn\'t save. '+errText(e)); throw e; }); }
+function agSend(op, quiet){ S.lastLocalAct=Date.now(); return call('apiLiveAgenda', op).then(res=>{ applyLive(Object.assign(res, { fromWrite:true })); return res; }).catch(e=>{ if (!quiet) toast('Couldn\'t save. '+errText(e)); throw e; }); }
 function agFind(id){ return (agenda(S.live).items||[]).find(x=>x.id===id); }
 // Nov 17 (Brayden): Alfred can take items off or park them from what he hears; the host's phone (and the listening phone)
 // says so once, with Undo. agSeen marks ones this phone did itself so they don't toast twice.
@@ -6443,7 +6509,7 @@ async function liveAddItem(el){
 /* ---------- Alfred chat bubble ---------- */
 // The conversation lives only in this page (S.alf) and is gone after a reload. Every message carries the screen
 // context below, and the screenshot taken when the bubble was tapped, so nobody has to describe where they were.
-const APP_VERSION = '2026.11.23-polish';
+const APP_VERSION = '2026.11.23-prep';
 const H2C_URL = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
 const DIAG = { errors:[], actions:[] };   // last 10 of each, for bug reports
 function pushDiag(list, item){ list.push(item); if (list.length>10) list.shift(); }
