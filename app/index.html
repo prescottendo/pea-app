@@ -19,7 +19,7 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" type="image/png" href="icon-192.png">
-<script>window.HUDDLE_WEB={"api":"https://script.google.com/macros/s/AKfycbzM8K_-XRMDdOJYJ3THn_FhyZkRreMddHIBAOFCFVoq5S_Y7MnsfFLsl7ac_fyDPrch/exec","clientId":"473377418367-cqmmnfum4kshq16973m4sj2jqqfa55p0.apps.googleusercontent.com","build":"22b5679","push":{"config":{"apiKey":"AIzaSyBON-0KvTXPD_MV6ykhYvCoBRiECEHyE9c","authDomain":"huddle-e2548.firebaseapp.com","projectId":"huddle-e2548","storageBucket":"huddle-e2548.firebasestorage.app","messagingSenderId":"554653922065","appId":"1:554653922065:web:87de53b4cb11b36835d2b0"},"vapidKey":"BHKeDoBmW7vL-qAT3ocyTaMaZ27Ca66jvQtTes2NC4CPoWFiPBJcga7wVd-RD1IuyhBki0oKXwPBGSNq002s8o8"}};document.documentElement.classList.add('web');</script>
+<script>window.HUDDLE_WEB={"api":"https://script.google.com/macros/s/AKfycbzM8K_-XRMDdOJYJ3THn_FhyZkRreMddHIBAOFCFVoq5S_Y7MnsfFLsl7ac_fyDPrch/exec","clientId":"473377418367-cqmmnfum4kshq16973m4sj2jqqfa55p0.apps.googleusercontent.com","build":"388e6ab","push":{"config":{"apiKey":"AIzaSyBON-0KvTXPD_MV6ykhYvCoBRiECEHyE9c","authDomain":"huddle-e2548.firebaseapp.com","projectId":"huddle-e2548","storageBucket":"huddle-e2548.firebasestorage.app","messagingSenderId":"554653922065","appId":"1:554653922065:web:87de53b4cb11b36835d2b0"},"vapidKey":"BHKeDoBmW7vL-qAT3ocyTaMaZ27Ca66jvQtTes2NC4CPoWFiPBJcga7wVd-RD1IuyhBki0oKXwPBGSNq002s8o8"}};document.documentElement.classList.add('web');</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <!-- The fonts load without holding up the first paint; the page shows in the phone's own font for a moment if needed. -->
@@ -6106,7 +6106,7 @@ function agAnnounce(st){
     const t='"'+String(x.text).slice(0,40)+(String(x.text).length>40?'…':'')+'"', who=listNames(x.names||[]);
     let m=null;
     if (x.state==='done' && (x.kind==='task' || x.kind==='calendar') && !was)
-      m=[x.kind==='calendar' ? 'Calendar events aren\'t on yet, so Alfred added a to-do for '+who : 'Alfred added '+t+' for '+(x.tasks>3?'everyone':who),
+      m=[x.kind==='calendar' ? (x.event ? 'Alfred put '+t+' on the calendar for '+(x.names.length>3?'everyone':who) : 'No time was said, so Alfred added a to-do for '+who) : 'Alfred added '+t+' for '+(x.tasks>3?'everyone':who),
         ()=>agSend({ op:'undo-act', id:x.id }).then(()=>toast('Undone')).catch(()=>{})];
     else if (x.state==='queued') m=['Alfred is writing the draft. It goes to '+who+' in a minute.'];
     else if (x.state==='done' && x.kind==='email') m=['Alfred emailed the draft to '+who];
@@ -6589,7 +6589,7 @@ async function liveAddItem(el){
 /* ---------- Alfred chat bubble ---------- */
 // The conversation lives only in this page (S.alf) and is gone after a reload. Every message carries the screen
 // context below, and the screenshot taken when the bubble was tapped, so nobody has to describe where they were.
-const APP_VERSION = '2026.11.23-requests';
+const APP_VERSION = '2026.11.23-calendar';
 const H2C_URL = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
 const DIAG = { errors:[], actions:[] };   // last 10 of each, for bug reports
 function pushDiag(list, item){ list.push(item); if (list.length>10) list.shift(); }
@@ -7140,7 +7140,7 @@ function draftAt(el){ const m=S.alf.msgs[Number(el.dataset.i)]; return m && m.dr
 // in the app (setStatus / apiSaveTask), with the usual Undo message.
 function proposalAt(el){ const m=S.alf.msgs[Number(el.dataset.i)]; return m && m.proposals ? m.proposals[Number(el.dataset.j)] : null; }
 function proposalCard(p, i, j){
-  const key='data-i="'+i+'" data-j="'+j+'"', kind=p.kind==='email'?'Email Draft':p.kind==='new'?(p.each?'New Tasks':'New Task'):'Task Change';
+  const key='data-i="'+i+'" data-j="'+j+'"', kind=p.kind==='event'?'Calendar Event':p.kind==='email'?'Email Draft':p.kind==='new'?(p.each?'New Tasks':'New Task'):'Task Change';
   const head='<div class="alf-draft prop'+(p.state==='cancelled'||p.state==='undone'?' off':'')+'"><div class="row"><span class="tag'+(p.state==='ready'||p.state==='saving'?' gold':'')+'">'+kind+'</span>';
   if (p.state==='done') return head+'<span class="sent">'+(p.kind==='email'?'Emailed ✓':'Done ✓')+'</span></div><div class="tt">'+esc(p.title)+'</div></div>';
   if (p.state==='cancelled' || p.state==='undone') return head+'<span class="small muted">'+(p.state==='undone'?'Undone. Nothing changed.':'Cancelled. Nothing changed.')+'</span></div><div class="tt">'+esc(p.title)+'</div></div>';
@@ -7170,6 +7170,13 @@ async function applyProposal(p){
       p.state='done'; renderAlfred();
       toast('Saved', async()=>{ try { replaceTask(await call('apiSaveTask', Object.keys(p.changes).reduce((o,k)=>{ o[k]=prev[k]; return o; }, { id:prev.id }))); p.state='undone'; render(); renderAlfred(); toast('Changed back'); } catch(e){ toast('Couldn\'t undo. '+errText(e)); } });
     } catch(e){ p.state='ready'; p.error='Not saved: '+errText(e); renderAlfred(); }
+    return;
+  }
+  if (p.kind==='event') {   // Nov 23: an invite from Huddle's calendar, with Undo
+    p.state='saving'; renderAlfred();
+    try { const r=await call('apiAlfredCalendarEvent', p.title, p.when, p.minutes, p.names); p.state='done'; renderAlfred();
+      toast('On the calendar for '+listNames(r.names||[]), async()=>{ try { await call('apiAlfredCalendarUndo', r.id); p.state='undone'; renderAlfred(); toast('Event removed'); } catch(e){ toast('Couldn\'t undo. '+errText(e)); } }); }
+    catch(e){ p.state='ready'; p.error='Not added: '+errText(e); renderAlfred(); }
     return;
   }
   if (p.kind==='email') {   // Nov 23: Alfred's draft is emailed to the people listed (team only), to edit and send themselves
@@ -8534,6 +8541,7 @@ function makeMock(REAL){
     apiAdminTestEmail:()=>alog('Send Me a Test Email','Test email sent to '+me+'. 1480 emails left today.'),
     apiAdminAddSample:()=>alog('Load Sample Data','Sample data loaded: 4 meetings, 14 tasks and 2 Parking Lot topics, all marked [Sample].'),
     apiAdminRemoveSample:()=>alog('Remove Sample Data','Sample data removed (38 rows).'),
+    apiAlfredCalendarEvent:(t,w,m,n)=>({ id:'ev1', names:(n&&n.length?n:['Brayden']).map(x=>String(x).split(' ')[0]), when:w }), apiAlfredCalendarUndo:()=>({ ok:true }),
     apiAlfredEmailDraft:(to)=>({ sent:(to||['Brayden']).map(x=>String(x).split('@')[0]) }),
     apiTranscribe:()=>({ text:'Please add a task for Erin to call the Curve rep about saving cards on file before Thursday.', secs:6 }),
     apiAlfredChat:(msgs)=>team.alfred_chat==='off' ? {reply:'Alfred chat is turned off right now.',drafts:[],proposals:[]} : alfred(msgs),
