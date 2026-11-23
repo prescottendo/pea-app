@@ -19,7 +19,7 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" type="image/png" href="icon-192.png">
-<script>window.HUDDLE_WEB={"api":"https://script.google.com/macros/s/AKfycbzM8K_-XRMDdOJYJ3THn_FhyZkRreMddHIBAOFCFVoq5S_Y7MnsfFLsl7ac_fyDPrch/exec","clientId":"473377418367-cqmmnfum4kshq16973m4sj2jqqfa55p0.apps.googleusercontent.com","build":"388e6ab","push":{"config":{"apiKey":"AIzaSyBON-0KvTXPD_MV6ykhYvCoBRiECEHyE9c","authDomain":"huddle-e2548.firebaseapp.com","projectId":"huddle-e2548","storageBucket":"huddle-e2548.firebasestorage.app","messagingSenderId":"554653922065","appId":"1:554653922065:web:87de53b4cb11b36835d2b0"},"vapidKey":"BHKeDoBmW7vL-qAT3ocyTaMaZ27Ca66jvQtTes2NC4CPoWFiPBJcga7wVd-RD1IuyhBki0oKXwPBGSNq002s8o8"}};document.documentElement.classList.add('web');</script>
+<script>window.HUDDLE_WEB={"api":"https://script.google.com/macros/s/AKfycbzM8K_-XRMDdOJYJ3THn_FhyZkRreMddHIBAOFCFVoq5S_Y7MnsfFLsl7ac_fyDPrch/exec","clientId":"473377418367-cqmmnfum4kshq16973m4sj2jqqfa55p0.apps.googleusercontent.com","build":"3b3cd1d","push":{"config":{"apiKey":"AIzaSyBON-0KvTXPD_MV6ykhYvCoBRiECEHyE9c","authDomain":"huddle-e2548.firebaseapp.com","projectId":"huddle-e2548","storageBucket":"huddle-e2548.firebasestorage.app","messagingSenderId":"554653922065","appId":"1:554653922065:web:87de53b4cb11b36835d2b0"},"vapidKey":"BHKeDoBmW7vL-qAT3ocyTaMaZ27Ca66jvQtTes2NC4CPoWFiPBJcga7wVd-RD1IuyhBki0oKXwPBGSNq002s8o8"}};document.documentElement.classList.add('web');</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <!-- The fonts load without holding up the first paint; the page shows in the phone's own font for a moment if needed. -->
@@ -5616,12 +5616,19 @@ function renderLivebar(){
    Nov 23 (Brayden #5: "make the chime louder"): about four times as loud (gain .18 to .7, through a limiter so it doesn't
    crackle), brighter (a soft overtone an octave up carries across a table) and rung twice. On iPhone the page asks to play
    as media, so the ring/silent switch no longer mutes it (the phone's volume buttons still set how loud). */
+// Nov 23 (Brayden: "Couldn't start recording. AudioSession category is not compatible with audio capture"): the iPhone's
+// audio mode has to allow the microphone while Alfred listens or records. play-and-record while capturing, 'auto' after;
+// the chime (playback, rings on silent) and task sounds (ambient, silent switch mutes) only change it when nothing is
+// capturing.
+function capturing(){ try { return !!(LISTEN.on || LISTEN.stream || DICT.rec); } catch(e){ return false; } }
+function audioMode(t){ try { if (navigator.audioSession && navigator.audioSession.type!==t) navigator.audioSession.type=t; } catch(e){} }
+function audioPlay(t){ if (!capturing()) audioMode(t); }
 function unlockAudio(){ try {
-  if (navigator.audioSession && navigator.audioSession.type!=='playback') navigator.audioSession.type='playback';
+  audioPlay('playback');
   if (!S.audio) S.audio=new (window.AudioContext||window.webkitAudioContext)(); if (S.audio.state==='suspended') S.audio.resume(); } catch(e){} }
 function chime(){
   const ctx=S.audio; if (!ctx || pref('lt-chime','on')==='off' || !(S.tv || isHost())) return;
-  try { if (navigator.audioSession) navigator.audioSession.type='playback'; } catch(e){}   // the meeting chime rings even on silent
+  audioPlay('playback');   // the meeting chime rings even on silent (unless the mic is in use)
   const out=ctx.createDynamicsCompressor(); out.threshold.value=-6; out.ratio.value=8; out.connect(ctx.destination);
   const ring=(hz, at, peak)=>{
     const g=ctx.createGain(); g.connect(out);
@@ -5640,7 +5647,7 @@ const TASK_SOUND_OF={ 'Done':'chime', 'In Progress':'wood', 'Blocked':'thud' };
 function taskSound(status){
   const kind=TASK_SOUND_OF[status]; if (!kind || pref('lt-tsound','on')==='off' || S.tv) return;
   try {
-    if (navigator.audioSession) navigator.audioSession.type='ambient';
+    audioPlay('ambient');
     if (!S.audio) S.audio=new (window.AudioContext||window.webkitAudioContext)();
     const c=S.audio; if (c.state==='suspended') c.resume();
     const tone=(type, f, t0, dur, vol, opt)=>{ opt=opt||{}; const o=c.createOscillator(), g=c.createGain(), t=c.currentTime+t0;
@@ -6175,9 +6182,11 @@ async function listenStart(){
   if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) { toast('This browser can\'t use the microphone.'); return; }
   let ctx;
   try { ctx=new (window.AudioContext || window.webkitAudioContext)(); } catch(e){ toast('Couldn\'t start the microphone.'); return; }   // created inside the tap (iPhone rule)
+  audioMode('play-and-record');
   try {
     LISTEN.stream=await navigator.mediaDevices.getUserMedia({ audio:{ channelCount:1, echoCancellation:false, noiseSuppression:true, autoGainControl:true } });
-  } catch(e){ try { ctx.close(); } catch(x){} toast('Huddle needs the microphone. Allow it in Settings › Huddle (or Safari) and try again.'); return; }
+  } catch(e){ try { ctx.close(); } catch(x){} audioMode('auto'); LISTEN.stream=null;
+    toast(/denied|allowed|permission/i.test(String(e && (e.name+' '+e.message))) ? 'Huddle needs the microphone. Allow it in Settings › Huddle (or Safari) and try again.' : 'Couldn\'t start the microphone. '+errText(e)); return; }
   const track=LISTEN.stream.getAudioTracks()[0]; LISTEN.mic=track ? track.label : '';
   LISTEN.ctx=ctx; LISTEN.on=true; LISTEN.buf=[]; LISTEN.tries=0;
   try { await ctx.resume(); } catch(e){}
@@ -6245,6 +6254,7 @@ function listenStop(tell){
   LISTEN.ws=null;
   try { if (LISTEN.proc) LISTEN.proc.disconnect(); if (LISTEN.src) LISTEN.src.disconnect(); } catch(e){}
   try { if (LISTEN.stream) LISTEN.stream.getTracks().forEach(t=>t.stop()); } catch(e){}
+  LISTEN.stream=null; if (!DICT.rec) audioMode('auto');
   try { if (LISTEN.ctx) LISTEN.ctx.close(); } catch(e){}
   LISTEN.proc=LISTEN.src=LISTEN.stream=LISTEN.ctx=null;
   if (was && LISTEN.buf.length) { const text=LISTEN.buf.join('\n'); LISTEN.buf=[]; call('apiLiveListen', Date.now(), text, LISTEN.spokenAt).catch(()=>{}); }
@@ -6589,7 +6599,7 @@ async function liveAddItem(el){
 /* ---------- Alfred chat bubble ---------- */
 // The conversation lives only in this page (S.alf) and is gone after a reload. Every message carries the screen
 // context below, and the screenshot taken when the bubble was tapped, so nobody has to describe where they were.
-const APP_VERSION = '2026.11.23-calendar';
+const APP_VERSION = '2026.11.23-mic';
 const H2C_URL = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
 const DIAG = { errors:[], actions:[] };   // last 10 of each, for bug reports
 function pushDiag(list, item){ list.push(item); if (list.length>10) list.shift(); }
@@ -6892,6 +6902,7 @@ function alfMic(){
   if (DICT.busy) return;
   if (DICT.rec) { dictStop(); return; }
   if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia || !window.MediaRecorder) { toast('This browser can\'t record. Try Safari or Chrome.'); return; }
+  audioMode('play-and-record');
   navigator.mediaDevices.getUserMedia({ audio:{ echoCancellation:true, noiseSuppression:true } }).then(stream=>{
     const mime=dictMime(), rec=new MediaRecorder(stream, mime ? { mimeType:mime } : undefined);
     Object.assign(DICT, { rec:rec, stream:stream, chunks:[], at:Date.now() });
@@ -6900,12 +6911,13 @@ function alfMic(){
     rec.start(1000); haptic();
     clearInterval(DICT.t); DICT.t=setInterval(()=>{ if (!DICT.rec) return; dictUi(); if (Date.now()-DICT.at>=180000) dictStop(); }, 500);
     dictUi();
-  }).catch(e=>toast(/denied|allowed|permission/i.test(String(e && (e.name+e.message))) ? 'Huddle needs the microphone. Allow it in your phone\'s settings, then try again.' : 'Couldn\'t start recording. '+errText(e)));
+  }).catch(e=>{ if (!LISTEN.on) audioMode('auto'); toast(/denied|allowed|permission/i.test(String(e && (e.name+e.message))) ? 'Huddle needs the microphone. Allow it in your phone\'s settings, then try again.' : 'Couldn\'t start recording. '+errText(e)); });
 }
 function dictStop(){
   const r=DICT.rec; if (!r) return; DICT.rec=null; clearInterval(DICT.t);
   try { r.state!=='inactive' && r.stop(); } catch(e){}
   if (DICT.stream) DICT.stream.getTracks().forEach(t=>t.stop()); DICT.stream=null;
+  if (!LISTEN.on) audioMode('auto');
   DICT.busy=true; dictUi();
 }
 function dictSend(mime){
