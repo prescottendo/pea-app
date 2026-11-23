@@ -19,7 +19,7 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" type="image/png" href="icon-192.png">
-<script>window.HUDDLE_WEB={"api":"https://script.google.com/macros/s/AKfycbzM8K_-XRMDdOJYJ3THn_FhyZkRreMddHIBAOFCFVoq5S_Y7MnsfFLsl7ac_fyDPrch/exec","clientId":"473377418367-cqmmnfum4kshq16973m4sj2jqqfa55p0.apps.googleusercontent.com","build":"bffc151","push":{"config":{"apiKey":"AIzaSyBON-0KvTXPD_MV6ykhYvCoBRiECEHyE9c","authDomain":"huddle-e2548.firebaseapp.com","projectId":"huddle-e2548","storageBucket":"huddle-e2548.firebasestorage.app","messagingSenderId":"554653922065","appId":"1:554653922065:web:87de53b4cb11b36835d2b0"},"vapidKey":"BHKeDoBmW7vL-qAT3ocyTaMaZ27Ca66jvQtTes2NC4CPoWFiPBJcga7wVd-RD1IuyhBki0oKXwPBGSNq002s8o8"}};document.documentElement.classList.add('web');</script>
+<script>window.HUDDLE_WEB={"api":"https://script.google.com/macros/s/AKfycbzM8K_-XRMDdOJYJ3THn_FhyZkRreMddHIBAOFCFVoq5S_Y7MnsfFLsl7ac_fyDPrch/exec","clientId":"473377418367-cqmmnfum4kshq16973m4sj2jqqfa55p0.apps.googleusercontent.com","build":"7f64c44","push":{"config":{"apiKey":"AIzaSyBON-0KvTXPD_MV6ykhYvCoBRiECEHyE9c","authDomain":"huddle-e2548.firebaseapp.com","projectId":"huddle-e2548","storageBucket":"huddle-e2548.firebasestorage.app","messagingSenderId":"554653922065","appId":"1:554653922065:web:87de53b4cb11b36835d2b0"},"vapidKey":"BHKeDoBmW7vL-qAT3ocyTaMaZ27Ca66jvQtTes2NC4CPoWFiPBJcga7wVd-RD1IuyhBki0oKXwPBGSNq002s8o8"}};document.documentElement.classList.add('web');</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <!-- The fonts load without holding up the first paint; the page shows in the phone's own font for a moment if needed. -->
@@ -854,6 +854,12 @@
   .nm-row.pre { background:var(--line-soft); }
   .alf-pickbtn { flex:none; width:40px; height:40px; border:none; background:none; color:var(--muted); display:grid; place-items:center; border-radius:50%; padding:0; }
   .alf-pickbtn svg { width:22px; height:22px; }
+  .alf-input.cbox .alf-mic { order:2; position:relative; }
+  .alf-mic.rec { background:var(--p-high, #D64545); color:#fff; animation:micPulse 1.4s ease-in-out infinite; }
+  .alf-mic.busy { opacity:.55; pointer-events:none; }
+  .alf-mic .mic-t { position:absolute; bottom:-14px; left:50%; transform:translateX(-50%); font-size:11px; font-weight:600; color:var(--p-high, #D64545); font-variant-numeric:tabular-nums; white-space:nowrap; }
+  @keyframes micPulse { 50% { box-shadow:0 0 0 6px rgba(214,69,69,.18); } }
+  @media (prefers-reduced-motion: reduce) { .alf-mic.rec { animation:none; } }
   .alf-tools:has(.note:empty) { display:none; }
   article.card.rv { transition:background-color .15s; }
   article.card.rv.rv-yes { box-shadow:inset 4px 0 0 #3E9B5B; }
@@ -1841,7 +1847,7 @@
     <div class="alf-msgs" id="alfMsgs" aria-live="polite"></div>
     <div class="alf-foot">
       <div class="alf-tools"><span class="note" id="alfNote"></span></div>
-      <div class="alf-input cbox"><button type="button" class="alf-pickbtn" data-act="alf-pick" aria-label="Point at something on the screen" title="Point at something on the screen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 11V5.5a1.5 1.5 0 0 1 3 0V11m0-1.5a1.5 1.5 0 0 1 3 0V11m0-.5a1.5 1.5 0 0 1 3 0V15a6 6 0 0 1-6 6h-.5a6 6 0 0 1-4.9-2.5L4.3 15.2a1.5 1.5 0 0 1 2.4-1.8L9 15"/></svg></button><textarea id="alfInput" rows="1" placeholder="Ask Alfred…" aria-label="Message Alfred"></textarea><button type="button" class="send" data-act="alf-send" aria-label="Send"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"/></svg></button></div>
+      <div class="alf-input cbox"><button type="button" class="alf-pickbtn" data-act="alf-pick" aria-label="Point at something on the screen" title="Point at something on the screen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 11V5.5a1.5 1.5 0 0 1 3 0V11m0-1.5a1.5 1.5 0 0 1 3 0V11m0-.5a1.5 1.5 0 0 1 3 0V15a6 6 0 0 1-6 6h-.5a6 6 0 0 1-4.9-2.5L4.3 15.2a1.5 1.5 0 0 1 2.4-1.8L9 15"/></svg></button><textarea id="alfInput" rows="1" placeholder="Ask Alfred…" aria-label="Message Alfred"></textarea><button type="button" class="alf-pickbtn alf-mic" id="alfMic" data-act="alf-mic" aria-label="Record a message" title="Record a message"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21"/></svg><span class="mic-t" aria-hidden="true"></span></button><button type="button" class="send" data-act="alf-send" aria-label="Send"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"/></svg></button></div>
     </div>
   </section></div>
 <div class="alf-pick-hint" id="alfPick" hidden>Tap the thing you mean <button type="button" data-act="alf-pick-cancel">Cancel</button></div>
@@ -2292,7 +2298,7 @@ const COACH=[
   { view:'meetings', sel:'#main .capsule', h:'Start a Meeting', b:'<p>Tap <b>＋ Start Meeting</b> for the weekly tactical (start the Otter recording first). Whoever starts it runs it; everyone else follows along within a second or two, and a yellow bar lets anyone join from any tab. During Discuss the host can let someone else (usually Dr. Smith) run the topics; when a topic\'s time is up, whoever runs topics can add a minute, add five, park it or finish it. The last 10 minutes are kept for Clarity and Closure, and <b>Print a Backup Agenda</b> gives you a paper copy in case the internet goes down.</p>' },
   { view:'meetings', sel:'#mResults .set-row', h:'Read a Meeting', b:'<p>Tap any meeting for its summary: the decisions and your tasks come first, then the full notes.</p>' },
   { view:'marketing', sel:'#main .ktab', h:'Marketing', b:'<p><b>Referrals</b>: a Watch List of referring doctors who need something (from the Referral Tracker), the month\'s budgets and your deliveries. <b>Social Posts</b> waiting for Becky\'s approval, and <b>To-Dos</b>: the team\'s marketing ideas and tasks. Anyone can add an idea.</p>' },
-  { view:'home', sel:'.alf-fab', h:'Alfred', b:'<p>The hat is <b>Alfred</b>, your assistant. Ask about meetings and tasks, have him make a small change, or tell him about a problem or an idea. Drag him anywhere.</p>' },
+  { view:'home', sel:'.alf-fab', h:'Alfred', b:'<p>The hat is <b>Alfred</b>, your assistant. Ask about meetings and tasks, have him make a small change, or tell him about a problem or an idea. Tap the microphone to talk instead of typing. Drag him anywhere.</p>' },
   { view:'home', sel:'#main .ptitle .mebtn, #me .mebtn', h:'Your Account', b:'<p>Your initials open <b>Notifications</b>, Appearance, Recently Deleted, this tour and Sign Out.</p>' }
 ];
 // The tab button for a view (the bottom bar on a phone, the top bar on a computer).
@@ -3825,6 +3831,7 @@ function renderMore(m){
     +'<h3 class="set-sec">General</h3><div class="menu more-menu">'   // Nov 17 (Brayden): the group's name
     +gr('settings',ICON.bell,'Notifications', pushState()==='on'?'<span class="small muted">On</span>':'')
     +(mkOnly() ? '' : gr('deleted',ICON.deleted,'Recently Deleted')+row('data-act="tour-open"',ICON.tour,'Welcome Tour'))+'</div>'
+    +'<div class="set-card mt-s">'+switchRow('tsound', pref('lt-tsound','on')!=='off', 'Task Sounds', 'A chime when you mark something done, a tap for In Progress, a low thud for Blocked. Only on this phone; silent mode mutes them.')+'</div>'
     +'<div class="set-card mt-s">'+switchRow('sample', sampleOn(), 'Show Sample Data', 'Made-up numbers on the Huddle tab so you can see every card working. Only on this device; nothing is saved.')+'</div>'
     +(S.data.isApprover && !mkOnly() ? '<h3 class="set-sec">For Approvers</h3><div class="menu more-menu">'
       +gr('review',ICON.review,'Review', rc?'<span class="count" data-num="more-review">'+rc+'</span>':'')
@@ -4086,6 +4093,7 @@ function setStatus(id, status, opts){
   t.status=status; t.completed_at = status==='Done' ? S.data.today : '';
   const row=document.querySelector('article.task[data-id="'+id+'"]'), card=document.querySelector('.mm-card[data-id="'+id+'"]');
   if (status==='Done' && !(opts && opts.quiet)) haptic();   // a tap you can feel (the box tap does its own)
+  if (!(opts && opts.silent)) taskSound(status);   // quiet only skips the haptic; Undo is silent
   if (opts && opts.stay) { if (status==='Done' && card && !REDUCED) card.classList.add('celebrate'); }   // Nov 17: the caller redraws just its card
   else if (status==='Done' && row && !S.sheet && !REDUCED) finishRow(row);
   else if (status==='Done' && card && !REDUCED) { card.classList.add('celebrate'); setTimeout(render, 750); }
@@ -4098,7 +4106,7 @@ function setStatus(id, status, opts){
   else render();
   if (S.sheet==='task' && S.edit && S.edit.task.id===id) { S.edit.task.status=status; renderSheet(); }
   if (S.sheet==='meeting' || S.sheet==='prep') renderSheet();
-  const undo = (!opts || opts.undo!==false) ? ()=>setStatus(id, prev, {undo:false}) : null;
+  const undo = (!opts || opts.undo!==false) ? ()=>setStatus(id, prev, {undo:false, silent:true}) : null;
   const msg = status==='Done' ? 'Marked done' : 'Marked '+label(status).toLowerCase();
   if (!navigator.onLine || S.outbox.length) { queueStatus(t); toast(msg+'. It will send when you\'re back online.', undo); return; }
   S.pending++;
@@ -5087,7 +5095,7 @@ function reviewSet(id, ch){
   liveWrite('apiLiveMark', 'review', id, e, null);
 }
 function rvLocalStatus(t, status){
-  t.status=status; t.completed_at = status==='Done' ? S.data.today : '';
+  t.status=status; t.completed_at = status==='Done' ? S.data.today : ''; taskSound(status);
   if (status==='Done') { haptic(); const card=document.querySelector('.mm-card[data-id="'+t.id+'"]'); if (card && !REDUCED) card.classList.add('celebrate'); }
 }
 // One save per tap, queued per task so the server gets them in tap order; only the newest reply updates this phone.
@@ -5595,6 +5603,7 @@ function unlockAudio(){ try {
   if (!S.audio) S.audio=new (window.AudioContext||window.webkitAudioContext)(); if (S.audio.state==='suspended') S.audio.resume(); } catch(e){} }
 function chime(){
   const ctx=S.audio; if (!ctx || pref('lt-chime','on')==='off' || !(S.tv || isHost())) return;
+  try { if (navigator.audioSession) navigator.audioSession.type='playback'; } catch(e){}   // the meeting chime rings even on silent
   const out=ctx.createDynamicsCompressor(); out.threshold.value=-6; out.ratio.value=8; out.connect(ctx.destination);
   const ring=(hz, at, peak)=>{
     const g=ctx.createGain(); g.connect(out);
@@ -5604,6 +5613,32 @@ function chime(){
       o.connect(v).connect(g); o.start(ctx.currentTime+at); o.stop(ctx.currentTime+at+1.4); });
   };
   [0, 1.1].forEach(t=>{ ring(784, t, .7); ring(659, t+.28, .7); });
+}
+// Nov 23 (Brayden's picks, Design Picks/huddle-task-sounds.html): a sound when you change a task's status on this phone:
+// Done = Two-Note Chime, In Progress = Wood Tap, Blocked = Low Thud. Only on the phone that made the change, it follows the
+// phone's silent switch (audio session "ambient"; the meeting chime switches back to "playback"), and Account › Task Sounds
+// turns it off for this device.
+const TASK_SOUND_OF={ 'Done':'chime', 'In Progress':'wood', 'Blocked':'thud' };
+function taskSound(status){
+  const kind=TASK_SOUND_OF[status]; if (!kind || pref('lt-tsound','on')==='off' || S.tv) return;
+  try {
+    if (navigator.audioSession) navigator.audioSession.type='ambient';
+    if (!S.audio) S.audio=new (window.AudioContext||window.webkitAudioContext)();
+    const c=S.audio; if (c.state==='suspended') c.resume();
+    const tone=(type, f, t0, dur, vol, opt)=>{ opt=opt||{}; const o=c.createOscillator(), g=c.createGain(), t=c.currentTime+t0;
+      o.type=type; if (Array.isArray(f)) { o.frequency.setValueAtTime(f[0], t); o.frequency.exponentialRampToValueAtTime(f[1], t+(opt.glide||dur)); } else o.frequency.setValueAtTime(f, t);
+      g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(vol, t+0.006); g.gain.exponentialRampToValueAtTime(0.0001, t+dur);
+      o.connect(g); g.connect(c.destination); o.start(t); o.stop(t+dur+0.05); };
+    const bell=(f, t0, v)=>{ tone('sine', f, t0, 1.1, v); tone('sine', f*2.01, t0, 0.5, v*0.35); tone('sine', f*3.02, t0, 0.25, v*0.12); };
+    if (kind==='chime') { bell(1047, 0, 0.26); bell(1568, 0.11, 0.24); }
+    else if (kind==='wood') {
+      tone('sine', [520, 300], 0, 0.09, 0.45, { glide:0.05 });
+      const n=Math.floor(c.sampleRate*0.03), b=c.createBuffer(1, n, c.sampleRate), d=b.getChannelData(0); for (let i=0;i<n;i++) d[i]=(Math.random()*2-1)*(1-i/n);
+      const src=c.createBufferSource(), fl=c.createBiquadFilter(), g=c.createGain(); src.buffer=b; fl.type='bandpass'; fl.frequency.value=1800; fl.Q.value=1.2; g.gain.value=0.15;
+      src.connect(fl); fl.connect(g); g.connect(c.destination); src.start();
+    }
+    else if (kind==='thud') tone('sine', [180, 90], 0, 0.25, 0.55, { glide:0.2 });
+  } catch(e){}
 }
 function liveTick(){
   const st=S.live; if (!st || st.phase!=='running') return;
@@ -6509,7 +6544,7 @@ async function liveAddItem(el){
 /* ---------- Alfred chat bubble ---------- */
 // The conversation lives only in this page (S.alf) and is gone after a reload. Every message carries the screen
 // context below, and the screenshot taken when the bubble was tapped, so nobody has to describe where they were.
-const APP_VERSION = '2026.11.23-prep';
+const APP_VERSION = '2026.11.23-sounds';
 const H2C_URL = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
 const DIAG = { errors:[], actions:[] };   // last 10 of each, for bug reports
 function pushDiag(list, item){ list.push(item); if (list.length>10) list.shift(); }
@@ -6797,7 +6832,55 @@ function alfReset(){
   const box=document.getElementById('alfInput'); if (box) { box.value=''; autoGrow(box); }
   alfNote(); renderAlfred();
 }
+// Nov 23 (Brayden): the record button in Alfred's box. Tap to record, tap again to stop (it stops on its own at 3 minutes);
+// the words are written into the box (added after anything already typed) to check, fix and send. Nothing sends by itself.
+const DICT={ rec:null, stream:null, chunks:[], at:0, t:0, busy:false };
+function dictMime(){ const M=window.MediaRecorder; if (!M || !M.isTypeSupported) return ''; return ['audio/mp4','audio/webm;codecs=opus','audio/webm','audio/ogg'].find(t=>M.isTypeSupported(t)) || ''; }
+function dictUi(){
+  const b=document.getElementById('alfMic'), inp=document.getElementById('alfInput'); if (!b) return;
+  const on=!!DICT.rec; b.classList.toggle('rec', on); b.classList.toggle('busy', DICT.busy);
+  b.setAttribute('aria-label', on ? 'Stop recording' : DICT.busy ? 'Turning your recording into text' : 'Record a message');
+  const secs=on ? Math.floor((Date.now()-DICT.at)/1000) : 0, t=b.querySelector('.mic-t'); if (t) t.textContent=on ? Math.floor(secs/60)+':'+String(secs%60).padStart(2,'0') : '';
+  if (inp) inp.placeholder = on ? 'Recording… tap the mic to stop' : DICT.busy ? 'Turning it into text…' : 'Ask Alfred…';
+}
+function alfMic(){
+  if (DICT.busy) return;
+  if (DICT.rec) { dictStop(); return; }
+  if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia || !window.MediaRecorder) { toast('This browser can\'t record. Try Safari or Chrome.'); return; }
+  navigator.mediaDevices.getUserMedia({ audio:{ echoCancellation:true, noiseSuppression:true } }).then(stream=>{
+    const mime=dictMime(), rec=new MediaRecorder(stream, mime ? { mimeType:mime } : undefined);
+    Object.assign(DICT, { rec:rec, stream:stream, chunks:[], at:Date.now() });
+    rec.ondataavailable=e=>{ if (e.data && e.data.size) DICT.chunks.push(e.data); };
+    rec.onstop=()=>dictSend(rec.mimeType || mime || 'audio/webm');
+    rec.start(1000); haptic();
+    clearInterval(DICT.t); DICT.t=setInterval(()=>{ if (!DICT.rec) return; dictUi(); if (Date.now()-DICT.at>=180000) dictStop(); }, 500);
+    dictUi();
+  }).catch(e=>toast(/denied|allowed|permission/i.test(String(e && (e.name+e.message))) ? 'Huddle needs the microphone. Allow it in your phone\'s settings, then try again.' : 'Couldn\'t start recording. '+errText(e)));
+}
+function dictStop(){
+  const r=DICT.rec; if (!r) return; DICT.rec=null; clearInterval(DICT.t);
+  try { r.state!=='inactive' && r.stop(); } catch(e){}
+  if (DICT.stream) DICT.stream.getTracks().forEach(t=>t.stop()); DICT.stream=null;
+  DICT.busy=true; dictUi();
+}
+function dictSend(mime){
+  const blob=new Blob(DICT.chunks, { type:mime }); DICT.chunks=[];
+  if (blob.size<800) { DICT.busy=false; dictUi(); toast('That was too short to hear. Hold on a moment longer next time.'); return; }
+  const fr=new FileReader();
+  fr.onload=()=>{
+    const b64=String(fr.result||'').split(',')[1]||'';
+    call('apiTranscribe', b64, mime).then(r=>{
+      const text=(r && r.text)||''; DICT.busy=false; dictUi();
+      if (!text) { toast('Alfred didn\'t catch any words. Try again a little closer to the phone.'); return; }
+      const inp=document.getElementById('alfInput'); if (!inp) return;
+      inp.value=(inp.value.trim() ? inp.value.replace(/\s*$/, ' ') : '')+text; autoGrow(inp); inp.focus();
+      try { inp.setSelectionRange(inp.value.length, inp.value.length); } catch(e){}
+    }).catch(e=>{ DICT.busy=false; dictUi(); toast(errText(e)); });
+  };
+  fr.readAsDataURL(blob);
+}
 function closeAlfred(keep){
+  if (DICT.rec) dictStop();
   // Critique 4 (bug #17): the fresh start waits until Alfred has really closed; reopening right away keeps what you typed.
   clearTimeout(S.alf.resetT); if (!keep) S.alf.resetT=setTimeout(()=>{ if (!S.alf.open) alfReset(); }, 300);
   return new Promise(done=>{
@@ -7106,7 +7189,8 @@ function alfredClick(a, el){
   if (a==='alf-open') openAlfred();
   else if (a==='alf-close') closeAlfred();
   else if (a==='alf-new') alfNew(el);
-  else if (a==='alf-send') { const b=document.getElementById('alfInput'); const t=b.value; b.value=''; autoGrow(b); sendAlfred(t); }
+  else if (a==='alf-mic') alfMic();
+  else if (a==='alf-send') { if (DICT.rec) dictStop(); const b=document.getElementById('alfInput'); const t=b.value; b.value=''; autoGrow(b); sendAlfred(t); }
   else if (a==='alf-suggest') sendAlfred(el.dataset.val);
   else if (a==='alf-history') { S.alf.view='history'; renderAlfred(); }
   else if (a==='alf-hist-back') { S.alf.view=null; renderAlfred(); }
@@ -7720,6 +7804,7 @@ function switchChanged(a, el){
   breadcrumb(el);
   if (a==='task-area') { if (S.edit) { S.edit.task.area=el.checked ? 'marketing' : ''; if (S.edit.isNew) renderSheet(); else queueSave(0); } return; }
   if (a==='sample') { sampleSwitch(el.checked); return; }
+  if (a==='tsound') { setPref('lt-tsound', el.checked ? 'on' : 'off'); if (el.checked) taskSound('Done'); return; }
   if (a==='private-toggle') togglePrivate();
   else if (a==='sf-done') { S.status = S.status==='' ? 'open' : ''; closeSheet(); }
   else if (a==='sf-blocked') { S.status = S.status==='Blocked' ? 'open' : 'Blocked'; closeSheet(); }
@@ -8387,6 +8472,7 @@ function makeMock(REAL){
     apiAdminTestEmail:()=>alog('Send Me a Test Email','Test email sent to '+me+'. 1480 emails left today.'),
     apiAdminAddSample:()=>alog('Load Sample Data','Sample data loaded: 4 meetings, 14 tasks and 2 Parking Lot topics, all marked [Sample].'),
     apiAdminRemoveSample:()=>alog('Remove Sample Data','Sample data removed (38 rows).'),
+    apiTranscribe:()=>({ text:'Please add a task for Erin to call the Curve rep about saving cards on file before Thursday.', secs:6 }),
     apiAlfredChat:(msgs)=>team.alfred_chat==='off' ? {reply:'Alfred chat is turned off right now.',drafts:[],proposals:[]} : alfred(msgs),
     apiSubmitChangeRequest:(draft,ctx,shot)=>{ const r=Object.assign({id:'r'+Date.now(),created_at:today+' 12:00',requested_by:me,has_screenshot:!!shot,status:'New',decided_by:'',decided_at:'',pr_url:'',notes:'',context:ctx}, draft);
       requests.unshift(r); r._shot=shot; return r; },
