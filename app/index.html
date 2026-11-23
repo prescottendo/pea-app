@@ -19,7 +19,7 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" type="image/png" href="icon-192.png">
-<script>window.HUDDLE_WEB={"api":"https://script.google.com/macros/s/AKfycbzM8K_-XRMDdOJYJ3THn_FhyZkRreMddHIBAOFCFVoq5S_Y7MnsfFLsl7ac_fyDPrch/exec","clientId":"473377418367-cqmmnfum4kshq16973m4sj2jqqfa55p0.apps.googleusercontent.com","build":"7f64c44","push":{"config":{"apiKey":"AIzaSyBON-0KvTXPD_MV6ykhYvCoBRiECEHyE9c","authDomain":"huddle-e2548.firebaseapp.com","projectId":"huddle-e2548","storageBucket":"huddle-e2548.firebasestorage.app","messagingSenderId":"554653922065","appId":"1:554653922065:web:87de53b4cb11b36835d2b0"},"vapidKey":"BHKeDoBmW7vL-qAT3ocyTaMaZ27Ca66jvQtTes2NC4CPoWFiPBJcga7wVd-RD1IuyhBki0oKXwPBGSNq002s8o8"}};document.documentElement.classList.add('web');</script>
+<script>window.HUDDLE_WEB={"api":"https://script.google.com/macros/s/AKfycbzM8K_-XRMDdOJYJ3THn_FhyZkRreMddHIBAOFCFVoq5S_Y7MnsfFLsl7ac_fyDPrch/exec","clientId":"473377418367-cqmmnfum4kshq16973m4sj2jqqfa55p0.apps.googleusercontent.com","build":"73b30fc","push":{"config":{"apiKey":"AIzaSyBON-0KvTXPD_MV6ykhYvCoBRiECEHyE9c","authDomain":"huddle-e2548.firebaseapp.com","projectId":"huddle-e2548","storageBucket":"huddle-e2548.firebasestorage.app","messagingSenderId":"554653922065","appId":"1:554653922065:web:87de53b4cb11b36835d2b0"},"vapidKey":"BHKeDoBmW7vL-qAT3ocyTaMaZ27Ca66jvQtTes2NC4CPoWFiPBJcga7wVd-RD1IuyhBki0oKXwPBGSNq002s8o8"}};document.documentElement.classList.add('web');</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <!-- The fonts load without holding up the first paint; the page shows in the phone's own font for a moment if needed. -->
@@ -2192,10 +2192,26 @@ async function paintBoot(){
 // Critique 4 layout #9: while the iPhone keyboard is up, panels and Alfred end above it (--kb) and the field in use scrolls into view.
 (function(){
   const vv=window.visualViewport; if (!vv) return;
-  const fit=()=>{ const kb=Math.max(0, Math.round(window.innerHeight-vv.height-vv.offsetTop)); document.documentElement.style.setProperty('--kb', (kb>80?kb:0)+'px');
-    const a=document.activeElement; if (kb>80 && a && a.matches && a.matches('textarea, input') && a.closest('#sheet, #alfPanel')) setTimeout(()=>{ try { a.scrollIntoView({ block:'nearest' }); } catch(e){} }, 50); };
+  let last=-1;
+  const fit=()=>{ const kb=Math.max(0, Math.round(window.innerHeight-vv.height-vv.offsetTop)), v=kb>80?kb:0; document.documentElement.style.setProperty('--kb', v+'px');
+    const a=document.activeElement, field=a && a.matches && a.matches('textarea, input') && a.closest('#sheet, #alfPanel');
+    if (kb>80 && field) setTimeout(()=>{ try { a.scrollIntoView({ block:'nearest' }); } catch(e){} }, 50);
+    if (field && v!==last) caretFix(a);
+    last=v; };
   vv.addEventListener('resize', fit); vv.addEventListener('scroll', fit);
+  // Nov 23 (Brayden: "the cursor doesn't line up with the text box in Alfred"): Safari draws the blinking cursor where the
+  // box was when it got focus, then the box moves up above the keyboard (--kb) and the cursor stays behind. Once the box
+  // has settled, setting the selection again (and hiding the cursor for one frame) makes Safari draw it in the right place.
+  document.addEventListener('focusin', e=>{ const a=e.target; if (a && a.matches && a.matches('textarea, input') && a.closest('#sheet, #alfPanel')) { caretFix(a); setTimeout(()=>caretFix(a), 450); } });
 })();
+function caretFix(a){
+  clearTimeout(caretFix.t);
+  caretFix.t=setTimeout(()=>requestAnimationFrame(()=>{
+    if (document.activeElement!==a) return;
+    try { const s=a.selectionStart, e=a.selectionEnd; a.style.caretColor='transparent';
+      requestAnimationFrame(()=>{ a.style.caretColor=''; if (s!=null) a.setSelectionRange(s, e); }); } catch(err){ a.style.caretColor=''; }
+  }), 120);
+}
 // Critique 4 (#27): before anything loads, the tab bar is drawn (Huddle lit), so the app opens on its own frame.
 function paintFrame(){
   const nb=document.getElementById('navBottom'); if (!nb || nb.querySelector('.tabs')) return;
@@ -6544,7 +6560,7 @@ async function liveAddItem(el){
 /* ---------- Alfred chat bubble ---------- */
 // The conversation lives only in this page (S.alf) and is gone after a reload. Every message carries the screen
 // context below, and the screenshot taken when the bubble was tapped, so nobody has to describe where they were.
-const APP_VERSION = '2026.11.23-sounds';
+const APP_VERSION = '2026.11.23-caret';
 const H2C_URL = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
 const DIAG = { errors:[], actions:[] };   // last 10 of each, for bug reports
 function pushDiag(list, item){ list.push(item); if (list.length>10) list.shift(); }
