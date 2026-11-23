@@ -19,7 +19,7 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" type="image/png" href="icon-192.png">
-<script>window.HUDDLE_WEB={"api":"https://script.google.com/macros/s/AKfycbzM8K_-XRMDdOJYJ3THn_FhyZkRreMddHIBAOFCFVoq5S_Y7MnsfFLsl7ac_fyDPrch/exec","clientId":"473377418367-cqmmnfum4kshq16973m4sj2jqqfa55p0.apps.googleusercontent.com","build":"73b30fc","push":{"config":{"apiKey":"AIzaSyBON-0KvTXPD_MV6ykhYvCoBRiECEHyE9c","authDomain":"huddle-e2548.firebaseapp.com","projectId":"huddle-e2548","storageBucket":"huddle-e2548.firebasestorage.app","messagingSenderId":"554653922065","appId":"1:554653922065:web:87de53b4cb11b36835d2b0"},"vapidKey":"BHKeDoBmW7vL-qAT3ocyTaMaZ27Ca66jvQtTes2NC4CPoWFiPBJcga7wVd-RD1IuyhBki0oKXwPBGSNq002s8o8"}};document.documentElement.classList.add('web');</script>
+<script>window.HUDDLE_WEB={"api":"https://script.google.com/macros/s/AKfycbzM8K_-XRMDdOJYJ3THn_FhyZkRreMddHIBAOFCFVoq5S_Y7MnsfFLsl7ac_fyDPrch/exec","clientId":"473377418367-cqmmnfum4kshq16973m4sj2jqqfa55p0.apps.googleusercontent.com","build":"22b5679","push":{"config":{"apiKey":"AIzaSyBON-0KvTXPD_MV6ykhYvCoBRiECEHyE9c","authDomain":"huddle-e2548.firebaseapp.com","projectId":"huddle-e2548","storageBucket":"huddle-e2548.firebasestorage.app","messagingSenderId":"554653922065","appId":"1:554653922065:web:87de53b4cb11b36835d2b0"},"vapidKey":"BHKeDoBmW7vL-qAT3ocyTaMaZ27Ca66jvQtTes2NC4CPoWFiPBJcga7wVd-RD1IuyhBki0oKXwPBGSNq002s8o8"}};document.documentElement.classList.add('web');</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <!-- The fonts load without holding up the first paint; the page shows in the phone's own font for a moment if needed. -->
@@ -854,6 +854,8 @@
   .nm-row.pre { background:var(--line-soft); }
   .alf-pickbtn { flex:none; width:40px; height:40px; border:none; background:none; color:var(--muted); display:grid; place-items:center; border-radius:50%; padding:0; }
   .alf-pickbtn svg { width:22px; height:22px; }
+  .p-draft { white-space:pre-wrap; max-height:220px; overflow-y:auto; font-size:var(--fs-sub); line-height:1.45; padding:10px 12px; margin:6px 0 10px; border:1px solid var(--line); border-radius:10px; background:var(--field); }
+  .ag-acts .tag.red { background:var(--p-high, #D64545); color:#fff; }
   .alf-input.cbox .alf-mic { order:2; position:relative; }
   .alf-mic.rec { background:var(--p-high, #D64545); color:#fff; animation:micPulse 1.4s ease-in-out infinite; }
   .alf-mic.busy { opacity:.55; pointer-events:none; }
@@ -2314,7 +2316,7 @@ const COACH=[
   { view:'meetings', sel:'#main .capsule', h:'Start a Meeting', b:'<p>Tap <b>＋ Start Meeting</b> for the weekly tactical (start the Otter recording first). Whoever starts it runs it; everyone else follows along within a second or two, and a yellow bar lets anyone join from any tab. During Discuss the host can let someone else (usually Dr. Smith) run the topics; when a topic\'s time is up, whoever runs topics can add a minute, add five, park it or finish it. The last 10 minutes are kept for Clarity and Closure, and <b>Print a Backup Agenda</b> gives you a paper copy in case the internet goes down.</p>' },
   { view:'meetings', sel:'#mResults .set-row', h:'Read a Meeting', b:'<p>Tap any meeting for its summary: the decisions and your tasks come first, then the full notes.</p>' },
   { view:'marketing', sel:'#main .ktab', h:'Marketing', b:'<p><b>Referrals</b>: a Watch List of referring doctors who need something (from the Referral Tracker), the month\'s budgets and your deliveries. <b>Social Posts</b> waiting for Becky\'s approval, and <b>To-Dos</b>: the team\'s marketing ideas and tasks. Anyone can add an idea.</p>' },
-  { view:'home', sel:'.alf-fab', h:'Alfred', b:'<p>The hat is <b>Alfred</b>, your assistant. Ask about meetings and tasks, have him make a small change, or tell him about a problem or an idea. Tap the microphone to talk instead of typing. Drag him anywhere.</p>' },
+  { view:'home', sel:'.alf-fab', h:'Alfred', b:'<p>The hat is <b>Alfred</b>, your assistant. Ask about meetings and tasks, have him make a small change, or tell him about a problem or an idea. Tap the microphone to talk instead of typing. In a meeting, say "Alfred, please…" and he does it: a to-do for everyone, an emailed draft, a bug report. Drag him anywhere.</p>' },
   { view:'home', sel:'#main .ptitle .mebtn, #me .mebtn', h:'Your Account', b:'<p>Your initials open <b>Notifications</b>, Appearance, Recently Deleted, this tour and Sign Out.</p>' }
 ];
 // The tab button for a view (the bottom bar on a phone, the top bar on a computer).
@@ -6064,13 +6066,22 @@ function agendaBoard(st, discuss){
 }
 // Nov 17 (Brayden's pick): one gold line ("2 Heard by Alfred ›") that opens the suggestions in a panel.
 function agSuggestions(st){
-  const n=(agenda(st).sugg||[]).filter(s=>!s.state).length; if (!n) return '';
+  const n=(agenda(st).sugg||[]).filter(s=>!s.state).length+(agenda(st).acts||[]).filter(x=>x.state==='queued').length;
+  if (!n && !(agenda(st).acts||[]).length) return '';
   return '<button type="button" class="ag-heard" data-act="ag-heard"><b>'+n+'</b><span>Heard by Alfred</span><span class="chev" aria-hidden="true">›</span></button>';
+}
+const ACT_KIND={ task:'To-Do', email:'Email Draft', calendar:'Calendar', change:'Request', other:'Heard' };
+function agActsHtml(st){
+  const acts=(agenda(st).acts||[]).slice().reverse(); if (!acts.length) return '';
+  return '<h4 class="set-sec">Done by Alfred</h4><div class="card ag-sugg ag-acts">'+acts.map(x=>'<div class="ag-s"><span class="tag'+(x.state==='error'?' red':x.state==='undone'?'':' gold')+'">'+esc(ACT_KIND[x.kind]||'Heard')+'</span>'
+    +'<span class="ag-s-t">'+esc(x.text)+'<small>'+esc([x.by?'Asked by '+x.by:'', x.state==='queued'?'Writing the draft…':x.state==='undone'?'Undone':'', x.note || (x.kind==='task' && x.state==='done' ? 'Added for '+listNames(x.names||[]) : '')].filter(Boolean).join(' · '))+'</small></span>'
+    +(x.state==='done' && (x.kind==='task'||x.kind==='calendar') && isHost(st) ? '<button type="button" class="btn ghost sm" data-act="ag-act-undo" data-id="'+esc(x.id)+'">Undo</button>' : '')+'</div>').join('')+'</div>';
 }
 function agHeardSheet(st){
   const list=(agenda(st).sugg||[]).filter(s=>!s.state);
   return '<div class="grab"></div><div class="sheet-head"><h3>Heard by Alfred</h3><button type="button" class="btn ghost sm" data-act="close-sheet">Done</button></div>'
-    +(list.length ? '<div class="card ag-sugg">' : '<p class="none">Nothing new. Tasks and decisions Alfred hears show here.</p>')+list.slice(-6).reverse().map(s=>'<div class="ag-s"><span class="tag '+(s.kind==='task'?'':'gold')+'">'+(s.kind==='task'?'Task':'Decision')+'</span>'
+    +agActsHtml(st)
+    +(list.length ? '<div class="card ag-sugg">' : '<p class="none">Nothing new. Tasks and decisions Alfred hears show here; say "Alfred, please…" and he does it.</p>')+list.slice(-6).reverse().map(s=>'<div class="ag-s"><span class="tag '+(s.kind==='task'?'':'gold')+'">'+(s.kind==='task'?'Task':'Decision')+'</span>'
     +'<span class="ag-s-t">'+esc(s.text)+(s.owner||s.due?'<small>'+[esc(s.owner||''), s.due?esc(fmtDate(s.due)):''].filter(Boolean).join(' · ')+'</small>':'')
     +(s.dup?'<small class="ag-dup">Already a task: '+esc(s.dup)+'</small>':'')+'</span>'
     +'<button type="button" class="btn primary sm" data-act="ag-sugg-add" data-id="'+esc(s.id)+'">Add</button><button type="button" class="iconbtn" data-act="ag-sugg-x" data-id="'+esc(s.id)+'" aria-label="Dismiss">'+ICON.x+'</button></div>').join('')+(list.length?'</div>':'');
@@ -6087,6 +6098,23 @@ function agAnnounce(st){
   g.forEach(x=>{ if (S.agGone[x.id]) return; S.agGone[x.id]=1;
     if (!mine || x.by!=='Alfred' || Date.now()-(S.offset||0)-x.at>60000) return;
     toast('Alfred '+(x.how==='parked'?'parked':'removed')+' "'+x.text.slice(0,40)+'"', ()=>agSend({ op:'restore', id:x.id }).then(()=>toast('Back on the agenda')).catch(()=>{}), { label:'Undo' }); });
+  // Nov 23 (Brayden #8): what Alfred did for "Alfred, please…", on the host's (and the listening) phone, with Undo for to-dos.
+  // Several at once: the one with Undo wins the message (the rest are in Heard by Alfred).
+  S.actSeen=S.actSeen||{}; let msg=null;
+  (agenda(st).acts||[]).forEach(x=>{ const was=S.actSeen[x.id]; if (was===x.state) return; S.actSeen[x.id]=x.state;
+    if (!mine || Date.now()+(S.offset||0)-x.at>180000) return;
+    const t='"'+String(x.text).slice(0,40)+(String(x.text).length>40?'…':'')+'"', who=listNames(x.names||[]);
+    let m=null;
+    if (x.state==='done' && (x.kind==='task' || x.kind==='calendar') && !was)
+      m=[x.kind==='calendar' ? 'Calendar events aren\'t on yet, so Alfred added a to-do for '+who : 'Alfred added '+t+' for '+(x.tasks>3?'everyone':who),
+        ()=>agSend({ op:'undo-act', id:x.id }).then(()=>toast('Undone')).catch(()=>{})];
+    else if (x.state==='queued') m=['Alfred is writing the draft. It goes to '+who+' in a minute.'];
+    else if (x.state==='done' && x.kind==='email') m=['Alfred emailed the draft to '+who];
+    else if (x.state==='done' && x.kind==='change') m=['Alfred sent '+t+' to Brayden'];
+    else if (x.state==='error') m=['Alfred couldn\'t do '+t+'. '+(x.note||'')];
+    if (m && (!msg || !msg[1] || m[1])) msg=m;
+  });
+  if (msg) toast(msg[0], msg[1]||null, msg[1] ? { label:'Undo' } : undefined);
 }
 function agLocal(fn){ if (!S.live) return; S.live.agenda=JSON.parse(JSON.stringify(agenda(S.live))); fn(S.live.agenda); render(); }
 function agSheet(){
@@ -6129,6 +6157,7 @@ function agClick(a, el, v){
     if (s.kind==='decision') { saving(el, 'Adding…', ()=>call('apiAddDecision', s.text, 'Heard during '+S.live.title+'.', S.data.today, newCid())).then(r=>{ if (!r) return; S.decisions=null; agSend({ op:'sugg', id:s.id, state:'added' }, true).catch(()=>{}); toast('Decision added'); }); return true; }
     const who=S.data.people.find(p=>s.owner && (firstName(p.email).toLowerCase()===s.owner.toLowerCase() || nameOf(p.email).toLowerCase()===s.owner.toLowerCase()));
     S.lvTitle=s.text; S.lvOwners=who?[who.email]:[]; S.lvDue=s.due||null; S.lvSugg=s.id; openLiveItem(); return true; }
+  if (a==='ag-act-undo') { agSend({ op:'undo-act', id:el.dataset.id }).then(()=>{ toast('Undone'); if (S.sheet==='heard') renderSheet(); }).catch(()=>{}); return true; }
   if (a==='ag-listen-start') { listenStart(); return true; }
   if (a==='ag-listen-stop') { listenStop(true); return true; }
   return false;
@@ -6560,7 +6589,7 @@ async function liveAddItem(el){
 /* ---------- Alfred chat bubble ---------- */
 // The conversation lives only in this page (S.alf) and is gone after a reload. Every message carries the screen
 // context below, and the screenshot taken when the bubble was tapped, so nobody has to describe where they were.
-const APP_VERSION = '2026.11.23-caret';
+const APP_VERSION = '2026.11.23-requests';
 const H2C_URL = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
 const DIAG = { errors:[], actions:[] };   // last 10 of each, for bug reports
 function pushDiag(list, item){ list.push(item); if (list.length>10) list.shift(); }
@@ -7111,12 +7140,13 @@ function draftAt(el){ const m=S.alf.msgs[Number(el.dataset.i)]; return m && m.dr
 // in the app (setStatus / apiSaveTask), with the usual Undo message.
 function proposalAt(el){ const m=S.alf.msgs[Number(el.dataset.i)]; return m && m.proposals ? m.proposals[Number(el.dataset.j)] : null; }
 function proposalCard(p, i, j){
-  const key='data-i="'+i+'" data-j="'+j+'"', kind=p.kind==='new'?'New Task':'Task Change';
+  const key='data-i="'+i+'" data-j="'+j+'"', kind=p.kind==='email'?'Email Draft':p.kind==='new'?(p.each?'New Tasks':'New Task'):'Task Change';
   const head='<div class="alf-draft prop'+(p.state==='cancelled'||p.state==='undone'?' off':'')+'"><div class="row"><span class="tag'+(p.state==='ready'||p.state==='saving'?' gold':'')+'">'+kind+'</span>';
-  if (p.state==='done') return head+'<span class="sent">Done ✓</span></div><div class="tt">'+esc(p.title)+'</div></div>';
+  if (p.state==='done') return head+'<span class="sent">'+(p.kind==='email'?'Emailed ✓':'Done ✓')+'</span></div><div class="tt">'+esc(p.title)+'</div></div>';
   if (p.state==='cancelled' || p.state==='undone') return head+'<span class="small muted">'+(p.state==='undone'?'Undone. Nothing changed.':'Cancelled. Nothing changed.')+'</span></div><div class="tt">'+esc(p.title)+'</div></div>';
   return head+'</div><div class="tt">'+esc(p.title)+'</div>'
     +'<ul class="p-lines">'+(p.lines||[]).map(l=>'<li>'+esc(l)+'</li>').join('')+'</ul>'
+    +(p.kind==='email' ? '<div class="p-draft">'+esc(p.body||'')+'</div>' : '')
     +(p.error?'<div class="err">'+esc(p.error)+'</div>':'')
     +'<div class="acts"><button type="button" class="btn primary sm" data-act="alf-p-ok" '+key+(p.state==='saving'?' disabled':'')+'>'+(p.state==='saving'?'Saving…':'Confirm')+'</button>'
     +'<button type="button" class="btn ghost sm" data-act="alf-p-no" '+key+(p.state==='saving'?' disabled':'')+'>Cancel</button></div></div>';
@@ -7140,6 +7170,22 @@ async function applyProposal(p){
       p.state='done'; renderAlfred();
       toast('Saved', async()=>{ try { replaceTask(await call('apiSaveTask', Object.keys(p.changes).reduce((o,k)=>{ o[k]=prev[k]; return o; }, { id:prev.id }))); p.state='undone'; render(); renderAlfred(); toast('Changed back'); } catch(e){ toast('Couldn\'t undo. '+errText(e)); } });
     } catch(e){ p.state='ready'; p.error='Not saved: '+errText(e); renderAlfred(); }
+    return;
+  }
+  if (p.kind==='email') {   // Nov 23: Alfred's draft is emailed to the people listed (team only), to edit and send themselves
+    p.state='saving'; renderAlfred();
+    try { const r=await call('apiAlfredEmailDraft', p.to, p.subject, p.body); p.state='done'; renderAlfred(); toast('Draft emailed to '+listNames((r&&r.sent)||[])); }
+    catch(e){ p.state='ready'; p.error='Not sent: '+errText(e); renderAlfred(); }
+    return;
+  }
+  if (p.each) {   // "add it to all of our lists": one task each
+    p.state='saving'; renderAlfred();
+    try {
+      p.cids=p.cids||p.owners.map(()=>newCid());
+      const made=[]; for (let k=0; k<p.owners.length; k++) { const saved=await call('apiSaveTask', Object.assign({}, p.task, { owners:p.owners[k], cid:p.cids[k] })); replaceTask(saved); made.push(saved.id); }
+      render(); p.state='done'; renderAlfred();
+      toast(made.length+' tasks added', async()=>{ try { for (const id of made) { await call('apiDeleteTask', id); const i=S.data.tasks.findIndex(x=>x.id===id); if (i>=0) S.data.tasks.splice(i,1); } S.deleted=null; p.state='undone'; render(); renderAlfred(); toast('Removed'); } catch(e){ toast('Couldn\'t undo. '+errText(e)); } });
+    } catch(e){ p.state='ready'; p.error='Not added: '+errText(e); renderAlfred(); }
     return;
   }
   p.state='saving'; renderAlfred();
@@ -8488,6 +8534,7 @@ function makeMock(REAL){
     apiAdminTestEmail:()=>alog('Send Me a Test Email','Test email sent to '+me+'. 1480 emails left today.'),
     apiAdminAddSample:()=>alog('Load Sample Data','Sample data loaded: 4 meetings, 14 tasks and 2 Parking Lot topics, all marked [Sample].'),
     apiAdminRemoveSample:()=>alog('Remove Sample Data','Sample data removed (38 rows).'),
+    apiAlfredEmailDraft:(to)=>({ sent:(to||['Brayden']).map(x=>String(x).split('@')[0]) }),
     apiTranscribe:()=>({ text:'Please add a task for Erin to call the Curve rep about saving cards on file before Thursday.', secs:6 }),
     apiAlfredChat:(msgs)=>team.alfred_chat==='off' ? {reply:'Alfred chat is turned off right now.',drafts:[],proposals:[]} : alfred(msgs),
     apiSubmitChangeRequest:(draft,ctx,shot)=>{ const r=Object.assign({id:'r'+Date.now(),created_at:today+' 12:00',requested_by:me,has_screenshot:!!shot,status:'New',decided_by:'',decided_at:'',pr_url:'',notes:'',context:ctx}, draft);
