@@ -19,7 +19,7 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" type="image/png" href="icon-192.png">
-<script>window.HUDDLE_WEB={"api":"https://script.google.com/macros/s/AKfycbzM8K_-XRMDdOJYJ3THn_FhyZkRreMddHIBAOFCFVoq5S_Y7MnsfFLsl7ac_fyDPrch/exec","clientId":"473377418367-cqmmnfum4kshq16973m4sj2jqqfa55p0.apps.googleusercontent.com","build":"5d8acc6","push":{"config":{"apiKey":"AIzaSyBON-0KvTXPD_MV6ykhYvCoBRiECEHyE9c","authDomain":"huddle-e2548.firebaseapp.com","projectId":"huddle-e2548","storageBucket":"huddle-e2548.firebasestorage.app","messagingSenderId":"554653922065","appId":"1:554653922065:web:87de53b4cb11b36835d2b0"},"vapidKey":"BHKeDoBmW7vL-qAT3ocyTaMaZ27Ca66jvQtTes2NC4CPoWFiPBJcga7wVd-RD1IuyhBki0oKXwPBGSNq002s8o8"}};document.documentElement.classList.add('web');</script>
+<script>window.HUDDLE_WEB={"api":"https://script.google.com/macros/s/AKfycbzM8K_-XRMDdOJYJ3THn_FhyZkRreMddHIBAOFCFVoq5S_Y7MnsfFLsl7ac_fyDPrch/exec","clientId":"473377418367-cqmmnfum4kshq16973m4sj2jqqfa55p0.apps.googleusercontent.com","build":"8566a2e","push":{"config":{"apiKey":"AIzaSyBON-0KvTXPD_MV6ykhYvCoBRiECEHyE9c","authDomain":"huddle-e2548.firebaseapp.com","projectId":"huddle-e2548","storageBucket":"huddle-e2548.firebasestorage.app","messagingSenderId":"554653922065","appId":"1:554653922065:web:87de53b4cb11b36835d2b0"},"vapidKey":"BHKeDoBmW7vL-qAT3ocyTaMaZ27Ca66jvQtTes2NC4CPoWFiPBJcga7wVd-RD1IuyhBki0oKXwPBGSNq002s8o8"}};document.documentElement.classList.add('web');</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <!-- The fonts load without holding up the first paint; the page shows in the phone's own font for a moment if needed. -->
@@ -4672,12 +4672,14 @@ const ADMIN_TOOLS = [
   ['email','apiAdminTestEmail','Send Me a Test Email','A short email to you, to check that email is working','Send'],
   ['pushtest','apiPushTest','Send Me a Test Notification','To every device where you turned notifications on','Send'],
   ['cfconnect','apiAdminConnectCloudflare','Connect to Cloudflare','For the move to the faster server: paste the shared password (HUDDLE_JOB_SECRET) and tap Connect. It is saved on the server and never shown again','Connect'],
+  ['cfon','apiAdminSwitchToCloudflare','Switch to Cloudflare','Copies everything one last time, then Huddle saves to Cloudflare. The Sheet keeps a copy, updated every 5 minutes','Switch'],
+  ['cfoff','apiAdminSwitchToGoogle','Switch Back to Google','Copies everything back into the Sheet, then Huddle saves to the Sheet again','Switch Back'],
   ['cfcopy','apiAdminCopyToCloudflare','Copy Data to Cloudflare','For the move to the faster server: copies every tab and setting there and checks the counts. Safe to repeat until the switch','Copy'],
   ['problems','apiAdminProblems','Status','Recent problems, meetings that could not be processed, and this month\'s Alfred chat use and cost','Show'],
   ['sample-add','apiAdminAddSample','Load Sample Data','Demo meetings, tasks and topics marked [Sample], for showing the app','Load','demo'],
   ['sample-remove','apiAdminRemoveSample','Remove Sample Data','Deletes everything marked [Sample]. Real tasks are not touched','Remove','demo']
 ].concat(WEB ? [['signout-all','apiSignOutEveryone','Sign Out Everyone','Ends every Huddle sign-in on every phone and computer, yours too. Use it if a phone is lost; everyone signs in with Google again','Sign Out']] : []);
-const ADMIN_ARM = ['sample-remove','signout-all'];   // these need a second tap
+const ADMIN_ARM = ['sample-remove','signout-all','cfon','cfoff'];   // these need a second tap
 // Critique 4 (Sec #18): open tasks whose owners are all off the team (People tab active = no) drop off the report and the
 // reminders, so Admin Tools lists them to hand off or close.
 function orphanTasksHtml(){
@@ -4691,7 +4693,7 @@ function adminToolsHtml(){
     +'<div class="set-card mt-l">'+ADMIN_TOOLS.filter(t=>t[5]!=='demo' || A.demo).map(([k,fn,l,d,b])=>{
     const arm=A.armed===k, o=A.out[k];
     return '<div class="set-row admin-row"><span>'+l+'<small>'+d+'</small>'+(k==='cfconnect'?'<input type="password" id="cfSecret" class="cf-secret" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Paste the password" value="'+esc(A.cfs||'')+'">':'')+'</span>'
-      +'<button type="button" class="btn sm '+(arm?'danger-btn':'ghost')+'" data-act="admin" data-key="'+k+'"'+(A.busy?' disabled':'')+'>'+(A.busy===k?'Working…':arm?(k==='signout-all'?'Tap again to sign out':'Tap again to remove'):b)+'</button></div>'
+      +'<button type="button" class="btn sm '+(arm?'danger-btn':'ghost')+'" data-act="admin" data-key="'+k+'"'+(A.busy?' disabled':'')+'>'+(A.busy===k?'Working…':arm?(k==='signout-all'?'Tap again to sign out':k==='cfon'||k==='cfoff'?'Tap again to switch':'Tap again to remove'):b)+'</button></div>'
       +(o?'<div class="admin-out'+(o.err?' err':'')+'" role="status">'+(o.data?problemsHtml(o.data):esc(o.text))+'</div>':'');
   }).join('')+(A.demo?'':'<button type="button" class="set-row" data-act="admin-demo"><span>Demo Data<small>Load or remove the sample tasks and meetings</small></span><span class="chev" aria-hidden="true">›</span></button>')
     +'</div><p class="set-note">Only approvers see these. Every action is recorded in the AdminLog tab of the Google Sheet.</p>'+orphanTasksHtml()
@@ -6156,6 +6158,8 @@ function agSheet(){
     +(E.id ? '<div class="mk-acts mt-l"><div class="btn-row"><button type="button" class="btn park-btn" data-act="ag-park">Park (Strategy)</button><button type="button" class="btn ghost ag-remove" data-act="ag-del">Remove</button></div></div>'
       +(E.done?'<div class="set-card mt-m"><button type="button" class="set-row" data-act="ag-undone"><span>Mark Not Discussed</span></button></div>':'') : '');
 }
+// Nov 23 (Brayden): Alfred hears a batch of finished words every 3 seconds (was 5), so agenda changes show about 2 s sooner.
+const LISTEN_EVERY = 3000;
 function agClick(a, el, v){
   if (a==='ag-all') { S.agShowAll=!S.agShowAll; render(); return true; }
   if (a==='ag-add') { S.agEdit={ text:'', area:el.dataset.area||LIGHTNING, color:'', by:firstName(S.data.me) }; S.sheet='agenda'; showSheet(); setTimeout(()=>{ const f=document.getElementById('ag-text'); if (f) f.focus(); }, 300); return true; }
@@ -6213,7 +6217,7 @@ async function listenStart(){
   LISTEN.src.connect(LISTEN.proc); LISTEN.proc.connect(ctx.destination);
   try { await agSend({ op:'listen', on:true, mic:LISTEN.mic }); } catch(e){ listenStop(false); return; }
   listenConnect();
-  clearInterval(LISTEN.flushT); LISTEN.flushT=setInterval(listenFlush, 5000);
+  clearInterval(LISTEN.flushT); LISTEN.flushT=setInterval(listenFlush, LISTEN_EVERY);
   toast(LISTEN.mic ? 'Listening with '+LISTEN.mic : 'Listening');
 }
 // 48 kHz (or whatever the phone uses) float → 16 kHz 16-bit little-endian.
@@ -6291,7 +6295,7 @@ function listenPractice(){
   LISTEN.on=true; LISTEN.mic='Practice conversation'; LISTEN.buf=[]; let i=0;
   agSend({ op:'listen', on:true, mic:LISTEN.mic }).catch(()=>{});
   LISTEN.fake=setInterval(()=>{ if (i>=PRACTICE.length) { clearInterval(LISTEN.fake); return; } LISTEN.buf.push(PRACTICE[i++]); LISTEN.spokenAt=Date.now(); }, 2500);
-  clearInterval(LISTEN.flushT); LISTEN.flushT=setInterval(listenFlush, 5000);
+  clearInterval(LISTEN.flushT); LISTEN.flushT=setInterval(listenFlush, LISTEN_EVERY);
   toast('Playing a practice conversation');
 }
 
@@ -8568,6 +8572,8 @@ function makeMock(REAL){
     apiRestoreLiveLog:id=>Object.assign(liveLogs.find(l=>l.id===id), { deleted_at:'', deleted_by:'' }),
     apiAdminProcessInbox:()=>alog('Process New Meetings Now','No new meetings were waiting.'),
     apiAdminResetTriggers:()=>alog('Repair Scheduled Jobs','Scheduled jobs in place, running as the operations account: Process new meetings (every 5 minutes); Morning emails (daily, 7am).'),
+    apiAdminSwitchToCloudflare:()=>alog('Switch to Cloudflare','Copied 21 tabs (1,240 rows) and 64 settings. Every count matches. Huddle now saves to Cloudflare, and the Sheet gets a copy every 5 minutes.'),
+    apiAdminSwitchToGoogle:()=>alog('Switch Back to Google','Back on Google. Checked 21 tabs into the Sheet and copied 64 settings back.'),
     apiAdminConnectCloudflare:()=>alog('Connect to Cloudflare','Connected to https://huddle.example.workers.dev. Cloudflare accepted the password. Next: Copy Data to Cloudflare.'),
     apiAdminCopyToCloudflare:()=>alog('Copy Data to Cloudflare','Copied 21 tabs (1,240 rows) and 64 settings. Every count matches.'),
     apiAdminTestEmail:()=>alog('Send Me a Test Email','Test email sent to '+me+'. 1480 emails left today.'),
