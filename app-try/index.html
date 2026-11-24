@@ -8,7 +8,7 @@
 <head>
 <base target="_top">
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://accounts.google.com/gsi/client https://cdnjs.cloudflare.com/ajax/libs/html2canvas/ https://www.gstatic.com/firebasejs/; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://accounts.google.com/gsi/style; font-src https://fonts.gstatic.com; img-src 'self' data: blob: https://*.googleusercontent.com https://*.gstatic.com; connect-src 'self' https://huddle.operations-6b3.workers.dev/api https://accounts.google.com/gsi/ wss://api.deepgram.com https://firebaseinstallations.googleapis.com https://fcmregistrations.googleapis.com; frame-src https://accounts.google.com/gsi/; worker-src 'self'; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://accounts.google.com/gsi/client https://cdnjs.cloudflare.com/ajax/libs/html2canvas/ https://www.gstatic.com/firebasejs/; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://accounts.google.com/gsi/style; font-src https://fonts.gstatic.com; img-src 'self' data: blob: https://*.googleusercontent.com https://*.gstatic.com; connect-src 'self' https://huddle.operations-6b3.workers.dev/api wss://huddle.operations-6b3.workers.dev/live https://accounts.google.com/gsi/ wss://api.deepgram.com https://firebaseinstallations.googleapis.com https://fcmregistrations.googleapis.com; frame-src https://accounts.google.com/gsi/; worker-src 'self'; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'none'">
 <title>Huddle</title>
 <meta name="robots" content="noindex">
 <meta name="theme-color" content="#EBE6D9">
@@ -19,7 +19,7 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" type="image/png" href="icon-192.png">
-<script>window.HUDDLE_WEB={"api":"https://huddle.operations-6b3.workers.dev/api","clientId":"473377418367-cqmmnfum4kshq16973m4sj2jqqfa55p0.apps.googleusercontent.com","build":"bb5ed5e-try","tryout":true,"push":{"config":{"apiKey":"AIzaSyBON-0KvTXPD_MV6ykhYvCoBRiECEHyE9c","authDomain":"huddle-e2548.firebaseapp.com","projectId":"huddle-e2548","storageBucket":"huddle-e2548.firebasestorage.app","messagingSenderId":"554653922065","appId":"1:554653922065:web:87de53b4cb11b36835d2b0"},"vapidKey":"BHKeDoBmW7vL-qAT3ocyTaMaZ27Ca66jvQtTes2NC4CPoWFiPBJcga7wVd-RD1IuyhBki0oKXwPBGSNq002s8o8"}};document.documentElement.classList.add('web');</script>
+<script>window.HUDDLE_WEB={"api":"https://huddle.operations-6b3.workers.dev/api","clientId":"473377418367-cqmmnfum4kshq16973m4sj2jqqfa55p0.apps.googleusercontent.com","build":"a4f0555-try","tryout":true,"push":{"config":{"apiKey":"AIzaSyBON-0KvTXPD_MV6ykhYvCoBRiECEHyE9c","authDomain":"huddle-e2548.firebaseapp.com","projectId":"huddle-e2548","storageBucket":"huddle-e2548.firebasestorage.app","messagingSenderId":"554653922065","appId":"1:554653922065:web:87de53b4cb11b36835d2b0"},"vapidKey":"BHKeDoBmW7vL-qAT3ocyTaMaZ27Ca66jvQtTes2NC4CPoWFiPBJcga7wVd-RD1IuyhBki0oKXwPBGSNq002s8o8"}};document.documentElement.classList.add('web');</script>
 <script>(function () {
   var L = window.localStorage, P = 'try:';
   var mine = function () { return Object.keys(L).filter(function (k) { return k.indexOf(P) === 0; }); };
@@ -5521,12 +5521,40 @@ function livePoll(){
   const now=Date.now();
   if (S.view!=='live' && now-(S.liveChecked||0) < 20000) return;
   S.liveChecked=now; livePoll.busy=true;
-  call('apiLiveGet', liveSyncReport()).then(applyLive).catch(()=>{}).then(()=>{ livePoll.busy=false; });
+  call('apiLiveGet', liveSyncReport()).then(applyLive).catch(()=>{}).then(()=>{ livePoll.busy=false; if (livePoll.again) { livePoll.again=false; S.liveChecked=0; livePoll(); } });
 }
 // Nov 17: while a phone is listening, everyone on the meeting screen checks every second (instead of 2.5 s), so new
 // agenda items show within about a second of Alfred adding them. Nov 23 (Brayden #8): the same for the whole running
 // meeting, so a new step shows on every phone within a second or two. The listening phone gets them in its own reply.
-function livePollFast(){ if (S.view==='live' && S.live && (S.live.phase==='running' || (agenda(S.live).listen && !LISTEN.on))) livePoll(); }
+function livePollFast(){
+  liveSocket();
+  if (!(S.view==='live' && S.live && (S.live.phase==='running' || (agenda(S.live).listen && !LISTEN.on)))) return;
+  // With the meeting socket open, changes arrive the moment they're saved, so the regular check is only a backstop.
+  if (LIVEWS.ok && Date.now()-(S.liveChecked||0) < 5000) return;
+  livePoll();
+}
+// Nov 23 (Cloudflare move): instant meeting updates. On the Cloudflare server, a phone with a meeting running holds a
+// WebSocket to /live; the server sends {"t":"live"} whenever the meeting is saved, and the phone fetches it at once.
+// Google's server has no sockets, so there the checks above carry on as before.
+const LIVEWS = { ws:null, ok:false, tries:0, next:0, ping:0 };
+function liveSocket(){
+  const want = !!(WEB && !/script\.google/.test(WEB.api) && S.data && S.live && !document.hidden && webToken());
+  if (!want) { if (LIVEWS.ws) { try { LIVEWS.ws.close(); } catch(e){} LIVEWS.ws=null; LIVEWS.ok=false; } return; }
+  if (LIVEWS.ws) { if (LIVEWS.ok && Date.now()-LIVEWS.ping > 25000) { LIVEWS.ping=Date.now(); try { LIVEWS.ws.send('ping'); } catch(e){} } return; }
+  if (Date.now() < LIVEWS.next || typeof WebSocket !== 'function') return;
+  let u; try { u=new URL(WEB.api); } catch(e){ return; }
+  const ws=new WebSocket((u.protocol==='https:'?'wss:':'ws:')+'//'+u.host+'/live'); LIVEWS.ws=ws;
+  ws.onopen=()=>{ try { ws.send(JSON.stringify({ token:webToken(), tryout:WEB.tryout?1:0 })); } catch(e){} };
+  ws.onmessage=e=>{
+    if (e.data==='pong') return;
+    let m=null; try { m=JSON.parse(e.data); } catch(x){}
+    if (!m) return;
+    if (m.t==='hello') { LIVEWS.ok=true; LIVEWS.tries=0; LIVEWS.ping=Date.now(); }
+    if (m.t==='live') { S.liveChecked=0; if (livePoll.busy) livePoll.again=true; else livePoll(); }
+  };
+  ws.onclose=()=>{ if (LIVEWS.ws===ws) { LIVEWS.ws=null; LIVEWS.ok=false; LIVEWS.tries++; LIVEWS.next=Date.now()+Math.min(30000, 1000*Math.pow(2, LIVEWS.tries)); } };
+  ws.onerror=()=>{ try { ws.close(); } catch(e){} };
+}
 // Every change: update this phone right away, then share it with everyone else (BUG-3).
 // The server refuses a change made from an out-of-date copy (another phone saved first) and sends back the latest one.
 // This phone then redoes the tap on the latest copy, unless the meeting has already moved on (another step, person or
