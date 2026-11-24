@@ -19,7 +19,7 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" type="image/png" href="icon-192.png">
-<script>window.HUDDLE_WEB={"api":"https://huddle.operations-6b3.workers.dev/api","clientId":"473377418367-cqmmnfum4kshq16973m4sj2jqqfa55p0.apps.googleusercontent.com","build":"a4f0555-try","tryout":true,"push":{"config":{"apiKey":"AIzaSyBON-0KvTXPD_MV6ykhYvCoBRiECEHyE9c","authDomain":"huddle-e2548.firebaseapp.com","projectId":"huddle-e2548","storageBucket":"huddle-e2548.firebasestorage.app","messagingSenderId":"554653922065","appId":"1:554653922065:web:87de53b4cb11b36835d2b0"},"vapidKey":"BHKeDoBmW7vL-qAT3ocyTaMaZ27Ca66jvQtTes2NC4CPoWFiPBJcga7wVd-RD1IuyhBki0oKXwPBGSNq002s8o8"}};document.documentElement.classList.add('web');</script>
+<script>window.HUDDLE_WEB={"api":"https://huddle.operations-6b3.workers.dev/api","clientId":"473377418367-cqmmnfum4kshq16973m4sj2jqqfa55p0.apps.googleusercontent.com","build":"5e307a0-try","tryout":true,"push":{"config":{"apiKey":"AIzaSyBON-0KvTXPD_MV6ykhYvCoBRiECEHyE9c","authDomain":"huddle-e2548.firebaseapp.com","projectId":"huddle-e2548","storageBucket":"huddle-e2548.firebasestorage.app","messagingSenderId":"554653922065","appId":"1:554653922065:web:87de53b4cb11b36835d2b0"},"vapidKey":"BHKeDoBmW7vL-qAT3ocyTaMaZ27Ca66jvQtTes2NC4CPoWFiPBJcga7wVd-RD1IuyhBki0oKXwPBGSNq002s8o8"}};document.documentElement.classList.add('web');</script>
 <script>(function () {
   var L = window.localStorage, P = 'try:';
   var mine = function () { return Object.keys(L).filter(function (k) { return k.indexOf(P) === 0; }); };
@@ -3020,7 +3020,7 @@ function scorecardHtml(list, month, opts){
     if (x.viz==='percentile') return '<div class="card sc-tile wide '+cls+'"'+tap+'><div><div class="t-name">'+esc(x.name)+' '+pill+'</div><div class="t-num">'+fmtNum(v, x.unit)+'<small>'+esc(small)+'</small></div><div class="t-foot">'+foot+'</div></div><div class="t-wide-viz">'+viz+'</div></div>';
     return '<div class="card sc-tile '+cls+'"'+tap+'><div class="t-name">'+esc(x.name)+' '+pill+'</div><div class="t-num">'+fmtNum(v, x.unit)+'<small>'+esc(small)+'</small></div><div class="t-viz-box">'+viz+'</div><div class="t-foot">'+foot+'</div></div>';
   }).join('');
-  return '<div class="card sc-health">'+scRing(states)+'<div><b>'+(rated ? on+' of '+rated+' On Track' : 'No Goals Set Yet')+'</b><small>'+sub+'</small></div></div><div class="sc-tiles">'+tiles+'</div>';
+  return '<div class="card sc-health">'+scRing(states)+'<div><b>'+(rated ? on+' of '+list.length+' On Track' : 'No Goals Set Yet')+'</b><small>'+sub+'</small></div></div><div class="sc-tiles">'+tiles+'</div>';
 }
 function renderHome(m){
   if (sampleOn()) return renderHomeSample(m);
